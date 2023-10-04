@@ -1,0 +1,1935 @@
+:root {
+    --dark-grey: rgb(21, 20, 22);
+    --dark-ligher-grey: rgb(48, 46, 49);
+    --ligher--grey: rgb(79, 75, 82);
+  }
+  
+  
+  * {
+      margin: 0;
+  }
+  
+  .main_section {
+      background: url('../images/pc_background.png');
+  }
+  
+  .download_app {
+      display: flex;
+      flex-direction: row;
+      height: 10vh;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px 0px;
+      background-color: white;
+  }
+  
+  .download_app p {
+      font-size: 1.5em;
+      font-family: 'Geologica', sans-serif;
+      padding-left: 20px;
+      color: rgb(41, 41, 41);
+      text-shadow: 0.5px 0.5px 1px rgb(0, 0, 0);
+  }
+  
+  .download_app a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    
+    #apple_logo, #google_logo {
+      max-width: 100%;
+      height: auto;
+      width: 150px;
+    }
+  
+  
+  .separator {
+      height: 0.5px;
+      background-color: rgb(44, 43, 43);
+      margin: auto;
+      width: 50%;
+      text-align: center;
+  }
+  
+  .frequently_asked_question {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 50px;
+      background-color: white;
+  }
+  
+  .frequently_asked_question h2 {
+      font-size: 5vh;
+      font-family: 'Geologica', sans-serif;  
+      text-align: center;  
+  }
+  
+  .faq_row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;    
+  }
+  
+  .faq_row_box {
+      font-family: 'Geologica', sans-serif;   
+      width: 50%;
+      height: auto;
+      border: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 30px;
+  }
+  
+  .faq_row_box h3 {
+      padding-bottom: 20px;
+  }
+  
+  .selected-champion {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+  
+  .selected-champion img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+  }
+  
+  .section_form_signup {
+      background-color: white;
+      padding: 50px 0px;
+      overflow: hidden;
+  }
+  
+  .form_signup {
+      background-color: rgb(248, 244, 244);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px;
+      border: 0.2px solid black;
+      border-radius: 20px;
+      width: 40%;
+      margin: 30px auto;
+      position: relative;
+  }
+  
+  .form_signup img {
+      width: 100px;
+      height: 100px;
+  }
+
+  span.form-error {
+    display: block;
+    background-color: rgba(255, 100, 100, 1);
+    color: white;
+    padding: 1em;
+    border: 5px;
+    width: 100%;
+    text-align: center;
+}
+  
+  .form_signup p {
+  font-size: 1.5vh;
+  font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .form_signup a {
+    font-size: 1.5vh;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    color: rgb(22, 90, 186);
+    }
+  
+    .form_signup a:hover {
+      text-decoration: underline rgb(22, 90, 186);
+      }
+  
+  .form_signup label {
+      margin: 30px 0px 10px 0px;
+      font-family: 'Geologica', sans-serif;  
+      font-size: 3vh;
+  }
+  
+  .form_signup select {
+      margin: 20px 0px;
+      font-family: 'Geologica', sans-serif;  
+      font-size: 2vh;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+  }
+  
+  .fix_form_padding {
+    padding-bottom: 20px;
+  }
+  
+  .form_signup input, .form_signup textarea, .form_signup select {
+      border-radius: 5px;
+      padding: 20px;
+      text-align: center;
+      border: 0.5px solid black;
+      width: 100%;
+      transition: transform 1s;
+  }
+  
+  .form_signup input:focus, .form_signup textarea:focus, .form_signup select:focus {
+      background-color: rgb(210, 240, 253);
+      transform: scale(1.1);
+  }
+  
+  .form_signup textarea {
+      margin: 10px 0px 30px 0px;
+      width: 100%;
+      resize: vertical;
+  }
+  
+  #selected-champions1,
+  #selected-champions2,
+  #selected-champions3,
+  #selected-agents1,
+  #selected-agents2,
+  #selected-agents3
+    {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  #send-button {
+      background-color: rgb(43, 121, 199);
+      color: white;
+      font-size: 3vh;
+      font-family: 'Geologica', sans-serif;
+      width: 100%; 
+      border: 0.5px solid black;
+      padding: 10px 0px;
+    }
+  
+    #send-button:hover {
+      background-color: rgba(43, 121, 199,0.7);
+    }
+  
+  
+    #selected-roles-valorant,
+    #selected-ranks-valorant,
+    #selected-ranks-lol,
+    #selected-roles  {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    #search {
+      padding: 5px 0px;
+    }
+    
+    #main {
+      padding: 10px 0px;
+    }
+  
+    #searchValorant {
+      padding: 5px 0px;
+    }
+    
+    #main_Valorant {
+      padding: 10px 0px;
+    }
+  
+    label[for="main1"],
+    label[for="main2"],
+    label[for="main3"],
+    label[for="main_valorant1"],
+    label[for="main_valorant2"],
+    label[for="main_valorant3"] {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 2vh;
+    }
+  
+    label[for="account_lol"],
+    label[for="account_valorantt"] {
+      display: block;
+      margin-bottom: 20px;
+    }
+  
+    .button-remove {
+      padding: 10px;
+      border: 1px solid #cb5242;
+      color: #cb5242;
+      border-radius: 20px;
+    }
+  
+    .button-remove:hover {
+      border: 1px solid white;
+      color: white;
+      background-color: #cb5242;
+    }
+  
+    .form_signup h2 {
+      font-size: 3vh;
+      font-family: 'Geologica', sans-serif;
+    }
+  
+    #title_form_login {
+      font-size: 3vh;
+    }
+
+    #popupMain1,
+    #popupMain2,
+    #popupMain3 {
+      display: none;
+      z-index: 100;
+      position: relative;
+      background-color: rgb(255, 255, 255);
+      top: 50%;
+      width: 100%;
+      height: fit-content;
+      max-height: 500px;
+      overflow: scroll;
+      border-radius: 50px;
+    }
+
+    #popupMain1.open,
+    #popupMain2.open,
+    #popupMain3.open {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .main1Ul li {
+      display: none;
+    }
+
+    .main1Ul {
+      margin-bottom: 20px;
+    }
+
+    .main1Ul img {
+      width: 50px;
+      height: fit-content;
+    }
+
+    #main1 {
+      z-index: 1000;
+      position: absolute;  
+    }
+
+    #btnMain1,
+    #btnMain2,
+    #btnMain3 {
+      background-color: rgb(161, 41, 41);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 7px 12px;
+      margin-bottom: 10px;
+    }
+
+    #search1,
+    #search2,
+    #search3 {
+      width: 50%;
+    }
+  
+    .google_needed {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .google_needed h2 {
+      font-family: 'Geologica', sans-serif;   
+      font-size: 4vh;
+      padding: 30px;
+    }
+  
+    #lol-fields,
+    #valorant-fields {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+  
+    .user_page {
+      padding: 50px;
+      background-color: rgb(245, 245, 245);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+  
+    .user_page_picture {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  
+    #image_users {
+      height: 200px;
+      width: 200px;
+      border: 0.5px solid;
+      margin-left: 20px;
+      border-radius: 1000px;
+    }
+  
+    #user_page_username {
+      font-family: 'Geologica', sans-serif;
+      font-size: 7vw;
+    }
+  
+    .user_page_update {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(245, 245, 245);
+      width: 95%;
+    }
+  
+    .user_page_update_name {
+      text-align: center;
+      width: 100%;
+    }
+  
+    .user_page_main_content_row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+    }
+  
+    .user_page_update_row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding-top: 20px;
+      width: 100%;
+    }
+  
+    .user_page_update_row a {
+      text-decoration: none;
+    }
+  
+    .user_page_update_row a:hover {
+      color: red;
+    }
+  
+  
+    .user_page_picture {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+  
+    .user_page_main_league,
+    .user_page_main_valorant {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding-top: 0.5vh;
+    }
+  
+    #popup_user_picture {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 9999;
+      display: none;
+  }
+  
+  /* Style pour le bouton de fermeture */
+  #closeButton_user_picture {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      color: #fff;
+      background-color: red;
+      border: none;
+      border-radius: 50%;
+      padding: 5px;
+      cursor: pointer;
+  }
+  
+  #closeButton_social_links {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #fff;
+    background-color: red;
+    border: none;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .social_picture {
+    transition: transform 2s;
+  }
+  
+  .social_picture:hover {
+    transform: scale(1.5);
+  }
+  
+  
+  .btn_user_updates {
+    background:    #cb5242;
+    border-radius: 11px;
+    width: 150px;
+    height: 50px;
+    color:         #ffffff;
+    display:       inline-block;
+    font:          normal bold 1vh/1 "Open Sans", sans-serif;
+    text-align:    center;
+    border: none;
+    text-shadow: 0.2px 0.2px 0.5px black;
+    transition: transform 2s;
+  }
+  
+  
+  .btn_user_updates:hover {
+    background:    rgba(203, 104, 66,0.9);
+    transform: scale(1.5);
+    margin: 20px;
+  }
+  
+  .chat_friend_btn {
+    background:    #93c47d;
+    border-radius: 11px;
+    padding:       7px 15px;
+    color:         #ffffff;
+    display:       inline-block;
+    font:          normal bold 20px/1 "Open Sans", sans-serif;
+    text-align:    center; 
+    border: none;
+    transition: all 2s;
+  }
+  
+  .chat_friend_btn:hover {
+    transform: scale(1.5);
+    margin-bottom: 20px;
+  
+  }
+  
+  
+  
+    .user_page_main_content {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      background-color: rgb(245, 245, 245);
+      width: 95%;
+      gap: 50px;
+    }
+  
+    .league_of_legends_user {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .league_of_legends_user_column {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    #league_champions_user {
+      border-radius: 1000px;
+      display: flex;
+      flex-direction: column;
+      width: 5vh;
+      height: auto;
+    }
+  
+  
+    .about_you_users p {
+      font-size: 1.5vh;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  
+    #no_display_phone {
+      color: #504e4e;
+    }
+  
+    #title_generalbox {
+      font-size: 3vh;
+      font-family: 'Geologica', sans-serif;
+      color: #cb5242;
+      padding-left: 20px;
+      text-shadow: 0.5px 0.5px 1px black;
+    }
+  
+    #age_user {
+      font-family: 'Geologica', sans-serif;
+      font-size: 2vh;  
+    }
+  
+    .friend_request_ctn {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  
+    .friend_request_ctn_btn {
+      display: flex;
+      gap: 10px;
+    }
+  
+    .lookingfor_box {
+      padding: 10px 20px;
+      background: white;
+      margin-top: 20px;
+      width: 40%;
+      border-radius: 20px;
+    }
+  
+    .general_box {
+      padding: 10px 20px;
+      background: white;
+      margin-top: 20px;
+      width: 40%;
+      border-radius: 20px;
+    }
+  
+    .chat_box {
+      padding: 10px 20px;
+      background: white;
+      margin-top: 20px;
+      width: 40%;
+      border-radius: 20px;
+      margin-bottom: 40px;
+    }
+  
+    #message_text {
+      width: 95%;
+      border: 2px solid rgb(36, 34, 34);
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 50px;
+    }
+  
+    #username_message {
+      padding-top: 20px;
+    }
+  
+    .message-sender {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 5px;
+    }
+  
+    .button_swiping {
+      border: none;
+      background-color: white;
+      border-radius: 5px;
+    }
+    
+    .message-receiver {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 5px;
+    }
+  
+    span.chat-name a {
+      text-decoration: none;
+      color: black;
+    }
+  
+    span.chat-name {
+      transition: transform 1s;
+    }
+  
+    span.chat-name {
+      transform: scale(1.3);
+    }
+    
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+  
+    #submit_chat {
+     width: 30%; 
+     margin: 10px;
+     border: 0.5px solid black;
+     background-color: white;
+     padding: 10px 0;
+     display: none;
+    }
+  
+    .reply-box {
+      text-align: center;
+    }
+  
+    .messages-container {
+      padding: 10px;
+      height: 60vh;
+      overflow-y: scroll;
+    }
+  
+    .friendrequest_box {
+      padding: 10px 20px;
+      background: white;
+      margin-top: 20px;
+      width: 40%;
+      border-radius: 20px;
+    }
+  
+    .main_box {
+      width: 100%;
+      padding: 10px 0;
+      background: white;
+      border-radius: 20px;
+    }
+  
+    .box_league_account {
+      width: 50%;
+      background-color: rgb(255, 253, 253);
+    }
+  
+    .box_league_account_main_row {
+      display: flex;
+      flex-direction: row;
+      gap: 5vh;
+    }
+  
+    .box_league_account_main_row_column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 10px;
+    }
+  
+    #unread_message {
+      background-color: rgb(202, 69, 69);
+      border-radius: 50px;
+      border: none;
+      color: white;
+      position: absolute;
+      z-index: 2;
+    }
+  
+    .chat-link-relative {
+      position: relative;
+      right: 40px;
+    }
+  
+    .chat-link {
+      position: fixed;
+      right: 40px;
+    }
+  
+    .chat-link a {
+      display: inline-block;
+      padding: 2px 5px;
+      background-color: rgb(189, 23, 23);
+      font-family: 'Geologica', sans-serif;
+      color: white;
+      font-size: 1.5vh;
+      text-decoration: none;
+      border-radius: 50px;
+    }
+  
+    #profilepicture_lol {
+      width: 50px;
+      height: 50px;
+      margin: 10px;
+      border-radius: 50px;
+    }
+  
+    .chat-interface {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f6f2f2;
+      min-height: 90vh;
+    }
+    
+    .friend-list {
+      width: 100%;
+      background-color: #f2f2f2;
+      padding: 10px;
+    }
+    
+    .friend {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    
+    .friend-avatar img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    
+    .friend-name {
+      font-weight: bold;
+    }
+    
+    .friend-last-message {
+      color: #888888;
+    }
+    
+    .chat-preview {
+      flex-grow: 1;
+      background-color: #ffffff;
+      padding: 10px;
+    }
+  
+    .chat-preview img{
+      width: 50px;
+      height: 50px;
+      border-radius: 500px;
+    }
+    
+    .preview-avatar img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    
+    .preview-name {
+      font-weight: bold;
+    }
+    
+    .preview-last-message {
+      color: #888888;
+    }
+  
+    .row_buttons_swipe {
+      display: flex;
+      flex-direction: row;
+      gap: 50px;
+      text-align: center;
+    }
+  
+    .row_buttons_swipe img{
+      width: 50%;
+      height: 75%;
+    }
+  
+    #accept_friend_button {
+      background:    #93c47d;
+      border-radius: 11px;
+      padding:       7px 10px;
+      color:         #ffffff;
+      display:       inline-block;
+      font:          normal bold 20px/1 "Open Sans", sans-serif;
+      text-align:    center; 
+      border: none;
+    }
+  
+    #refuse_friend_button {
+      background:    #e06666;
+      border-radius: 11px;
+      padding:       7px 10px;
+      color:         #ffffff;
+      display:       inline-block;
+      font:          normal bold 20px/1 "Open Sans", sans-serif;
+      text-align:    center;  
+      border: none;
+    }
+  
+    .timestamp {
+      font-size: 1.5vh;
+    }
+  
+    .strong_text {
+      font-size: 2.2vh;
+      font-family: 'Geologica', sans-serif;
+    }
+  
+    #last-message {
+      font-family: Arial, Helvetica, sans-serif;
+      word-wrap: break-word;
+    }
+  
+    .username_chat_friend {
+      text-decoration: none;
+      color: black;
+    }
+  
+    .username_chat_friend:hover {
+      color: red;
+    }
+  
+    .popup-content {
+      padding: 20px;
+    }
+  
+    .confirmation-button {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  
+    #confirmationPopup {
+      gap: 20px;
+    }
+  
+    .blocked-users-image {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  
+  
+  /* DARK MODE */
+  
+  .dark-mode .user_page {
+    background-color: var(--dark-grey);
+  }
+    
+  .dark-mode .user_page_update {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .user_page_main_content {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .user_page_main_content_row {
+    background-color: var(--dark-ligher-grey);
+    border-radius: 20px;
+  }
+  
+  .dark-mode .general_box {
+    background-color: var(--dark-ligher-grey);
+    border-radius: 20px;
+  }
+  
+  
+  .dark-mode .main_box {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode p {
+    color: white;
+  }
+  
+  .dark-mode span {
+    color: white;
+  }
+  
+  .dark-mode .button_swiping {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .box_league_account_main_row {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .chat-interface {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .chat_box {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode a {
+    color: white;
+  }
+  
+  .dark-mode h2 {
+    color: white;
+  }
+  
+  .dark-mode .messages-container {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .reply-box {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .message_text {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .user_page {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .lookingfor_box {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .friendrequest_box {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .download_app {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .separator {
+    background-color: rgb(93, 83, 83);
+  }
+  
+  .dark-mode .frequently_asked_question {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .faq_row {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .faq_row_box {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .faq_row_box h3 {
+    color: white;
+  }
+  
+  .dark-mode .section_form_signup {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .form_signup {
+    background-color: var(--dark-ligher-grey);
+  }
+  
+  .dark-mode .form_signup input {
+    background-color: var(--ligher--grey);
+  }
+  
+  .dark-mode .form_signup textarea {
+    background-color: var(--ligher--grey);
+    color: white;
+  }
+  
+  .dark-mode .form_signup select {
+    background-color: var(--ligher--grey);
+    color: white;
+  }
+  
+  .dark-mode .form_signup option {
+    background-color: var(--ligher--grey);
+    color: white;
+  }
+  
+  .dark-mode .form_signup label {
+    color: white;
+  }
+  
+  .dark-mode {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .form_signup input, .dark-mode .form_signup textarea, .dark-mode .form_signup select {
+    border: 0.5px solid white;
+  }
+  
+  .dark-mode .reply-box input[type="text"]:focus,
+  .dark-mode .reply-box textarea:focus {
+    color: white; /
+  }
+  
+  .dark-mode #send-button {
+    border: 1px solid white;
+  }
+  
+  .dark-mode #no_display_phone {
+    color: rgb(218, 207, 207);
+  }
+  
+  .dark-mode .user_page_update_name {
+    color: white;
+  }
+  
+  .dark-mode span.chat-name a {
+    color: white;
+  }
+  
+  /* LIGHT MODE */
+  
+  
+  
+  /* BLOCKLIST PAGE */
+  
+  .block_user {
+    color: #e06666;
+    border: 1px solid #e06666;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+  }
+  
+  .unblock_user {
+    color: #93c47d;
+    border: 1px solid #93c47d;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+  }
+  
+  .person_button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .friend-details {
+    width: 100%;
+  }
+  
+  /* USER FLOW PAGE */
+  
+  .userflow {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .userflow > h2 {
+    padding: 20px;
+    font-family: sans-serif;
+  }
+  
+  .userflow > h3 {
+    padding: 20px;
+    font-family: sans-serif;
+  }
+  
+  .userflow > h4 {
+    padding: 15px;
+    font-family: sans-serif;
+  }
+  
+  .userflow > p {
+    padding: 15px;
+    font-family: sans-serif;
+  }
+  
+  .userflow > h1 {
+    padding: 30px;
+    font-family: sans-serif;
+    color: rgb(164, 51, 25);
+  }
+  
+
+
+
+/* HEADER FOOTERS */
+
+
+.logo_ursg {
+    transition: transform 0.5s;
+}
+
+.logo_ursg:hover {
+    transform: scale(1.2);
+}
+
+header button {
+    transition: transform 1s;
+}
+
+header button:hover {
+    transform: scale(1.1);
+}
+
+nav img {
+    transition: transform 1s;
+}
+
+nav .scale:hover {
+    transform: scale(1.1);
+}
+
+.main_section {
+    background-size: 100% 100%;
+    color: white;
+}
+
+.main_section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: fit-content;
+    pointer-events: none;
+}
+
+
+.top_main_section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.top_main_section img {
+    width: 200px;
+    height: 200px;
+}
+
+.top_right_main_section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+
+.top_right_main_section a{
+    font-size: 2em;
+    text-decoration: none;
+    color: white;
+    font-family: 'Rubik', sans-serif;
+    text-shadow: 1px 1px 2px black;
+    flex: 1;
+}
+
+.signup_button {
+background:    #ffffff;
+border-radius: 1000px;
+border: none;
+width: fit-content;
+height: 50px;
+color:         #666666;
+display:       inline-block;
+font:          normal bold 15px/1 "Open Sans", sans-serif;
+text-align:    center;
+font-size: 2vh;
+padding:       10px 25px;
+white-space: nowrap;
+cursor: pointer;
+}
+
+.signup_button:hover {
+    width: fit-content;
+    height: 75px;
+    background:    rgba(255, 255, 255,0.7);
+}
+
+.social-button_dialog {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 100px;
+  }
+
+  .social_buttons2 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .social-button_dialog:hover {
+    background-color: #d1cccc;
+  }
+
+  dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+  }
+
+
+  dialog h2 {
+    font-size: 2em;
+    font-family: 'Geologica', sans-serif;    
+  }
+
+  dialog p {
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;    
+  }
+
+  .download_app_dialog {
+    display: flex;
+    flex-direction: column;
+    height: 10vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0px;
+}
+
+.download_app_dialog_logos {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.download_app_dialog p {
+    font-size: 1.5em;
+    font-family: 'Geologica', sans-serif;
+    padding-left: 20px;
+    color: rgb(41, 41, 41);
+    text-shadow: 0.5px 0.5px 1px rgb(0, 0, 0);
+}
+
+#cancelBtn {
+    padding: 10px 20px;
+    background: rgb(213, 60, 60);
+    color: white;
+    border-radius: 50px;
+    border: none;
+}
+
+#cancelBtn:hover {
+    background: rgb(146, 27, 27);
+}
+  
+  .google-logo {
+    width: 24px; 
+    margin-right: 10px; 
+  }
+  
+  .button-text {
+    font-size: 14px; 
+  }
+
+
+
+.mid_main_section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.mid_main_section p {
+    font-size: 7vw;
+    font-family: 'Libre Franklin', sans-serif;
+    text-shadow: 4px 4px 8px black;
+    text-align: center;
+}
+
+#mid_main_section_button {
+    padding: 20px 60px;
+    background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
+    border-radius: 50px;
+    border: none;
+    font-size: 4vh;
+    font-family: 'Rubik', sans-serif;
+    text-shadow: 1px 1px 2px black;
+    color: white;
+}
+
+#mid_main_section_button:hover {
+    background: linear-gradient(to right, rgba(159, 19, 28,0.9), rgba(233, 64, 87,0.9), rgba(242, 113, 33,0.9));
+}
+
+#mid_main_section_button2 {
+    padding: 20px 60px;
+    background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
+    border-radius: 50px;
+    border: none;
+    font-size: 4vh;
+    font-family: 'Rubik', sans-serif;
+    text-shadow: 1px 1px 2px black;
+    color: white;
+    cursor: pointer;
+}
+
+#mid_main_section_button2:hover {
+    background: linear-gradient(to right, rgba(159, 19, 28,0.9), rgba(233, 64, 87,0.9), rgba(242, 113, 33,0.9));
+}
+
+.nav_swiping {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #d8d3d3;
+    padding: 20px;
+}
+
+.nav_swiping img {
+    width: 50px;
+    height: 50px;
+    border-radius: 1000px;
+}
+
+.rotate {
+    transform: rotate(180deg);
+  }
+
+
+#open_menu_profile {
+    width: 15px;
+    height: 15px;
+}
+
+#menu_profile {
+    display: none;
+  }
+
+  #menu_profile.visible {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 20px 0px;
+    background-color: #e56f6f;
+    font-weight: 500;
+    border-bottom: 1px solid #d8d3d3; 
+  }
+  
+  #menu_profile a {
+    color: white;
+    font-size: 2vh;
+    text-decoration: none;
+    font-family: 'Geologica', sans-serif;
+    padding-left: 5px;
+    text-shadow: 0.5px 0.5px 1px black;
+  }
+
+  .menu-option {
+    transition: transform 1s;
+  }
+
+  .menu-option:hover {
+    transform: scale(1.3);
+  }
+
+  #menu_profile a:not(:last-child) {
+    margin-bottom: 5px;
+  }
+  
+  #menu_profile hr {
+    display: none;
+    border: none;
+    margin: 5px 0 0 0;
+  }
+
+
+/* FOOTER */
+
+.footer_black {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 0;
+    background: rgb(66, 64, 64);
+    color: white;
+    text-shadow: 0.5px 0.5px 1px black;
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    overflow: hidden;
+}
+
+.footer_grey {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 0;
+    background: #e74057;
+    color: white;
+    text-shadow: 0.5px 0.5px 1px rgb(255, 255, 255);
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    overflow: hidden;
+}
+
+.top_footer, .mid_footer, .bot_footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.social_footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;    
+}
+
+
+.mid_footer a {
+    text-decoration: none;
+    color: white;
+}
+
+.mid_footer a:hover {
+    text-decoration: underline white;
+}
+
+
+.bot_footer a {
+    text-decoration: none;
+    color: white;
+}
+
+.bot_footer a:hover {
+    text-decoration: underline white;
+}
+
+#signup_button {
+    display: inline-block;
+    font-size: 2vh;
+    background:    #ffffff;
+    border-radius: 1000px;
+    border: none;
+    color:         #666666;
+    display:       inline-block;
+    font:          normal bold "Open Sans", sans-serif;
+    text-align:    center;
+    width: fit-content;
+    height: 50px;
+    padding:       10px 30px;
+    cursor: pointer;
+}
+
+#signup_button:hover {
+    background:    rgba(255, 255, 255,0.7);
+    width: fit-content;
+}
+
+.chat_nav {
+    position: relative;
+}
+
+/* DARK MODE */
+
+.toggle-container {
+    width: 100px;
+    height: 50px;
+    background-color: #ccc;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .toggle-button {
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.3s;
+  }
+
+  .dark-mode .toggle-container {
+    background-color: var(--dark-grey);
+  }
+  
+  .dark-mode .toggle-button {
+    transform: translateX(50px);
+    background-color: #ddd; /* Ajout de la couleur de fond pour le mode sombre */
+  }
+  
+  .light-mode .toggle-container {
+    background-color: #ccc; /* Couleur de fond pour le mode clair */
+  }
+
+
+/* HEADER DARK MODE */
+
+.dark-mode .nav_swiping {
+    background-color: #3d3a3a;
+}
+
+.dark-mode #signup_button {
+    background:    var(--dark-ligher-grey);
+    color: white;
+}
+
+.dark-mode .signup_button {
+    background:    var(--dark-ligher-grey);
+    color: white;
+}
+
+.dark-mode #fix_mobile_signup {
+    color: white;
+  }
+
+.dark-mode  #menu_profile.visible {
+ background-color: #504c4c;   
+ border-bottom: 1px solid #3d3a3a; 
+}
+
+/* FOOTER DARK MODE */
+
+.dark-mode .footer_grey {
+    background: #51040e;
+}
+
+.dark-mode dialog {
+    background-color: var(--dark-ligher-grey);
+}
+
+.dark-mode .download_app_dialog p {
+    color: rgb(255, 255, 255);
+}
+
+@media only screen and (max-width: 900px) {
+  
+    .faq_row {
+      flex-direction: column;
+    }
+
+    .main_section {
+      background: url('../images/mobile_background.png');
+      background-repeat: no-repeat;
+  }
+
+  .download_app {
+    width: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+.download_app p {
+    font-size: 1.3em;
+    padding-left: 15px;
+}
+  
+  #apple_logo, #google_logo {
+    max-width: 100%;
+    height: auto;
+    width: 130px;
+  }
+
+  .form_signup {
+    width: 70%;
+}
+
+.user_page_main_league {
+  padding-left: 0;
+}
+
+.about_you_users {
+  padding-left: 0;
+}
+
+#title_generalbox {
+  padding-left: 0;
+}
+
+.user_page_update {
+  padding-left: 0;
+  margin-top: 15px;
+}
+
+#user_page_username {
+  font-size: 25px;
+}
+
+.user_page {
+  padding: 10px;
+}
+
+.user_page_picture {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+
+#image_users {
+  max-width: 300px;
+  max-width: 300px;
+  min-width: 150px;
+  min-width: 150px;
+  border: 0.5px solid;
+  margin-left: 20px;
+  border-radius: 1000px;
+}
+
+.chat_box {
+  width: 80%;
+
+}
+
+.user_page_main_content {
+padding: 0 0 0 0;
+width: 100%;
+align-items: center;
+flex-direction: column;
+gap: 0px;
+}
+
+.user_page_update_name {
+  padding-left: 5%;
+  padding-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+#no_display_phone {
+  display: none;
+}
+
+.league_of_legends_user {
+  gap: 10px;
+}
+
+.btn_user_updates {
+  width: 75px;
+  height: 40px;
+}
+
+
+.lookingfor_box {
+  width: 80%;
+}
+
+.general_box {
+  width: 80%;
+}
+
+.friendrequest_box {
+  width: 80%;
+}
+
+.friend-list {
+  width: 30%;
+}
+
+#search1, #search2, #search3, #searchValorant1, #searchValorant2, #searchValorant3 {
+  display: none;
+}
+
+  }
+
+  @media only screen and (max-width: 600px) {
+
+    .box_league_account_main_row {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .main_section {
+      background: url('../images/smobile_background.png');
+      background-repeat: no-repeat;
+  }
+
+}
+
+
+  @media only screen and (max-width: 400px) {
+
+    .box_league_account_main_row {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+}
+
+
+
+@media only screen and (max-width: 900px) {
+
+    #mid_main_section_button {
+        background: linear-gradient(to right, rgb(19, 80, 159), rgb(77, 170, 210), rgb(33, 232, 242));
+        border: 0.5px solid white;
+    }
+    
+    #mid_main_section_button:hover {
+        background: linear-gradient(to right, rgba(19, 80, 159,0.9), rgba(77, 170, 210,0.9), rgba(33, 232, 242,0.9));
+
+  }
+
+  #mid_main_section_button2 {
+    background: linear-gradient(to right, rgb(19, 80, 159), rgb(77, 170, 210), rgb(33, 232, 242));
+    border: 0.5px solid white;
+    padding: 15px 30px;
+}
+
+#mid_main_section_button2:hover {
+    background: linear-gradient(to right, rgba(19, 80, 159,0.9), rgba(77, 170, 210,0.9), rgba(33, 232, 242,0.9));
+
+}
+
+.mid_main_section p {
+    font-size: 3em;
+}
+
+  .signup_button {
+padding: 5px 8px; 
+font-size: 15px;
+width: fit-content;
+height: 40px;
+}
+
+#fix_mobile_signup {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    padding: 7px 10px;    
+}
+
+.footer_black, .footer_grey {
+    font-size: 0.8em;
+    flex-wrap: wrap;
+}
+
+.top_footer, .social_footer, .mid_footer, .bot_footer {
+    flex-basis: 50%;
+}
+
+.footer_black .top_footer,
+.footer_black .mid_footer,
+.footer_grey .top_footer,
+.footer_grey .mid_footer {
+    padding-bottom: 30px;
+}
+
+
+footer img {
+    width: 40px;
+    height: 40px;
+}
+
+#signup_button {
+    padding: 10px 30px;
+    font-size: 1.5vh;
+    width: fit-content;
+    height: 70px;
+}
+
+.top_main_section {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.top_main_section img {
+    width: 100px;
+    height: 100px;
+}
+
+.nav_swiping {
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.top_right_main_section {
+    gap: 10px;
+}
+
+.toggle-container {
+    background-color: var(--dark-grey);
+    border-radius: 25px; /* Réduisez le rayon de la bordure */
+    width: 40px;
+    height: 15px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .toggle-button {
+    width: 20px; /* Réduisez la largeur du bouton */
+    height: 15px; /* Réduisez la hauteur du bouton */
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .dark-mode .toggle-button {
+    transform: translateX(20px);
+  }
+
+  #open_menu_profile {
+    width: 25px;
+    height: 25px;
+}
+
+
+}
+
+@media only screen and (max-width: 400px) {
+
+    .nav_swiping img {
+        width: 35px;
+        height: 35px;
+    }
+
+    #open_menu_profile {
+        width: 20px;
+        height: 20px;
+    }
+
+    #unread_message {
+        padding: 1px 4px;
+    }
+
+    #menu_profile a {
+        font-size: 1.5vh;
+    }
+
+
+}
