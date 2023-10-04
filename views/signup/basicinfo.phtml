@@ -1,0 +1,48 @@
+<form class="form_signup" method="post" action="index.php?action=basicinfo">
+
+    <?php if (isset($_GET['error'])) : ?>
+    <p class="errorsForm"><?= $_GET['error'] ?></p>
+    <? endif ?>
+
+    <label for="uid">Username</label>
+    <input type="text" id="username" name="username" placeholder="Your username" required> 
+
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" required>
+        <option value="" disabled selected>Chose your gender...</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="nonbinary">Non binary</option>
+    </select>    
+
+    <label for="age">Age</label>
+    <input type="text" id="age" name="age" placeholder="Your age.." maxlength="2" required>
+
+    <label for="kindofgamer">What kind of gamer are you?</label>
+    <select id="kindofgamer" name="kindofgamer" required>
+        <option value="" disabled selected>Chose what kind you are...</option>
+        <option value="chill">Chill / Normal games</option>
+        <option value="competition">Competition / Ranked</option>
+        <option value="competition and chill">Competition/Ranked and chill</option>
+    </select>
+
+    <label for="game">Game</label>
+        <p>You can add another game later</p>
+    <select id="game" name="game" required>
+        <option value="" disabled selected>Chose your game...</option>
+        <option value="valorant">Valorant</option>
+        <option value="leagueoflegends">League of Legends</option>
+        <option value="both">Both</option>
+    </select>
+
+    <label for="short_bio">Short bio about you</label>
+    <textarea type="text" id="short_bio" name="short_bio" placeholder="Been playing League since.. etc." required></textarea>
+
+    <?php if($this->isConnectGoogle()) : ?>
+        <input type="hidden" name="googleId" value="<?= $_SESSION['google_userId'] ?>">  
+    <?php endif ; ?>
+
+    <input name="submit" id="send-button" type="submit" value="Send">
+</form>
+
+<script type="module" src="public/js/basicinfo.js"></script>
