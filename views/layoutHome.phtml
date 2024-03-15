@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title><?php echo $page_title; ?></title>
+    <meta property="og:title" content="URSG - Your Soulmate Gamer">
+    <meta property="og:description" content="It is time to find your soulmate. And there is no better place than here.">
+    <meta property="og:url" content="https://ur-sg.com/"> 
+    <meta property="og:image" content="public/images/logo_ursg.png">
+    <meta name="description" content="URSG - Your Soulmate Gamer is a website to help you spend good quality time with the right person.">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="public/css/style.css" rel="stylesheet">
+    <link rel="canonical" href="<?php echo $current_url; ?>" />
+    <link rel="icon" type="image/png" href="public/images/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/images/favicon/favicon-32x32.png"> 
+    <link rel="icon" type="image/png" sizes="16x16" href="public/images/favicon/favicon-16x16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica&display=swap" rel="stylesheet">
+    <meta property="og:type" content="website">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ur-sg.com/">
+    <meta property="twitter:title" content="URSG - Your Soulmate Gamer">
+    <meta property="twitter:description" content="It is time to find your soulmate. And there is no better place than here."> 
+    <meta property="twitter:image" content="public/images/logo_ursg.png">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+</head>
+
+
+<header>
+    <section class="main_section" proload>
+        <div class="overlay"></div>
+        <!-- Top of website start -->
+        <div class="top_main_section"> 
+            <div class="top_left_main_section">
+                <a href="index.php">
+                    <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
+                </a>
+            </div> 
+            <!-- Nav of website start here -->
+            <nav>
+                <div class="top_right_main_section">
+                    <div class="toggle-container">
+                            <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+                    </div>
+
+                    <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
+                    <?php if($this->isConnectWebsite()) :?>
+                            <a href="index.php?action=logout"><!-- Log out button -->
+                                <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                            </a>
+                            <a href="index.php?action=userpage&username=<?= ucfirst($user['usersUid'])?>"> <!-- User page / name = username -->
+                                <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['usersUid']) ?></button>
+                            </a>
+                        <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
+                            <a href="index.php?action=logout"> <!-- Log out button -->
+                                <button id="fix_mobile_signup" class="signup_button" title="Log in" >Log out</button>
+                            </a>
+                            <a href="index.php?action=userpage&username=<?= ucfirst($user['usersUid'])?>"> <!-- User page / Diff name-->
+                                <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
+                            </a>
+                        <?php else : ?>
+                            <button title="Sign up/Sign in" id="signup_button"> Sign up/Log in</button>
+                        <?php endif; ?>
+                </div>
+            </div>
+
+                <div class="mid_main_section">
+                    <p><?= $title ?></p>
+                    <br><br><br><br>
+
+                    <?php if ($this->isConnectGoogle() && $this->isConnectWebsite()) : ?>
+                        <a href="swiping_main.php">
+                            <button id="mid_main_section_button2">Swipe now</button>
+                        </a>
+                    <?php else : ?>
+                        <button id="mid_main_section_button">Join now</button>
+                    <?php endif; ?>
+                </div>
+            </nav>           
+    </section>
+
+    <!-- POP UP FOR LOG IN -->
+    <dialog id="favDialog">
+        <!-- Display of Log in button, cancel and terms of use -->
+        <section class="loginsignin">
+            <h2>Sign up/Log in</h2><br><br>
+                <p>When clicking on sign in,<br> you agree to <a href="">our terms of use</a>.</p><br>
+                <script src="public/js/ajaxGoogle.js"></script>
+            <div class="social_buttons2">
+                <div id="buttonDiv"></div>
+            </div><br>
+            <!-- Get out of pop up -->
+            <button id="cancelBtn">Cancel</button>
+            <br><br>
+        </section>
+
+        <!-- Display of buttons to download app on App store/Google Store -->
+        <section class="download_app_dialog">  
+            <p>Download the app</p>
+            <div class="download_app_dialog_logos">
+                <a href=""><img id="apple_logo" src="public/images/appstore.png" alt="appstore"></a>
+                <a href=""><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+            </div>  
+        </section>
+    </dialog>
+</header>
+
+<body>
+    <main>
+        <?php if(isset($_GET['message'])) :?>
+            <span class="form-error"><?= $_GET['message'] ?></span>
+        <?php endif; ?>
+        <?php require $template.".phtml"; ?> 
+    </main>
+</body>
+
+<footer>
+    <div class="footer_black">
+        <div class="top_footer">
+            <p>Copyright © 2023 URSG</p>
+            <p>Your Soulmate gamer</p>
+        </div>
+
+        <div class="mid_footer">
+            <a href="mentionslegales">Privacy Policy</a>
+            <a href="sitemap.php"> Site map</a>
+        </div>
+
+        <div class="social_footer">
+            <a href="#">
+                <img src="public/images/discord2.png" alt="logo discord"></a>
+            <a href="#">
+                <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
+        </div>
+
+        <div class="bot_footer">
+            <p>Made by :  <a href="https://www.dosylia.com/">Dosylia</a></p>
+            <p>Artwork by :  <a href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p>       
+        </div>
+    </div>   
+</footer>
+
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="public/js/dialogGoogle.js"></script>
+
