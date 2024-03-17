@@ -30,6 +30,7 @@ class GoogleUserController
     public function __construct()
     {
         $this -> googleUser = new GoogleUser();
+        $this -> user = new User();
     }
 
     public function homePage() {
@@ -79,17 +80,35 @@ class GoogleUserController
     public function pageSignUp()
     {
 
-        $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
-        
-        if($this->isConnectGoogle() && !isset($googleUser['user_username']))  //ADD LATER THIS SECURITE
-        {   
+        $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
+        $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
+
+        if ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "leagueoflegends") {
+            // Code block 1: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
+            $template = "views/signup/leagueoflegendsuser";
+            $title = "More about you";
+            $page_title = "URSG - Sign up";
+            require "views/layoutHome.phtml";
+        } elseif ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "valorant"){
+                // Code block 2: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
+                $template = "views/signup/valorant";
+                $title = "More about you";
+                $page_title = "URSG - Sign up";
+                require "views/layoutHome.phtml";
+        } elseif ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
+                // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for both games
+                $template = "views/signup/both";
+                $title = "More about you";
+                $page_title = "URSG - Sign up";
+                require "views/layoutHome.phtml";
+        } elseif ($this->isConnectGoogle() && !isset($googleUser['user_username'])) {
+            // Code block 4: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
             require "views/layoutHome.phtml";
-        }
-        else
-        {
+        } else {
+            // Code block 5: Redirect to index.php if none of the above conditions are met
             header("Location: index.php");
             exit();
         }
@@ -129,7 +148,8 @@ class GoogleUserController
             if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
             {
 
-                if (!$this->isConnectGoogle()) {
+                if (!$this->isConnectGoogle()) 
+                {
 
                     $lifetime = 7 * 24 * 60 * 60;
 

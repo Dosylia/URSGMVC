@@ -2,7 +2,7 @@ const selectedRoles = [
     { name: 'Support', image: 'images/roles/support.png' },
     { name: 'AD Carry', image: 'images/roles/adcarry.png' },
     { name: 'Mid laner', image: 'images/roles/midlaner.png' },
-    { name: 'Jungler', image: 'images/roles/jungler.png' },
+    { name: 'Jungler', image: 'images/roles/jungle.png' },
     { name: 'Top laner', image: 'images/roles/toplaner.png' },
     { name: 'Fill', image: 'images/roles/fill.png' },
   ];

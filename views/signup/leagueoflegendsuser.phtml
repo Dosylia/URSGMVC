@@ -9,7 +9,9 @@
         <button type="button" id="btnMain1">Select main 1</button>
         <div id="popupMain1">
                 <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul class="main1Ul">
+                    <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul>
         </div>
 
         <input type="hidden" id="main1" name="main1" value="">
@@ -18,7 +20,9 @@
         <button type="button" id="btnMain2">Select main 2</button>
         <div id="popupMain2">
                 <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul class="main2Ul">
+                    <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul>
         </div>
 
         <input type="hidden" id="main2" name="main2" value="">
@@ -27,116 +31,16 @@
         <button type="button" id="btnMain3">Select main 3</button>
         <div id="popupMain3">
                 <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul class="main3Ul">
+                    <?php include 'views/signup/options_champion_league.phtml' ?>
+                <ul>
         </div>
 
         <input type="hidden" id="main3" name="main3" value="">
 
 
-            <script src="public/js/champions1.js"></script>
-            <script src="public/js/champions2.js"></script>
-            <script src="public/js/champions3.js"></script>
+            <script src="public/js/champions.js"></script>
 
-            <label for="rank_lol">Your rank</label>
-        <select id="rank_lol" name="rank_lol">
-        <option value="" disabled selected>Select rank...</option>
-        <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-        <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-        <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-        <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-        <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-        <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-        <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-        <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-        <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
-        </select>
-
-        <div id="selected-ranks-lol"></div>
-
-        <script src="public/js/ranks.js"></script>
-
-        <label for="role_lol">Your role</label>
-        <select id="role_lol" name="role_lol">
-        <option value="" disabled selected>Select role...</option>
-        <option value="Support" data-image="public/images/roles/support.png">Support</option>
-        <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-        <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-        <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
-        <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-        <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-        </select>
-
-        <div id="selected-roles"></div>
-
-        <script src="public/js/roles.js"></script>
-
-        <label for="server">Select your server</label>
-            <select id="server" name="server">
-            <option value="" disabled selected>Select your server...</option>
-            <option value="euw">Europe West</option>
-                <option value="na">North America</option>
-                <option value="eune">Europe Nordic & East </option>
-                <option value="brazil">Brazil</option>
-                <option value="lan">Latin America North</option>
-                <option value="las">Latin America South</option>
-                <option value="ocenia">	Oceania</option>
-                <option value="russia">Russia</option>
-                <option value="turkey">Turkey</option>
-                <option value="japan">Japan</option>
-                <option value="korea">Korea</option>
-            </select>
-
-
-        <label for="account_lol">Link your League of Legends account, region from account must be same as one said above</label>
-        <input type="text" id="account_lol" name="account_lol" placeholder="Your LoL account username..">
-
-
-    <?php if($this->isConnectGoogle()) : ?>
-        <input type="hidden" name="googleId" value="<?= $_SESSION['google_userId'] ?>">  
-    <?php endif ; ?>
-
-    <input name="submit" id="send-button" type="submit" value="Send">
-</form>
-
-<script type="module" src="public/js/signupLol.js"></script>
-<form class="form_signup" method="post" action="index.php?action=createLeagueUser">
-
-    <?php if (isset($_GET['error'])) : ?>
-    <p class="errorsForm"><?= $_GET['error'] ?></p>
-    <? endif ?>
-
-    <h2>Pick your 3 mains</h2>
-        <label for="main1">Main 1</label>
-        <button type="button" id="btnMain1">Select main 1</button>
-        <div id="popupMain1">
-                <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
-        </div>
-
-        <input type="hidden" id="main1" name="main1" value="">
-
-        <label for="main2">Main 2</label>
-        <button type="button" id="btnMain2">Select main 2</button>
-        <div id="popupMain2">
-                <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
-        </div>
-
-        <input type="hidden" id="main2" name="main2" value="">
-
-        <label for="main3">Main 3</label>
-        <button type="button" id="btnMain3">Select main 3</button>
-        <div id="popupMain3">
-                <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search...">
-                <?php include 'views/signup/options_champion_league.phtml' ?>
-        </div>
-
-        <input type="hidden" id="main3" name="main3" value="">
-
-
-            <script src="public/js/champions1.js"></script>
-            <script src="public/js/champions2.js"></script>
-            <script src="public/js/champions3.js"></script>
 
             <label for="rank_lol">Your rank</label>
         <select id="rank_lol" name="rank_lol">
