@@ -5,6 +5,7 @@ session_start();
 use controllers\UserController;
 use controllers\GoogleUserController;
 use controllers\LeagueOfLegendsController;
+use controllers\UserLookingForController;
 
 function loadClass($class)
 {
@@ -18,6 +19,7 @@ spl_autoload_register('loadClass');
 $userController = new UserController();
 $googleUserController = new GoogleUserController();
 $leagueOfLegendsController = new LeagueOfLegendsController();
+$userLookingForController = new UserLookingForController();
 
 
 // IF AND SWITCH CASE
@@ -61,13 +63,17 @@ if (isset($_GET['action']))
             // Handle what first page sends back
             $userController->createUser();
             break;
-        case "leagueUser":
+        case "leagueuser":
             // Page of sign up for league
             $leagueOfLegendsController->pageLeagueUser();
              break;
-        case "createLeagueUser":
+        case "createleagueuser":
             // Handle League informations
             $leagueOfLegendsController->createLeagueUser();
+                break;
+        case "lookingforuserlol":
+            // Handle Looking for League informations
+            $userLookingForController->pageLookingFor();
                 break;
         default;
         break;

@@ -23,9 +23,10 @@ const options3 = document.querySelectorAll(".main3Ul li");
 document.addEventListener('DOMContentLoaded', function() {
 
 
-btnPopUp1.addEventListener("click", () => {
-  popupMain1.classList.toggle("open");
-});
+  btnPopUp1.addEventListener("click", () => {
+    popupMain1.classList.toggle("open");
+  });
+
 
 popupMain1.addEventListener("click", (e) => {
   if (e.target.tagName === "IMG") {
@@ -46,6 +47,7 @@ popupMain1.addEventListener("click", (e) => {
           btnPopUp1.style.backgroundColor = "rgb(92, 211, 79)"
           btnPopUp1.appendChild(imageElement);
           searchInput1.value = "";
+          searchInput1.focus();
           options1.forEach((option) => {
             option.style.display = "none";
           });

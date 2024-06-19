@@ -18,7 +18,7 @@ trait SecurityController
 
     public function isConnectWebsite()
     {
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['userId']))
         {
             return true;
         }

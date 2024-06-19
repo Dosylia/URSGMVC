@@ -42,7 +42,7 @@ class GoogleUserController
 
         if($this->isConnectWebsite())
         {
-            $googleUser = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
         }
         
         $template = "views/home";

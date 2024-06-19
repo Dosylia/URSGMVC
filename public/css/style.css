@@ -289,7 +289,6 @@
       display: none;
       z-index: 100;
       position: relative;
-      background-color: rgb(255, 255, 255);
       top: 50%;
       width: 100%;
       height: fit-content;
