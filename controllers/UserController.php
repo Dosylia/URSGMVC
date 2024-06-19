@@ -71,17 +71,17 @@ class UserController
                         session_start();
                     }
                     
-                    if ($this->isConnectWebsite()) {
+                        $_SESSION['userId'] = $user['user_id'];
                         $_SESSION['username'] = $user['user_username'];
                         $_SESSION['gender'] = $user['user_gender'];
                         $_SESSION['age'] = $user['user_age'];
                         $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                         $_SESSION['game'] = $user['user_game'];
-                    }
+
     
                 if($user['user_game'] === "leagueoflegends" || $user['user_game'] === "both") 
                 { 
-                    header("location:index.php?action=leagueUser&user_id=".$user['user_id']);
+                    header("location:index.php?action=leagueuser&user_id=".$user['user_id']);
                     exit();
                 }
                 else if($user['user_game'] === "valorant")
