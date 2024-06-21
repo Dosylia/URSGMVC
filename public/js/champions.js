@@ -131,7 +131,6 @@ popupMain3.addEventListener("click", (e) => {
     if (liElement) {
       const selectedText = liElement.getAttribute("value");
       inputMain3.value = selectedText;
-      btnPopUp3.textContent = "";
       if (inputMain3.value === inputMain1.value || inputMain3.value === inputMain2.value) 
       {
           inputMain3.value = "";
