@@ -33,22 +33,32 @@ class LeagueOfLegendsController
 
     public function pageLeagueUser()
     {
-        $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']); //ADD LATER THIS SECURITE, USER ID CHECK
-
-        if($this->isConnectWebsite())
-        {
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-        }
         
-        if($this->isConnectGoogle() && !isset($googleUser['user_username']))
-        {   
-            $template = "views/signup/leagueoflegendsuser";
-            $title = "More about you";
-            $page_title = "URSG - Sign up";
+        $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
+        $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
+
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
+            // Code block 1: User is connected via Google, Website and has League data, need looking for
+            $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $template = "views/signup/lookingforlol";
+            $title = "What are you looking for?";
+            $page_title = "URSG - Looking for";
             require "views/layoutHome.phtml";
-        }
-        else
-        {
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
+            // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+                $template = "views/signup/leagueoflegendsuser";
+                $title = "More about you";
+                $page_title = "URSG - Sign up";
+                require "views/layoutHome.phtml";
+        } elseif ($this->isConnectGoogle() && !isset($googleUser['user_username'])) {
+            // Code block 3: User is connected via Google but doesn't have a username
+            $template = "views/signup/basicinfo";
+            $title = "Sign up";
+            $page_title = "URSG - Sign";
+            require "views/layoutHome.phtml";
+        } else {
+            // Code block 4: Redirect to index.php if none of the above conditions are met
             header("Location: index.php");
             exit();
         }
@@ -58,6 +68,7 @@ class LeagueOfLegendsController
     {
         if (isset($_POST['submit'])) 
         {
+
             $userId = $this->validateInput($_POST["userId"]);
             $this->setUserId($userId);
             $loLMain1 = $this->validateInput($_POST["main1"]);
@@ -92,6 +103,19 @@ class LeagueOfLegendsController
 
             if ($createLoLUser)
             {
+
+                $lolUser = $this->leagueOfLegends->getLeageUserByUsername($this->getLoLAccount());
+
+                if (session_status() == PHP_SESSION_NONE) 
+                {
+                    $lifetime = 7 * 24 * 60 * 60;
+                    session_set_cookie_params($lifetime);
+                    session_start();
+                }
+                
+                    $_SESSION['lol_id'] = $lolUser['lol_id'];
+                    $_SESSION['lol_account'] = $lolUser['lol_account'];
+
                 header("location:index.php?action=lookingforuserlol");
                 exit();
             }

@@ -91,6 +91,24 @@
         <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
         </select>
 
+        <label for="role_lol">Your role</label>
+        <select id="role_lol" name="role_lol">
+        <option value="" disabled selected>Select role...</option>
+        <option value="Support" data-image="public/images/roles/support.png">Support</option>
+        <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
+        <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
+        <option value="Jungler" data-image="public/images/roles/jungle.png">Jungler</option>
+        <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
+        <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
+        </select>
+
         <div id="selected-roles"></div>
 
         <script src="public/js/roles.js"></script>
+
+        <?php if($this->isConnectWebsite()) : ?>
+        <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+    <?php endif ; ?>
+
+    <input name="submit" id="send-button" type="submit" value="Send">
+</form>

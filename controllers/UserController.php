@@ -28,6 +28,7 @@ class UserController
     {
         if (isset($_POST['submit']))
         {
+
             $googleUserId = $this->validateInput($_POST["googleId"]);
             $this->setGoogleUserId($googleUserId);
             $username = $this->validateInput($_POST["username"]);
