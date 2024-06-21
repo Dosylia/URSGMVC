@@ -27,5 +27,17 @@ trait SecurityController
             return false;
         }
     }
+
+    public function isConnectLeague()
+    {
+        if(isset($_SESSION['lol_id']))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
