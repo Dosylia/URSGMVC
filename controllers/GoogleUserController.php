@@ -72,6 +72,12 @@ class GoogleUserController
             header("Location: index.php?action=signup");
             exit();
         }
+        else if($googleUser['google_confirmEmail'] == 1 && $this->isConnectWebsite())
+        {
+            ob_start();
+            header("Location: index.php?action=signup");
+            exit();
+        }
         else
         {
             ob_start();
@@ -88,31 +94,31 @@ class GoogleUserController
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
-            $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $lolUser = $this->leagueoflegends->getLeageUserByUsername($_SESSION['lol_account']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "leagueoflegends") { 
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "leagueoflegends") { 
             // Code block 2: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
             require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "valorant") {
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "valorant") {
                 // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
                 $template = "views/signup/valorant";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && isset($secondTierUser['user_username']) && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
                 // Code block 4: User is connected via Google and username is set , but game settings not done. Redirect for both games
                 $template = "views/signup/both";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && !isset($googleUser['user_username'])) {
+        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 5: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
@@ -173,16 +179,51 @@ class GoogleUserController
                         session_start();
                     }
                     
-                    if (!isset($_SESSION['googleId'])) {
+                    if (!isset($_SESSION['googleId'])) 
+                    {
+
+                        
                         $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                         $_SESSION['full_name'] = $this->getGoogleFullName();
                         $_SESSION['google_id'] = $this->getGoogleId();
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
-                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+                        $googleUser = $this->user->getUserDataByGoogleId($this->getGoogleUserId());
+                        if ($googleUser) {
+                            $user = $this-> user -> getUserByUsername($googleUser['user_username']);
+
+                            if ($user)
+                            {
+
+                                $_SESSION['userId'] = $user['user_id'];
+                                $_SESSION['username'] = $user['user_username'];
+                                $_SESSION['gender'] = $user['user_gender'];
+                                $_SESSION['age'] = $user['user_age'];
+                                $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
+                                $_SESSION['game'] = $user['user_game'];
+
+                                $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+
+                                if ($lolUser)
+                                {
+                                    $_SESSION['lol_id'] = $lolUser['lol_id'];
+                                    $_SESSION['lol_account'] = $lolUser['lol_account'];
+                                }
+                            }
+                        }
+
                     }
     
                 }
+
+                $response = array(
+                    'message' => 'Success',
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
 
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
@@ -210,7 +251,6 @@ class GoogleUserController
                         $_SESSION['google_id'] = $this->getGoogleId();
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
-                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     }
 
                     $mail = new PHPMailer;

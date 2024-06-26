@@ -38,9 +38,9 @@ class LeagueOfLegends extends DataBase
                                             )
                                         ");
 
-        $createWebsiteUser = $query -> execute([$UserId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount]);
+        $createLeagueUser = $query -> execute([$UserId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount]);
 
-        if($createWebsiteUser)
+        if($createLeagueUser)
         {
             return true;
         }
@@ -77,6 +77,39 @@ class LeagueOfLegends extends DataBase
         if ($lolAccountTest)
         {
             return $lolAccountTest;
+        } 
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getLeageUserByUserId($userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                `lol_id`,
+                                                `user_id`,
+                                                `lol_main1`,
+                                                `lol_main2`,                                                
+                                                `lol_main3`,
+                                                `lol_rank`,
+                                                `lol_role`,
+                                                `lol_server`,
+                                                `lol_account`
+                                            FROM
+                                                `leagueoflegends`
+                                            WHERE
+                                                `user_id` = ?
+
+        ");
+
+        $query -> execute([$userId]);
+        $userIdTest = $query -> fetch();
+
+        if ($userIdTest)
+        {
+            return $userIdTest;
         } 
         else
         {

@@ -72,7 +72,7 @@ function handleCredentialResponse(response)
   }
     
     function handleError(error) {
-        console.error("Une erreur est survenue lors de la requete : "+error);
+      console.error("Une erreur est survenue lors de la requete : "+error);
     }
 
     fetchOrder(userData);

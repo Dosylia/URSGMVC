@@ -39,10 +39,8 @@
     <textarea type="text" id="short_bio" name="short_bio" placeholder="Been playing League since.. etc." required></textarea>
 
     <?php if($this->isConnectGoogle()) : ?>
-        <input type="hidden" name="googleId" value="<?= $_SESSION['google_userId'] ?>">  
+        <input type="hidden" name="googleId" value="<?= $googleUser['google_userId'] ?>">  
     <?php endif ; ?>
-
-    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
     <input name="submit" id="send-button" type="submit" value="Send">
 </form>

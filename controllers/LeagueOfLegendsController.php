@@ -40,6 +40,7 @@ class LeagueOfLegendsController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
@@ -47,10 +48,10 @@ class LeagueOfLegendsController
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-                $template = "views/signup/leagueoflegendsuser";
-                $title = "More about you";
-                $page_title = "URSG - Sign up";
-                require "views/layoutHome.phtml";
+            $template = "views/signup/leagueoflegendsuser";
+            $title = "More about you";
+            $page_title = "URSG - Sign up";
+            require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && !isset($googleUser['user_username'])) {
             // Code block 3: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
