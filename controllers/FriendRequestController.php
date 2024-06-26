@@ -23,11 +23,19 @@ class FriendRequestController
 
     public function pageswiping()
     {
-        $user = $this-> user -> getUserByUsername($_SESSION['username']);
-        $template = "views/swiping/swiping_main";
-        $title = "Swipe test";
-        $page_title = "URSG - Swiping";
-        require "views/layoutHome.phtml";
+        if ($this->isConnectWebsite() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $template = "views/swiping/swiping_main";
+            $title = "Swipe test";
+            $page_title = "URSG - Swiping";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
+        }
     }
 
 }
