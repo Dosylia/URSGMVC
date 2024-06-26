@@ -5,6 +5,7 @@ namespace controllers;
 use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
+use models\UserLookingFor;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -20,6 +21,7 @@ class GoogleUserController
     private GoogleUser $googleUser;
     private User $user;
     private LeagueOfLegends $leagueoflegends;
+    private UserLookingFor $userlookingfor;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -34,6 +36,7 @@ class GoogleUserController
         $this -> googleUser = new GoogleUser();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> userlookingfor = new UserLookingFor();
     }
 
     public function homePage() {
@@ -61,7 +64,7 @@ class GoogleUserController
 
         if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
         {
-            $template = "views/waitingEmail";
+            $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
             $page_title = "URSG - Confirm Mail";
             require "views/layoutHome.phtml";
@@ -92,40 +95,47 @@ class GoogleUserController
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
         $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
-            // Code block 1: User is connected via Google, Website and has League data, need looking for
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+            // Code block 1: User is connected via Google, Website and has League data and looking for data
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $template = "views/swiping/swiping_main";
+            $title = "Swipe test";
+            $page_title = "URSG - Swiping";
+            require "views/layoutSwiping.phtml";
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
+            // Code block 2: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueoflegends->getLeageUserByUsername($_SESSION['lol_account']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "leagueoflegends") { 
-            // Code block 2: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
+            // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
             require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "valorant") {
-                // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
+                // Code block 4: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
                 $template = "views/signup/valorant";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
-                // Code block 4: User is connected via Google and username is set , but game settings not done. Redirect for both games
+                // Code block 5: User is connected via Google and username is set , but game settings not done. Redirect for both games
                 $template = "views/signup/both";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
-            // Code block 5: User is connected via Google but doesn't have a username
+            // Code block 6: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
             require "views/layoutHome.phtml";
         } else {
-            // Code block 6: Redirect to index.php if none of the above conditions are met
+            // Code block 7: Redirect to index.php if none of the above conditions are met
             header("Location: index.php");
             exit();
         }
@@ -209,6 +219,13 @@ class GoogleUserController
                                 {
                                     $_SESSION['lol_id'] = $lolUser['lol_id'];
                                     $_SESSION['lol_account'] = $lolUser['lol_account'];
+
+                                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+                                    if ($lfUser)
+                                    {
+                                        $_SESSION['lf_id'] = $lfUser['lf_id'];                                       
+                                    }
                                 }
                             }
                         }

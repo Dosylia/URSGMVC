@@ -56,6 +56,7 @@ class UserLookingFor extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
+                                                `lf_id`,
                                                 `user_id`,
                                                 `lf_gender`,
                                                 `lf_kindofgamer`,
@@ -84,5 +85,4 @@ class UserLookingFor extends DataBase
             return false;
         }
     }
-
 }
