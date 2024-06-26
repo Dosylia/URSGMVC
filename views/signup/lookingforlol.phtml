@@ -1,11 +1,11 @@
-<form class="form_signup" method="post" action="index.php?action=lookingforuserlol">
+<form class="form_signup" method="post" action="index.php?action=createlookingfor">
 
 <?php if (isset($_GET['error'])) : ?>
     <p class="errorsForm"><?= $_GET['error'] ?></p>
     <? endif ?>
 
     <label for="gender">Gender you are looking for</label>
-    <select id="gender" name="lf_gender" required>
+    <select id="gender" name="gender" required>
     <option value="" disabled selected>Choose a gender...</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
@@ -15,7 +15,7 @@
     </select>
 
         <label for="kindofgamer">What kind of gamer are you looking for?</label>
-    <select id="kindofgamer" name="lf_kindofgamer" required>
+    <select id="kindofgamer" name="kindofgamer" required>
     <option value="" disabled selected>Chose what kind you are looking for...</option>
         <option value="chill">Chill / Normal games</option>
         <option value="competition">Competition / Ranked</option>
@@ -33,7 +33,7 @@
                 <ul>
         </div>
 
-        <input type="hidden" id="main1" name="lf_lolmain1" value="">
+        <input type="hidden" id="main1" name="main1" value="">
 
         <label for="main2">Main 2</label>
         <button type="button" id="btnMain2">Select main 2</button>
@@ -44,7 +44,7 @@
                 <ul>
         </div>
 
-        <input type="hidden" id="main2" name="lf_lolmain2" value="">
+        <input type="hidden" id="main2" name="main2" value="">
 
         <label for="main3">Main 3</label>
         <button type="button" id="btnMain3">Select main 3</button>
@@ -55,14 +55,14 @@
                 <ul>
         </div>
 
-        <input type="hidden" id="main3" name="lf_lolmain3" value="">
+        <input type="hidden" id="main3" name="main3" value="">
 
 
             <script src="public/js/champions.js"></script>
 
 
         <label for="rank_lol">Rank you are looking for</label>
-        <select id="rank_lol" name="lf_lolrank">
+        <select id="rank_lol" name="rank_lol">
         <option value="" disabled selected>Select rank...</option>
         <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
         <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
@@ -81,7 +81,7 @@
         <script src="public/js/ranks.js"></script>
 
         <label for="role_lol">Role you are looking for</label>
-        <select id="role_lol" name="lf_lolrole">
+        <select id="role_lol" name="role_lol">
         <option value="" disabled selected>Select role...</option>
         <option value="Support" data-image="public/images/roles/support.png">Support</option>
         <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
@@ -91,20 +91,7 @@
         <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
         </select>
 
-        <label for="role_lol">Your role</label>
-        <select id="role_lol" name="role_lol">
-        <option value="" disabled selected>Select role...</option>
-        <option value="Support" data-image="public/images/roles/support.png">Support</option>
-        <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-        <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-        <option value="Jungler" data-image="public/images/roles/jungle.png">Jungler</option>
-        <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-        <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-        </select>
-
-        <div id="selected-roles"></div>
-
-        <script src="public/js/roles.js"></script>
+        <input type="hidden" name="game" value="leagueoflegends"> 
 
         <?php if($this->isConnectWebsite()) : ?>
         <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  

@@ -88,6 +88,7 @@ class GoogleUser extends DataBase
                                             `google_confirmEmail`
                                             FROM
                                                 `googleUser`
+                                            WHERE                                            `google_email` = ?
         ");
 
         $query -> execute([$email]);

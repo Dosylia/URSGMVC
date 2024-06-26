@@ -6,6 +6,7 @@ use controllers\UserController;
 use controllers\GoogleUserController;
 use controllers\LeagueOfLegendsController;
 use controllers\UserLookingForController;
+use controllers\FriendRequestController;
 
 function loadClass($class)
 {
@@ -20,6 +21,7 @@ $userController = new UserController();
 $googleUserController = new GoogleUserController();
 $leagueOfLegendsController = new LeagueOfLegendsController();
 $userLookingForController = new UserLookingForController();
+$friendRequest = new FriendRequestController();
 
 
 // IF AND SWITCH CASE
@@ -72,8 +74,16 @@ if (isset($_GET['action']))
             $leagueOfLegendsController->createLeagueUser();
                 break;
         case "lookingforuserlol":
-            // Handle Looking for League informations
+            // Page looking for
             $userLookingForController->pageLookingFor();
+                break;
+        case "createlookingfor":
+            // Handle Looking for League informations
+            $userLookingForController->createLookingFor();
+                break;
+        case "swiping":
+            // Page swiping
+            $friendRequest->pageswiping();
                 break;
         default;
         break;
