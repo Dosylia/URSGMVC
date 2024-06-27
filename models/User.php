@@ -49,6 +49,30 @@ class User extends DataBase
 
     }
 
+    public function getAllUsers()
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                               *
+                                            FROM
+                                                `user`
+        ");
+
+        $query -> execute();
+        $users = $query -> fetch();
+
+        if ($users)
+        {
+            return $users;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
     public function createUser($googleUserId, $username, $gender, $age, $kindofgamer, $short_bio, $game) 
     {
 
