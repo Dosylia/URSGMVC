@@ -7,6 +7,8 @@ use controllers\GoogleUserController;
 use controllers\LeagueOfLegendsController;
 use controllers\UserLookingForController;
 use controllers\FriendRequestController;
+use controllers\ChatMessageController;
+use controllers\BlockController;
 
 function loadClass($class)
 {
@@ -21,8 +23,9 @@ $userController = new UserController();
 $googleUserController = new GoogleUserController();
 $leagueOfLegendsController = new LeagueOfLegendsController();
 $userLookingForController = new UserLookingForController();
-$friendRequest = new FriendRequestController();
-
+$friendRequestController = new FriendRequestController();
+$chatmessageController = new ChatMessageController();
+$blockController = new BlockController();
 
 // IF AND SWITCH CASE
 
@@ -83,8 +86,12 @@ if (isset($_GET['action']))
                 break;
         case "swiping":
             // Page swiping
-            $friendRequest->pageswiping();
+            $userController->pageswiping();
                 break;
+        case "userProfile":
+            // Perso page of each user
+            $userController->pageUserProfile();
+                 break;
         default;
         break;
     } 

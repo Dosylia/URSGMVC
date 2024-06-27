@@ -3,6 +3,8 @@
 namespace controllers;
 
 use models\User;
+use models\FriendRequest;
+use models\ChatMessage;
 use traits\SecurityController;
 
 class UserController
@@ -10,6 +12,8 @@ class UserController
     use SecurityController;
 
     private User $user;
+    private FriendRequest $friendrequest;
+    private ChatMessage $chatmessage;
     private $googleUserId;
     private $username;
     private $gender;
@@ -22,6 +26,8 @@ class UserController
     public function __construct()
     {
         $this -> user = new User();
+        $this -> friendrequest = new FriendRequest();
+        $this -> chatmessage = new ChatMessage();
     }
 
     public function createUser()
@@ -91,6 +97,40 @@ class UserController
                     exit();
                 }
             }
+        }
+    }
+
+    public function pageswiping()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($user['user_id']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($user['user_id']);
+
+
+            // Profile picture
+            if (isset($user['user_picture']) && $user['user_picture'] !== null) 
+            {
+                $picture = $user['user_picture'];
+            }
+            else
+            {
+                $picture = 'public/images/defaultprofilepicture.jpg';
+            }
+
+
+            $template = "views/swiping/swiping_main";
+            $page_title = "URSG - Swiping";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
         }
     }
 

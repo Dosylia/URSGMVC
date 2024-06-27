@@ -1,3 +1,31 @@
 <?php require "views/layout.phtml"; ?> 
 
-<h1>test swiping</h1>
+<header>
+    <nav>
+        <div class="nav_swiping">
+            <a href="index.php"><img title="Home" class="scale" src="public/images/favicon/favicon.ico" alt="logo_ursg"></a>
+            <a href="index.php/action=swiping"><img title="Swipe" class="scale" src="public/images/swipe.png" alt="swipe"></a>
+
+            <div class="chat_nav">
+                <a href="index.php/action=chat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a> 
+                <?php if (isset($unreadCount) && $unreadCount > 0) :?>
+                    <?= "<span class='unread-count'><button title='Unread message' id='unread_message'> " . $unreadCount . "</button></span>"; ?>
+                <?php endif; ?>
+            </div>
+
+
+            <div>
+            <?php if (isset($user['user_image']) && $user['user_image'] !== null) :// Profile picture test?>
+                <a id="open_menu_profile"><img class="scale" src="<?= $user['user_image']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
+            <?php else :?>
+                <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a> 
+            <?php endif; ?>
+                <?php if (isset($pendingCount) && $pendingCount > 0) :?>
+                        <?= "<span class='pending-count'><button title='Friend requests' id='unread_message'> " . $pendingCount . "</button></span>"; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<script src="public/js/swiping/swiping_menu.js"></script>

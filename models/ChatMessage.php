@@ -3,7 +3,7 @@ namespace models;
 
 use config\DataBase;
 
-class FriendRequest extends DataBase
+class ChatMessage extends DataBase
 {
     private \PDO $bdd;
     
@@ -11,27 +11,27 @@ class FriendRequest extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-    public function countFriendRequest($userId)
+    public function countMessage($userId)
     {
         $query = $this -> bdd -> prepare("
                                         SELECT
                                             COUNT(*)
                                         AS
-                                            `friendrequest_count`
+                                            `unread_count`
                                         FROM
-                                            `friendrequest`
+                                            `chatmessage`
                                         WHERE
-                                            `fr_receiverId` = ? 
+                                            `chat_receiverId` = ? 
                                         AND
-                                            `fr_status` = 'pending'
+                                            `chat_status` = 'unread'
         ");
 
         $query -> execute([$userId]);
-        $pendingTest = $query -> fetch();
+        $unreadTest = $query -> fetch();
 
-        if($pendingTest)
+        if($unreadTest)
         {
-            return $pendingTest['friendrequest_count'];
+            return $unreadTest['unread_count'];
         }
         else
         {
