@@ -1,0 +1,17 @@
+<?php 
+$page = isset($_GET['page']) ? intval($_GET['page']) : 0;
+                        $elementsPerPage = 1;
+                        $elements = array_slice($allUsers, $page * $elementsPerPage, $elementsPerPage);                     
+?>
+
+<?php foreach ($elements as $allUsers) :?>
+    <?php if (!empty($allUsers['user_id'])) :?>
+        <?php if ($allUsers['user_id'] === $_SESSION['userId']) 
+        {
+            header("Location: index.php?action=swiping&page=" . ($page + 1));
+            exit;
+        } ?> 
+
+
+    <?php endif; ?>
+<?php endforeach; ?>

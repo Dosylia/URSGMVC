@@ -55,15 +55,7 @@ class LeagueOfLegends extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                `lol_id`,
-                                                `user_id`,
-                                                `lol_main1`,
-                                                `lol_main2`,                                                
-                                                `lol_main3`,
-                                                `lol_rank`,
-                                                `lol_role`,
-                                                `lol_server`,
-                                                `lol_account`
+                                                *
                                             FROM
                                                 `leagueoflegends`
                                             WHERE

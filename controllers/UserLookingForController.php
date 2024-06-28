@@ -117,7 +117,7 @@ class UserLookingForController
                     session_start();
                 }
                 
-                    $_SESSION['lf_id'] = $lolUser['lf_id'];
+                    $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
 
                 header("location:index.php?action=swiping");
                 exit();

@@ -4,7 +4,7 @@
     <nav>
         <div class="nav_swiping">
             <a href="index.php"><img title="Home" class="scale" src="public/images/favicon/favicon.ico" alt="logo_ursg"></a>
-            <a href="index.php/action=swiping"><img title="Swipe" class="scale" src="public/images/swipe.png" alt="swipe"></a>
+            <a href="index.php?action=swiping"><img title="Swipe" class="scale" src="public/images/swipe.png" alt="swipe"></a>
 
             <div class="chat_nav">
                 <a href="index.php/action=chat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a> 
@@ -15,8 +15,8 @@
 
 
             <div>
-            <?php if (isset($user['user_image']) && $user['user_image'] !== null) :// Profile picture test?>
-                <a id="open_menu_profile"><img class="scale" src="<?= $user['user_image']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
+            <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) :// Profile picture test?>
+                <a id="open_menu_profile"><img class="scale" src="public/images/users/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
             <?php else :?>
                 <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a> 
             <?php endif; ?>
@@ -27,5 +27,40 @@
         </div>
     </nav>
 </header>
+
+<body>
+    <main>
+        <?php if(isset($_GET['message'])) :?>
+            <span class="form-error"><?= $_GET['message'] ?></span>
+        <?php endif; ?>
+        <?php require $template.".phtml"; ?> 
+    </main>
+</body>
+
+<footer>
+    <div class="footer_grey">
+        <div class="top_footer">
+            <p>Copyright © 2023 URSG</p>
+            <p>Your Soulmate gamer</p>
+        </div>
+
+        <div class="mid_footer">
+            <a href="mentionslegales">Privacy Policy</a>
+            <a href="sitemap.php"> Site map</a>
+        </div>
+
+        <div class="social_footer">
+            <a href="#">
+                <img src="public/images/discord2.png" alt="logo discord"></a>
+            <a href="#">
+                <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
+        </div>
+
+        <div class="bot_footer">
+            <p>Made by :  <a target="_blank" href="https://www.dosylia.com/">Dosylia</a></p>
+            <p>Artwork by :  <a target="_blank" href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p>       
+        </div>
+    </div>   
+</footer>
 
 <script src="public/js/swiping/swiping_menu.js"></script>

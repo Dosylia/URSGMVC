@@ -36,7 +36,7 @@ menuProfile.appendChild(separator);
 
 // Option 2: Blocklist
 const optionBlocklist = document.createElement('a');
-optionBlocklist.href = 'friendlist.php';
+optionBlocklist.href = 'index.php?action=friendlist';
 optionBlocklist.innerText = 'Friendlist';
 optionBlocklist.classList.add('menu-option');
 menuProfile.appendChild(optionBlocklist);
@@ -48,7 +48,7 @@ menuProfile.appendChild(separator2);
 
 // Option 3: Logout
 const optionLogout = document.createElement('a');
-optionLogout.href = 'includes/logout.inc.php';
+optionLogout.href = 'index.php?action=logout';
 optionLogout.innerText = 'Logout';
 optionLogout.classList.add('menu-option');
 menuProfile.appendChild(optionLogout);

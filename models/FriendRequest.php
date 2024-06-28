@@ -39,4 +39,80 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function skipUserSwipping($userId) // TEST ON SWIPPING PAGE LATER
+    {
+        $query = $this -> bdd -> prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `friendrequest`
+                                        WHERE
+                                             (`fr_receiverId` = ? OR `fr_senderId` = ?)
+                                        AND
+                                            `fr_status` IN ('accepted', 'rejected', 'pending')
+        ");
+
+        $query -> execute([$userId, $userId]);
+        $friendRequestTest = $query -> fetchAll();
+
+        $friendRequests = [];
+
+        if($friendRequestTest)
+        {
+            foreach ($friendRequestTests as $friendRequestTest) 
+            {
+                if ($friendRequestTest['fr_senderId'] == $userId) 
+                {
+                    $friendRequests[] = $friendRequestTest['fr_receiverId'];
+                } 
+                else 
+                {
+                    $friendRequests[] = $friendRequestTest['fr_senderId'];
+                }
+            }
+            return $friendRequests;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getFriendRequest($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        SELECT
+                                            fr.fr_id,
+                                            fr.fr_senderId,
+                                            fr.fr_receiverId,
+                                            fr.fr_date,
+                                            fr.fr_status,
+                                            u.user_username
+                                        FROM
+                                            `friendrequest` AS fr
+                                        INNER JOIN
+                                            `user` AS u
+                                        ON 
+                                            fr.fr_senderId = u.user_id
+                                        WHERE
+                                            fr.fr_receiverId = ? 
+                                        AND
+                                            fr.fr_status  = 'pending'
+                                        ORDER BY
+                                            fr.fr_date DESC
+        ");
+
+        $query -> execute([$userId]);
+        $friendRequestTest = $query -> fetchAll();
+
+        if($friendRequestTest)
+        {
+            return $friendRequestTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

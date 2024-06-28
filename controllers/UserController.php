@@ -5,6 +5,8 @@ namespace controllers;
 use models\User;
 use models\FriendRequest;
 use models\ChatMessage;
+use models\LeagueOfLegends;
+use models\UserLookingFor;
 use traits\SecurityController;
 
 class UserController
@@ -14,6 +16,8 @@ class UserController
     private User $user;
     private FriendRequest $friendrequest;
     private ChatMessage $chatmessage;
+    private LeagueOfLegends $leagueoflegends;
+    private UserLookingFor $userlookingfor;    
     private $googleUserId;
     private $username;
     private $gender;
@@ -28,6 +32,8 @@ class UserController
         $this -> user = new User();
         $this -> friendrequest = new FriendRequest();
         $this -> chatmessage = new ChatMessage();
+        $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> userlookingfor = new UserLookingFor();
     }
 
     public function createUser()
@@ -108,23 +114,36 @@ class UserController
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($user['user_id']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($user['user_id']);
-
-
-            // Profile picture
-            if (isset($user['user_picture']) && $user['user_picture'] !== null) 
-            {
-                $picture = $user['user_picture'];
-            }
-            else
-            {
-                $picture = 'public/images/defaultprofilepicture.jpg';
-            }
-
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
 
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    public function pageUserProfile()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $lolUser = $this->leagueoflegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            $template = "views/swiping/swiping_profile";
+            $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";
         } 
         else
