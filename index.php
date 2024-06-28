@@ -96,11 +96,23 @@ if (isset($_GET['action']))
             // See a profile but not from main user
             $userController->pageAnotherUserProfile();
                 break;
-        case "updateProfile":
+        case "updateProfilePage":
             // Page Update main data on profile
             $userController->pageUpdateProfile();
                 break;
-        case "updateLookingFor":
+        case "updateProfile":
+            // Change profile data
+            $userController->UpdateProfile();
+                break;
+        case "updateLeaguePage":
+            // Page Update main league data
+            $leagueOfLegendsController->pageUpdateLeague();
+                break;
+        case "updateLeague":
+            // Change league data
+            $leagueOfLegendsController->UpdateLeague();
+                break;
+        case "updateLookingForPage":
             // Page Update looking for data
             $userLookingForController->pageUpdateLookingFor();
                 break;
