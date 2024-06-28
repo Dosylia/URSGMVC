@@ -80,7 +80,7 @@ if (isset($_GET['action']))
             // Page looking for
             $userLookingForController->pageLookingFor();
                 break;
-        case "createlookingfor":
+        case "createLookingFor":
             // Handle Looking for League informations
             $userLookingForController->createLookingFor();
                 break;
@@ -115,6 +115,10 @@ if (isset($_GET['action']))
         case "updateLookingForPage":
             // Page Update looking for data
             $userLookingForController->pageUpdateLookingFor();
+                break;
+        case "updateLookingFor":
+            // Change Looking for data
+            $userLookingForController->UpdateLookingFor();
                 break;
         case "updateSocial":
             // Update social data

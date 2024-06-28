@@ -11,7 +11,7 @@ class UserLookingFor extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-    public function createLookingForUser($userId, $lfGender, $lfKindOfGamer, $lfGame, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole) 
+    public function createLookingForUser($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -39,7 +39,7 @@ class UserLookingFor extends DataBase
                                             )
                                         ");
 
-        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole]);
+        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole]);
 
         if($createLookingForUser)
         {
@@ -85,4 +85,54 @@ class UserLookingFor extends DataBase
             return false;
         }
     }
+
+    public function updateLookingForData($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    {
+        $sql = "UPDATE `userlookingfor` SET ";
+        $params = [];
+        $updates = [];
+    
+        if (!empty($lfMain1)) {
+            $updates[] = "`lf_lolmain1` = ?";
+            $params[] = $lfMain1;
+        }
+        if (!empty($lfMain2)) {
+            $updates[] = "`lf_lolmain2` = ?";
+            $params[] = $lfMain2;
+        }
+        if (!empty($lfMain3)) {
+            $updates[] = "`lf_lolmain3` = ?";
+            $params[] = $lfMain3;
+        }
+        if (!empty($lfRank)) {
+            $updates[] = "`lf_lolrank` = ?";
+            $params[] = $lfRank;
+        }
+        if (!empty($lfRole)) {
+            $updates[] = "`lf_lolrole` = ?";
+            $params[] = $lfRole;
+        }
+        if (!empty($lfServer)) {
+            $updates[] = "`lf_lolserver` = ?";
+            $params[] = $lfServer;
+        }
+    
+        $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
+        $params[] = $userId;
+    
+        if (!empty($updates)) {
+            $query = $this->bdd->prepare($sql);
+            $updateLookingForTest = $query->execute($params);
+    
+            if ($updateLookingForTest) {
+                return true;
+            } else {
+                return false;  
+            }
+        } else {
+            return false;
+        }
+    }
 }
+
+
