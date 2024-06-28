@@ -25,7 +25,10 @@ class UserController
     private $kindOfGamer;
     private $game;
     private $shortBio;
-
+    private $discord;
+    private $twitter;
+    private $instagram;
+    private $twitch;
     
     public function __construct()
     {
@@ -104,6 +107,38 @@ class UserController
                 }
             }
         }
+    }
+
+    public function updateSocial()
+    {
+        if (isset($_POST['submit']))
+        {
+            $username = $this->validateInput($_GET["username"]);
+            $this->setUsername($username);
+            $discord = $this->validateInput($_POST["discord"]);
+            $this->setDiscord($discord);
+            $twitter = $this->validateInput($_POST["twitter"]);
+            $this->setTwitter($twitter);
+            $instagram = $this->validateInput($_POST["instagram"]);
+            $this->setInstagram($instagram);
+            $twitch = $this->validateInput($_POST["twitch"]);
+            $this->setTwitch($twitch);
+
+            $updateSocial = $this->user->updateSocial($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch());
+
+
+            if ($updateSocial)
+            {
+                header("location:index.php?action=userProfile&message=Udpated successfully");
+                exit();  
+            }
+            else
+            {
+                header("location:index.php?action=userProfile&message=Could not update");
+                exit();
+            }
+        }
+
     }
 
     public function pageswiping()
@@ -253,5 +288,45 @@ class UserController
     public function setShortBio($shortBio)
     {
         $this->shortBio = $shortBio;
+    }
+
+    public function getDiscord()
+    {
+        return $this->discord;
+    }
+
+    public function setDiscord($discord)
+    {
+        $this->discord = $discord;
+    }
+
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+    }
+
+    public function getInstagram()
+    {
+        return $this->instagram;
+    }
+
+    public function setInstagram($instagram)
+    {
+        $this->instagram = $instagram;
+    }
+
+    public function getTwitch()
+    {
+        return $this->twitch;
+    }
+
+    public function setTwitch($twitch)
+    {
+        $this->twitch = $twitch;
     }
 }
