@@ -6,6 +6,8 @@ use models\UserLookingFor;
 use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
+use models\FriendRequest;
+use models\ChatMessage;
 use traits\SecurityController;
 
 class UserLookingForController
@@ -16,6 +18,8 @@ class UserLookingForController
     private GoogleUser $googleUser; 
     private User $user; 
     private LeagueOfLegends $leagueoflegends;
+    private FriendRequest $friendrequest;
+    private ChatMessage $chatmessage;
     private $userId;
     private $lfGender;
     private $lfKindOfGamer;
@@ -34,6 +38,8 @@ class UserLookingForController
         $this -> googleUser = new GoogleUser();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> friendrequest = new FriendRequest();
+        $this -> chatmessage = new ChatMessage();
     }
 
     public function pageLookingFor()
@@ -64,6 +70,31 @@ class UserLookingForController
             require "views/layoutHome.phtml";
         } else {
             // Code block 4: Redirect to index.php if none of the above conditions are met
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    public function pageUpdateLookingFor()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+
+            $template = "views/swiping/update_lookingFor";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
             header("Location: index.php");
             exit();
         }
@@ -121,6 +152,57 @@ class UserLookingForController
 
                 header("location:index.php?action=swiping");
                 exit();
+            }
+
+        }
+
+    }
+
+    public function updateLookingFor()
+    {
+        if (isset($_POST['submit'])) 
+        {
+
+            $userId = $this->validateInput($_POST["userId"]);
+            $this->setUserId($userId);
+            $lfGender = $this->validateInput($_POST["gender"]);
+            $this->setLfGender($lfGender);
+            $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
+            $this->setLfKindOfGamer($lfKindOfGamer);
+            $lfGame = $this->validateInput($_POST["game"]);
+            $this->setLfGame($lfGame);
+            $loLMain1 = $this->validateInput($_POST["main1"]);
+            $this->setLoLMain1($loLMain1);
+            $loLMain2 = $this->validateInput($_POST["main2"]);
+            $this->setLoLMain2($loLMain2);
+            $loLMain3 = $this->validateInput($_POST["main3"]);
+            $this->setLoLMain3($loLMain3);
+            $loLRank = $this->validateInput($_POST["rank_lol"]);
+            $this->setLoLRank($loLRank);
+            $loLRole = $this->validateInput($_POST["role_lol"]);
+            $this->setLoLRole($loLRole);
+
+            $updateLookingFor = $this->userlookingfor->updateLookingForData(
+                $this->getUserId(), 
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),
+                $this->getLfGame(),               
+                $this->getLoLMain1(), 
+                $this->getLoLMain2(), 
+                $this->getLoLMain3(), 
+                $this->getLoLRank(), 
+                $this->getLoLRole());
+
+
+            if ($updateLookingFor)
+            {
+                header("location:index.php?action=userProfile&message=Udpated successfully");
+                exit();  
+            }
+            else
+            {
+                header("location:index.php?action=userProfile&message=Could not update");
+                exit();  
             }
 
         }

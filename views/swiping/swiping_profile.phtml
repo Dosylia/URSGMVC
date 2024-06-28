@@ -91,8 +91,13 @@
             <?php if ($user['user_game'] !== 'valorant'): ?>
                 <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
             <?php endif; ?>    
+            <div class="about_you_users"><br>
+            <p><strong>Gender</strong>: <?= ($lfUser['lf_gender']) ?></p><br>
+            <p><strong>Kind of gamer</strong>: <?= ($lfUser['lf_kindofgamer']); ?></p><br>
+        </div> 
         </div>
     </div>
+   
 
     <dialog id="favDialogSocialLinks">
         <br><h2 id="title_generalbox">Your social links:</h2><br>  
