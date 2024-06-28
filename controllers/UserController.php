@@ -142,6 +142,51 @@ class UserController
 
     }
 
+    public function updateProfile()
+    {
+        if (isset($_POST['submit']))
+        {
+            $this->setGoogleUserId($googleUserId);
+            $username = $this->validateInput($_SESSION["username"]);
+            $this->setUsername($username);
+            $gender = $this->validateInput($_POST["gender"]);
+            $this->setGender($gender);
+            $age = $this->validateInput($_POST["age"]);
+            $this->setAge($age);
+            $kindofgamer = $this->validateInput($_POST["kindofgamer"]);
+            $this->setKindOfGamer($kindofgamer);
+            $game = $this->validateInput($_POST["game"]);
+            $this->setGame($game);
+            $short_bio = $this->validateInput($_POST["short_bio"]);
+            $this->setShortBio($short_bio);
+
+            if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
+                header("location:index.php?action=signup&message=Inputs cannot be empty");
+                exit();
+            }
+
+            if ($this->invalidUid($this->getUsername()) !== false) {
+                header("location:index.php?action=signup&message=Username is not valid");
+                exit();
+            }
+
+            $updateUser = $this->user->updateUser($this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
+
+
+            if ($updateUser)
+            {
+                header("location:index.php?action=userProfile&message=Udpated successfully");
+                exit();  
+            }
+            else
+            {
+                header("location:index.php?action=userProfile&message=Could not update");
+                exit();
+            }
+        }
+
+    }
+
     public function updatePicture()
     {
            
@@ -232,6 +277,29 @@ class UserController
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
             $template = "views/swiping/swiping_profile";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    public function pageUpdateProfile()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+
+            $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";
         } 

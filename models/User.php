@@ -73,7 +73,7 @@ class User extends DataBase
 
     }
 
-    public function createUser($googleUserId, $username, $gender, $age, $kindofgamer, $short_bio, $game) 
+    public function createUser($googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -97,7 +97,7 @@ class User extends DataBase
                                             )
                                         ");
 
-        $createWebsiteUser = $query -> execute([$googleUserId, $username, $gender, $age, $kindofgamer, $short_bio, $game]);
+        $createWebsiteUser = $query -> execute([$googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game]);
 
         if($createWebsiteUser)
         {
@@ -108,6 +108,50 @@ class User extends DataBase
             return false;  
         }
 
+    }
+
+    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game) 
+    {
+        $sql = "UPDATE `user` SET ";
+        $params = [];
+        $updates = [];
+    
+        if (!empty($gender)) {
+            $updates[] = "`user_gender` = ?";
+            $params[] = $gender;
+        }
+        if (!empty($age)) {
+            $updates[] = "`user_age` = ?";
+            $params[] = $age;
+        }
+        if (!empty($kindOfGamer)) {
+            $updates[] = "`user_kindOfGamer` = ?";
+            $params[] = $kindOfGamer;
+        }
+        if (!empty($shortBio)) {
+            $updates[] = "`user_shortBio` = ?";
+            $params[] = $shortBio;
+        }
+        if (!empty($game)) {
+            $updates[] = "`user_game` = ?";
+            $params[] = $game;
+        }
+    
+        $sql .= implode(", ", $updates) . " WHERE `user_username` = ?";
+        $params[] = $username;
+    
+        if (!empty($updates)) {
+            $query = $this->bdd->prepare($sql);
+            $updateUserTest = $query->execute($params);
+    
+            if ($updateUserTest) {
+                return true;
+            } else {
+                return false;  
+            }
+        } else {
+            return false;
+        }
     }
 
     public function updateSocial($username, $discord, $twitter, $instagram, $twitch) 

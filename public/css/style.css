@@ -498,24 +498,32 @@
   
   
   .btn_user_updates {
-    background:    #cb5242;
+    background: #cb5242;
     border-radius: 11px;
     width: 150px;
     height: 50px;
-    color:         #ffffff;
-    display:       inline-block;
-    font:          normal bold 1vh/1 "Open Sans", sans-serif;
-    text-align:    center;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: normal bold 1.5vh/1 "Open Sans", sans-serif;
+    text-align: center;
     border: none;
     text-shadow: 0.2px 0.2px 0.5px black;
     transition: transform 2s;
-  }
+}
+
+.btn_user_updates > i {
+    padding-right: 5px;
+    display: flex;
+    align-items: center;
+}
   
   
   .btn_user_updates:hover {
-    background:    rgba(203, 104, 66,0.9);
-    transform: scale(1.5);
-    margin: 20px;
+    background:    rgba(88, 86, 86, 0.9);
+    transform: scale(1.1);
+    cursor: pointer;
   }
   
   .chat_friend_btn {
