@@ -40,7 +40,7 @@ class UserLookingForController
     {
 
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
+        $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for

@@ -16,19 +16,7 @@ class User extends DataBase
 
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                `user_id`,
-                                                `google_userId`,
-                                                `user_username`,
-                                                `user_gender`,
-                                                `user_age`,
-                                                `user_kindOfGamer`,
-                                                `user_game`,
-                                                `user_shortBio`,
-                                                `user_picture`,
-                                                `user_discord`,
-                                                `user_instagram`,
-                                                `user_twitter`,
-                                                `user_twitch`
+                                                *
                                             FROM
                                                 `user`
                                             WHERE
@@ -219,34 +207,34 @@ class User extends DataBase
     }
 
 
-    public function getUserDataByGoogleId($googleId)
+    public function getUserDataByGoogleUserId($googleUserId)
     {
                 $query = $this -> bdd -> prepare ("
                                                         SELECT
-                                                        u.`user_id`,
-                                                        u.`google_userId`,
-                                                        u.`user_username`,
-                                                        u.`user_gender`,
-                                                        u.`user_age`,
-                                                        u.`user_kindOfGamer`,
-                                                        u.`user_shortBio`,
-                                                        u.`user_game`
+                                                        u.user_id,
+                                                        u.google_userId,
+                                                        u.user_username,
+                                                        u.user_gender,
+                                                        u.user_age,
+                                                        u.user_kindOfGamer,
+                                                        u.user_shortBio,
+                                                        u.user_game
                                                         FROM
                                                             `user` as u
                                                         INNER JOIN
-                                                            googleuser as g
+                                                            `googleuser` as g
                                                         ON
                                                             u.google_userId = g.google_userId
-
-
+                                                        WHERE
+                                                             g.google_userId = ?
                                                 ");
 
-        $query -> execute([$googleId]);
-        $googleIdTest = $query -> fetch();
+        $query -> execute([$googleUserId]);
+        $googleUserIdTest = $query -> fetch();
 
-        if($googleIdTest)
+        if($googleUserIdTest)
         {
-            return $googleIdTest;
+            return $googleUserIdTest;
         }
         else
         {

@@ -89,11 +89,13 @@ class GoogleUserController
         }
     }
 
+    
+
     public function pageSignUp()
     {
 
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
+        $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
@@ -105,7 +107,7 @@ class GoogleUserController
             require "views/layoutSwiping.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 2: User is connected via Google, Website and has League data, need looking for
-            $lolUser = $this->leagueoflegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
@@ -200,7 +202,7 @@ class GoogleUserController
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
 
-                        $googleUser = $this->user->getUserDataByGoogleId($this->getGoogleUserId());
+                        $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
                         if ($googleUser) {
                             $user = $this-> user -> getUserByUsername($googleUser['user_username']);
 
