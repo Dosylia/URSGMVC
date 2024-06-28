@@ -92,7 +92,27 @@ if (isset($_GET['action']))
             // Perso page of each user
             $userController->pageUserProfile();
                  break;
-        default;
+        case "anotherUser":
+            // See a profile but not from main user
+            $userController->pageAnotherUserProfile();
+                break;
+        case "updateProfile":
+            // Page Update main data on profile
+            $userController->pageUpdateProfile();
+                break;
+        case "updateLookingFor":
+            // Page Update looking for data
+            $userLookingForController->pageUpdateLookingFor();
+                break;
+        case "updateSocial":
+            // Update social data
+            $userController->updateSocial();
+                break;
+        case "updatePicture":
+            // Update picture
+            $userController->updatePicture();
+                break;
+            default;
         break;
     } 
 }

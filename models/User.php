@@ -110,6 +110,46 @@ class User extends DataBase
 
     }
 
+    public function updateSocial($username, $discord, $twitter, $instagram, $twitch) 
+    {
+        $sql = "UPDATE `user` SET ";
+        $params = [];
+        $updates = [];
+    
+        if (!empty($discord)) {
+            $updates[] = "`user_discord` = ?";
+            $params[] = $discord;
+        }
+        if (!empty($twitter)) {
+            $updates[] = "`user_twitter` = ?";
+            $params[] = $twitter;
+        }
+        if (!empty($instagram)) {
+            $updates[] = "`user_instagram` = ?";
+            $params[] = $instagram;
+        }
+        if (!empty($twitch)) {
+            $updates[] = "`user_twitch` = ?";
+            $params[] = $twitch;
+        }
+    
+        $sql .= implode(", ", $updates) . " WHERE `user_username` = ?";
+        $params[] = $username;
+    
+        if (!empty($updates)) {
+            $query = $this->bdd->prepare($sql);
+            $updateSocialTest = $query->execute($params);
+    
+            if ($updateSocialTest) {
+                return true;
+            } else {
+                return false;  
+            }
+        } else {
+            return false;
+        }
+    }
+
     public function getUserDataByGoogleId($googleId)
     {
                 $query = $this -> bdd -> prepare ("
