@@ -29,6 +29,7 @@ class UserController
     private $twitter;
     private $instagram;
     private $twitch;
+    private $fileName;
     
     public function __construct()
     {
@@ -139,6 +140,59 @@ class UserController
             }
         }
 
+    }
+
+    public function updatePicture()
+    {
+           
+        $targetDir = "public/upload/";
+        $fileName = basename($_FILES["file"]["name"]);
+        $this->setFileName($fileName);
+        $targetFilePath = $targetDir . $fileName;
+        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+
+        if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) 
+        {
+            $username = $this->validateInput($_GET["username"]);
+            $this->setUsername($username);
+
+            $allowTypes = array('jpg', 'png', 'jpeg', 'gif', 'pdf');
+
+            if (in_array($fileType, $allowTypes)) 
+            {
+                if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) 
+                {
+                    $uploadPicture = $this->user->uploadPicture($this->getUsername(), $this->getFilename());
+
+                    if ($uploadPicture)
+                    {
+                        header("location:index.php?action=userProfile&message=Updated successfully");
+                        exit;      
+                    }
+                    else 
+                    {
+                        header("location:index.php?action=userProfile&message=Couldn't update");
+                        exit;      
+                    }
+                }
+                else
+                {
+                    header("location:index.php?action=userProfile&message=Error uploading");
+                    exit;        
+                }
+
+            }
+            else
+            {
+                header("location:index.php?action=userProfile&message=Wrong type of picture"); // Not accepted format
+                exit;   
+            }
+        }
+        else 
+        {
+            header("location:index.php?action=userProfile&message=Nothing to upload"); // If no picture or no form
+            exit;  
+        }   
     }
 
     public function pageswiping()
@@ -328,5 +382,15 @@ class UserController
     public function setTwitch($twitch)
     {
         $this->twitch = $twitch;
+    }
+
+    public function getFileName()
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName($fileName)
+    {
+        $this->fileName = $fileName;
     }
 }
