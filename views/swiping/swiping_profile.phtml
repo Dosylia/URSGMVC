@@ -4,7 +4,7 @@
             <div class="main_box">
                 <div class="user_page_picture">
                     <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                        <img id="image_users" src="public/images/users/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                        <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
                     <?php else :?>
                         <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <?php endif; ?>
@@ -110,7 +110,7 @@
     </dialog>
 
     <dialog id="favDialogPicture">
-        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_name']) ?>" method="post" enctype="multipart/form-data">
+        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data">
             <br><p id="title_generalbox">Add a profile picture or update it</p><br>
             <input type="file" name="file"><br>
             <input type="submit" name="submit" value="Upload">

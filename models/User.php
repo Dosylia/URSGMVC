@@ -150,27 +150,52 @@ class User extends DataBase
         }
     }
 
+    public function uploadPicture($username, $fileName) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_picture` = ?
+                                        WHERE
+                                            `user_username` = ?
+
+                                        ");
+
+        $uploadPictureTest = $query->execute([$fileName,$username]);
+
+        if($uploadPictureTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     public function getUserDataByGoogleId($googleId)
     {
                 $query = $this -> bdd -> prepare ("
-                SELECT
-                u.`user_id`,
-                u.`google_userId`,
-                u.`user_username`,
-                u.`user_gender`,
-                u.`user_age`,
-                u.`user_kindOfGamer`,
-                u.`user_shortBio`,
-                u.`user_game`
-                FROM
-                    `user` as u
-                INNER JOIN
-                    googleuser as g
-                ON
-                    u.google_userId = g.google_userId
+                                                        SELECT
+                                                        u.`user_id`,
+                                                        u.`google_userId`,
+                                                        u.`user_username`,
+                                                        u.`user_gender`,
+                                                        u.`user_age`,
+                                                        u.`user_kindOfGamer`,
+                                                        u.`user_shortBio`,
+                                                        u.`user_game`
+                                                        FROM
+                                                            `user` as u
+                                                        INNER JOIN
+                                                            googleuser as g
+                                                        ON
+                                                            u.google_userId = g.google_userId
 
 
-        ");
+                                                ");
 
         $query -> execute([$googleId]);
         $googleIdTest = $query -> fetch();

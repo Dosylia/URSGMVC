@@ -16,7 +16,7 @@
 
             <div>
             <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) :// Profile picture test?>
-                <a id="open_menu_profile"><img class="scale" src="public/images/users/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
+                <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
             <?php else :?>
                 <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a> 
             <?php endif; ?>
