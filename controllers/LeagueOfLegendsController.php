@@ -5,6 +5,8 @@ namespace controllers;
 use models\LeagueOfLegends;
 use models\GoogleUser;
 use models\User;
+use models\FriendRequest;
+use models\ChatMessage;
 use traits\SecurityController;
 
 class LeagueOfLegendsController
@@ -13,6 +15,8 @@ class LeagueOfLegendsController
 
     private LeagueOfLegends $leagueOfLegends;
     private GoogleUser $googleUser;  
+    private FriendRequest $friendrequest;
+    private ChatMessage $chatmessage;
     private User $user;
     private $userId;
     private $loLMain1;
@@ -29,13 +33,15 @@ class LeagueOfLegendsController
         $this -> leagueOfLegends = new LeagueOfLegends();
         $this -> googleUser = new GoogleUser();
         $this -> user = new User();
+        $this -> friendrequest = new FriendRequest();
+        $this -> chatmessage = new ChatMessage();
     }
 
     public function pageLeagueUser()
     {
         
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        $secondTierUser = $this->user->getUserDataByGoogleId($_SESSION['google_userId']);
+        $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
@@ -60,6 +66,30 @@ class LeagueOfLegendsController
             require "views/layoutHome.phtml";
         } else {
             // Code block 4: Redirect to index.php if none of the above conditions are met
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    public function pageUpdateLeague()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
+
+            $template = "views/swiping/update_league";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
             header("Location: index.php");
             exit();
         }
@@ -118,6 +148,59 @@ class LeagueOfLegendsController
                     $_SESSION['lol_account'] = $lolUser['lol_account'];
 
                 header("location:index.php?action=lookingforuserlol");
+                exit();
+            }
+
+        }
+
+    }
+
+
+    public function UpdateLeague()
+    {
+        if (isset($_POST['submit'])) 
+        {
+
+            $userId = $this->validateInput($_POST["userId"]);
+            $this->setUserId($userId);
+            $loLMain1 = $this->validateInput($_POST["main1"]);
+            $this->setLoLMain1($loLMain1);
+            $loLMain2 = $this->validateInput($_POST["main2"]);
+            $this->setLoLMain2($loLMain2);
+            $loLMain3 = $this->validateInput($_POST["main3"]);
+            $this->setLoLMain3($loLMain3);
+            $loLRank = $this->validateInput($_POST["rank_lol"]);
+            $this->setLoLRank($loLRank);
+            $loLRole = $this->validateInput($_POST["role_lol"]);
+            $this->setLoLRole($loLRole);
+            $loLServer = $this->validateInput($_POST["server"]);
+            $this->setLoLServer($loLServer);
+            $loLAccount = $this->validateInput($_POST["account_lol"]);
+            $this->setLoLAccount($loLAccount);
+
+            if ($this->emptyInputSignup($this->getLoLAccount()) !== false) {
+                header("location:index.php?action=updateLeague&message=No data sent");
+                exit();
+            }
+
+            $updateLeague = $this->leagueOfLegends->updateLeagueData(
+                $this->getUserId(), 
+                $this->getLoLMain1(), 
+                $this->getLoLMain2(), 
+                $this->getLoLMain3(), 
+                $this->getLoLRank(), 
+                $this->getLoLRole(), 
+                $this->getLoLServer(), 
+                $this->getLoLAccount());
+
+            if ($updateLeague)
+            {
+                header("location:index.php?action=userProfile&message=Udpated successfully");
+                exit();  
+            }
+            else
+            {
+                header("location:index.php?action=userProfile&message=Could not update");
                 exit();
             }
 

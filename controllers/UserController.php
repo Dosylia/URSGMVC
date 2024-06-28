@@ -7,6 +7,7 @@ use models\FriendRequest;
 use models\ChatMessage;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class UserController
@@ -18,6 +19,7 @@ class UserController
     private ChatMessage $chatmessage;
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;    
+    private GoogleUser $googleUser;
     private $googleUserId;
     private $username;
     private $gender;
@@ -38,6 +40,7 @@ class UserController
         $this -> chatmessage = new ChatMessage();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function createUser()
@@ -273,7 +276,7 @@ class UserController
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-            $lolUser = $this->leagueoflegends->getLeageUserByUsername($_SESSION['lol_account']);
+            $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
             $template = "views/swiping/swiping_profile";
