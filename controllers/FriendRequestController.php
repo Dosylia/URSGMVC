@@ -5,6 +5,7 @@ namespace controllers;
 use models\FriendRequest;
 use models\User;
 use models\ChatMessage;
+use models\Block;
 use traits\SecurityController;
 
 class FriendRequestController
@@ -14,6 +15,7 @@ class FriendRequestController
     private FriendRequest $friendrequest;
     private User $user;
     private ChatMessage $chatmessage;
+    private Block $block;
     private $frId;
 
     
@@ -22,6 +24,31 @@ class FriendRequestController
         $this -> friendrequest = new FriendRequest();
         $this -> user = new User();
         $this -> chatmessage = new ChatMessage();
+        $this -> block = new Block();
+    }
+
+    public function pageFriendlist()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $getFriendlist = $this-> friendrequest -> getFriendlist($_SESSION['userId']);
+            $getBlocklist = $this-> block -> getBlocklist($_SESSION['userId']);
+
+            $template = "views/swiping/swiping_friendlist";
+            $page_title = "URSG - Friendlist";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
+        }
     }
 
     public function acceptFriendRequest()

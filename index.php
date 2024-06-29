@@ -136,6 +136,18 @@ if (isset($_GET['action']))
             // Refuse friend request
             $friendRequestController->rejectFriendRequest();
                 break;
+        case "friendlistPage":
+            // Refuse friend request
+            $friendRequestController->pageFriendlist();
+                break;
+        case "blockPerson":
+            // Block someone
+            $blockController->blockPerson();
+                break;
+        case "unblockPerson":
+            // Unblock someone
+            $blockController->unblockPerson();
+                break;
             default;
         break;
     } 

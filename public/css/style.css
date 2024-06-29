@@ -353,6 +353,19 @@
       font-size: 4vh;
       padding: 30px;
     }
+
+    .no_friend {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .no_friend h2 {
+      font-family: 'Geologica', sans-serif;   
+      font-size: 4vh;
+      padding: 30px;
+    }
   
     #lol-fields,
     #valorant-fields {
