@@ -36,7 +36,7 @@ menuProfile.appendChild(separator);
 
 // Option 2: Blocklist
 const optionBlocklist = document.createElement('a');
-optionBlocklist.href = 'index.php?action=friendlist';
+optionBlocklist.href = 'index.php?action=friendlistPage';
 optionBlocklist.innerText = 'Friendlist';
 optionBlocklist.classList.add('menu-option');
 menuProfile.appendChild(optionBlocklist);

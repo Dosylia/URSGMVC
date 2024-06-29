@@ -115,6 +115,42 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function getFriendlist($userId)
+    {
+        $query = $this->bdd->prepare("
+                                    SELECT
+                                        fr.fr_id,
+                                        fr.fr_senderId,
+                                        fr.fr_receiverId,
+                                        fr.fr_date,
+                                        fr.fr_status,
+                                        u.user_id,
+                                        u.user_username,
+                                        u.user_picture
+                                    FROM
+                                        `friendrequest` AS fr
+                                    INNER JOIN
+                                        `user` AS u
+                                    ON 
+                                        fr.fr_senderId = u.user_id
+                                    WHERE
+                                        (fr.fr_senderId = ? OR fr.fr_receiverId = ?)
+                                    AND
+                                        fr.fr_status = 'accepted'
+                                    ORDER BY
+                                        fr.fr_date DESC
+        ");
+    
+        $query->execute([$userId, $userId]);
+        $friendlistTest = $query->fetchAll();
+    
+        if ($friendlistTest) {
+            return $friendlistTest;
+        } else {
+            return false;
+        }
+    }
+
     public function acceptFriendRequest($frId) 
     {
         $query = $this -> bdd -> prepare("
@@ -155,6 +191,30 @@ class FriendRequest extends DataBase
         if($rejectedFriendRequestTest)
         {
             return  $rejectedFriendRequestTest;
+        }
+        else
+        {
+            return false;
+        }        
+    }
+
+    public function updateFriend($senderId, $receiverId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_status` = 'rejected'
+                                        WHERE
+                                            (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
+        ");
+
+        
+        $updateFriendTest =  $query->execute([$receiverId, $senderId, $receiverId, $senderId]);
+
+        if($updateFriendTest)
+        {
+            return  $updateFriendTest;
         }
         else
         {
