@@ -115,4 +115,51 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function acceptFriendRequest($frId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_status` = 'accepted'
+                                        WHERE
+                                            fr_id = ?
+        ");
+
+        
+        $acceptedFriendRequestTest =  $query->execute([$frId]);
+
+        if($acceptedFriendRequestTest)
+        {
+            return  $acceptedFriendRequestTest;
+        }
+        else
+        {
+            return false;
+        }        
+    }
+
+    public function rejectFriendRequest($frId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_status` = 'rejected'
+                                        WHERE
+                                            fr_id = ?
+        ");
+
+        $rejectedFriendRequestTest =  $query->execute([$frId]);
+
+        if($rejectedFriendRequestTest)
+        {
+            return  $rejectedFriendRequestTest;
+        }
+        else
+        {
+            return false;
+        }        
+    }
+
 }
