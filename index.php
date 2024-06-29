@@ -128,6 +128,14 @@ if (isset($_GET['action']))
             // Update picture
             $userController->updatePicture();
                 break;
+        case "requestAccepted":
+            // Accept friend request
+            $friendRequestController->acceptFriendRequest();
+                break;
+        case "requestRejected":
+            // Refuse friend request
+            $friendRequestController->rejectFriendRequest();
+                break;
             default;
         break;
     } 
