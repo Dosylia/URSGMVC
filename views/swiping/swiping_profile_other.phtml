@@ -8,15 +8,6 @@
                     <?php else :?>
                         <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <?php endif; ?>
-                    <div class="user_page_update_name">
-                        <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>     
-                        <div class="user_page_update_row">
-                            <a href="index.php?action=updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
-                            <a href="index.php?action=updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
-                            <a href="index.php?action=updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a>      
-                            <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
-                            <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>ADD SOCIAL LINKS</button>
-                        </div><br>
                         
                         <div class="user_page_update_row">
                             <?php if (!empty($user['user_twitter'])): ?>  
@@ -44,21 +35,6 @@
             </div>
         </div>        
     </div>
-
-    <?php if(!empty($friendRequest)) :?>
-        <div class="friendrequest_box"><br>
-            <h2 id="title_generalbox">Friend requests</h2><br>
-            <?php foreach ($friendRequest as $request) :?>
-                <div class="friend_request_ctn">
-                    <p> From: <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['fr_senderId']) ?>"><?= strtoupper($request['user_username']) ?></a>, the <? date('m/d H:i', strtotime($request['fr_date'])) ?></p><br>
-                    <div class="friend_request_ctn_btn">
-                        <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>'><button id="accept_friend_button">Accept</button></a>
-                        <a href='index.php?action=requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
 
     <div class="user_page_main_content">
         <div class="general_box">

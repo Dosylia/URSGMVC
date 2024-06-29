@@ -7,26 +7,36 @@
                 <h2>You have no friends yet, wait until they accept your request or swipe more!</h2>
             </section>  
         <?php else :?>
-            <?php foreach($getFriendlist as $friend) :?>
-                <?php if($user['user_id'] !== $friend['user_id']) :?>
-                    <div class="friend" data-sender-id="<?= $friend['user_id'] ?>">
-                        <div class="friend-avatar">
-                            <a href="index.php?action=anotherUser&username=<?= $friend['user_username'] ?>">
-                            <?php if($friend['user_picture'] !== NULL) :?>
-                                <img src="public/upload/<?= $friend['user_picture'] ?>" alt="Avatar <?= $friend['user_username'] ?>"></a>
-                            <?php else :?>
-                                <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friend['user_username'] ?>"></a>
+            <?php foreach($getFriendlist as $friend) : ?>
+                <?php
+                    if ($user['user_id'] == $friend['sender_id']) {
+                        $friendId = $friend['receiver_id'];
+                        $friendUsername = $friend['receiver_username'];
+                        $friendPicture = $friend['receiver_picture'];
+                    } else {
+                        $friendId = $friend['sender_id'];
+                        $friendUsername = $friend['sender_username'];
+                        $friendPicture = $friend['sender_picture'];
+                    }
+                ?>
+                <div class="friend" data-sender-id="<?= $friendId ?>">
+                    <div class="friend-avatar">
+                        <a href="index.php?action=anotherUser&username=<?= $friendUsername ?>">
+                            <?php if ($friendPicture !== NULL) : ?>
+                                <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername ?>"></a>
+                            <?php else : ?>
+                                <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>"></a>
                             <?php endif; ?>
-                        </div>
-                        <div class="friend-details">
-                            <span class="chat-name">
-                            <a href="index.php?action=anotherUser&username=<?= $friend['user_username'] ?>">
-                            <p class="person_button"><?= $friend['user_username'] ?></a>
-                                <button class="block_user" onclick="openConfirmationPopup('<?= $friend['user_username'] ?>', '<?= $friend['fr_receiverId'] ?>')">Block</button>
+                    </div>
+                    <div class="friend-details">
+                        <span class="chat-name">
+                            <a href="index.php?action=anotherUser&username=<?= $friendUsername ?>">
+                                <p class="person_button"><?= $friendUsername ?></a>
+                                <button class="block_user" onclick="openConfirmationPopup('<?= $friendUsername ?>', '<?= $friendId ?>')">Block</button>
                             </p>
-                            </span>
-                        </div>
-                    </div>                   
+                        </span>
+                    </div>
+                </div>                
                     <dialog id="confirmationPopup">
                         <div class="popup-content">
                             <button id="closeButton_user_picture" onclick="closeConfirmationPopup()">X</button>
@@ -39,7 +49,6 @@
                             <button onclick="closeConfirmationPopup()">No</button>
                         </div>
                     </dialog>
-                <? endif; ?>
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
