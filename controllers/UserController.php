@@ -290,6 +290,37 @@ class UserController
         }
     }
 
+    public function pageAnotherUserProfile()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $username = $_GET['username'];
+            $user = $this-> user -> getUserByUsername($username);
+            $allUsers = $this-> user -> getAllUsers();
+            $unreadCount = $this-> chatmessage -> countMessage($user['user_id']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            $template = "views/swiping/swiping_profile_other";
+            $page_title = "URSG - Profile " . $username;
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            $username = $_GET['username'];
+            $user = $this-> user -> getUserByUsername($username);
+            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $template = "views/swiping/swiping_profile_other";
+            $page_title = "URSG - Profile " . $username;
+            require "views/layoutSwiping_noheader.phtml";
+        }
+    }
+
     public function pageUpdateProfile()
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())

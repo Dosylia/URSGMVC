@@ -118,27 +118,32 @@ class FriendRequest extends DataBase
     public function getFriendlist($userId)
     {
         $query = $this->bdd->prepare("
-                                    SELECT
-                                        fr.fr_id,
-                                        fr.fr_senderId,
-                                        fr.fr_receiverId,
-                                        fr.fr_date,
-                                        fr.fr_status,
-                                        u.user_id,
-                                        u.user_username,
-                                        u.user_picture
-                                    FROM
-                                        `friendrequest` AS fr
-                                    INNER JOIN
-                                        `user` AS u
-                                    ON 
-                                        fr.fr_senderId = u.user_id
-                                    WHERE
-                                        (fr.fr_senderId = ? OR fr.fr_receiverId = ?)
-                                    AND
-                                        fr.fr_status = 'accepted'
-                                    ORDER BY
-                                        fr.fr_date DESC
+                                SELECT
+                                    fr.fr_id,
+                                    fr.fr_senderId,
+                                    fr.fr_receiverId,
+                                    fr.fr_date,
+                                    fr.fr_status,
+                                    us.user_id AS sender_id,
+                                    us.user_username AS sender_username,
+                                    us.user_picture AS sender_picture,
+                                    ur.user_id AS receiver_id,
+                                    ur.user_username AS receiver_username,
+                                    ur.user_picture AS receiver_picture
+                                FROM
+                                    `friendrequest` AS fr
+                                INNER JOIN
+                                    `user` AS us
+                                    ON fr.fr_senderId = us.user_id
+                                INNER JOIN
+                                    `user` AS ur
+                                    ON fr.fr_receiverId = ur.user_id
+                                WHERE
+                                    (fr.fr_senderId = ? OR fr.fr_receiverId = ?)
+                                AND
+                                    fr.fr_status = 'accepted'
+                                ORDER BY
+                                    fr.fr_date DESC
         ");
     
         $query->execute([$userId, $userId]);
