@@ -1,17 +1,85 @@
-<?php 
-$page = isset($_GET['page']) ? intval($_GET['page']) : 0;
-                        $elementsPerPage = 1;
-                        $elements = array_slice($allUsers, $page * $elementsPerPage, $elementsPerPage);                     
-?>
+<?php if ($user): ?>
+    <?php
+    if ($user && $usersAll) {
+        echo '<script>';
+        echo 'window.user = ' . json_encode($user) . ';';
+        echo 'window.usersAll = ' . json_encode($usersAll) . ';';
+        echo '</script>';
+    }
+    ?>
 
-<?php foreach ($elements as $allUsers) :?>
-    <?php if (!empty($allUsers['user_id'])) :?>
-        <?php if ($allUsers['user_id'] === $_SESSION['userId']) 
-        {
-            header("Location: index.php?action=swiping&page=" . ($page + 1));
-            exit;
-        } ?> 
+    <script type="module" src="public/js/algo.js"></script>
 
+    <?php if ($userMatched !== null) :?>
+        <section class="user_page">
+            <div class="user_page_main_content_row">
+                <div class="main_box">
+                    <div class="user_page_picture">
+                    <?php if (!empty($userMatched['user_picture'])): ?>
+                        <img id="image_users" src="public/upload/<?= $userMatched['user_picture'] ?>" alt="" />
+                    <?php endif; ?>
+                    <?php if (empty($userMatched['user_picture'])): ?>
+                        <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                    <?php endif; ?>
+                    </div>
 
-    <?php endif; ?>
-<?php endforeach; ?>
+                    <div class="user_page_update_name">
+                        <span id="user_page_username">
+                            <?= ucfirst($userMatched['user_username']) ?>
+                        </span>,
+                        <span id="age_user">
+                            <?= ucfirst($userMatched['user_age']) ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user_page_main_content">
+                <div class="general_box"><br>
+                    <div class="box_league_account">
+                        <div class="box_league_account_main_row">
+                            <?php if (!empty($userMatched['lol_sUsername'])): ?>
+                                <img id="profilepicture_lol" src="public/images/profileicon/<?= $userMatched['lol_sProfileIcon'] ?>.png" alt="icon_league">
+                                <div class="box_league_account_main_row_column">
+                                    <p><strong>
+                                        <?= $userMatched['usersSummonerUsername'] ?>
+                                    </strong></p>
+
+                                    <p>
+                                        <?= strtoupper($userMatched['usersServerLoL']) ?>,
+                                        <?= strtoupper($userMatched['usersSummonerRank']) ?>,
+                                        <?= strtoupper($userMatched['usersSummonerLevel']) ?>
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+                        </div>
+                    </div>
+
+                    <div class="about_you_users"><br>
+                        <p><strong>Gender</strong>:
+                            <?= ucfirst($userMatched['user_gender']) ?>
+                        </p><br>
+                        <p><strong>Kind of gamer</strong>:
+                            <?= ucfirst($userMatched['user_kindOfGamer']) ?>
+                        </p><br>
+                        <p><strong>short bio</strong>:
+                            <?= $userMatched['user_shortBio'] ?>
+                        </p><br>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST" action="index.php?action=swipeDone">
+                <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
+                <input type="hidden" name="receiver_id" value="<?= $userMatched['user_id'] ?>">
+                <div class="row_buttons_swipe">
+                    <button id="swipe_no" class="button_swiping" type="submit" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
+                    <button id="swipe_yes" class="button_swiping" type="submit" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
+                </div>
+            </form>
+        </section>
+    <? endif; ?>
+
+<? endif; ?>

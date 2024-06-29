@@ -51,6 +51,54 @@ class FriendRequestController
         }
     }
 
+    public function swipeStatus()
+    {
+        if(isset($_POST['swipe_yes']))
+        {
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'pending';
+
+            $senderId = $this->validateInput($_POST["sender_id"]);
+            $this->setSenderId($senderId);
+            $receiverId = $this->validateInput($_POST["receiver_id"]);
+            $this->setReceiverId($receiverId);
+
+            $swipeStatusYes = $this->friendrequest->swipeStatus(getSenderId(), getReceiverId(), $requestDate, $status);
+
+            if ($swipeStatusYes)
+            {
+                header("location:index.php?action=swiping");
+                exit();                  
+            }
+
+        } 
+        elseif (isset($_POST['swipe_no']))
+        {
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'rejected';
+
+            $senderId = $this->validateInput($_POST["sender_id"]);
+            $this->setSenderId($senderId);
+            $receiverId = $this->validateInput($_POST["receiver_id"]);
+            $this->setReceiverId($receiverId);
+
+            $swipeStatusNo = $this->friendrequest->swipeStatus(getSenderId(), getReceiverId());
+
+            if ($swipeStatusNo)
+            {
+                header("location:index.php?action=swiping");
+                exit();                  
+            }
+
+        }
+        else
+        {
+            header("location:index.php?action=swiping&message=Couldnt add/reject user");
+            exit();             
+        }
+
+    }
+
     public function acceptFriendRequest()
     {
         $frId = $this->validateInput($_GET["fr_id"]);
@@ -105,5 +153,26 @@ class FriendRequestController
     {
         $this->frId = $frId;
     }
+
+    public function getSenderId()
+    {
+        return $this->senderId;
+    }
+
+    public function setSenderId($senderId)
+    {
+        $this->senderId = $senderId;
+    }
+
+    public function getReceiverId()
+    {
+        return $this->receiverId;
+    }
+
+    public function setReceiverId($receiverId)
+    {
+        $this->receiverId = $receiverId;
+    }
+
 
 }

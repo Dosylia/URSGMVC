@@ -39,42 +39,32 @@ class FriendRequest extends DataBase
         }
     }
 
-    public function skipUserSwipping($userId) // TEST ON SWIPPING PAGE LATER
+    public function skipUserSwipping($userId)
     {
-        $query = $this -> bdd -> prepare("
-                                        SELECT
-                                            *
-                                        FROM
-                                            `friendrequest`
-                                        WHERE
-                                             (`fr_receiverId` = ? OR `fr_senderId` = ?)
-                                        AND
-                                            `fr_status` IN ('accepted', 'rejected', 'pending')
+        $query = $this->bdd->prepare("
+            SELECT *
+            FROM `friendrequest`
+            WHERE (`fr_receiverId` = ? OR `fr_senderId` = ?)
+            AND `fr_status` IN ('accepted', 'rejected', 'pending')
         ");
-
-        $query -> execute([$userId, $userId]);
-        $friendRequestTest = $query -> fetchAll();
-
-        $friendRequests = [];
-
-        if($friendRequestTest)
-        {
-            foreach ($friendRequestTests as $friendRequestTest) 
-            {
-                if ($friendRequestTest['fr_senderId'] == $userId) 
-                {
+    
+        $query->execute([$userId, $userId]);
+        $friendRequestTests = $query->fetchAll();
+    
+        if ($friendRequestTests) {
+            $friendRequests = [];
+    
+            foreach ($friendRequestTests as $friendRequestTest) {
+                if ($friendRequestTest['fr_senderId'] == $userId) {
                     $friendRequests[] = $friendRequestTest['fr_receiverId'];
-                } 
-                else 
-                {
+                } else {
                     $friendRequests[] = $friendRequestTest['fr_senderId'];
                 }
             }
+    
             return $friendRequests;
-        }
-        else
-        {
-            return false;
+        } else {
+            return [];
         }
     }
 
@@ -225,6 +215,37 @@ class FriendRequest extends DataBase
         {
             return false;
         }        
+    }
+
+    public function swipeStatus($senderId, $receiverId, $requestDate, $status) 
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `friendrequest`(
+                                                `fr_sendingId`,
+                                                `fr_receiverId`,                                    
+                                                `fr_date`,
+                                                `fr_status`            
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?
+                                            )
+                                        ");
+
+        $swipeStatusTest = $query -> execute([$senderId, $receiverId, $requestDate, $status]);
+
+        if($swipeStatusTest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
     }
 
 }

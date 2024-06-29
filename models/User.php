@@ -18,12 +18,54 @@ class User extends DataBase
                                             SELECT
                                                 *
                                             FROM
-                                                `user`
+                                                `user` As u
+                                            INNER JOIN
+                                                `leagueoflegends` AS l
+                                            ON
+                                                u.user_id = l.user_id
+                                            INNER JOIN
+                                                `userlookingfor` AS lf
+                                            ON
+                                                u.user_id = lf.user_id
                                             WHERE
-                                                `user_username` = ?
+                                                u.user_username = ?
         ");
 
         $query -> execute([$username]);
+        $user = $query -> fetch();
+
+        if ($user)
+        {
+            return $user;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public function getUserById($userId)
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                *
+                                            FROM
+                                                `user` As u
+                                            INNER JOIN
+                                                `leagueoflegends` AS l
+                                            ON
+                                                u.user_id = l.user_id
+                                            INNER JOIN
+                                                `userlookingfor` AS lf
+                                            ON
+                                                u.user_id = lf.user_id
+                                            WHERE
+                                                u.user_id = ?
+        ");
+
+        $query -> execute([$userId]);
         $user = $query -> fetch();
 
         if ($user)
@@ -44,11 +86,20 @@ class User extends DataBase
                                             SELECT
                                                *
                                             FROM
-                                                `user`
+                                                `user` AS u
+                                            INNER JOIN
+                                                `leagueoflegends` AS l
+                                            ON
+                                                u.user_id = l.user_id
+                                            INNER JOIN
+                                                `userlookingfor` AS lf
+                                            ON
+                                                u.user_id = lf.user_id
+
         ");
 
         $query -> execute();
-        $users = $query -> fetch();
+        $users = $query -> fetchAll();
 
         if ($users)
         {
