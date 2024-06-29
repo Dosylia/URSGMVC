@@ -8,6 +8,7 @@ use models\ChatMessage;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
 use models\GoogleUser;
+use models\MatchingScore;
 use traits\SecurityController;
 
 class UserController
@@ -20,6 +21,7 @@ class UserController
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;    
     private GoogleUser $googleUser;
+    private MatchingScore $matchingscore;
     private $googleUserId;
     private $username;
     private $gender;
@@ -41,6 +43,7 @@ class UserController
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
         $this -> googleUser = new GoogleUser();
+        $this -> matchingscore = new MatchingScore();
     }
 
     public function createUser()
@@ -250,9 +253,20 @@ class UserController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $usersAll = $this-> user -> getAllUsers();
+            $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
+            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
+
+            foreach ($usersAfterMathing as $match) {
+                $matchedUserId = $match['match_userMatched'];
+                if (!in_array($matchedUserId, $userFriendRequest)) {
+                    $userMatched = $this->user->getUserById($matchedUserId);
+                    break;
+                }
+            }
+
 
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
@@ -272,7 +286,7 @@ class UserController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
+            $usersAll = $this-> user -> getAllUsers();
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);

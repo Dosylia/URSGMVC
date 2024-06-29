@@ -9,6 +9,7 @@ use controllers\UserLookingForController;
 use controllers\FriendRequestController;
 use controllers\ChatMessageController;
 use controllers\BlockController;
+use controllers\MatchingScoreController;
 
 function loadClass($class)
 {
@@ -26,6 +27,7 @@ $userLookingForController = new UserLookingForController();
 $friendRequestController = new FriendRequestController();
 $chatmessageController = new ChatMessageController();
 $blockController = new BlockController();
+$matchingScoreController = new MatchingScoreController();
 
 // IF AND SWITCH CASE
 
@@ -147,6 +149,14 @@ if (isset($_GET['action']))
         case "unblockPerson":
             // Unblock someone
             $blockController->unblockPerson();
+                break;
+        case "swipeDone":
+            // swipe status
+            $friendRequestController->swipeStatus();
+                break;
+        case "algoData":
+            // get Data from js algo
+            $matchingScoreController->getAlgoData();
                 break;
             default;
         break;

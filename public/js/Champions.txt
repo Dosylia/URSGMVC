@@ -1,0 +1,163 @@
+Aatrox;top;bruiser;AD;mobile
+Ahri;mid;control mage;AP;mobile+CC
+Akali;mid/top;assassin;AP;mobile
+Akshan;mid/adc;assassin;AD;mobile+utility
+Alistar;support;tank;AD+AP;engage
+Amumu;jungle;tank;AP;crowd control
+Anivia;mid;control mage;AP;zone control
+Annie;mid/support;burst mage;AP;crowd control
+Aphelios;adc;marksman;AD;utility
+Ashe;adc;marksman;AD;utility
+Aurelion Sol;mid;control mage;AP;zone control
+Azir;mid;control mage;AP;zone control
+Bard;support;utility mage;AP;roaming
+Bel'Veth;Jungle;bruiser;AD;high dps+mobility
+Blitzcrank;support;tank;AD+AP;engage
+Brand;support/mid;burst mage;AP;AoE damage
+Braum;support;tank;AD+AP;crowd control
+Caitlyn;adc;marksman;AD;long-range
+Camille;top;bruiser;AD;mobile
+Cassiopeia;mid;DPS mage;AP;sustained damage
+Cho'Gath;top/mid;tank/mage;AP;crowd control
+Corki;mid/adc;marksman;AD+AP;poke
+Darius;top;bruiser;AD;melee
+Diana;mid/jungle;bruiser;AP;mobile+burst
+Dr. Mundo;top/jungle;tank;AD;sustain
+Draven;adc;marksman;AD;high damage
+Ekko;mid/jungle;assassin;AP;mobile+burst
+Elise;jungle;mage;AP;crowd control
+Evelynn;jungle;assassin;AP;stealth+burst
+Ezreal;adc/mid;marksman;AD+AP;poke+mobility
+Fiddlesticks;jungle/support;mage;AP;crowd control+sustain
+Fiora;top;duelist;AD;mobility+parry
+Fizz;mid;assassin;AP;mobile+burst
+Galio;mid/support;tank/mage;AP;engage+utility
+Gangplank;top/mid;bruiser;AD;zone control
+Garen;top;bruiser;AD;sustain
+Gnar;top;bruiser;AD;transform
+Gragas;jungle/top/support;tank;AP;engage+crowd control
+Graves;jungle;marksman;AD;burst
+Gwen;top;bruiser;AP;mobile
+Hecarim;jungle/top;bruiser;AD;mobile
+Heimerdinger;top/mid/support;mage;AP;zone control
+Illaoi;top;bruiser;AD;zone control
+Irelia;top/mid;bruiser;AD;mobility+crowd control
+Ivern;jungle;support;AP;utility
+Janna;support;enchanter;AP;utility
+Jarvan IV;jungle/top;tank/bruiser;AD;engage+crowd control
+Jax;top/jungle;bruiser;AD;scaling
+Jayce;top/mid;bruiser;AD+AP;poke
+Jhin;adc;marksman;AD;long-range+burst
+Jinx;adc;marksman;AD;AoE damage
+K'Sante;top; Tank/bruiser;AD; engage + mobility
+Kai'Sa;adc;marksman;AD+AP;mobile+burst
+Kalista;adc;marksman;AD;mobility+utility
+Karma;support/mid;enchanter;AP;utility+poke
+Karthus;jungle/mid;mage;AP;global presence
+Kassadin;mid;assassin;AP;mobile
+Katarina;mid;assassin;AP;high damage
+Kayle;top/mid;marksman;AD+AP;scaling
+Kayn;jungle;assassin;AD;mobile+transformation
+Kennen;top/mid;mage;AP;teamfight
+Kha'Zix;jungle;assassin;AD;isolation+burst
+Kindred;jungle;marksman;AD;marks+utility
+Kled;top;bruiser;AD;mounted combat
+Kog'Maw;adc;marksman;AD+AP;long-range+shred
+LeBlanc;mid;assassin;AP;burst+mobility
+Lee Sin;jungle;fighter;AD;mobile+utility
+Leona;support;tank;AD+AP;engage+crowd control
+Lillia;jungle;mage;AP;AoE damage+crowd control
+Lissandra;mid;control mage;AP;crowd control+mobility
+Lucian;adc/mid;marksman;AD;mobile+burst
+Lulu;support;enchanter;AP;utility+protection
+Lux;support/mid;control mage;AP;long-range+crowd control
+Malphite;top/mid/support;tank;AP;engage+crowd control
+Malzahar;mid;control mage;AP;suppress+voidlings
+Maokai;top/jungle/support;tank;AP;crowd control+sustain
+Master Yi;jungle;fighter;AD;melee+scaling
+Milio;support;enchanter;AP;sustain+lane control
+Miss Fortune;adc;marksman;AD;AoE damage+utility
+Mordekaiser;top;bruiser;AP;sustained damage
+Morgana;support/mid;control mage;AP;crowd control+shield
+Nami;support;enchanter;AP;crowd control+heal
+Nasus;top;bruiser;AD;scaling+sustain
+Nautilus;support;tank;AD+AP;engage+crowd control
+Neeko;mid/support;control mage;AP;deception+crowd control
+Nidalee;jungle;mage;AP;poke+mobility
+Nilah;adc;marksman;AD;mobile+AoE
+Nocturne;jungle;assassin;AD;mobile+darkness
+Nunu & Willump;jungle/support;tank;AP;crowd control+utility
+Olaf;jungle/top;bruiser;AD;sustain+crowd control
+Orianna;mid;control mage;AP;utility+crowd control
+Ornn;top/support;tank;AP;engage+utility
+Pantheon;top/mid/jungle/support;bruiser;AD;engage+burst
+Poppy;top/support;tank;AD;engage+crowd control
+Pyke;support;assassin;AD;engage+execute
+Qiyana;mid/jungle;assassin;AD;terrain manipulation
+Quinn;top/adc;marksman;AD;mobility+vision
+Rakan;support;tank;AP;engage+mobility
+Rammus;jungle;tank;AD;crowd control+mobility
+Rek'Sai;jungle;fighter;AD;burrow+engage
+Rell;support;tank;AP;engage+crowd control
+Renata Glasc;support;enchanter;AP;crowd control
+Renekton;top;bruiser;AD;lane dominance
+Rengar;jungle/top;assassin;AD;stealth+burst
+Riven;top/mid;bruiser;AD;mobility+combo
+Rumble;top/mid;mage;AP;sustained damage
+Ryze;top/mid;mage;AP;burst+utility
+Samira;adc/mid;marksman;AD;mobile+AoE
+Sejuani;jungle;tank;AP;engage+crowd control
+Senna;adc/support;marksman;AD+AP;utility+healing
+Seraphine;support/mid;enchanter;AP;utility+crowd control
+Sett;top/jungle;bruiser;AD;engage+sustain
+Shaco;jungle;assassin;AD;deception+burst
+Shen;top/support;tank;AD;global presence+taunt
+Shyvana;jungle;fighter;AD+AP;dragon form
+Singed;top;tank;AP;disruption+poison
+Sion;top/support;tank;AD+AP;crowd control+tankiness
+Sivir;adc;marksman;AD;utility+waveclear
+Skarner;jungle;fighter;AD;crowd control+sustain
+Sona;support;enchanter;AP;utility+sustain
+Soraka;support;enchanter;AP;healing+utility
+Swain;mid/top/support;mage;AP;crowd control+sustain
+Sylas;mid/top/jungle;mage;AP;versatility+steal
+Syndra;mid;control mage;AP;burst+crowd control
+Tahm Kench;support/top;tank;AD+AP;utility+devour
+Taliyah;jungle/mid;control mage;AP;roaming+burst
+Talon;mid;assassin;AD;burst+roaming
+Taric;support;tank;AD+AP;utility+protection
+Teemo;top;marksman;AP;zone control+poke
+Thresh;support;tank;AD+AP;crowd control+utility
+Tristana;adc;marksman;AD;mobile+burst
+Trundle;jungle/top/support;bruiser;AD;crowd control+sustain
+Tryndamere;top;bruiser;AD;split push+melee
+Twisted Fate;mid;control mage;AP;global presence+utility
+Twitch;adc;marksman;AD;stealth+DPS
+Udyr;jungle;fighter;AD;melee+stances
+Urgot;top;bruiser;AD;sustained damage+execute
+Varus;adc/mid;marksman;AD+AP;poke+utility
+Vayne;adc;marksman;AD;mobility+scaling
+Veigar;mid/support;burst mage;AP;scaling+crowd control
+Vel'Koz;support/mid;mage;AP;long-range+burst
+Vex;mid;control mage;AP;zone control+burst
+Vi;jungle;fighter;AD;engage+burst
+Viego;jungle/top;assassin;AD;mobile+life steal
+Viktor;mid;mage;AP;burst+zone control
+Vladimir;top/mid;mage;AP;sustain+burst
+Volibear;top/jungle;tank/bruiser;AD+AP;engage+sustain
+Warwick;jungle;fighter;AD;sustain+crowd control
+Wukong;top/jungle/mid;bruiser;AD;engage+mobility
+Xayah;adc;marksman;AD;utility+burst
+Xerath;mid/support;mage;AP;long-range+poke
+Xin Zhao;jungle/top;fighter;AD;engage+sustain
+Yasuo;mid/top;bruiser;AD;mobile+high damage
+Yone;mid/top;bruiser;AD;mobile+high damage
+Yorick;top;bruiser;AD;split push+zone control
+Yuumi;support;enchanter;AP;utility+healing
+Zac;jungle;tank;AP;engage+sustain
+Zed;mid;assassin;AD;burst+mobility
+Zeri;adc;marksman;AD+AP;high dps+mobility
+Ziggs;mid;mage;AP;poke+zone control
+Zilean;support/mid;control mage;AP;utility+revive
+Zoe;mid;burst mage;AP;burst+crowd control
+Zyra;support/mid;mage;AP;zone control+crowd control
