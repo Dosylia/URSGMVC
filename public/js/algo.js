@@ -202,7 +202,45 @@ loadChampionsValo()
 
 //Here are all the matching functions for the algorythm
 
-//Champion Matching League
+//More simple champion matching functions since the other one went crazy
+function champion_match_new(
+    userMain1,
+    userMain2,
+    userMain3,
+    userLookingMain1,
+    userLookingMain2,
+    userLookingMain3,
+    matchMain1,
+    matchMain2,
+    matchMain3,
+    matchLookingMain1,
+    matchLookingMain2,
+    matchLookingMain3,
+) {
+    //create an array for each user Mains and looking for champions
+    var score=0
+    const userMains = [userMain1, userMain2, userMain3];
+    const userLookingMains = [userLookingMain1, userLookingMain2, userLookingMain3];
+    const matchMains = [matchMain1, matchMain2, matchMain3];
+    const matchLookingMains = [matchLookingMain1, matchLookingMain2, matchLookingMain3];
+
+    // Compare the arrays 
+    function findMatches(mainArray, lookingArray) {
+        mainArray.forEach(champ => {
+            if (lookingArray.includes(champ)) {
+                score += 40;  // raise the score if a match is found
+            }
+        });
+    }
+    //match the main user looking for to the match user mains
+    // findMatches(userMains, matchLookingMains);
+    findMatches(matchMains, userLookingMains);
+
+    // Return the score
+    return score;
+}
+
+//Very complex Champion Matching League
 function champion_match(
     userMain1,
     userMain2,
@@ -770,7 +808,6 @@ function matchRankValo(match_rank, user_rank) {
         'Radiant': 9,
     }
     if (match_rank in rankScore && user_rank in rankScore) {
-        console.log(match_rank, user_rank)
         const score1 = rankScore[match_rank];
         const score2 = rankScore[user_rank];
         var score = 0
@@ -912,13 +949,15 @@ function championValorant(
 function match_profiles(profile_list, user_profile) {
     for (let i = 0; i < profile_list.length; i++) {
         const profile = profile_list[i];
+        console.log("profile: ",profile)
+        console.log("user_profile: ",user_profile)
         var finalScore = 0
         // Match games
         // const game = matchGame(profile.game, profile.lookingGame, user_profile.game, user_profile.lookingGame)
         const game = "League of Legends"
         switch (game) {
             case "League of Legends":
-                finalScore += champion_match(
+                finalScore += champion_match_new(
                     user_profile.mainLol1,
                     user_profile.mainLol2,
                     user_profile.mainLol3,
@@ -933,8 +972,10 @@ function match_profiles(profile_list, user_profile) {
                     profile.lookingMainLol3,
 
                 );
+                console.log("champion_match: ",finalScore)
                 //Matching for rank
                 finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
+                console.log("matchRankLol: ",finalScore)
                 break;
             case "Valorant":
                 finalScore += championValorant(
@@ -1002,6 +1043,7 @@ function match_profiles(profile_list, user_profile) {
         if (profile.server === user_profile.server) {
             finalScore += 10
         }
+        console.log("Server: ",finalScore)
 
         //Match kind of gamer
         if (profile.lookingGamerkind === profile.gamerkind) {
@@ -1011,11 +1053,13 @@ function match_profiles(profile_list, user_profile) {
         } else {
             finalScore -= 20
         }
+        console.log("kind of gamer: ",finalScore)
 
         //Same role gives negative points and if role fits the looking for role it gives points
         if (profile.role === user_profile.role) {
             finalScore += -10
         }
+        
 
         if (profile.role === user_profile.lookingRole) {
             finalScore += 10
@@ -1024,6 +1068,7 @@ function match_profiles(profile_list, user_profile) {
         if (profile.lookingRole === user_profile.role) {
             finalScore += 10
         }
+        console.log("role: ",finalScore)
 
         //Sort by the gender they selected
         if (profile.gender === user_profile.lookingGender) {
@@ -1033,9 +1078,11 @@ function match_profiles(profile_list, user_profile) {
                 finalScore += 10
             }
         }
+        console.log("gender: ",finalScore)
 
         //Matching for age
         finalScore += matchAge(profile.age, user_profile.age)
+        console.log("age: ",finalScore)
 
         profile.score = finalScore
 
@@ -1049,7 +1096,6 @@ function match_profiles(profile_list, user_profile) {
 function sendDataToPHP(dataToSend) {
     // Stringify the array of objects
     const jsonData = JSON.stringify(dataToSend);
-    console.log(jsonData)
     // Create a new fetch request
     fetch('index.php?action=algoData', {
         method: 'POST',

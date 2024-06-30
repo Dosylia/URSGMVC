@@ -253,9 +253,15 @@ class UserController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $usersAll = $this-> user -> getAllUsers();
+            if ($user && $usersAll) {
+                echo '<script>';
+                echo 'window.user = ' . json_encode($user) . ';';
+                echo 'window.usersAll = ' . json_encode($usersAll) . ';';
+                echo '</script>';
+            }
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
             $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
             $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
 
