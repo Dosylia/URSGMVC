@@ -1,0 +1,50 @@
+<div class="messages-container">
+    <div class="chat-link-relative">
+        <div class="chat-link"></div>
+        <a href="index.php?action=chat">X</a>
+    </div>
+
+    <div id="messages">
+        <?php foreach ($messages as $message) : ?>
+            <?php
+            $messageClass = ($message['chat_senderId'] == $user['user_id']) ? 'message-from-user' : 'message-to-user';
+            $messagePosition = ($message['chat_senderId'] == $user['user_id']) ? 'right' : 'left';
+            ?>
+            <div class="message <?= $messageClass ?>" style="text-align: <?= $messagePosition ?>;">
+                <p id="username_message">
+                    <?php if ($message['chat_senderId'] == $user['user_id']) : ?>
+                        <?php if (!empty($user['user_picture'])) : ?>
+                            <img class="avatar" src="public/upload/<?= $user['user_picture'] ?>" alt="Avatar <?= $user['user_username'] ?>">
+                        <?php else : ?>
+                            <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $user['user_username'] ?>">
+                        <?php endif; ?>
+                        <a class="username_chat_friend" target="_blank" href="index.php?action=userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
+                        <span class="timestamp left"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
+                    <?php else : ?>
+                        <?php if (!empty($friend['user_picture'])) : ?>
+                            <img class="avatar" src="public/upload/<?= $friend['user_picture'] ?>" alt="Avatar <?= $friend['user_username'] ?>">
+                        <?php else : ?>
+                            <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friend['user_username'] ?>">
+                        <?php endif; ?>
+                        <a class="username_chat_friend" target="_blank" href="index.php?action=anotherUser&username=<?= urlencode($friend['user_username']) ?>"><strong class="strong_text"><?= $friend['user_username'] ?></strong></a>
+                        <span class="timestamp right"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
+                    <?php endif; ?>
+                </p>
+                <p id="last-message"><?= $message['chat_message'] ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="reply-box">
+        <form method="POST" action="" id="myForm">
+            <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
+            <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friend['user_id'] ?>">
+            <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Answer to @<?= $friend['user_username'] ?>"><br>
+            <input id="submit_chat" type="submit" name="submit" value="Send">
+        </form>
+    </div>
+</div>
+
+<script src="public/js/swiping/get_message.js"></script>
+<script src="public/js/swiping/send_messagephp.js"></script>
+<script src="public/js/swiping/perso_chat.js"></script>

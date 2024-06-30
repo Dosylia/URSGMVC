@@ -7,7 +7,7 @@
             <a href="index.php?action=swiping"><img title="Swipe" class="scale" src="public/images/swipe.png" alt="swipe"></a>
 
             <div class="chat_nav">
-                <a href="index.php/action=chat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a> 
+                <a href="index.php?action=chat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a> 
                 <?php if (isset($unreadCount) && $unreadCount > 0) :?>
                     <?= "<span class='unread-count'><button title='Unread message' id='unread_message'> " . $unreadCount . "</button></span>"; ?>
                 <?php endif; ?>

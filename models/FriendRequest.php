@@ -222,7 +222,7 @@ class FriendRequest extends DataBase
 
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `friendrequest`(
-                                                `fr_sendingId`,
+                                                `fr_senderId`,
                                                 `fr_receiverId`,                                    
                                                 `fr_date`,
                                                 `fr_status`            

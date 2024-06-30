@@ -38,7 +38,7 @@
 
     <div class="user_page_main_content">
         <div class="general_box">
-            <br><h2 id="title_generalbox">About you</h2><br>
+            <br><h2 id="title_generalbox">About them</h2><br>
             <?php if ($user['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername'])): ?>
                     <div class="box_league_account">
@@ -46,7 +46,7 @@
                             <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
                             <div class="box_league_account_main_row_column">
                                 <p><strong><?= $lolUser['lol_sUsername']?></strong></p> 
-                                <p><?= strtoupper($lolUser['lol_server']) ?>, <?= strtoupper($lolUser['lol_sRank']) ?>, <?= strtoupper($lolUser['lol_sLevel']) ?> </p> 
+                                <p><?= strtoupper($lolUser['lol_sRank']) ?>, <?= strtoupper($lolUser['lol_sLevel']) ?> </p> 
                             </div>
                         </div>
                     </div><br>
@@ -64,20 +64,8 @@
             <div class="about_you_users"><br>
                 <p><strong>Gender</strong>: <?= ucfirst($user['user_gender']) ?></p><br>
                 <p><strong>Kind of gamer</strong>: <?= ucfirst($user['user_kindOfGamer']) ?></p><br>
-                <p><strong>Your short bio</strong>: <?= $user['user_shortBio'] ?></p><br>
+                <p><strong>Their short bio</strong>: <?= $user['user_shortBio'] ?></p><br>
             </div>
-        </div>
-    </div>
-
-    <div class="lookingfor_box">
-        <br><h2 id="title_generalbox">Looking for</h2><br>
-            <?php if ($user['user_game'] !== 'valorant'): ?>
-                <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
-            <?php endif; ?>    
-            <div class="about_you_users"><br>
-                <p><strong>Gender</strong>: <?= ($lfUser['lf_gender']) ?></p><br>
-                <p><strong>Kind of gamer</strong>: <?= ($lfUser['lf_kindofgamer']); ?></p><br>
-            </div> 
         </div>
     </div>
    

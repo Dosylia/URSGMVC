@@ -6,6 +6,9 @@ use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
+use models\FriendRequest;
+use models\ChatMessage;
+use models\MatchingScore;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -22,6 +25,9 @@ class GoogleUserController
     private User $user;
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;
+    private MatchingScore $matchingscore;
+    private FriendRequest $friendrequest;
+    private ChatMessage $chatmessage;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -37,6 +43,9 @@ class GoogleUserController
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
+        $this -> matchingscore = new MatchingScore();
+        $this -> friendrequest = new FriendRequest();
+        $this -> chatmessage = new ChatMessage();
     }
 
     public function homePage() {
@@ -100,7 +109,26 @@ class GoogleUserController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
+            $usersAll = $this-> user -> getAllUsers();
+
+            if ($user && $usersAll) {
+                echo '<script>';
+                echo 'window.user = ' . json_encode($user) . ';';
+                echo 'window.usersAll = ' . json_encode($usersAll) . ';';
+                echo '</script>';
+            }
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
+            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
+
+            foreach ($usersAfterMathing as $match) {
+                $matchedUserId = $match['match_userMatched'];
+                if (!in_array($matchedUserId, $userFriendRequest)) {
+                    $userMatched = $this->user->getUserById($matchedUserId);
+                    break;
+                }
+            }
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";
             $page_title = "URSG - Swiping";

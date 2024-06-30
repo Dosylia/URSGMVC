@@ -158,6 +158,22 @@ if (isset($_GET['action']))
             // get Data from js algo
             $matchingScoreController->getAlgoData();
                 break;
+        case "chat":
+            // page chat
+            $chatmessageController->pageChat();
+                break;
+        case "sendMessageData":
+            // send new message to database
+            $chatmessageController->sendMessageData();
+                break;
+        case "getMessageData":
+            // get all message
+            $chatmessageController->getMessageData();
+                break;
+        case "persoChat":
+            // get ajax data message
+            $chatmessageController->pagePersoMessage();
+                break;
             default;
         break;
     } 
