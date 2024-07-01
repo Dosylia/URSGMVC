@@ -176,7 +176,8 @@ class FriendRequest extends DataBase
                                         UPDATE
                                             `friendrequest`
                                         SET
-                                            `fr_status` = 'rejected'
+                                            `fr_status` = 'rejected',
+                                            `fr_rejectedAt` = NOW()
                                         WHERE
                                             fr_id = ?
         ");
@@ -199,7 +200,8 @@ class FriendRequest extends DataBase
                                         UPDATE
                                             `friendrequest`
                                         SET
-                                            `fr_status` = 'rejected'
+                                            `fr_status` = 'rejected',
+                                            `fr_rejectedAt` = NOW()
                                         WHERE
                                             (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
         ");

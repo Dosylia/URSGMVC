@@ -43,7 +43,7 @@
                             <h2>Are you sure you want to block <span id="friendUsername"></span>?</h2>
                             <form id="blockFriendForm" action="index.php?action=blockPerson" method="post">
                                 <input type="hidden" id="senderId" name="senderId" value="<?= $user['user_id'] ?>">
-                                <input type="hidden" id="receiverId" name="receiverId" value="<?= $friend['user_id'] ?>">
+                                <input type="hidden" id="receiverId" name="receiverId" value="<?= $friendId ?>">
                                 <button name="submit" type="submit">Yes</button>
                             </form>
                             <button onclick="closeConfirmationPopup()">No</button>

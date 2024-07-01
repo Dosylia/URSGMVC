@@ -100,7 +100,7 @@ class ChatMessageController
         if (isset($_POST['param']))
         {
             $data = json_decode($_POST['param']);
-
+            
             $status = "unread";
             
             $senderId = $data->senderId;
@@ -109,8 +109,16 @@ class ChatMessageController
             $this->setReceiverId($receiverId);
             $message = $data->message;
             $this->setMessage($message);
-
+    
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
+    
+            if ($insertMessage) {
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to send message']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
     }
 

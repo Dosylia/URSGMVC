@@ -3,7 +3,6 @@ function openConfirmationPopup() {
     if (typeof confirmationPopup.showModal === "function") {
       confirmationPopup.showModal();
     } else {
-      // Affichage de secours pour les navigateurs ne prenant pas en charge <dialog>
       confirmationPopup.style.display = "block";
     }
   }
@@ -13,7 +12,6 @@ function openConfirmationPopup() {
     if (typeof confirmationPopup.close === "function") {
       confirmationPopup.close();
     } else {
-      // Fermeture de secours pour les navigateurs ne prenant pas en charge <dialog>
       confirmationPopup.style.display = "none";
     }
   }
@@ -24,7 +22,6 @@ function openConfirmationPopup() {
     if (typeof confirmationPopup.showModal === "function") {
       confirmationPopup.showModal();
     } else {
-      // Affichage de secours pour les navigateurs ne prenant pas en charge <dialog>
       confirmationPopup.style.display = "block";
     }
   }
@@ -34,7 +31,6 @@ function openConfirmationPopup() {
     if (typeof confirmationPopup.close === "function") {
       confirmationPopup.close();
     } else {
-      // Fermeture de secours pour les navigateurs ne prenant pas en charge <dialog>
       confirmationPopup.style.display = "none";
     }
   }
