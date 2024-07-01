@@ -21,10 +21,9 @@ class GoogleUser extends DataBase
                                                 `google_fullName`,
                                                 `google_firstName`,                                                
                                                 `google_lastName`,
-                                                `google_email`,
-                                                `google_pictureUrl`
+                                                `google_email`
                                             FROM
-                                                `googleUser`
+                                                `googleuser`
                                             WHERE
                                                 `google_id` = ?
 
@@ -43,19 +42,17 @@ class GoogleUser extends DataBase
         }
     }
 
-    public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail,$googleImageUrl)
+    public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
     {
         $query = $this -> bdd -> prepare("
-                                            INSERT INTO `googleUser`(
+                                            INSERT INTO `googleuser`(
                                                 `google_id`,
                                                 `google_fullName`,
                                                 `google_firstName`,                                                
                                                 `google_lastName`,
-                                                `google_email`,
-                                                `google_pictureUrl`
+                                                `google_email`
                                             )
                                             VALUES (
-                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -64,7 +61,7 @@ class GoogleUser extends DataBase
                                             )
         ");
 
-        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail,$googleImageUrl]);
+        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail]);
 
         if($createGoogleUser)
         {
@@ -84,11 +81,11 @@ class GoogleUser extends DataBase
                                             `google_firstName`,
                                             `google_lastName`,
                                             `google_email`,
-                                            `google_pictureUrl`,
                                             `google_confirmEmail`
                                             FROM
-                                                `googleUser`
-                                            WHERE                                            `google_email` = ?
+                                                `googleuser`
+                                            WHERE                                            
+                                                `google_email` = ?
         ");
 
         $query -> execute([$email]);

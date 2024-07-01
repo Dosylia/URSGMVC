@@ -10,12 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
         messagesContainer.innerHTML = '<p>Loading messages...</p>';
     }
 
-    // Hide loading indicator
-    function hideLoadingIndicator() {
-        let messagesContainer = document.getElementById("messages");
-        messagesContainer.innerHTML = '';
-    }
-
     // Function to fetch messages
     function fetchMessages(userId, friendId) {
         if (isFirstFetch) {
@@ -34,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
-            hideLoadingIndicator();
 
             if (data.success) {
                 console.log('Messages fetched successfully:', data.messages);
@@ -70,15 +63,22 @@ document.addEventListener("DOMContentLoaded", function() {
             let messagePosition = isCurrentUser ? 'right' : 'left';
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
+            let pictureLink;
 
             let messageDiv = document.createElement("div");
             messageDiv.classList.add("message", messageClass);
             messageDiv.style.textAlign = messagePosition;
 
+            if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
+                pictureLink = "images/defaultprofilepicture.jpg";
+            } else {
+                pictureLink = `upload/${messageUser.user_picture}`;
+            }
+
             // Create message content
             let messageContent = `
                 <p id="username_message">
-                    <img class="avatar" src="public/upload/${messageUser.user_picture}" alt="Avatar ${messageUser.user_username}">
+                    <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                     <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                     <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                 </p>
@@ -104,4 +104,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Optionally, you can set an interval to fetch messages periodically
     setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
+
+    // Function to set the --vh variable
+    function setVhVariable() {
+        let vh = window.innerHeight * 0.01; // 1vh
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    // Set the variable initially
+    setVhVariable();
+    
+    // Update the variable on resize
+    window.addEventListener('resize', setVhVariable);
 });

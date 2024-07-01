@@ -8,6 +8,11 @@
   * {
       margin: 0;
   }
+
+  body
+  {
+    max-height: 100vh;
+  }
   
   .main_section {
       background: url('../images/pc_background.webp');
@@ -672,7 +677,6 @@
   
     .button_swiping {
       border: none;
-      background-color: white;
       border-radius: 5px;
     }
     
@@ -833,6 +837,7 @@
 
     #messages {
       height: 500px;
+      min-height: calc(var(--vh, 1vh) * 80); /* 80% of vh */
       overflow-y: auto;
     }
     
@@ -977,7 +982,7 @@
   }
   
   .dark-mode .button_swiping {
-    background-color: var(--dark-ligher-grey);
+    background-color: var(--dark-grey);
   }
   
   .dark-mode .box_league_account_main_row {
@@ -1770,10 +1775,6 @@ cursor: pointer;
 
   .friend-list {
     width: 30%;
-  }
-
-  #search1, #search2, #search3, #searchValorant1, #searchValorant2, #searchValorant3 {
-    display: none;
   }
 
   #mid_main_section_button {

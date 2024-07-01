@@ -1,5 +1,0 @@
-On league of legends preference page:
-- when clicking select a main should be directly able to write.
-- Fix the line being smaller on server selection.
-- being able to delete champions
-- add check javascript side for fields

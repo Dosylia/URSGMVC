@@ -10,7 +10,8 @@ class LeagueOfLegends extends DataBase
     public function __construct() 
     {
         $this->bdd = $this->getBdd();
-    }   
+    }  
+    
     
     public function createLoLUser($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount) 
     {
@@ -39,6 +40,7 @@ class LeagueOfLegends extends DataBase
                                         ");
 
         $createLeagueUser = $query -> execute([$userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount]);
+
 
         if($createLeagueUser)
         {
@@ -92,6 +94,7 @@ class LeagueOfLegends extends DataBase
         if (!empty($updates)) {
             $query = $this->bdd->prepare($sql);
             $updateLeagueTest = $query->execute($params);
+
     
             if ($updateLeagueTest) {
                 return true;
@@ -118,6 +121,7 @@ class LeagueOfLegends extends DataBase
         $query -> execute([$lolAccount]);
         $lolAccountTest = $query -> fetch();
 
+
         if ($lolAccountTest)
         {
             return $lolAccountTest;
@@ -142,6 +146,7 @@ class LeagueOfLegends extends DataBase
 
         $query -> execute([$lolId]);
         $lolIdTest = $query -> fetch();
+        
 
         if ($lolIdTest)
         {
@@ -175,6 +180,7 @@ class LeagueOfLegends extends DataBase
 
         $query -> execute([$userId]);
         $userIdTest = $query -> fetch();
+
 
         if ($userIdTest)
         {

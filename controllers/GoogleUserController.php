@@ -124,7 +124,7 @@ class GoogleUserController
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
 
             if ($user && $usersAll) {
@@ -158,7 +158,7 @@ class GoogleUserController
             require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "leagueoflegends") { 
             // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
@@ -215,8 +215,6 @@ class GoogleUserController
             }
             $googleEmail = $googleData->email;
             $this->setGoogleEmail($googleEmail);  
-            $googleImageUrl = $googleData->imageUrl;
-            $this->setGoogleImageUrl($googleImageUrl);  
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
 
@@ -292,7 +290,7 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
-                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail(),$this->getGoogleImageUrl());
+                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
 
                 if($createGoogleUser) 
                 {
@@ -493,15 +491,5 @@ class GoogleUserController
     public function setGoogleEmail($googleEmail)
     {
         $this->googleEmail = $googleEmail;
-    }
-
-    public function getGoogleImageUrl()
-    {
-        return $this->googleImageUrl;
-    }
-
-    public function setGoogleImageUrl($googleImageUrl)
-    {
-        $this->googleImageUrl = $googleImageUrl;
     }
 }

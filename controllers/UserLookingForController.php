@@ -3,7 +3,6 @@
 namespace controllers;
 
 use models\UserLookingFor;
-use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
 use models\FriendRequest;
@@ -15,7 +14,6 @@ class UserLookingForController
     use SecurityController;
 
     private UserLookingFor $userlookingfor;
-    private GoogleUser $googleUser; 
     private User $user; 
     private LeagueOfLegends $leagueoflegends;
     private FriendRequest $friendrequest;
@@ -35,7 +33,6 @@ class UserLookingForController
     public function __construct()
     {
         $this -> userlookingfor = new userLookingFor();
-        $this -> googleUser = new GoogleUser();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> friendrequest = new FriendRequest();
@@ -53,24 +50,21 @@ class UserLookingForController
           
           $darkMode = ($mode === 'dark');
 
-        $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
-
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutHome.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
                 $template = "views/signup/leagueoflegendsuser";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && !isset($googleUser['user_username'])) {
+        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
