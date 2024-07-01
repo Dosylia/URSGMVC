@@ -317,7 +317,8 @@ class UserController
 
             // Get important datas
             $username = $_GET['username'];
-            $user = $this-> user -> getUserByUsername($username);
+            $anotherUser = $this-> user -> getUserByUsername($username);
+            $user = $this->user->getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $unreadCount = $this-> chatmessage -> countMessage($user['user_id']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);

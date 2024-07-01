@@ -3,30 +3,30 @@
         <div class="user_page_main_content_row">
             <div class="main_box">
                 <div class="user_page_picture">
-                    <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                        <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                    <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
+                        <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
                     <?php else :?>
                         <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <?php endif; ?>
                         
                         <div class="user_page_update_row">
-                            <?php if (!empty($user['user_twitter'])): ?>  
-                                <a target="_blank" href="<?= $user['user_twitter'] ?>">
+                            <?php if (!empty($anotherUser['user_twitter'])): ?>  
+                                <a target="_blank" href="<?= $anotherUser['user_twitter'] ?>">
                                     <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
                             <?php endif; ?>   
                             
-                            <?php if (!empty($user['user_discord'])): ?>  
-                                    <a target="_blank" href="<?= $user['user_discord'] ?>">
+                            <?php if (!empty($anotherUser['user_discord'])): ?>  
+                                    <a target="_blank" href="<?= $anotherUser['user_discord'] ?>">
                                     <img class="social_picture" src="public/images/discord_user.png" alt="discord_user"></a>
                             <?php endif; ?>   
                             
-                            <?php if (!empty($user['user_instragram'])): ?>
-                                    <a target="_blank" href="<?= $user['user_instagram'] ?>">
+                            <?php if (!empty($anotherUser['user_instragram'])): ?>
+                                    <a target="_blank" href="<?= $anotherUser['user_instagram'] ?>">
                                     <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
                             <?php endif; ?>   
 
-                            <?php if (!empty($user['user_twitch'])): ?>
-                                    <a target="_blank" href="<?= $user['user_twitch'] ?>">
+                            <?php if (!empty($anotherUser['user_twitch'])): ?>
+                                    <a target="_blank" href="<?= $anotherUser['user_twitch'] ?>">
                                     <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
                             <?php endif; ?>                             
                         </div><br>
@@ -39,7 +39,7 @@
     <div class="user_page_main_content">
         <div class="general_box">
             <br><h2 id="title_generalbox">About them</h2><br>
-            <?php if ($user['user_game'] !== 'valorant'): ?> 
+            <?php if ($anotherUser['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername'])): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
@@ -62,9 +62,9 @@
             <?php endif; ?>
 
             <div class="about_you_users"><br>
-                <p><strong>Gender</strong>: <?= ucfirst($user['user_gender']) ?></p><br>
-                <p><strong>Kind of gamer</strong>: <?= ucfirst($user['user_kindOfGamer']) ?></p><br>
-                <p><strong>Their short bio</strong>: <?= $user['user_shortBio'] ?></p><br>
+                <p><strong>Gender</strong>: <?= ucfirst($anotherUser['user_gender']) ?></p><br>
+                <p><strong>Kind of gamer</strong>: <?= ucfirst($anotherUser['user_kindOfGamer']) ?></p><br>
+                <p><strong>Their short bio</strong>: <?= $anotherUser['user_shortBio'] ?></p><br>
             </div>
         </div>
     </div>
@@ -72,7 +72,7 @@
 
     <dialog id="favDialogSocialLinks">
         <br><h2 id="title_generalbox">Your social links:</h2><br>  
-        <form action="index.php?action=updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
+        <form action="index.php?action=updateSocial&username=<?= urlencode($anotherUser['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
             <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
             <label for="twitter">Twitter:</label><br><br>
@@ -87,7 +87,7 @@
     </dialog>
 
     <dialog id="favDialogPicture">
-        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data">
+        <form action="index.php?action=updatePicture&username=<?= urlencode($anotherUser['user_username']) ?>" method="post" enctype="multipart/form-data">
             <br><p id="title_generalbox">Add a profile picture or update it</p><br>
             <input type="file" name="file"><br>
             <input type="submit" name="submit" value="Upload">

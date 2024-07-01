@@ -2,7 +2,7 @@
 
     <script type="module" src="public/js/algo.js"></script>
 
-    <?php if ($userMatched !== null) :?>
+    <?php if (isset($userMatched) && $userMatched !== null) :?>
         <section class="user_page">
             <div class="user_page_main_content_row">
                 <div class="main_box">
@@ -70,6 +70,12 @@
             </form>
         </div>
         </section>
+    <? else :?>
+        <section class="google_needed"><br><br>
+            <img src="public/images/vayne_emote.png" alt="jhinshrug">
+            <h2>You have seen all available profiles.<h2>
+
+            </section>
     <? endif; ?>
 
 <? endif; ?>
