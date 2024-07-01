@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     let userId = document.getElementById("senderId").value;
     let friendId = document.getElementById("receiverId").value;
+    let currentMessages = []; // Store the current messages
+    let isFirstFetch = true; // Flag to track the first fetch
 
     // Show loading indicator
     function showLoadingIndicator() {
@@ -16,7 +18,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to fetch messages
     function fetchMessages(userId, friendId) {
-        showLoadingIndicator();
+        if (isFirstFetch) {
+            showLoadingIndicator();
+            isFirstFetch = false; // Reset the flag after the first fetch
+        }
+
+        console.log('Fetching messages for userId:', userId, 'and friendId:', friendId);
 
         fetch('index.php?action=getMessageData', {
             method: 'POST',
@@ -30,14 +37,21 @@ document.addEventListener("DOMContentLoaded", function() {
             hideLoadingIndicator();
 
             if (data.success) {
-                updateMessageContainer(data.messages, data.friend, data.user);
+                console.log('Messages fetched successfully:', data.messages);
+                // Compare the fetched messages with the current messages
+                if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
+                    currentMessages = data.messages; // Update the current messages
+                    updateMessageContainer(data.messages, data.friend, data.user);
+                } else {
+                    console.log('No new messages. No update needed.');
+                }
             } else {
-                console.error('Error:', data.error);
+                console.error('Error fetching messages:', data.error);
             }
         })
         .catch(error => {
             hideLoadingIndicator();
-            console.error('Error:', error);
+            console.error('Fetch error:', error);
 
             // Retry fetching messages after a delay
             setTimeout(() => fetchMessages(userId, friendId), 5000);
@@ -48,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateMessageContainer(messages, friend, user) {
         let messagesContainer = document.getElementById("messages");
         messagesContainer.innerHTML = ''; // Clear current messages
+        console.log('Updating message container with messages:', messages);
 
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
@@ -73,6 +88,15 @@ document.addEventListener("DOMContentLoaded", function() {
             messageDiv.innerHTML = messageContent;
             messagesContainer.appendChild(messageDiv);
         });
+
+        console.log('Messages container updated. Now scrolling to bottom.');
+        setTimeout(scrollToBottom, 100); // Delay scrolling to ensure container is updated
+    }
+
+    // Function to scroll to the bottom of the messages container
+    function scrollToBottom() {
+        let messagesContainer = document.getElementById("messages");
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     // Initially fetch messages

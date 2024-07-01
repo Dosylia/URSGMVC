@@ -174,6 +174,10 @@ if (isset($_GET['action']))
             // get ajax data message
             $chatmessageController->pagePersoMessage();
                 break;
+        case "saveDarkMode":
+            // save user dark mode
+            $userController->saveDarkMode();
+                break;
             default;
         break;
     } 

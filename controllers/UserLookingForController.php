@@ -45,6 +45,14 @@ class UserLookingForController
     public function pageLookingFor()
     {
 
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
         $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
 
@@ -77,6 +85,16 @@ class UserLookingForController
 
     public function pageUpdateLookingFor()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+          
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 

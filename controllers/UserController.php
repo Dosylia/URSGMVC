@@ -248,6 +248,16 @@ class UserController
 
     public function pageswiping()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+          
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -287,6 +297,16 @@ class UserController
 
     public function pageUserProfile()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -312,9 +332,18 @@ class UserController
 
     public function pageAnotherUserProfile()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
-
             // Get important datas
             $username = $_GET['username'];
             $anotherUser = $this-> user -> getUserByUsername($username);
@@ -344,6 +373,16 @@ class UserController
 
     public function pageUpdateProfile()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -363,6 +402,25 @@ class UserController
             header("Location: index.php");
             exit();
         }
+    }
+
+    public function saveDarkMode()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $requestData = json_decode(file_get_contents('php://input'), true);
+            $mode = $requestData['mode'];
+          
+            $_SESSION['mode'] = $mode;
+          
+            $darkMode = ($mode === 'dark');
+            $response = array('status' => 'success', 'message' => 'Mode preference saved successfully.');
+            echo json_encode($response);
+          } else {
+            $response = array('status' => 'error', 'message' => 'Invalid request method.');
+            echo json_encode($response);
+          }
+          
+          $darkMode = ($_SESSION['mode'] === 'dark');        
     }
 
     public function emptyInputSignup($username, $age, $short_bio) 
