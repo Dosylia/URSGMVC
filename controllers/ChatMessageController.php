@@ -40,6 +40,16 @@ class ChatMessageController
 
     public function pageChat()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+          
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -66,6 +76,16 @@ class ChatMessageController
 
     public function pagePersoMessage()
     {
+
+        if (isset($_SESSION['mode'])) {
+            $mode = $_SESSION['mode'];
+          } else {
+            $mode = 'light';
+          }
+          
+          $darkMode = ($mode === 'dark');
+
+          
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 

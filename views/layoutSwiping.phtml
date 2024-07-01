@@ -24,11 +24,14 @@
                         <?= "<span class='pending-count'><button title='Friend requests' id='unread_message'> " . $pendingCount . "</button></span>"; ?>
                 <?php endif; ?>
             </div>
+            <div class="toggle-container">
+                <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+            </div>
         </div>
     </nav>
 </header>
 
-<body>
+<body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
     <main>
         <?php if(isset($_GET['message'])) :?>
             <span class="form-error"><?= $_GET['message'] ?></span>

@@ -4,10 +4,13 @@
         <div class="nav_swiping">
             <a href="index.php"><img title="Home" class="scale" src="public/images/favicon/favicon.ico" alt="logo_ursg"></a>
         </div>
+        <div class="toggle-container">
+            <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+        </div>
     </nav>
 </header>
 
-<body>
+<body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
     <main>
         <?php if(isset($_GET['message'])) :?>
             <span class="form-error"><?= $_GET['message'] ?></span>

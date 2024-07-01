@@ -719,7 +719,7 @@
   
     .messages-container {
       padding: 10px;
-      height: 60vh;
+      min-height: 75vh;
       overflow-y: scroll;
     }
   
@@ -828,6 +828,12 @@
     
     .friend-last-message {
       color: #888888;
+      overflow-y: auto;
+    }
+
+    #messages {
+      height: 500px;
+      overflow-y: auto;
     }
     
     .chat-preview {
