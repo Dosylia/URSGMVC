@@ -50,7 +50,7 @@
             <h2 id="title_generalbox">Friend requests</h2><br>
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn">
-                    <p> From: <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['fr_senderId']) ?>"><?= strtoupper($request['user_username']) ?></a>, the <? date('m/d H:i', strtotime($request['fr_date'])) ?></p><br>
+                    <p> From: <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['user_username']) ?>"><?= strtoupper($request['user_username']) ?></a>, the <? date('m/d H:i', strtotime($request['fr_date'])) ?></p><br>
                     <div class="friend_request_ctn_btn">
                         <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>'><button id="accept_friend_button">Accept</button></a>
                         <a href='index.php?action=requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>

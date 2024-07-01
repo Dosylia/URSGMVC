@@ -11,6 +11,7 @@ class User extends DataBase
         $this->bdd = $this->getBdd();
     }
 
+
     public function getUserByUsername($username)
     {
 
@@ -18,21 +19,14 @@ class User extends DataBase
                                             SELECT
                                                 *
                                             FROM
-                                                `user` As u
-                                            INNER JOIN
-                                                `leagueoflegends` AS l
-                                            ON
-                                                u.user_id = l.user_id
-                                            INNER JOIN
-                                                `userlookingfor` AS lf
-                                            ON
-                                                u.user_id = lf.user_id
+                                                `user`
                                             WHERE
-                                                u.user_username = ?
+                                                `user_username` = ?
         ");
 
         $query -> execute([$username]);
         $user = $query -> fetch();
+
 
         if ($user)
         {
@@ -68,6 +62,7 @@ class User extends DataBase
         $query -> execute([$userId]);
         $user = $query -> fetch();
 
+
         if ($user)
         {
             return $user;
@@ -100,6 +95,7 @@ class User extends DataBase
 
         $query -> execute();
         $users = $query -> fetchAll();
+
 
         if ($users)
         {
@@ -137,6 +133,7 @@ class User extends DataBase
                                         ");
 
         $createWebsiteUser = $query -> execute([$googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game]);
+
 
         if($createWebsiteUser)
         {
@@ -182,6 +179,7 @@ class User extends DataBase
         if (!empty($updates)) {
             $query = $this->bdd->prepare($sql);
             $updateUserTest = $query->execute($params);
+
     
             if ($updateUserTest) {
                 return true;
@@ -222,6 +220,7 @@ class User extends DataBase
         if (!empty($updates)) {
             $query = $this->bdd->prepare($sql);
             $updateSocialTest = $query->execute($params);
+
     
             if ($updateSocialTest) {
                 return true;
@@ -282,6 +281,7 @@ class User extends DataBase
 
         $query -> execute([$googleUserId]);
         $googleUserIdTest = $query -> fetch();
+
 
         if($googleUserIdTest)
         {

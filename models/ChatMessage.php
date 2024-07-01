@@ -11,6 +11,7 @@ class ChatMessage extends DataBase
         $this->bdd = $this->getBdd();
     }
 
+
     public function countMessage($userId)
     {
         $query = $this -> bdd -> prepare("
@@ -73,14 +74,19 @@ class ChatMessage extends DataBase
     public function getMessage($userId, $friendId)
     {
         $query = $this -> bdd -> prepare("
-                                        SELECT
-                                            *
-                                        FROM
-                                            `chatmessage`
-                                        WHERE
-                                            (chat_receiverId = ? AND chat_senderId = ?)
-                                        OR
-                                            (chat_receiverId = ? AND chat_senderId = ?)
+                                        SELECT * FROM (
+                                            SELECT
+                                                *
+                                            FROM
+                                                `chatmessage`
+                                            WHERE
+                                                (chat_receiverId = ? AND chat_senderId = ?)
+                                                OR
+                                                (chat_receiverId = ? AND chat_senderId = ?)
+                                            ORDER BY
+                                                chat_date DESC
+                                            LIMIT 20
+                                        ) subquery
                                         ORDER BY
                                             chat_date ASC
         ");

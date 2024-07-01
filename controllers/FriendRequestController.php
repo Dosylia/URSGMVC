@@ -92,7 +92,7 @@ class FriendRequestController
             $receiverId = $this->validateInput($_POST["receiver_id"]);
             $this->setReceiverId($receiverId);
 
-            $swipeStatusNo = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId());
+            $swipeStatusNo = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
 
             if ($swipeStatusNo)
             {

@@ -11,6 +11,7 @@ class Block extends DataBase
         $this->bdd = $this->getBdd();
     }
 
+
     public function getBlocklist($userId)
     {
         $query = $this->bdd->prepare("

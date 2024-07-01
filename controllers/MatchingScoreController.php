@@ -2,25 +2,15 @@
 
 namespace controllers;
 
-use models\UserLookingFor;
-use models\GoogleUser;
-use models\User;
-use models\LeagueOfLegends;
-use models\FriendRequest;
-use models\ChatMessage;
 use models\MatchingScore;
+
+
 use traits\SecurityController;
 
 class MatchingScoreController
 {
     use SecurityController;
 
-    private UserLookingFor $userlookingfor;
-    private GoogleUser $googleUser; 
-    private User $user; 
-    private LeagueOfLegends $leagueoflegends;
-    private FriendRequest $friendrequest;
-    private ChatMessage $chatmessage;
     private MatchingScore $matchingscore;
     private $userMatching;
     private $userMatched;
@@ -30,12 +20,6 @@ class MatchingScoreController
     
     public function __construct()
     {
-        $this -> userlookingfor = new userLookingFor();
-        $this -> googleUser = new GoogleUser();
-        $this -> user = new User();
-        $this -> leagueoflegends = new LeagueOfLegends();
-        $this -> friendrequest = new FriendRequest();
-        $this -> chatmessage = new ChatMessage();
         $this -> matchingscore = new MatchingScore();
     }
 

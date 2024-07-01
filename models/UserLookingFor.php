@@ -123,7 +123,7 @@ class UserLookingFor extends DataBase
         if (!empty($updates)) {
             $query = $this->bdd->prepare($sql);
             $updateLookingForTest = $query->execute($params);
-    
+
             if ($updateLookingForTest) {
                 return true;
             } else {

@@ -8,6 +8,10 @@
                     <?php else :?>
                         <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <?php endif; ?>
+                    <div class="user_page_update_name">
+                        <span id="user_page_username"><?= ucfirst($anotherUser['user_username']) ?></span>, 
+                        <span id="age_user"><?= ucfirst($anotherUser['user_age']) ?></span>     
+                    </div>
                         
                         <div class="user_page_update_row">
                             <?php if (!empty($anotherUser['user_twitter'])): ?>  

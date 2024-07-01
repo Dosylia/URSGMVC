@@ -111,7 +111,6 @@ function handleCredentialResponse(response)
       const fullName = responsePayload.name;
       const givenName = responsePayload.given_name;
       const familyName = responsePayload.family_name;
-      const imageUrl = responsePayload.picture;
       const email = responsePayload.email;
   
   
@@ -119,7 +118,6 @@ function handleCredentialResponse(response)
       console.log('Full Name: ' + fullName);
       console.log('Given Name: ' + givenName);
       console.log('Family Name: ' + familyName);
-      console.log("Image URL: " + imageUrl);
       console.log("Email: " + email);
   
       const userData = {
@@ -127,7 +125,6 @@ function handleCredentialResponse(response)
         fullName: fullName,
         givenName: givenName,
         familyName: familyName,
-        imageUrl: imageUrl,
         email: email
       };
 

@@ -7,7 +7,6 @@ use models\FriendRequest;
 use models\ChatMessage;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
-use models\GoogleUser;
 use models\MatchingScore;
 use traits\SecurityController;
 
@@ -20,7 +19,6 @@ class UserController
     private ChatMessage $chatmessage;
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;    
-    private GoogleUser $googleUser;
     private MatchingScore $matchingscore;
     private $googleUserId;
     private $username;
@@ -42,7 +40,6 @@ class UserController
         $this -> chatmessage = new ChatMessage();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
-        $this -> googleUser = new GoogleUser();
         $this -> matchingscore = new MatchingScore();
     }
 
@@ -262,7 +259,7 @@ class UserController
         {
 
             // Get important datas
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
             if ($user && $usersAll) {
                 echo '<script>';
@@ -311,7 +308,7 @@ class UserController
         {
 
             // Get important datas
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
@@ -346,14 +343,14 @@ class UserController
         {
             // Get important datas
             $username = $_GET['username'];
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $anotherUser = $this-> user -> getUserByUsername($username);
-            $user = $this->user->getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($user['user_id']);
+            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
 
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
@@ -362,9 +359,9 @@ class UserController
         else
         {
             $username = $_GET['username'];
-            $user = $this-> user -> getUserByUsername($username);
-            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $anotherUser = $this-> user -> getUserByUsername($username);
+            $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
             require "views/layoutSwiping_noheader.phtml";
@@ -387,7 +384,7 @@ class UserController
         {
 
             // Get important datas
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
