@@ -135,16 +135,6 @@ class GoogleUserController
             }
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
-            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
-
-            foreach ($usersAfterMathing as $match) {
-                $matchedUserId = $match['match_userMatched'];
-                if (!in_array($matchedUserId, $userFriendRequest)) {
-                    $userMatched = $this->user->getUserById($matchedUserId);
-                    break;
-                }
-            }
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";
             $page_title = "URSG - Swiping";

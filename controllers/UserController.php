@@ -269,17 +269,6 @@ class UserController
             }
             $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
-            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
-            
-
-            foreach ($usersAfterMathing as $match) {
-                $matchedUserId = $match['match_userMatched'];
-                if (!in_array($matchedUserId, $userFriendRequest)) {
-                    $userMatched = $this->user->getUserById($matchedUserId);
-                    break;
-                }
-            }
 
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
@@ -291,6 +280,59 @@ class UserController
             exit();
         }
     }
+
+    public function getUserMatching()
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $user = $this->user->getUserById($userId);
+            $unreadCount = $this->chatmessage->countMessage($_SESSION['userId']);
+            $pendingCount = $this->friendrequest->countFriendRequest($_SESSION['userId']);
+            $usersAfterMatching = $this->matchingscore->getMatchingScore($_SESSION['userId']);
+            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
+            
+            $data = ['success' => false, 'error' => 'No matching users found'];
+            
+            foreach ($usersAfterMatching as $match) {
+                $matchedUserId = $match['match_userMatched'];
+                if (!in_array($matchedUserId, $userFriendRequest)) {
+                    $userMatched = $this->user->getUserById($matchedUserId);
+    
+                    if ($userMatched) {
+                        $data = [
+                            'success' => true,
+                            'user' => [
+                                'user_id' => $userMatched['user_id'],
+                                'user_username' => $userMatched['user_username'],
+                                'user_picture' => $userMatched['user_picture'],
+                                'user_age' => $userMatched['user_age'],
+                                'user_game' => $userMatched['user_game'],
+                                'user_gender' => $userMatched['user_gender'],
+                                'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
+                                'user_shortBio' => $userMatched['user_shortBio'],
+                                'lol_main1' => $userMatched['lol_main1'],
+                                'lol_main2' => $userMatched['lol_main2'],
+                                'lol_main3' => $userMatched['lol_main3'],
+                                'lol_rank' => $userMatched['lol_rank'],
+                                'lol_role' => $userMatched['lol_role'],
+                                'lol_account' => $userMatched['lol_account'],
+                                'lol_sUsername' => $userMatched['lol_sUsername'],
+                                'lol_sLevel' => $userMatched['lol_sLevel'],
+                                'lol_sRank' => $userMatched['lol_sRank'],
+                                'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
+                                'lol_sUsername' => $userMatched['lol_sUsername']
+                            ]
+                        ];
+                        break;
+                    }
+                }
+            }
+            echo json_encode($data);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+    
 
     public function pageUserProfile()
     {

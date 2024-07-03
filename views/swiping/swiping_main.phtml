@@ -1,81 +1,62 @@
 <?php if ($user): ?>
+    <input id="userId" type="hidden" name="userId" value="<?= $user['user_id']; ?>">
 
     <script type="module" src="public/js/algo.js"></script>
-    <script src="public/js/get_matchedUser.js"></script>
+    <script type="module" src="public/js/swiping/get_userMatching.js"></script>
 
-    <?php if (isset($userMatched) && $userMatched !== null) :?>
-        <section class="user_page">
-            <div class="user_page_main_content_row">
-                <div class="main_box">
-                    <div class="user_page_picture">
-                    <?php if (!empty($userMatched['user_picture'])): ?>
-                        <img id="image_users" src="public/upload/<?= $userMatched['user_picture'] ?>" alt="" />
-                    <?php endif; ?>
-                    <?php if (empty($userMatched['user_picture'])): ?>
-                        <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
-                    <?php endif; ?>
-                    </div>
+    <section class="user_page" style="display: none;">
+        <div class="user_page_main_content_row">
+            <div class="main_box">
+                <div class="user_page_picture">
+                    <img id="image_users" alt="" />
+                </div>
 
-                    <div class="user_page_update_name">
-                        <span id="user_page_username">
-                            <?= ucfirst($userMatched['user_username']) ?>
-                        </span>,
-                        <span id="age_user">
-                            <?= ucfirst($userMatched['user_age']) ?>
-                        </span>
-                    </div>
+                <div class="user_page_update_name">
+                    <span id="user_page_username"></span>,
+                    <span id="age_user"></span>
                 </div>
             </div>
-
-            <div class="user_page_main_content">
-                <div class="user_box">
-                    <br><h2 id="title_generalbox">About them</h2><br>
-                    <?php if ($user['user_game'] !== 'valorant'): ?> 
-                        <?php if (!empty($userMatched['lol_sUsername'])): ?>
-                            <div class="box_league_account">
-                                <div class="box_league_account_main_row">
-                                    <img id="profilepicture_lol" src="public/images/profileicon/<?= $userMatched['lol_sProfileIcon'] ?>.png" alt="icon_league">
-                                    <div class="box_league_account_main_row_column">
-                                        <p><strong><?= $userMatched['lol_sUsername']?></strong></p> 
-                                        <p><?= strtoupper($userMatched['lol_sRank']) ?>, <?= strtoupper($userMatched['lol_sLevel']) ?> </p> 
-                                    </div>
-                                </div>
-                            </div><br>
-                        <?php endif; ?>
-                        <?php if (!empty($userMatched['lol_account'])): ?>
-                            <div class="box_league_account">
-                                <div class="box_league_account_main_row">
-                                    <p><?= strtoupper($userMatched['lol_server']) ?></p> 
-                                </div>
-                            </div>
-                        <? endif; ?>
-                            <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
-                    <?php endif; ?>
-
-                    <div class="about_you_users"><br>
-                        <p><strong>Gender</strong>: <?= ucfirst($userMatched['user_gender']) ?></p><br>
-                        <p><strong>Kind of gamer</strong>: <?= ucfirst($userMatched['user_kindOfGamer']) ?></p><br>
-                        <p><strong>Their bio</strong>: <?= $userMatched['user_shortBio'] ?></p><br>
-                    </div>
-                </div>
-            </div>
-
-
-            <form method="POST" action="index.php?action=swipeDone">
-                <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
-                <input type="hidden" name="receiver_id" value="<?= $userMatched['user_id'] ?>">
-                <div class="row_buttons_swipe">
-                    <button id="swipe_no" class="button_swiping" type="submit" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
-                    <button id="swipe_yes" class="button_swiping" type="submit" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
-                </div>
-            </form>
         </div>
-        </section>
-    <? else :?>
-        <section class="google_needed">
-            <img src="public/images/vayne_emote.png" alt="jhinshrug">
-            <h2>You have seen all available profiles.<h2>
-        </section>
-    <? endif; ?>
 
-<? endif; ?>
+        <div class="user_page_main_content">
+            <div class="user_box">
+                <br><h2 id="title_generalbox">About them</h2><br>
+                <div class="box_league_account" style="display: none;">
+                    <div class="box_league_account_main_row">
+                        <img id="profilepicture_lol" alt="icon_league">
+                        <div class="box_league_account_main_row_column">
+                            <p id="lolsUsername"><strong></strong></p>
+                            <p id="lolsRank"></p>
+                        </div>
+                    </div>
+                </div><br>
+                <div class="box_league_account" style="display: none;">
+                    <div class="box_league_account_main_row">
+                        <p id="lolAccount"></p>
+                    </div>
+                </div>
+                <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+
+                <div class="about_you_users"><br>
+                    <p id="gender"><strong>Gender</strong>: </p><br>
+                    <p id="kindOfGamer"><strong>Kind of gamer</strong>: </p><br>
+                    <p id="shortBio"><strong>Their bio</strong>: </p><br>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST" action="index.php?action=swipeDone">
+            <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
+            <input id="receiverId" type="hidden" name="receiver_id">
+            <div class="row_buttons_swipe">
+                <button id="swipe_no" class="button_swiping" type="submit" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
+                <button id="swipe_yes" class="button_swiping" type="submit" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
+            </div>
+        </form>
+    </section>
+
+    <section class="noUserToSee" style="display: none;">
+        <img src="public/images/vayne_emote.png" alt="jhinshrug">
+        <h2>You have seen all available profiles.</h2>
+    </section>
+<?php endif; ?>

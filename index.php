@@ -57,6 +57,7 @@ $actionMap = [
     'getMessageData' => [ChatMessageController::class, 'getMessageData'],
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
     'saveDarkMode' => [UserController::class, 'saveDarkMode'],
+    'getUserMatching' => [UserController::class, 'getUserMatching'],
 ];
 
 // Get the action from the request

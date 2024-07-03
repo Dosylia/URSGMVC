@@ -362,8 +362,15 @@
       align-items: center;
       flex-direction: column;
     }
+
+    .noUserToSee {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
   
-    .google_needed h2 {
+    .google_needed h2, .noUserToSee h2 {
       font-family: 'Geologica', sans-serif;   
       font-size: 4vh;
       padding: 30px;
@@ -635,7 +642,7 @@
       text-align: center;
     }
   
-    #league_champions_user {
+    .league_champions_user {
       border-radius: 1000px;
       display: flex;
       flex-direction: column;
@@ -649,7 +656,7 @@
       font-family: Arial, Helvetica, sans-serif;
     }
   
-    #no_display_phone {
+    .no_display_phone {
       color: #504e4e;
     }
   
@@ -1156,7 +1163,7 @@
     border: 1px solid white;
   }
   
-  .dark-mode #no_display_phone {
+  .dark-mode .no_display_phone {
     color: rgb(218, 207, 207);
   }
   
