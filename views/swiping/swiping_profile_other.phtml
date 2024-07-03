@@ -9,39 +9,39 @@
                         <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <?php endif; ?>
                     <div class="user_page_update_name">
-                        <span id="user_page_username"><?= ucfirst($anotherUser['user_username']) ?></span>, 
-                        <span id="age_user"><?= ucfirst($anotherUser['user_age']) ?></span>     
-                    </div>
+                    <span id="user_page_username"><?= ucfirst($anotherUser['user_username']) ?></span>, <span id="age_user"><?= ucfirst($anotherUser['user_age']) ?></span>     
+                    
+                    <div class="user_page_update_row">
+                        <?php if (!empty($anotherUser['user_twitter'])): ?>  
+                            <a target="_blank" href="https://twitter.com/<?= $anotherUser['user_twitter'] ?>">
+                            <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
+                        <?php endif; ?>   
                         
-                        <div class="user_page_update_row">
-                            <?php if (!empty($anotherUser['user_twitter'])): ?>  
-                                <a target="_blank" href="<?= $anotherUser['user_twitter'] ?>">
-                                    <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
-                            <?php endif; ?>   
-                            
-                            <?php if (!empty($anotherUser['user_discord'])): ?>  
-                                    <a target="_blank" href="<?= $anotherUser['user_discord'] ?>">
-                                    <img class="social_picture" src="public/images/discord_user.png" alt="discord_user"></a>
-                            <?php endif; ?>   
-                            
-                            <?php if (!empty($anotherUser['user_instragram'])): ?>
-                                    <a target="_blank" href="<?= $anotherUser['user_instagram'] ?>">
-                                    <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
-                            <?php endif; ?>   
+                        <?php if (!empty($anotherUser['user_discord'])): ?>  
+                            <div class="user_page_discord">
+                                <img class="social_picture" id="discord_picture" src="public/images/discord_user.png" alt="discord_user">
+                                <p id="hidden_p">Discord : <?= $anotherUser['user_discord'] ?></p>
+                            </div>
+                        <?php endif; ?>   
+                        
+                        <?php if (!empty($anotherUser['user_instagram'])): ?>
+                            <a target="_blank" href="https://www.instagram.com/<?= $anotherUser['user_instagram'] ?>">
+                            <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
+                        <?php endif; ?>   
 
-                            <?php if (!empty($anotherUser['user_twitch'])): ?>
-                                    <a target="_blank" href="<?= $anotherUser['user_twitch'] ?>">
-                                    <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
-                            <?php endif; ?>                             
-                        </div><br>
+                        <?php if (!empty($anotherUser['user_twitch'])): ?>
+                            <a target="_blank" href="https://www.twitch.tv/<?= $anotherUser['user_twitch'] ?>">
+                            <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
+                        <?php endif; ?>                             
                     </div>
                 </div>
             </div>
         </div>        
     </div>
 
+
     <div class="user_page_main_content">
-        <div class="general_box">
+        <div class="user_box">
             <br><h2 id="title_generalbox">About them</h2><br>
             <?php if ($anotherUser['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername'])): ?>
@@ -99,4 +99,4 @@
     <button id="closeButton_user_picture">X</button></dialog>
 </section>
 
-<script src="public/js/swiping/dialog_picture_social.js"></script>
+<script src="public/js/swiping/buttons_otherUser.js"></script>

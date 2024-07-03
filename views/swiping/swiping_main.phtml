@@ -1,6 +1,7 @@
 <?php if ($user): ?>
 
     <script type="module" src="public/js/algo.js"></script>
+    <script src="public/js/get_matchedUser.js"></script>
 
     <?php if (isset($userMatched) && $userMatched !== null) :?>
         <section class="user_page">
@@ -27,7 +28,7 @@
             </div>
 
             <div class="user_page_main_content">
-                <div class="general_box">
+                <div class="user_box">
                     <br><h2 id="title_generalbox">About them</h2><br>
                     <?php if ($user['user_game'] !== 'valorant'): ?> 
                         <?php if (!empty($userMatched['lol_sUsername'])): ?>
@@ -71,11 +72,10 @@
         </div>
         </section>
     <? else :?>
-        <section class="google_needed"><br><br>
+        <section class="google_needed">
             <img src="public/images/vayne_emote.png" alt="jhinshrug">
             <h2>You have seen all available profiles.<h2>
-
-            </section>
+        </section>
     <? endif; ?>
 
 <? endif; ?>

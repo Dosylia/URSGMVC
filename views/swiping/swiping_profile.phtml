@@ -20,23 +20,25 @@
                         
                         <div class="user_page_update_row">
                             <?php if (!empty($user['user_twitter'])): ?>  
-                                <a target="_blank" href="<?= $user['user_twitter'] ?>">
-                                    <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
+                                <a target="_blank" href="https://twitter.com/<?= $user['user_twitter'] ?>">
+                                <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
                             <?php endif; ?>   
                             
                             <?php if (!empty($user['user_discord'])): ?>  
-                                    <a target="_blank" href="<?= $user['user_discord'] ?>">
-                                    <img class="social_picture" src="public/images/discord_user.png" alt="discord_user"></a>
+                                <div class="user_page_discord">
+                                    <img class="social_picture" id="discord_picture" src="public/images/discord_user.png" alt="discord_user">
+                                    <p id="hidden_p">Discord : <?= $user['user_discord'] ?></p>
+                                </div>
                             <?php endif; ?>   
                             
-                            <?php if (!empty($user['user_instragram'])): ?>
-                                    <a target="_blank" href="<?= $user['user_instagram'] ?>">
-                                    <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
+                            <?php if (!empty($user['user_instagram'])): ?>
+                                <a target="_blank" href="https://www.instagram.com/<?= $user['user_instagram'] ?>">
+                                <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
                             <?php endif; ?>   
 
                             <?php if (!empty($user['user_twitch'])): ?>
-                                    <a target="_blank" href="<?= $user['user_twitch'] ?>">
-                                    <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
+                                <a target="_blank" href="https://www.twitch.tv/<?= $user['user_twitch'] ?>">
+                                <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
                             <?php endif; ?>                             
                         </div><br>
                     </div>
@@ -52,7 +54,7 @@
                 <div class="friend_request_ctn">
                     <p> From: <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['user_username']) ?>"><?= strtoupper($request['user_username']) ?></a>, the <? date('m/d H:i', strtotime($request['fr_date'])) ?></p><br>
                     <div class="friend_request_ctn_btn">
-                        <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>'><button id="accept_friend_button">Accept</button></a>
+                        <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>&friend_id=<?= $request['user_id'] ?>'><button id="accept_friend_button">Accept</button></a>
                         <a href='index.php?action=requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>
                     </div>
                 </div>
@@ -61,7 +63,7 @@
     <?php endif; ?>
 
     <div class="user_page_main_content">
-        <div class="general_box">
+        <div class="user_box">
             <br><h2 id="title_generalbox">About you</h2><br>
             <?php if ($user['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername'])): ?>
@@ -93,7 +95,7 @@
         </div>
     </div>
 
-    <div class="lookingfor_box">
+    <div class="user_box">
         <br><h2 id="title_generalbox">Looking for</h2><br>
             <?php if ($user['user_game'] !== 'valorant'): ?>
                 <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>

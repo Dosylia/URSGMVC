@@ -45,7 +45,7 @@ class LeagueOfLegendsController
           
           $darkMode = ($mode === 'dark');
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
             $user = $this-> user -> getUserById($_SESSION['userId']);

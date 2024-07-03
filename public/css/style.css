@@ -13,6 +13,10 @@
   {
     max-height: 100vh;
   }
+
+  main {
+    min-height: 65vh;
+  }
   
   .main_section {
       background: url('../images/pc_background.webp');
@@ -135,6 +139,12 @@
   .form_signup img {
       width: 100px;
       height: 100px;
+  }
+
+  .form_signup label.label-container
+  {
+    display: flex;
+    align-items: center;
   }
 
   span.form-error {
@@ -348,9 +358,9 @@
   
     .google_needed {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
   
     .google_needed h2 {
@@ -465,6 +475,18 @@
       width: 100%;
       padding-top: 0.5vh;
     }
+
+    .user_page_discord 
+    {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #hidden_p 
+    {
+      display: none;
+      padding-top: 5px;
+    }
   
     #popup_user_picture {
       position: fixed;
@@ -490,7 +512,7 @@
       background-color: red;
       border: none;
       border-radius: 50%;
-      padding: 5px;
+      padding: 5px 9px;
       cursor: pointer;
   }
   
@@ -502,8 +524,26 @@
     background-color: red;
     border: none;
     border-radius: 50%;
-    padding: 5px;
+    padding: 5px 9px;
     cursor: pointer;
+  }
+
+  #closeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #fff;
+    background-color: red;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 9px;
+    cursor: pointer;  
+  }
+
+  #discord_picture
+  {
+    width: 64px;
+    height: 64px;
   }
   
   .social_picture {
@@ -560,6 +600,14 @@
     transform: scale(1.5);
     margin-bottom: 20px;
   
+  }
+
+  .form_signup img.images_update {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    padding: 0 5px;
   }
   
   
@@ -631,7 +679,7 @@
       gap: 10px;
     }
   
-    .lookingfor_box {
+    .user_box {
       padding: 10px 20px;
       background: white;
       margin-top: 20px;
@@ -678,6 +726,7 @@
     .button_swiping {
       border: none;
       border-radius: 5px;
+      background-color: white;
     }
     
     .message-receiver {
@@ -889,6 +938,7 @@
       font:          normal bold 20px/1 "Open Sans", sans-serif;
       text-align:    center; 
       border: none;
+      cursor: pointer;
     }
   
     #refuse_friend_button {
@@ -900,6 +950,11 @@
       font:          normal bold 20px/1 "Open Sans", sans-serif;
       text-align:    center;  
       border: none;
+      cursor: pointer;
+    }
+
+    #refuse_friend_button:hover, #accept_friend_button:hover {
+      background-color: var(--dark-ligher-grey);
     }
   
     .timestamp {
@@ -963,7 +1018,7 @@
     border-radius: 20px;
   }
   
-  .dark-mode .general_box {
+  .dark-mode .general_box, .dark-mode .user_box  {
     background-color: var(--dark-ligher-grey);
     border-radius: 20px;
   }
@@ -1756,7 +1811,7 @@ cursor: pointer;
   }
 
   .btn_user_updates {
-    width: 75px;
+    width: fit-content;
     height: 40px;
   }
 

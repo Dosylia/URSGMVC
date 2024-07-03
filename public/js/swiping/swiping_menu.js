@@ -17,7 +17,6 @@ function toggleMenu() {
 
 // Add an event listener to the image for the click event
 openMenuProfile.addEventListener('click', toggleMenu);
-openMenuProfile.addEventListener("mouseenter", toggleMenu);
 // Création du menu déroulant
 const menuProfile = document.createElement('div');
 menuProfile.id = 'menu_profile';

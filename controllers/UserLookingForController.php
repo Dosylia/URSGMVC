@@ -50,7 +50,7 @@ class UserLookingForController
           
           $darkMode = ($mode === 'dark');
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $template = "views/signup/lookingforlol";

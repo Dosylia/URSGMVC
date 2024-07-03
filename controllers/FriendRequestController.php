@@ -112,13 +112,15 @@ class FriendRequestController
     public function acceptFriendRequest()
     {
         $frId = $this->validateInput($_GET["fr_id"]);
+        $friendId = $this->validateInput($_GET["friend_id"]);
         $this->setFrId($frId);
+        $this->setFriendId($friendId);
 
         $updateStatus = $this-> friendrequest -> acceptFriendRequest($this->getFrId());
 
         if ($updateStatus)
         {
-            header("location:index.php?action=userProfile&message=Friend request accepted");
+            header("Location: index.php?action=persoChat&friend_id=" . $this->getFriendId() . "&mark_as_read=true");
             exit();  
         }
         else
@@ -184,5 +186,13 @@ class FriendRequestController
         $this->receiverId = $receiverId;
     }
 
+    public function getFriendId()
+    {
+        return $this->friendId;
+    }
 
+    public function setFriendId($friendId)
+    {
+        $this->friendId = $friendId;
+    }
 }

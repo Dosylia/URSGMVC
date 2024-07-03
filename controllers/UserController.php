@@ -271,6 +271,7 @@ class UserController
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $usersAfterMathing = $this->matchingscore->getMatchingScore($_SESSION['userId']);
             $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
+            
 
             foreach ($usersAfterMathing as $match) {
                 $matchedUserId = $match['match_userMatched'];
@@ -279,7 +280,6 @@ class UserController
                     break;
                 }
             }
-
 
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";

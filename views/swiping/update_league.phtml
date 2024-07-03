@@ -1,11 +1,12 @@
 <form class="form_signup" method="post" action="index.php?action=updateLeague">
+<button id="closeButton" type="button">X</button>
 
     <?php if (isset($_GET['error'])) : ?>
     <p class="errorsForm"><?= $_GET['error'] ?></p>
     <? endif ?>
 
     <h2>Pick your 3 mains</h2>
-        <label for="main1">Main 1</label>
+        <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lolUser['lol_main1']) ?>.png">)</label>
         <button type="button" id="btnMain1">Select main 1</button>
         <div id="popupMain1">
                 <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search...">
@@ -16,7 +17,7 @@
 
         <input type="hidden" id="main1" name="main1" value="">
 
-        <label for="main2">Main 2</label>
+        <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lolUser['lol_main2']) ?>.png">)</label>
         <button type="button" id="btnMain2">Select main 2</button>
         <div id="popupMain2">
                 <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search...">
@@ -27,7 +28,7 @@
 
         <input type="hidden" id="main2" name="main2" value="">
 
-        <label for="main3">Main 3</label>
+        <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lolUser['lol_main3']) ?>.png">)</label>
         <button type="button" id="btnMain3">Select main 3</button>
         <div id="popupMain3">
                 <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search...">
@@ -42,7 +43,7 @@
             <script src="public/js/champions.js"></script>
 
 
-            <label for="rank_lol">Your rank</label>
+            <label for="rank_lol">Your rank (Actual: <?= $lolUser['lol_rank']?>)</label>
         <select id="rank_lol" name="rank_lol">
         <option value="" disabled selected>Select rank...</option>
         <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
@@ -61,7 +62,7 @@
 
         <script src="public/js/ranks.js"></script>
 
-        <label for="role_lol">Your role</label>
+        <label for="role_lol">Your role (Actual: <?= $lolUser['lol_role']?>)</label>
         <select id="role_lol" name="role_lol">
         <option value="" disabled selected>Select role...</option>
         <option value="Support" data-image="public/images/roles/support.png">Support</option>
@@ -76,7 +77,7 @@
 
         <script src="public/js/roles.js"></script>
 
-        <label for="server">Select your server</label>
+        <label for="server">Select your server (Actual: <?= $lolUser['lol_server']?>)</label>
             <select id="server" name="server">
             <option value="" disabled selected>Select your server...</option>
             <option value="euw">Europe West</option>
@@ -106,3 +107,4 @@
 
 <script type="module" src="public/js/signupLol.js"></script>
 <script type="module" src="public/js/leagueoflegendsinfo.js"></script>
+<script type="module" src="public/js/swiping/closebutton.js"></script>
