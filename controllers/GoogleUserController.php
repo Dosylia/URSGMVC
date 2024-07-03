@@ -146,7 +146,7 @@ class GoogleUserController
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutHome.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "leagueoflegends") { 
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $secondTierUser['user_game'] === "leagueoflegends") { 
             // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $template = "views/signup/leagueoflegendsuser";

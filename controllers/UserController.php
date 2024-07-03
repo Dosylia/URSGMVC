@@ -345,7 +345,6 @@ class UserController
           
           $darkMode = ($mode === 'dark');
 
-
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -364,8 +363,20 @@ class UserController
         } 
         else
         {
-            header("Location: index.php");
-            exit();
+            if (isset($_GET['username']))
+            {
+                if($_GET['username'] !== $_SESSION['username']) 
+                {
+                    $username = $_GET['username'];
+                    header("Location: index.php?action=anotherUser&username=" . $username);
+                    exit();                    
+                }
+            }
+            else 
+            {
+                header("Location: index.php");
+                exit();
+            }
         }
     }
 
@@ -384,7 +395,13 @@ class UserController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
             // Get important datas
+
             $username = $_GET['username'];
+            if ($_GET['username'] === $_SESSION['username'])
+            {
+                header("Location: index.php?action=userProfile");
+                exit();
+            }
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $anotherUser = $this-> user -> getUserByUsername($username);
             $allUsers = $this-> user -> getAllUsers();

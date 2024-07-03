@@ -565,7 +565,7 @@
   .btn_user_updates {
     background: #cb5242;
     border-radius: 11px;
-    width: 150px;
+    width: 250px;
     height: 50px;
     color: #ffffff;
     display: flex;
@@ -649,7 +649,15 @@
       width: 5vh;
       height: auto;
     }
-  
+
+    #league_champions_user
+    {
+      border-radius: 1000px;
+      display: flex;
+      flex-direction: column;
+      width: 5vh;
+      height: auto;
+    }
   
     .about_you_users p {
       font-size: 1.5vh;
@@ -657,6 +665,10 @@
     }
   
     .no_display_phone {
+      color: #504e4e;
+    }
+
+    #no_display_phone {
       color: #504e4e;
     }
   
@@ -1164,6 +1176,10 @@
   }
   
   .dark-mode .no_display_phone {
+    color: rgb(218, 207, 207);
+  }
+
+  .dark-mode #no_display_phone {
     color: rgb(218, 207, 207);
   }
   
@@ -1810,6 +1826,10 @@ cursor: pointer;
   }
 
   #no_display_phone {
+    display: none;
+  }
+
+  .no_display_phone {
     display: none;
   }
 

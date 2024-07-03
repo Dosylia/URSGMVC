@@ -1,5 +1,5 @@
 const openMenuProfile = document.getElementById('open_menu_profile');
-
+let username = document.getElementById('userUsername').value;
 // Function to toggle the menu visibility and rotate the image
 function toggleMenu() {
   const menu = document.getElementById('menu_profile');
@@ -23,7 +23,7 @@ menuProfile.id = 'menu_profile';
 
 // Option 1: Profile
 const optionProfile = document.createElement('a');
-optionProfile.href = 'index.php?action=userProfile';
+optionProfile.href = 'index.php?action=userProfile&username='+username;
 optionProfile.innerText = 'Profile';
 optionProfile.classList.add('menu-option');
 menuProfile.appendChild(optionProfile);
