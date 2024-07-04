@@ -1,9 +1,34 @@
+let userId = document.getElementById("senderId").value;
+let friendId = document.getElementById("receiverId").value;
+let currentMessages = []; // Store the current messages
+let isFirstFetch = true; // Flag to track the first fetch
+let friendData = document.getElementById('friendInfo');
+let chatInterface = document.querySelector('.chat-interface');
+
+
+
 document.addEventListener("DOMContentLoaded", function() {
-    let userId = document.getElementById("senderId").value;
-    let friendId = document.getElementById("receiverId").value;
-    let currentMessages = []; // Store the current messages
-    let isFirstFetch = true; // Flag to track the first fetch
-    let friendData = document.getElementById('friendInfo');
+
+    // Initially fetch messages
+    fetchMessages(userId, friendId);
+
+    // Optionally, you can set an interval to fetch messages periodically
+    setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
+
+    // Set the variable initially
+    setVhVariable();
+    
+    // Update the variable on resize
+    window.addEventListener('resize', setVhVariable);
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener for screen resize
+    window.addEventListener('resize', checkScreenSize);
+
+});
+
 
     // Show loading indicator
     function showLoadingIndicator() {
@@ -127,21 +152,18 @@ document.addEventListener("DOMContentLoaded", function() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    // Initially fetch messages
-    fetchMessages(userId, friendId);
-
-    // Optionally, you can set an interval to fetch messages periodically
-    setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
-
     // Function to set the --vh variable
     function setVhVariable() {
         let vh = window.innerHeight * 0.01; // 1vh
         document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
-    
-    // Set the variable initially
-    setVhVariable();
-    
-    // Update the variable on resize
-    window.addEventListener('resize', setVhVariable);
-});
+
+    function checkScreenSize() {
+        const isMax900px = window.matchMedia("(max-width: 900px)").matches;
+        if (isMax900px) {
+            chatInterface.style.display = 'none';
+        } else {
+            chatInterface.style.display = 'block';
+        }
+    }
+

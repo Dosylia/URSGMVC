@@ -1,52 +1,114 @@
-<div class="messages-container">
-    <div class="chat-link-relative">
-        <div class="chat-link"></div>
-        <button id="closeButton" type="button">X</button>
-    </div>
+<div class="chat_page">
 
-    <div id="friendInfo"></div>
+    <?php if (isset($_GET['friend_id'])) : ?>      
+        <div class="chat-interface"> <br>
+    <?php else : ?>
+        <div class="chat-interface-big"> <br>
+    <?php endif; ?>
+        <div class="chat_box"><br>
+            <h1 id="title_generalbox">Chat</h1>    <br>
 
-    <div id="messages">
-        <?php foreach ($messages as $message) : ?>
-            <?php
-            $messageClass = ($message['chat_senderId'] == $user['user_id']) ? 'message-from-user' : 'message-to-user';
-            $messagePosition = ($message['chat_senderId'] == $user['user_id']) ? 'right' : 'left';
-            ?>
-            <div class="message <?= $messageClass ?>" style="text-align: <?= $messagePosition ?>;">
-                <p id="username_message">
-                    <?php if ($message['chat_senderId'] == $user['user_id']) : ?>
-                        <?php if (!empty($user['user_picture'])) : ?>
-                            <img class="avatar" src="public/upload/<?= $user['user_picture'] ?>" alt="Avatar <?= $user['user_username'] ?>">
-                        <?php else : ?>
-                            <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $user['user_username'] ?>">
-                        <?php endif; ?>
-                        <a class="username_chat_friend" target="_blank" href="index.php?action=userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
-                        <span class="timestamp left"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
-                    <?php else : ?>
-                        <?php if (!empty($friend['user_picture'])) : ?>
-                            <img class="avatar" src="public/upload/<?= $friend['user_picture'] ?>" alt="Avatar <?= $friend['user_username'] ?>">
-                        <?php else : ?>
-                            <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friend['user_username'] ?>">
-                        <?php endif; ?>
-                        <a class="username_chat_friend" target="_blank" href="index.php?action=anotherUser&username=<?= urlencode($friend['user_username']) ?>"><strong class="strong_text"><?= $friend['user_username'] ?></strong></a>
-                        <span class="timestamp right"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
-                    <?php endif; ?>
-                </p>
-                <p id="last-message"><?= $message['chat_message'] ?></p>
+                <?php if (empty($getFriendlist)) :?>
+                    <section class="google_needed"><br><br>
+                        <img src="public/images/sadbee.webp" alt="jhinshrug">
+                        <h2>You have no friends yet, wait until they accept your request or swipe more!<h2>
+                    </section>
+                <?php else :?>
+                    <?php foreach($getFriendlist as $friend) : ?>
+                        <?php
+                            if ($user['user_id'] == $friend['sender_id']) {
+                                $friendId = $friend['receiver_id'];
+                                $friendUsername = $friend['receiver_username'];
+                                $friendPicture = $friend['receiver_picture'];
+                            } else {
+                                $friendId = $friend['sender_id'];
+                                $friendUsername = $friend['sender_username'];
+                                $friendPicture = $friend['sender_picture'];
+                            }
+                        ?>
+
+                    <div class="friend" data-sender-id="<?= $friendId ?>">
+                        <div class="friend-avatar">
+                            <?php if (!empty($friendPicture)): ?>  
+                                <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
+                                <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
+                                </a>
+                            <?php else :?>
+                                <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                                <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
+                                </a>
+                            <?php endif; ?>        
+                        </div>
+
+                        <div class="friend-details">
+                            <span class="chat-name">
+                                <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
+                                <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
+                                <?php if (isset($unreadCount) && $unreadCount > 0) :?>
+                                    <?= "<span style='margin-left: 10px' class='unread-count'><button id='unread_message'> " . $unreadCount . "</button></span>" ?>
+                                <?php endif; ?>   
+                                </a>         
+                            </span>
+                        </div>
+                    </div>
+
+                    <?php endforeach; ?>
+            </div>   
+        </div>
+
+        <?php if (isset($_GET['friend_id'])) : ?>                 
+            <div class="messages-container" style="display : block;">
+                <button type="button" id="buttonSwitchChat"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="chat-link-relative">
+
+                <div id="friendInfo"></div>
+
+                <div id="messages">
+                    <?php foreach ($messages as $message) : ?>
+                        <?php
+                        $messageClass = ($message['chat_senderId'] == $user['user_id']) ? 'message-from-user' : 'message-to-user';
+                        $messagePosition = ($message['chat_senderId'] == $user['user_id']) ? 'right' : 'left';
+                        ?>
+                        <div class="message <?= $messageClass ?>" style="text-align: <?= $messagePosition ?>;">
+                            <p id="username_message">
+                                <?php if ($message['chat_senderId'] == $user['user_id']) : ?>
+                                    <?php if (!empty($user['user_picture'])) : ?>
+                                        <img class="avatar" src="public/upload/<?= $user['user_picture'] ?>" alt="Avatar <?= $user['user_username'] ?>">
+                                    <?php else : ?>
+                                        <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $user['user_username'] ?>">
+                                    <?php endif; ?>
+                                    <a class="username_chat_friend" target="_blank" href="index.php?action=userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
+                                    <span class="timestamp left"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
+                                <?php else : ?>
+                                    <?php if (!empty($friendChat['user_picture'])) : ?>
+                                        <img class="avatar" src="public/upload/<?= $friendChat['user_picture'] ?>" alt="Avatar <?= $friend['user_username'] ?>">
+                                    <?php else : ?>
+                                        <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendChat['user_username'] ?>">
+                                    <?php endif; ?>
+                                    <a class="username_chat_friend" target="_blank" href="index.php?action=anotherUser&username=<?= urlencode($friendChat['user_username']) ?>"><strong class="strong_text"><?= $friendChat['user_username'] ?></strong></a>
+                                    <span class="timestamp right"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
+                                <?php endif; ?>
+                            </p>
+                            <p id="last-message"><?= $message['chat_message'] ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="reply-box">
+                    <form method="POST" action="" id="myForm">
+                        <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
+                        <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
+                        <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>"><br>
+                        <input id="submit_chat" type="submit" name="submit" value="Send">
+                    </form>
+                </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        <?php endif; ?>
+        <script src="public/js/swiping/perso_chat.js"></script>
+        <script src="public/js/swiping/get_message.js"></script>
+        <script src="public/js/swiping/send_messagephp.js"></script>
+    <?php endif; ?>
 
-    <div class="reply-box">
-        <form method="POST" action="" id="myForm">
-            <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
-            <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friend['user_id'] ?>">
-            <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friend['user_username'] ?>"><br>
-            <input id="submit_chat" type="submit" name="submit" value="Send">
-        </form>
-    </div>
+
+
 </div>
-
-<script src="public/js/swiping/get_message.js"></script>
-<script src="public/js/swiping/send_messagephp.js"></script>
-<script src="public/js/swiping/perso_chat.js"></script>

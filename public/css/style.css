@@ -718,7 +718,7 @@
       padding: 10px 20px;
       background: white;
       margin-top: 20px;
-      width: 40%;
+      width: 100%;
       border-radius: 20px;
       margin-bottom: 40px;
     }
@@ -787,11 +787,22 @@
     .reply-box {
       margin-top: 10px;
       text-align: center;
+      width: 100%;
     }
   
     .messages-container {
       min-height: 50vh;
       overflow-y: scroll;
+      width: 800px;
+      margin: auto;
+      display: block;
+    }
+
+    .chat_page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
     }
   
     .friendrequest_box {
@@ -837,7 +848,6 @@
     }
   
     .chat-link-relative {
-      position: relative;
       right: 40px;
     }
   
@@ -865,12 +875,28 @@
     }
   
     .chat-interface {
+      margin: 0 30px 0 50px;
+      width: 15%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: #f6f2f2;
       min-height: 90vh;
+      margin: auto;
+    }
+
+    .chat-interface-big {
+      margin: 0 30px 0 50px;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 90vh;
+    }
+
+    #buttonSwitchChat {
+      display: none;
     }
     
     .friend-list {
@@ -911,7 +937,13 @@
 
     #friendTop {
       padding: 10px;
-      border-bottom: 1px solid rgb(219, 207, 207);
+      border: 1px solid rgb(219, 207, 207);
+      border-radius: 20px;
+    }
+
+    .message-to-user 
+    {
+      width: 100%;
     }
 
     #firstToChat {
@@ -1076,6 +1108,10 @@
   }
   
   .dark-mode .chat-interface {
+    background-color: var(--dark-grey);
+  }
+
+  .dark-mode .chat-interface-big {
     background-color: var(--dark-grey);
   }
   
@@ -1697,6 +1733,10 @@ cursor: pointer;
   .dark-mode .toggle-container {
     background-color: var(--dark-grey);
   }
+
+  .dark-mode #buttonSwitchChat {
+    color:white;
+  }
   
   .dark-mode .toggle-button {
     transform: translateX(50px);
@@ -1821,9 +1861,37 @@ cursor: pointer;
     border-radius: 1000px;
   }
 
+  .messages-container {
+    display: none;
+  }
+
   .chat_box {
     width: 80%;
 
+  }
+
+  .chat_page {
+    gap: 10px;
+  }
+
+  .chat-interface {
+    width: 90%;
+    margin: 0 30px 0 20px;
+  }
+
+  .chat-interface-big {
+    width: 90%;
+    margin: 0 30px 0 20px;
+  }
+
+
+  #buttonSwitchChat {
+    display: block;
+    margin: 10px;
+    background: none;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
   }
 
   .user_page_main_content {

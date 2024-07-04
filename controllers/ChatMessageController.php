@@ -30,7 +30,7 @@ class ChatMessageController
 
     }
 
-    public function pageChat()
+    public function pagePersoMessage()
     {
 
         if (isset($_SESSION['mode'])) {
@@ -53,43 +53,10 @@ class ChatMessageController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this-> friendrequest -> getFriendlist($_SESSION['userId']);
 
-            $template = "views/swiping/swiping_chat";
-            $page_title = "URSG - Chat";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: index.php");
-            exit();
-        }
-    }
-
-    public function pagePersoMessage()
-    {
-
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
-          
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
-        {
-
-            // Get important datas
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-
             if(isset($_GET['friend_id']))
             {
                 $friendId = $_GET['friend_id'];
-                $friend=$this->user->getUserById($friendId);
+                $friendChat=$this->user->getUserById($friendId);
             }
 
             $template = "views/swiping/swiping_persomessage";

@@ -1,6 +1,8 @@
-const buttonclose = document.getElementById('closeButton');
+const buttonclose = document.getElementById('buttonSwitchChat');
+const messageContainer = document.querySelector('.messages-container');
 
 buttonclose.addEventListener('click', (event) => {
     event.preventDefault();
-    window.location.href = 'index.php?action=chat';
+   chatInterface.style.display = 'flex';
+   messageContainer.style.display = 'none';
 });

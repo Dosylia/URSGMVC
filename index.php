@@ -52,7 +52,6 @@ $actionMap = [
     'unblockPerson' => [BlockController::class, 'unblockPerson'],
     'swipeDone' => [FriendRequestController::class, 'swipeStatus'],
     'algoData' => [MatchingScoreController::class, 'getAlgoData'],
-    'chat' => [ChatMessageController::class, 'pageChat'],
     'sendMessageData' => [ChatMessageController::class, 'sendMessageData'],
     'getMessageData' => [ChatMessageController::class, 'getMessageData'],
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
