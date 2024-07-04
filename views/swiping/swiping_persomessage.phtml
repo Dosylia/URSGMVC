@@ -1,8 +1,10 @@
 <div class="messages-container">
     <div class="chat-link-relative">
         <div class="chat-link"></div>
-        <a href="index.php?action=chat">X</a>
+        <button id="closeButton" type="button">X</button>
     </div>
+
+    <div id="friendInfo"></div>
 
     <div id="messages">
         <?php foreach ($messages as $message) : ?>
@@ -39,7 +41,7 @@
         <form method="POST" action="" id="myForm">
             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friend['user_id'] ?>">
-            <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Answer to @<?= $friend['user_username'] ?>"><br>
+            <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friend['user_username'] ?>"><br>
             <input id="submit_chat" type="submit" name="submit" value="Send">
         </form>
     </div>

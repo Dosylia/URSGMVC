@@ -790,8 +790,7 @@
     }
   
     .messages-container {
-      padding: 10px;
-      min-height: 75vh;
+      min-height: 50vh;
       overflow-y: scroll;
     }
   
@@ -904,9 +903,22 @@
     }
 
     #messages {
-      height: 500px;
-      min-height: calc(var(--vh, 1vh) * 80); /* 80% of vh */
+      height: 300px;
+      min-height: calc(var(--vh, 1vh) * 65);
       overflow-y: auto;
+      padding: 10px;
+    }
+
+    #friendTop {
+      padding: 10px;
+      border-bottom: 1px solid rgb(219, 207, 207);
+    }
+
+    #firstToChat {
+      padding: 0 10px;
+      margin-top: 20px;
+      font-size: 2rem;
+      text-align: center;
     }
     
     .chat-preview {
@@ -1089,6 +1101,10 @@
   
   .dark-mode .message_text {
     background-color: var(--dark-ligher-grey);
+  }
+
+  .dark-mode #friendTop {
+    border-bottom: 1px solid var(--dark-ligher-grey);
   }
   
   .dark-mode .user_page {

@@ -165,7 +165,16 @@ class ChatMessageController
                 // Send JSON response
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No messages or user data found']);
+                $data = [
+                    'success' => true,
+                    'friend' => [
+                        'user_id' => $friend['user_id'],
+                        'user_username' => $friend['user_username'],
+                        'user_picture' => $friend['user_picture']
+                    ]
+                ];
+
+                echo json_encode($data);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
