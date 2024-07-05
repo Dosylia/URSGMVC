@@ -47,7 +47,7 @@ class ChatMessageController
             }
     
             $template = "views/swiping/swiping_persomessage";
-            $page_title = "URSG - Chat with " . $friend['user_username'];
+            $page_title = "URSG - Chat with " . $friendChat['user_username'];
             require "views/layoutSwiping.phtml";
         } else {
             header("Location: index.php");

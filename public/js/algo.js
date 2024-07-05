@@ -1061,20 +1061,19 @@ function match_profiles(profile_list, user_profile) {
         //Match kind of gamer
         if (user_profile.lookingGamerkind === profile.gamerkind) {
             finalScore += 40
-        } 
-        if (profile.gamerkind === profile.lookingGamerkind) {
+        } else if (user_profile.lookingGamerkind === "competition and chill") {
+            finalScore += 40
+        }else if(profile.gamerkind === "competition and chill") {
             finalScore += 40
         }
-
 
         console.log("kind of gamer: ",finalScore)
 
         //Same role gives negative points and if role fits the looking for role it gives points
         if (profile.role === user_profile.role) {
-            finalScore += -10
+            finalScore += -50
         }
         
-
         if (profile.role === user_profile.lookingRole) {
             finalScore += 10
         }
