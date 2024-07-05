@@ -35,19 +35,21 @@ function sendMessageToPhp(senderId, receiverId, message) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    senderId = document.getElementById("senderId").value;
-    receiverId = document.getElementById("receiverId").value;
+    let senderIdElement = document.getElementById("senderId");
+    let receiverIdElement = document.getElementById("receiverId");
     messageInput = document.getElementById("message_text");
     btnSubmit = document.getElementById("submit_chat");
 
+    senderId = senderIdElement ? senderIdElement.value : null;
+    receiverId = receiverIdElement ? receiverIdElement.value : null;
 
+    if (!senderIdElement || !receiverIdElement || !messageInput || !btnSubmit) {
+        return;
+    }
 
     btnSubmit.addEventListener("click", function(event) {
         event.preventDefault();
         const message = messageInput.value;
         sendMessageToPhp(senderId, receiverId, message);
     });
-
-
-
 });

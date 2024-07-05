@@ -15,24 +15,26 @@ class ChatMessage extends DataBase
     public function countMessage($userId)
     {
         $query = $this -> bdd -> prepare("
-                                        SELECT
-                                            COUNT(*)
-                                        AS
-                                            `unread_count`
-                                        FROM
-                                            `chatmessage`
-                                        WHERE
-                                            `chat_receiverId` = ? 
-                                        AND
-                                            `chat_status` = 'unread'
+                                            SELECT
+                                                `chat_receiverId`,
+                                                `chat_senderId`,
+                                                COUNT(*) AS `unread_count`
+                                            FROM
+                                                `chatmessage`
+                                            WHERE
+                                                `chat_receiverId` = ? 
+                                            AND
+                                                `chat_status` = 'unread'
+                                            GROUP BY
+                                                `chat_senderId`
         ");
 
         $query -> execute([$userId]);
-        $unreadTest = $query -> fetch();
+        $unreadTest = $query -> fetchAll();
 
         if($unreadTest)
         {
-            return $unreadTest['unread_count'];
+            return $unreadTest;
         }
         else
         {

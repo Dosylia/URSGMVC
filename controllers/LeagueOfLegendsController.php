@@ -81,7 +81,7 @@ class LeagueOfLegendsController
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);

@@ -838,13 +838,14 @@
       padding-top: 10px;
     }
   
-    #unread_message {
+    #unread_message,  #unread_message_header {
       background-color: rgb(202, 69, 69);
       border-radius: 50px;
       border: none;
       color: white;
       position: absolute;
       z-index: 2;
+      cursor: pointer;
     }
   
     .chat-link-relative {
@@ -1220,7 +1221,7 @@
   
   .dark-mode .reply-box input[type="text"]:focus,
   .dark-mode .reply-box textarea:focus {
-    color: white; /
+    color: white;
   }
   
   .dark-mode #send-button {
@@ -1786,6 +1787,40 @@ cursor: pointer;
 .dark-mode .download_app_dialog p {
     color: rgb(255, 255, 255);
 }
+@media only screen and (max-width: 1018px) {
+  .messages-container {
+    display: none;
+  }
+
+  .chat_box {
+    width: 80%;
+
+  }
+
+  .chat_page {
+    gap: 10px;
+  }
+
+  .chat-interface {
+    width: 90%;
+    margin: 0 30px 0 20px;
+  }
+
+  .chat-interface-big {
+    width: 90%;
+    margin: 0 30px 0 20px;
+  }
+
+
+  #buttonSwitchChat {
+    display: block;
+    margin: 10px;
+    background: none;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+  }
+}
 
 @media only screen and (max-width: 900px) {
   
@@ -1861,41 +1896,8 @@ cursor: pointer;
     border-radius: 1000px;
   }
 
-  .messages-container {
-    display: none;
-  }
-
-  .chat_box {
-    width: 80%;
-
-  }
-
-  .chat_page {
-    gap: 10px;
-  }
-
-  .chat-interface {
-    width: 90%;
-    margin: 0 30px 0 20px;
-  }
-
-  .chat-interface-big {
-    width: 90%;
-    margin: 0 30px 0 20px;
-  }
-
-
-  #buttonSwitchChat {
-    display: block;
-    margin: 10px;
-    background: none;
-    background-color: transparent;
-    border: none;
-    font-size: 20px;
-  }
-
   .user_page_main_content {
-  padding: 0 0 0 0;
+  padding: 0;
   width: 100%;
   align-items: center;
   flex-direction: column;
@@ -2033,7 +2035,7 @@ cursor: pointer;
   }
 
   .toggle-container {
-  background-color: var(--dark-grey);
+  background-color: white;
   border-radius: 25px; /* Réduisez le rayon de la bordure */
   width: 40px;
   height: 15px;

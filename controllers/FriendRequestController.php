@@ -17,6 +17,7 @@ class FriendRequestController
     private ChatMessage $chatmessage;
     private Block $block;
     private $frId;
+    private $userId;
 
     
     public function __construct()
@@ -45,7 +46,7 @@ class FriendRequestController
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $getFriendlist = $this-> friendrequest -> getFriendlist($_SESSION['userId']);
             $getBlocklist = $this-> block -> getBlocklist($_SESSION['userId']);
@@ -149,6 +150,38 @@ class FriendRequestController
         }
     }
 
+    public function getFriendRequest()
+    {
+        if (isset($_POST['userId']))
+        {
+            $userId = $_POST['userId'];
+            $this->setUserId($userId);
+
+            $pendingCount = $this-> friendrequest -> countFriendRequest($this->getUserId());
+
+            if ($pendingCount !== false) {
+                $data = [
+                    'success' => true,
+                    'pendingCount' => [
+                        'pendingFriendRequest' => $pendingCount,
+                    ]
+                ];
+    
+                // Send JSON response
+                echo json_encode($data);
+            } 
+            else
+            {
+                echo json_encode(['success' => false, 'error' => 'No friend requests found']);   
+            }
+
+        }
+        else
+        {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);     
+        }
+    }
+
     public function validateInput($input) 
     {
         $input = trim($input);
@@ -194,5 +227,15 @@ class FriendRequestController
     public function setFriendId($friendId)
     {
         $this->friendId = $friendId;
+    }
+
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
     }
 }

@@ -1,6 +1,7 @@
-<?php require "views/layout.phtml"; ?> 
+<?php require "views/layout.phtml"; ?>
 
 <input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
+<input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
 
 <header>
     <nav>
@@ -9,23 +10,19 @@
             <a href="index.php?action=swiping"><img title="Swipe" class="scale" src="public/images/swipe.png" alt="swipe"></a>
 
             <div class="chat_nav">
-                <a href="index.php?action=persoChat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a> 
-                <?php if (isset($unreadCount) && $unreadCount > 0) :?>
-                    <?= "<a href='index.php?action=persoChat'><span class='unread-count'><button title='Unread message' id='unread_message'> " . $unreadCount . "</button></span></a>" ?>
-                <?php endif; ?>
+                <a href="index.php?action=persoChat"><img title="Chat" class="scale" src="public/images/chat.png" alt="chat"></a>
+                <div id="unread_messages_container"></div>
             </div>
-
 
             <div>
-            <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) :// Profile picture test?>
-                <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username']?>" /></a> 
-            <?php else :?>
-                <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a> 
-            <?php endif; ?>
-                <?php if (isset($pendingCount) && $pendingCount > 0) :?>
-                        <?= "<a href='index.php?action=userProfile'><span class='pending-count'><button title='Friend requests' id='unread_message'> " . $pendingCount . "</button></span></a>" ?>
+                <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) : // Profile picture test ?>
+                    <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username'] ?>" /></a>
+                <?php else : ?>
+                    <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a>
                 <?php endif; ?>
+                <div id="pending_friend_requests_container"></div>
             </div>
+
             <div class="toggle-container">
                 <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
             </div>
@@ -37,12 +34,12 @@
     <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
 <?php else : ?>
     <body>
-<? endif; ?>
+<?php endif; ?>
     <main>
-        <?php if(isset($_GET['message'])) :?>
+        <?php if (isset($_GET['message'])) : ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
-        <?php require $template.".phtml"; ?> 
+        <?php require $template . ".phtml"; ?>
     </main>
 </body>
 
@@ -55,7 +52,7 @@
 
         <div class="mid_footer">
             <a href="mentionslegales">Privacy Policy</a>
-            <a href="sitemap.php"> Site map</a>
+            <a href="sitemap.php">Site map</a>
         </div>
 
         <div class="social_footer">
@@ -66,10 +63,11 @@
         </div>
 
         <div class="bot_footer">
-            <p>Made by :  <a target="_blank" href="https://www.dosylia.com/">Dosylia</a></p>
-            <p>Artwork by :  <a target="_blank" href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p>       
+            <p>Made by : <a target="_blank" href="https://www.dosylia.com/">Dosylia</a></p>
+            <p>Artwork by : <a target="_blank" href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p>
         </div>
-    </div>   
+    </div>
 </footer>
 
 <script src="public/js/swiping/swiping_menu.js"></script>
+<script src="public/js/swiping/get_notifications.js"></script>

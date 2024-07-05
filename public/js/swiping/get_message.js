@@ -1,19 +1,25 @@
-let userId = document.getElementById("senderId").value;
-let friendId = document.getElementById("receiverId").value;
+let userIdElement = document.getElementById("senderId");
+let friendIdElement = document.getElementById("receiverId");
+let userId = userIdElement ? userIdElement.value : null;
+let friendId = friendIdElement ? friendIdElement.value : null;
 let currentMessages = []; // Store the current messages
 let isFirstFetch = true; // Flag to track the first fetch
 let friendData = document.getElementById('friendInfo');
 let chatInterface = document.querySelector('.chat-interface');
+const messageContainer = document.querySelector('.messages-container');
 
 
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Initially fetch messages
-    fetchMessages(userId, friendId);
+    if(userId !== null && userId !== undefined)
+        {
+            // Initially fetch messages
+            fetchMessages(userId, friendId);
 
-    // Optionally, you can set an interval to fetch messages periodically
-    setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
+            // Optionally, you can set an interval to fetch messages periodically
+            setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
+        }
 
     // Set the variable initially
     setVhVariable();
@@ -159,11 +165,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function checkScreenSize() {
-        const isMax900px = window.matchMedia("(max-width: 900px)").matches;
-        if (isMax900px) {
-            chatInterface.style.display = 'none';
+        const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
+        if (isMax1018px) {
+            if (chatInterface !== null) {
+                chatInterface.style.display = 'none';
+            }
         } else {
-            chatInterface.style.display = 'block';
+            if(chatInterface !== null && chatInterface !== undefined) {
+                chatInterface.style.display = 'block';
+            }
         }
     }
 

@@ -133,7 +133,7 @@ class GoogleUserController
                 echo 'window.usersAll = ' . json_encode($usersAll) . ';';
                 echo '</script>';
             }
-            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";

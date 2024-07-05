@@ -1,6 +1,5 @@
 <div class="chat_page">
-
-    <?php if (isset($_GET['friend_id'])) : ?>      
+    <?php if (isset($_GET['friend_id'])) : ?>    
         <div class="chat-interface"> <br>
     <?php else : ?>
         <div class="chat-interface-big"> <br>
@@ -26,31 +25,32 @@
                                 $friendPicture = $friend['sender_picture'];
                             }
                         ?>
+                    
+                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                        <div class="friend" data-sender-id="<?= $friendId ?>">
+                            <div class="friend-avatar">
+                                <?php if (!empty($friendPicture)): ?>  
+                                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
+                                    <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
+                                    </a>
+                                <?php else :?>
+                                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                                    <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
+                                    </a>
+                                <?php endif; ?>        
+                            </div>
 
-                    <div class="friend" data-sender-id="<?= $friendId ?>">
-                        <div class="friend-avatar">
-                            <?php if (!empty($friendPicture)): ?>  
-                                <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
-                                <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
-                                </a>
-                            <?php else :?>
-                                <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
-                                <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
-                                </a>
-                            <?php endif; ?>        
-                        </div>
 
-                        <div class="friend-details">
-                            <span class="chat-name">
-                                <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
-                                <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
-                                <?php if (isset($unreadCount) && $unreadCount > 0) :?>
-                                    <?= "<span style='margin-left: 10px' class='unread-count'><button id='unread_message'> " . $unreadCount . "</button></span>" ?>
-                                <?php endif; ?>   
-                                </a>         
-                            </span>
+                            <div class="friend-details">
+                                <span class="chat-name">
+                                    <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
+                                    <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
+                                    <div id="unread_messages_for_friend_container_<?= $friendId ?>"></div>
+                                    </a>         
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
 
                     <?php endforeach; ?>
             </div>   

@@ -20,6 +20,8 @@ class ChatMessageController
     private $senderId;
     private $receiverId;
     private $message;
+    private $userId;
+    private $friendId;
 
     
     public function __construct()
@@ -32,39 +34,32 @@ class ChatMessageController
 
     public function pagePersoMessage()
     {
-
         if (isset($_SESSION['mode'])) {
             $mode = $_SESSION['mode'];
-          } else {
+        } else {
             $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
-          
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
-        {
-
-            // Get important datas
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
-            $unreadCount = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-            $getFriendlist = $this-> friendrequest -> getFriendlist($_SESSION['userId']);
-
-            if(isset($_GET['friend_id']))
-            {
+        }
+        
+        $darkMode = ($mode === 'dark');
+    
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+            // Get important data
+            $user = $this->user->getUserById($_SESSION['userId']);
+            $usersAll = $this->user->getAllUsers();
+            $unreadCounts = $this->chatmessage->countMessage($_SESSION['userId']);
+            $pendingCount = $this->friendrequest->countFriendRequest($_SESSION['userId']);
+            $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
+            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+    
+            if (isset($_GET['friend_id'])) {
                 $friendId = $_GET['friend_id'];
-                $friendChat=$this->user->getUserById($friendId);
+                $friendChat = $this->user->getUserById($friendId);
             }
-
+    
             $template = "views/swiping/swiping_persomessage";
             $page_title = "URSG - Chat with " . $friend['user_username'];
             require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
+        } else {
             header("Location: index.php");
             exit();
         }
@@ -101,9 +96,11 @@ class ChatMessageController
     {
         if (isset($_POST['userId']) && isset($_POST['friendId'])) {
             $userId = $_POST['userId'];
+            $this->setUserId($userId);
             $friendId = $_POST['friendId'];
+            $this->setFriendId($friendId);
     
-            $messages = $this->chatmessage->getMessage($userId, $friendId);
+            $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
             $friend = $this->user->getUserById($friendId);
             $user = $this->user->getUserById($userId);
 
@@ -148,6 +145,36 @@ class ChatMessageController
         }
     }
 
+    public function getUnreadMessage()
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId($userId);
+    
+            $unreadCounts = $this->chatmessage->countMessage($this->getUserId());
+    
+            if ($unreadCounts !== false) {
+                // If $unreadCounts is not already an array, convert it to an array of objects
+                if (!is_array($unreadCounts)) {
+                    $unreadCounts = [$unreadCounts];
+                }
+    
+                $data = [
+                    'success' => true,
+                    'unreadCount' => $unreadCounts
+                ];
+    
+                // Send JSON response
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+            }
+    
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
     public function getSenderId()
     {
         return $this->senderId;
@@ -176,6 +203,26 @@ class ChatMessageController
     public function setMessage($message)
     {
         $this->message = $message;
+    }
+
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    public function getFriendId()
+    {
+        return $this->friendId;
+    }
+
+    public function setFriendId($friendId)
+    {
+        $this->friendId = $friendId;
     }
 
 }
