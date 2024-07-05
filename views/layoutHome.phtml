@@ -34,7 +34,7 @@
                                 <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
                             </a>
                         <?php else : ?>
-                            <button title="Sign up/Sign in" id="signup_button"> Sign up/Log in</button>
+                            <input value="Sign up/Log in" type="text" title="Sign up/Sign in" id="signup_button">
                         <?php endif; ?>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                             <button id="mid_main_section_button2">Swipe now</button> 
                         </a>
                     <?php else : ?>
-                        <button id="mid_main_section_button">Join now</button> 
+                        <input id="mid_main_section_button" value="Join now" >
                     <?php endif; ?>
                 </div>
             </nav>           

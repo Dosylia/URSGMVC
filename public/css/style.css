@@ -1525,6 +1525,10 @@ cursor: pointer;
     font-family: 'Rubik', sans-serif;
     text-shadow: 1px 1px 2px black;
     color: white;
+    margin: auto;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 #mid_main_section_button:hover {
@@ -1694,7 +1698,6 @@ cursor: pointer;
     text-align:    center;
     width: fit-content;
     height: 50px;
-    padding:       10px 30px;
     cursor: pointer;
 }
 
@@ -1948,6 +1951,8 @@ cursor: pointer;
   #mid_main_section_button {
     background: linear-gradient(to right, rgb(19, 80, 159), rgb(77, 170, 210), rgb(33, 232, 242));
     border: 0.5px solid white;
+    padding : 20px 10px;
+    width: 80%;
   }
 
   #mid_main_section_button:hover {
@@ -2007,7 +2012,6 @@ cursor: pointer;
   }
 
   #signup_button {
-  padding: 10px 30px;
   font-size: 1.5vh;
   width: fit-content;
   height: 40px;
@@ -2035,7 +2039,7 @@ cursor: pointer;
   }
 
   .toggle-container {
-  background-color: white;
+  background-color: #ccc;
   border-radius: 25px; /* Réduisez le rayon de la bordure */
   width: 40px;
   height: 15px;

@@ -737,9 +737,16 @@ function matchAge(match_age, user_age) {
     const maxAge = (user_age-7) * 2 
 
     var ageDiff = Math.abs(match_age - user_age);
-
     var maxAgeDiff = 100;
     var score = 10 - (ageDiff / maxAgeDiff) * 9;
+
+    if (match_age < minAge){
+        score += 60;
+    }
+
+    if(match_age < maxAge){
+        score += 60;
+    }
     
 
     return score;
