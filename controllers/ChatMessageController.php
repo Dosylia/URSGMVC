@@ -34,20 +34,10 @@ class ChatMessageController
 
     public function pagePersoMessage()
     {
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-        } else {
-            $mode = 'light';
-        }
-        
-        $darkMode = ($mode === 'dark');
-    
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Get important data
             $user = $this->user->getUserById($_SESSION['userId']);
             $usersAll = $this->user->getAllUsers();
-            $unreadCounts = $this->chatmessage->countMessage($_SESSION['userId']);
-            $pendingCount = $this->friendrequest->countFriendRequest($_SESSION['userId']);
             $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
     

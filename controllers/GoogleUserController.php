@@ -6,8 +6,6 @@ use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
-use models\FriendRequest;
-use models\ChatMessage;
 use models\MatchingScore;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -26,8 +24,6 @@ class GoogleUserController
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;
     private MatchingScore $matchingscore;
-    private FriendRequest $friendrequest;
-    private ChatMessage $chatmessage;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -44,20 +40,9 @@ class GoogleUserController
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
-        $this -> friendrequest = new FriendRequest();
-        $this -> chatmessage = new ChatMessage();
     }
 
     public function homePage() {
-        
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
         if($this->isConnectGoogle())
         {
             $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
@@ -110,15 +95,6 @@ class GoogleUserController
 
     public function pageSignUp()
     {
-
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
         $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
         $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
 
@@ -133,8 +109,6 @@ class GoogleUserController
                 echo 'window.usersAll = ' . json_encode($usersAll) . ';';
                 echo '</script>';
             }
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";
             $page_title = "URSG - Swiping";

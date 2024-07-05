@@ -55,7 +55,6 @@ $actionMap = [
     'sendMessageData' => [ChatMessageController::class, 'sendMessageData'],
     'getMessageData' => [ChatMessageController::class, 'getMessageData'],
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
-    'saveDarkMode' => [UserController::class, 'saveDarkMode'],
     'getUserMatching' => [UserController::class, 'getUserMatching'],
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],

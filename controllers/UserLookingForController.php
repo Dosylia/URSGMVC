@@ -6,7 +6,6 @@ use models\UserLookingFor;
 use models\User;
 use models\LeagueOfLegends;
 use models\FriendRequest;
-use models\ChatMessage;
 use traits\SecurityController;
 
 class UserLookingForController
@@ -17,7 +16,6 @@ class UserLookingForController
     private User $user; 
     private LeagueOfLegends $leagueoflegends;
     private FriendRequest $friendrequest;
-    private ChatMessage $chatmessage;
     private $userId;
     private $lfGender;
     private $lfKindOfGamer;
@@ -36,20 +34,10 @@ class UserLookingForController
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> friendrequest = new FriendRequest();
-        $this -> chatmessage = new ChatMessage();
     }
 
     public function pageLookingFor()
     {
-
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -95,8 +83,6 @@ class UserLookingForController
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
