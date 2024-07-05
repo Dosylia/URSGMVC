@@ -1,7 +1,9 @@
-let btnSubmit;
+import { friendId, userId, fetchMessages } from './get_message.js';
+
 let senderId;
 let receiverId;
 let messageInput;
+let btnSubmit;
 
 function sendMessageToPhp(senderId, receiverId, message) {
     const dataToSend = {
@@ -28,6 +30,8 @@ function sendMessageToPhp(senderId, receiverId, message) {
     .then(data => {
         console.log('Success:', data);
         messageInput.value = '';
+        // After successfully sending message, fetch updated messages
+        fetchMessages(userId, friendId);
     })
     .catch(error => {
         console.error('Error:', error);

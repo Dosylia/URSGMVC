@@ -1,7 +1,7 @@
 let userIdElement = document.getElementById("senderId");
 let friendIdElement = document.getElementById("receiverId");
-let userId = userIdElement ? userIdElement.value : null;
-let friendId = friendIdElement ? friendIdElement.value : null;
+export const userId = userIdElement ? userIdElement.value : null;
+export const friendId = friendIdElement ? friendIdElement.value : null;
 let currentMessages = []; // Store the current messages
 let isFirstFetch = true; // Flag to track the first fetch
 let friendData = document.getElementById('friendInfo');
@@ -11,12 +11,12 @@ const messageContainer = document.querySelector('.messages-container');
 
 
 document.addEventListener("DOMContentLoaded", function() {
-
+        
     if(userId !== null && userId !== undefined)
         {
             // Initially fetch messages
             fetchMessages(userId, friendId);
-
+            
             // Optionally, you can set an interval to fetch messages periodically
             setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
         }
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Function to fetch messages
-    function fetchMessages(userId, friendId) {
+    export function fetchMessages(userId, friendId) {
         if (isFirstFetch) {
             showLoadingIndicator();
             isFirstFetch = false; // Reset the flag after the first fetch
@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.success) {
                 // Compare the fetched messages with the current messages
                 if (data.messages !== null && data.messages !== undefined) {
-                    console.log('Messages fetched successfully:', data.messages);
                     if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
                         currentMessages = data.messages; // Update the current messages
                         updateMessageContainer(data.messages, data.friend, data.user);
@@ -91,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateMessageContainer(messages, friend, user) {
         let messagesContainer = document.getElementById("messages");
         messagesContainer.innerHTML = ''; // Clear current messages
-        console.log('Updating message container with messages:', messages);
 
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
