@@ -85,7 +85,7 @@ function fillData(data) {
 // Function to show the no more profiles message
 function showNoMoreProfiles() {
     document.querySelector('.user_page').style.display = 'none';
-    document.querySelector('.noUserToSee').style.display = 'block';
+    document.querySelector('.noUserToSee').style.display = 'flex';
 }
 
 function sanitize(input) {

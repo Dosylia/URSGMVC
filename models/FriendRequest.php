@@ -251,4 +251,54 @@ class FriendRequest extends DataBase
 
     }
 
+    public function checkifPending($receiverId, $senderId)
+    {
+        $query = $this->bdd->prepare("
+                                    SELECT 
+                                        *
+                                    FROM 
+                                        `friendrequest`
+                                    WHERE 
+                                        (`fr_receiverId` = ? OR `fr_senderId` = ?)
+                                    AND 
+                                        `fr_status` = 'pending'
+        ");
+    
+        $query->execute([$receiverId, $senderId]);
+        $checkPendingTest = $query->fetch();
+        
+        if ($checkPendingTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+    }
+
+    public function updateFriendRequest($receiverId, $senderId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_status` = 'accepted'
+                                        WHERE
+                                           (`fr_receiverId` = ? OR `fr_senderId` = ?)
+        ");
+
+        
+        $acceptedFriendRequestTest =  $query->execute([$receiverId, $senderId]);
+
+        if($acceptedFriendRequestTest)
+        {
+            return  $acceptedFriendRequestTest;
+        }
+        else
+        {
+            return false;
+        }        
+    }
+
 }

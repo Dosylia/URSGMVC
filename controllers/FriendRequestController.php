@@ -64,6 +64,7 @@ class FriendRequestController
 
     public function swipeStatus()
     {
+
         if(isset($_POST['swipe_yes']))
         {
             $requestDate = date('Y-m-d H:i:s');
@@ -73,6 +74,24 @@ class FriendRequestController
             $this->setSenderId($senderId);
             $receiverId = $this->validateInput($_POST["receiver_id"]);
             $this->setReceiverId($receiverId);
+
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+
+            if ($checkIfPending)
+            {
+                $updateFriendRequest = $this-> friendrequest -> updateFriendRequest($this->getSenderId(), $this->getReceiverId());
+
+                if ($updateFriendRequest)
+                {
+                    header("location:index.php?action=swiping");
+                    exit();      
+                } 
+                else 
+                {
+                    header("location:index.php?action=swiping");
+                    exit();      
+                }
+            }
 
             $swipeStatusYes = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
 

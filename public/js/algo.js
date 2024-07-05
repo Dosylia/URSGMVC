@@ -229,6 +229,8 @@ function champion_match_new(
         mainArray.forEach(champ => {
             if (lookingArray.includes(champ)) {
                 score += 40;  // raise the score if a match is found
+            }else {
+                score -= 10;
             }
         });
     }
@@ -731,10 +733,14 @@ function matchRankLol(match_rank, user_rank) {
 function matchAge(match_age, user_age) {
 
 
+    const minAge = user_age /2 + 7
+    const maxAge = (user_age-7) * 2 
+
     var ageDiff = Math.abs(match_age - user_age);
 
     var maxAgeDiff = 100;
     var score = 10 - (ageDiff / maxAgeDiff) * 9;
+    
 
     return score;
 }

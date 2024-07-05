@@ -96,14 +96,21 @@ class MatchingScore extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                *
+                                                m.*
                                             FROM
-                                                `matchingscore`
+                                                `matchingscore` AS m
+                                            LEFT JOIN
+                                                `friendrequest` AS fr
+                                            ON
+                                                (fr.fr_senderId = m.match_userMatching AND fr.fr_receiverId = m.match_userMatched)
+                                                OR
+                                                (fr.fr_receiverId = m.match_userMatching AND fr.fr_senderId = m.match_userMatched)
                                             WHERE
-                                                `match_userMatching` = ?
+                                                m.match_userMatching = ?
+                                                AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
                                             ORDER BY
-                                                `match_score`
-                                            DESC LIMIT
+                                                m.match_score DESC
+                                            LIMIT
                                                 5
         ");
 
