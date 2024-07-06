@@ -5,8 +5,8 @@ export const friendId = friendIdElement ? friendIdElement.value : null;
 let currentMessages = []; // Store the current messages
 let isFirstFetch = true; // Flag to track the first fetch
 let friendData = document.getElementById('friendInfo');
-let chatInterface = document.querySelector('.chat-interface');
-const messageContainer = document.querySelector('.messages-container');
+export const chatInterface = document.querySelector('.chat-interface');
+export const messageContainer = document.querySelector('.messages-container');
 
 
 

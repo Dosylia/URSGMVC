@@ -1,9 +1,14 @@
+import { chatInterface, messageContainer } from './get_message.js';
 const buttonclose = document.getElementById('buttonSwitchChat');
 
 if (buttonclose !== null && buttonclose !== undefined) {
     buttonclose.addEventListener('click', (event) => {
         event.preventDefault();
-        chatInterface.style.display = 'flex';
-        messageContainer.style.display = 'none';
+        if (chatInterface !== null) {
+            chatInterface.style.display = 'flex';
+        }
+        if (messageContainer !== null) {
+            messageContainer.style.display = 'none';
+        }
     });
 }

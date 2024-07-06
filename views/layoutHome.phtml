@@ -80,11 +80,6 @@
     </dialog>
 </header>
 
-<?php if (isset($_SESSION['mode'])) : ?>
-    <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
-<?php else : ?>
-    <body>
-<? endif; ?>
     <main>
         <?php if(isset($_GET['message'])) :?>
             <span class="form-error"><?= $_GET['message'] ?></span>
