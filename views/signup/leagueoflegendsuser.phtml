@@ -1,4 +1,5 @@
-<form class="form_signup" method="post" action="index.php?action=createleagueuser">
+<div class="form_container"> 
+    <form class="form_signup" method="post" action="index.php?action=createleagueuser">
 
     <?php if (isset($_GET['error'])) : ?>
     <p class="errorsForm"><?= $_GET['error'] ?></p>
@@ -39,22 +40,22 @@
         <input type="hidden" id="main3" name="main3" value="">
 
 
-            <script src="public/js/champions.js"></script>
+        <script src="public/js/champions.js"></script>
 
 
-            <label for="rank_lol">Your rank</label>
+        <label for="rank_lol">Your rank</label>
         <select id="rank_lol" name="rank_lol">
-        <option value="" disabled selected>Select rank...</option>
-        <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-        <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-        <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-        <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-        <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-        <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-        <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-        <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-        <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-        <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
+            <option value="" disabled selected>Select rank...</option>
+            <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
+            <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
+            <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
+            <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
+            <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
+            <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
+            <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
+            <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
+            <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
+            <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
         </select>
 
         <div id="selected-ranks-lol"></div>
@@ -63,13 +64,13 @@
 
         <label for="role_lol">Your role</label>
         <select id="role_lol" name="role_lol">
-        <option value="" disabled selected>Select role...</option>
-        <option value="Support" data-image="public/images/roles/support.png">Support</option>
-        <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-        <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-        <option value="Jungler" data-image="public/images/roles/jungle.png">Jungler</option>
-        <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-        <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
+            <option value="" disabled selected>Select role...</option>
+            <option value="Support" data-image="public/images/roles/support.png">Support</option>
+            <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
+            <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
+            <option value="Jungler" data-image="public/images/roles/jungle.png">Jungler</option>
+            <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
+            <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
         </select>
 
         <div id="selected-roles"></div>
@@ -78,18 +79,18 @@
 
         <label for="server">Select your server</label>
             <select id="server" name="server">
-            <option value="" disabled selected>Select your server...</option>
-            <option value="euw">Europe West</option>
-                <option value="na">North America</option>
-                <option value="eune">Europe Nordic & East </option>
-                <option value="brazil">Brazil</option>
-                <option value="lan">Latin America North</option>
-                <option value="las">Latin America South</option>
-                <option value="ocenia">	Oceania</option>
-                <option value="russia">Russia</option>
-                <option value="turkey">Turkey</option>
-                <option value="japan">Japan</option>
-                <option value="korea">Korea</option>
+                <option value="" disabled selected>Select your server...</option>
+                <option value="Europe West">Europe West</option>
+                <option value="North America">North America</option>
+                <option value="Europe Nordic">Europe Nordic & East </option>
+                <option value="Brazil">Brazil</option>
+                <option value="Latin America North">Latin America North</option>
+                <option value="Latin America South">Latin America South</option>
+                <option value="Oceania">Oceania</option>
+                <option value="Russia">Russia</option>
+                <option value="Turkey">Turkey</option>
+                <option value="Japan">Japan</option>
+                <option value="Korea">Korea</option>
             </select>
 
 
@@ -97,12 +98,15 @@
         <input type="text" id="account_lol" name="account_lol" placeholder="Your LoL account username..">
 
 
-    <?php if($this->isConnectWebsite()) : ?>
-        <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
-    <?php endif ; ?>
+        <?php if($this->isConnectWebsite()) : ?>
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+        <?php endif ; ?>
 
-    <input name="submit" id="send-button" type="submit" value="Send">
-</form>
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+</div>
+
 
 <script type="module" src="public/js/signupLol.js"></script>
 <script type="module" src="public/js/leagueoflegendsinfo.js"></script>

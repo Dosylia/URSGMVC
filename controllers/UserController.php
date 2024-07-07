@@ -429,15 +429,6 @@ class UserController
     public function pageUpdateProfile()
     {
 
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
-
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 
@@ -447,6 +438,9 @@ class UserController
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+
+            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+            $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
 
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";

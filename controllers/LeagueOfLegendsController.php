@@ -72,6 +72,12 @@ class LeagueOfLegendsController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
 
+            
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
+
+
             $template = "views/swiping/update_league";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";

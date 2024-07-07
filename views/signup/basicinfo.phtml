@@ -1,4 +1,5 @@
-<form class="form_signup" method="post" action="index.php?action=basicinfo">
+<div class="form_container"> 
+    <form class="form_signup" method="post" action="index.php?action=basicinfo">
 
     <?php if (isset($_GET['error'])) : ?>
     <p class="errorsForm"><?= $_GET['error'] ?></p>
@@ -10,9 +11,11 @@
     <label for="gender">Gender</label>
     <select id="gender" name="gender" required>
         <option value="" disabled selected>Chose your gender...</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="nonbinary">Non binary</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Non Binary">Non binary</option>
+        <option value="Male and Female">Male and Female</option>
+        <option value="All">All</option>
     </select>    
 
     <label for="age">Age</label>
@@ -21,16 +24,16 @@
     <label for="kindofgamer">What kind of gamer are you?</label>
     <select id="kindofgamer" name="kindofgamer" required>
         <option value="" disabled selected>Chose what kind you are...</option>
-        <option value="chill">Chill / Normal games</option>
-        <option value="competition">Competition / Ranked</option>
-        <option value="competition and chill">Competition/Ranked and chill</option>
+        <option value="Chill">Chill / Normal games</option>
+        <option value="Competition">Competition / Ranked</option>
+        <option value="Competition and Chill">Competition/Ranked and chill</option>
     </select>
 
     <label for="game">Game</label>
         <p>Other games will be added later</p>
     <select id="game" name="game" required>
         <option value="" disabled selected>Chose your game...</option>
-        <option value="leagueoflegends">League of Legends</option>
+        <option value="League of Legends">League of Legends</option>
     </select>
 
     <label for="short_bio">Short bio about you</label>
@@ -41,6 +44,9 @@
     <?php endif ; ?>
 
     <input name="submit" id="send-button" type="submit" value="Send">
-</form>
+    </form>
+    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+</div>
+
 
 <script type="module" src="public/js/basicinfo.js"></script>

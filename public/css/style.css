@@ -12,10 +12,12 @@
   body
   {
     max-height: 100vh;
+    background-color: rgb(243, 237, 237);
   }
 
   main {
     min-height: 65vh;
+    background-color: rgb(243, 237, 237);
   }
   
   .main_section {
@@ -121,6 +123,23 @@
       padding: 50px 0px;
       overflow: hidden;
   }
+
+  .form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.2px solid rgb(224, 209, 209);
+    border-radius: 10px;
+    position: relative;
+    width: 80%;
+    margin: 5% auto;
+    background-color: rgb(248, 244, 244);
+  }
+
+  .picture_with_form {
+    width: 500px;
+    height: auto;
+  }
   
   .form_signup {
       background-color: rgb(248, 244, 244);
@@ -128,11 +147,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 50px;
-      border: 0.2px solid black;
-      border-radius: 20px;
-      width: 40%;
-      margin: 30px auto;
+      padding: 20px 50px;
+      width: 50%;
       position: relative;
   }
   
@@ -515,7 +531,7 @@
   }
   
   /* Style pour le bouton de fermeture */
-  #closeButton_user_picture {
+  #closeButton_user_picture, #closeButton_social_links, #closeButton {
       position: absolute;
       top: 5px;
       right: 5px;
@@ -527,29 +543,9 @@
       cursor: pointer;
   }
   
-  #closeButton_social_links {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: #fff;
-    background-color: red;
-    border: none;
-    border-radius: 50%;
-    padding: 5px 9px;
-    cursor: pointer;
-  }
-
-  #closeButton {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: #fff;
-    background-color: red;
-    border: none;
-    border-radius: 50%;
-    padding: 5px 9px;
-    cursor: pointer;  
-  }
+  #closeButton_user_picture:hover, #closeButton_social_links:hover, #closeButton:hover {
+    background-color: var(--ligher--grey);
+}
 
   #discord_picture
   {
@@ -570,7 +566,7 @@
     background: #cb5242;
     border-radius: 11px;
     width: 250px;
-    height: 50px;
+    height: 90px;
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -580,6 +576,7 @@
     border: none;
     text-shadow: 0.2px 0.2px 0.5px black;
     transition: transform 2s;
+    padding: 5px 10px;
 }
 
 .btn_user_updates > i {
@@ -1809,7 +1806,34 @@ cursor: pointer;
 .dark-mode .download_app_dialog p {
     color: rgb(255, 255, 255);
 }
+
+@media only screen and (max-width: 1300px) {
+  .form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.2px solid rgb(224, 209, 209);
+    border-radius: 10px;
+    position: relative;
+    width: 80%;
+    margin: 5% auto;
+    background-color: rgb(248, 244, 244);
+  }
+
+  .picture_with_form {
+    width: 400px;
+    height: auto;
+  }
+}
+
 @media only screen and (max-width: 1018px) {
+
+  .picture_with_form {
+    width: 300px;
+    height: auto;
+  }
+
+
   .messages-container {
     display: none;
   }
@@ -1850,6 +1874,10 @@ cursor: pointer;
 }
 
 @media only screen and (max-width: 900px) {
+
+  .picture_with_form {
+    display: none;
+  }
   
     .faq_row {
       flex-direction: column;
@@ -1878,6 +1906,10 @@ cursor: pointer;
 
   .form_signup {
     width: 70%;
+  }
+
+  .picture_with_form {
+    display: none;
   }
 
   .user_page_main_league {

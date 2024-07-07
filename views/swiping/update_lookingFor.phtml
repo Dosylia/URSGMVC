@@ -1,104 +1,109 @@
-<form class="form_signup" method="post" action="index.php?action=updateLookingFor">
-<button id="closeButton" type="button">X</button>
+<div class="form_container"> 
+    <button id="closeButton" type="button">X</button>
+    <form class="form_signup" method="post" action="index.php?action=updateLookingFor">
 
-<?php if (isset($_GET['error'])) : ?>
-    <p class="errorsForm"><?= $_GET['error'] ?></p>
-    <? endif ?>
-
-    <label for="gender">Gender you are looking for (Actual: <?= $lfUser['lf_gender']?>)</label>
-    <select id="gender" name="gender" required>
-    <option value="" disabled selected>Choose a gender...</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="nonbinary">Non binary</option>
-        <option value="malefemale">Male and female</option>        
-        <option value="all">All</option>
-    </select>
-
-        <label for="kindofgamer">What kind of gamer are you looking for? (Actual: <?= $lfUser['lf_kindofgamer']?>)</label>
-    <select id="kindofgamer" name="kindofgamer" required>
-    <option value="" disabled selected>Chose what kind you are looking for...</option>
-        <option value="chill">Chill / Normal games</option>
-        <option value="competition">Competition / Ranked</option>
-        <option value="competition and chill">Competition/Ranked and chill</option>
-    </select>
-    
-    
-    <h2>Pick 3 mains you would like to play with</h2>
-        <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain1']) ?>.png">)</label>
-        <button type="button" id="btnMain1">Select main 1</button>
-        <div id="popupMain1">
-                <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search...">
-                <ul class="main1Ul">
-                    <?php include 'views/signup/options_champion_league.phtml' ?>
-                <ul>
-        </div>
-
-        <input type="hidden" id="main1" name="main1" value="">
-
-        <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain2']) ?>.png">)</label>
-        <button type="button" id="btnMain2">Select main 2</button>
-        <div id="popupMain2">
-                <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search...">
-                <ul class="main2Ul">
-                    <?php include 'views/signup/options_champion_league.phtml' ?>
-                <ul>
-        </div>
-
-        <input type="hidden" id="main2" name="main2" value="">
-
-        <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain3']) ?>.png">)</label>
-        <button type="button" id="btnMain3">Select main 3</button>
-        <div id="popupMain3">
-                <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search...">
-                <ul class="main3Ul">
-                    <?php include 'views/signup/options_champion_league.phtml' ?>
-                <ul>
-        </div>
-
-        <input type="hidden" id="main3" name="main3" value="">
+    <?php if (isset($_GET['error'])) : ?>
+        <p class="errorsForm"><?= $_GET['error'] ?></p>
+        <? endif ?>
 
 
-            <script src="public/js/champions.js"></script>
-
-
-        <label for="rank_lol">Rank you are looking for (Actual: <?= $lfUser['lf_lolrank']?>)</label>
-        <select id="rank_lol" name="rank_lol">
-        <option value="" disabled selected>Select rank...</option>
-        <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-        <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-        <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-        <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-        <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-        <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-        <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-        <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-        <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-        <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
+        <label for="gender">Gender you are looking for</label>
+        <select id="gender" name="gender" required>
+            <option value="<?= $lfUser['lf_gender'] ?>" ><?= $lfUser['lf_gender'] ?></option>
+            <?php foreach ($genders as $value => $label) : ?>
+                <?php if ($value !== $lfUser['lf_gender']) : ?>
+                    <option value="<?= $value ?>"><?= $label ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </select>
 
-        <div id="selected-ranks-lol"></div>
-
-        <script src="public/js/ranks.js"></script>
-
-        <label for="role_lol">Role you are looking for (Actual: <?= $lfUser['lf_lolrole']?>)</label>
-        <select id="role_lol" name="role_lol">
-        <option value="" disabled selected>Select role...</option>
-        <option value="Support" data-image="public/images/roles/support.png">Support</option>
-        <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-        <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-        <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
-        <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-        <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
+        <label for="kindofgamer">What kind of gamer are you looking for?</label>
+        <select id="kindofgamer" name="kindofgamer" required>
+            <option value="<?= $lfUser['lf_kindofgamer'] ?>" ><?= $lfUser['lf_kindofgamer'] ?></option>
+            <?php foreach ($kindofgamers as $value => $label) : ?>
+                <?php if ($value !== $lfUser['lf_kindofgamer']) : ?>
+                    <option value="<?= $value ?>"><?= $label ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </select>
+        
+        
+        <h2>Pick 3 mains you would like to play with</h2>
+            <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain1']) ?>.png">)</label>
+            <button type="button" id="btnMain1">Select main 1</button>
+            <div id="popupMain1">
+                    <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search...">
+                    <ul class="main1Ul">
+                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                    <ul>
+            </div>
 
-        <input type="hidden" name="game" value="leagueoflegends"> 
+            <input type="hidden" id="main1" name="main1" value="">
 
-        <?php if($this->isConnectWebsite()) : ?>
-        <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
-    <?php endif ; ?>
+            <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain2']) ?>.png">)</label>
+            <button type="button" id="btnMain2">Select main 2</button>
+            <div id="popupMain2">
+                    <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search...">
+                    <ul class="main2Ul">
+                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                    <ul>
+            </div>
 
-    <input name="submit" id="send-button" type="submit" value="Send">
-</form>
+            <input type="hidden" id="main2" name="main2" value="">
+
+            <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain3']) ?>.png">)</label>
+            <button type="button" id="btnMain3">Select main 3</button>
+            <div id="popupMain3">
+                    <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search...">
+                    <ul class="main3Ul">
+                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                    <ul>
+            </div>
+
+            <input type="hidden" id="main3" name="main3" value="">
+
+
+                <script src="public/js/champions.js"></script>
+
+
+            <label for="rank_lol">Rank you are looking for</label>
+            <select id="rank_lol" name="rank_lol">
+                <option value="<?= $lfUser['lf_lolrank'] ?>" ><?= $lfUser['lf_lolrank'] ?></option>
+                <?php foreach ($lol_ranks as $rank) : ?>
+                    <?php if ($rank !== $lfUser['lf_lolrank']) : ?>
+                        <option value="<?= $rank ?>" data-image="public/images/ranks/<?= $rank ?>.png"><?= $rank ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+
+            <div id="selected-ranks-lol"></div>
+
+            <script src="public/js/ranks.js"></script>
+
+            <label for="role_lol">Role you are looking for</label>
+            <select id="role_lol" name="role_lol">
+                <option value="<?= $lfUser['lf_lolrole'] ?>" ><?= $lfUser['lf_lolrole'] ?></option>
+                <?php foreach ($lol_roles as $role) : ?>
+                    <?php if ($role !== $lfUser['lf_lolrole']) : ?>
+                        <option value="<?= $role ?>" data-image="public/images/roles/<?= strtolower(str_replace(' ', '', $role)) ?>.png"><?= $role ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+
+            <div id="selected-roles"></div>
+
+            <script src="public/js/roles.js"></script>
+
+            <input type="hidden" name="game" value="leagueoflegends"> 
+
+            <?php if($this->isConnectWebsite()) : ?>
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+        <?php endif ; ?>
+
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+</div>
+
 
 <script type="module" src="public/js/swiping/closebutton.js"></script>
