@@ -1,6 +1,8 @@
 const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
 const cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
+const fileInput = document.getElementById('file');
+const fileName = document.getElementById('file-name');
 
 showButtonSocialLinks.addEventListener('click', () => {
   openDialogSocialLinks();
@@ -11,10 +13,12 @@ cancelButtonSocialLinks.addEventListener('click', () => {
 });
 
 function openDialogSocialLinks() {
+  favDialogSocialLinks.style.display = 'flex';
   favDialogSocialLinks.showModal();
 }
 
 function closeDialogSocialLinks() {
+  favDialogSocialLinks.style.display = 'none';
   favDialogSocialLinks.close();
 }
 
@@ -31,10 +35,12 @@ cancelButtonPicture.addEventListener('click', () => {
 });
 
 function openDialogPicture() {
+  favDialogPicture.style.display = 'flex';
   favDialogPicture.showModal();
 }
 
 function closeDialogPicture() {
+  favDialogPicture.style.display = 'none';
   favDialogPicture.close();
 }
 
@@ -46,5 +52,14 @@ imgDiscord.addEventListener('click', () => {
     hiddenP.style.display = "block";
   } else {
     hiddenP.style.display = "none";
+  }
+});
+
+fileInput.addEventListener('change', (event) => {
+  const input = event.target;
+  if (input.files.length > 0) {
+    fileName.textContent = input.files[0].name;
+  } else {
+    fileName.textContent = 'No file selected';
   }
 });

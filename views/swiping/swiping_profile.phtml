@@ -109,7 +109,7 @@
    
 
     <dialog id="favDialogSocialLinks">
-        <br><h2 id="title_generalbox">Your social links:</h2><br>  
+        <br><p id="title_generalbox">Your social links:</p><br>  
         <form action="index.php?action=updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
             <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
@@ -119,16 +119,21 @@
             <input type="text" id="instagram" name="instagram" placeholder="Your Instagram link.."><br><br>
             <label for="instagram">Twitch:</label><br><br>
             <input type="text" id="twitch" name="twitch" placeholder="Your Instagram link.."><br><br>
-            <br><br><input name="submit" type="submit" value="Save">
+            <br><br><input name="submit" type="submit" value="Save" id="send-button">
         </form>
         <button id="closeButton_social_links">X</button>
     </dialog>
 
     <dialog id="favDialogPicture">
-        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data">
-            <br><p id="title_generalbox">Add a profile picture or update it</p><br>
-            <input type="file" name="file"><br>
-            <input type="submit" name="submit" value="Upload">
+        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
+            <p id="title_generalbox">Add a profile picture or update it</p>
+            <p>Accepted format : JPG, JPEG and PNG</p>
+            <div class="file-input-container">
+                <input type="file" id="file" name="file" class="file-input">
+                <label for="file" class="file-label">Choose a file</label>
+                <span id="file-name" class="file-name">No file selected</span>
+            </div>
+            <input type="submit" name="submit" value="Upload" id="send-button">
         </form>
     <button id="closeButton_user_picture">X</button></dialog>
 </section>
