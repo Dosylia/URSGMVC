@@ -1,3 +1,5 @@
+"use strict";
+
 import { friendId, userId, fetchMessages } from './get_message.js';
 
 let senderId;
@@ -53,7 +55,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     btnSubmit.addEventListener("click", function(event) {
         event.preventDefault();
-        const message = messageInput.value;
+
+        const message = messageInput.value.trim();
+
+        if (message === "") {
+            return;
+        }
+
         sendMessageToPhp(senderId, receiverId, message);
     });
 });
