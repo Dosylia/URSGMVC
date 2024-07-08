@@ -10,8 +10,8 @@
         <select id="gender" name="gender" required>
             <option value="<?= $user['user_gender'] ?>" ><?= $user['user_gender'] ?></option>
             <?php foreach ($genders as $value => $label) : ?>
-                <?php if ($value !== $user['user_gender']) : ?>
-                    <option value="<?= $value ?>"><?= $label ?></option>
+                <?php if ($label !== $user['user_gender']) : ?>
+                    <option value="<?= $label ?>"><?= $label ?></option>
                 <?php endif; ?>
             <?php endforeach; ?>
         </select>  

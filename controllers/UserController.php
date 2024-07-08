@@ -193,58 +193,97 @@ class UserController
 
     }
 
-    public function updatePicture()
-    {
-           
+    public function updatePicture() {
         $targetDir = "public/upload/";
         $fileName = basename($_FILES["file"]["name"]);
         $this->setFileName($fileName);
         $targetFilePath = $targetDir . $fileName;
         $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
 
-        if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) 
-        {
+        if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
             $username = $this->validateInput($_GET["username"]);
             $this->setUsername($username);
 
-            $allowTypes = array('jpg', 'png', 'jpeg', 'gif', 'pdf');
+            $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
 
-            if (in_array($fileType, $allowTypes)) 
-            {
-                if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) 
-                {
-                    $uploadPicture = $this->user->uploadPicture($this->getUsername(), $this->getFilename());
+            if (in_array($fileType, $allowTypes)) {
+                if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+                    // Check for animated images (for GIFs)
+                    if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+                        header("location:index.php?action=userProfile&message=Animated GIFs are not allowed");
+                        exit;
+                    }
 
-                    if ($uploadPicture)
-                    {
-                        header("location:index.php?action=userProfile&message=Updated successfully");
-                        exit;      
+                    // Resize the image to 200x200
+                    $resizedFilePath = $targetDir . 'resized_' . $fileName;
+                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                        // Update the database with the resized image
+                        $uploadPicture = $this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename());
+
+                        if ($uploadPicture) {
+                            header("location:index.php?action=userProfile&message=Updated successfully");
+                            exit;
+                        } else {
+                            header("location:index.php?action=userProfile&message=Couldn't update");
+                            exit;
+                        }
+                    } else {
+                        header("location:index.php?action=userProfile&message=Error resizing image");
+                        exit;
                     }
-                    else 
-                    {
-                        header("location:index.php?action=userProfile&message=Couldn't update");
-                        exit;      
-                    }
-                }
-                else
-                {
+                } else {
                     header("location:index.php?action=userProfile&message=Error uploading");
-                    exit;        
+                    exit;
                 }
-
-            }
-            else
-            {
+            } else {
                 header("location:index.php?action=userProfile&message=Wrong type of picture"); // Not accepted format
-                exit;   
+                exit;
             }
-        }
-        else 
-        {
+        } else {
             header("location:index.php?action=userProfile&message=Nothing to upload"); // If no picture or no form
-            exit;  
-        }   
+            exit;
+        }
     }
+    
+
+    public function resizeImage($sourcePath, $destPath, $newWidth, $newHeight) {
+        list($width, $height, $imageType) = getimagesize($sourcePath);
+
+        // Create a new image from file
+        switch ($imageType) {
+            case IMAGETYPE_JPEG:
+                $src = imagecreatefromjpeg($sourcePath);
+                break;
+            case IMAGETYPE_PNG:
+                $src = imagecreatefrompng($sourcePath);
+                break;
+            case IMAGETYPE_GIF:
+                $src = imagecreatefromgif($sourcePath);
+                break;
+            default:
+                return false; // Unsupported image type
+        }
+
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        $result = imagejpeg($dst, $destPath); // Save the resized image to the destination path
+        imagedestroy($src);
+        imagedestroy($dst);
+        return $result;
+    }
+
+    public function isAnimatedGif($filePath) {
+            $file = fopen($filePath, 'rb');
+            $count = 0;
+
+            while (!feof($file) && $count < 2) {
+                $chunk = fread($file, 1024 * 100); // Read 100KB chunks
+                $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00\x2C#s', $chunk, $matches);
+            }
+
+            fclose($file);
+            return $count > 1;
+        }
 
     public function pageswiping()
     {
@@ -339,14 +378,6 @@ class UserController
 
     public function pageUserProfile()
     {
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {
 

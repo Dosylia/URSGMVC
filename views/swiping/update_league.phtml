@@ -76,14 +76,14 @@
             <select id="server" name="server">
                 <option value="<?= $lolUser['lol_server'] ?>" ><?= $lolUser['lol_server'] ?></option>
                 <?php foreach ($lol_servers as $server_key => $server_name) : ?>
-                    <?php if ($server_key !== $lolUser['lol_server']) : ?>
-                        <option value="<?= $server_key ?>"><?= $server_name ?></option>
+                    <?php if ($server_name !== $lolUser['lol_server']) : ?>
+                        <option value="<?= $server_name ?>"><?= $server_name ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
 
             <label for="account_lol">Link your League of Legends account</label>
-            <input type="text" id="account_lol" name="account_lol" placeholder="<?= $lolUser['lol_account']?>">
+            <input type="text" id="account_lol" name="account_lol" value="<?= $lolUser['lol_account']?>">
 
 
         <?php if($this->isConnectWebsite()) : ?>
