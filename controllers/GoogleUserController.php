@@ -69,7 +69,7 @@ class GoogleUserController
             $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
             $page_title = "URSG - Confirm Mail";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         }
         else if($googleUser['google_confirmEmail'] == 1 && !$this->isConnectWebsite())
         {
@@ -119,32 +119,32 @@ class GoogleUserController
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $secondTierUser['user_game'] === "leagueoflegends") { 
             // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "valorant") {
                 // Code block 4: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
                 $template = "views/signup/valorant";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
-                require "views/layoutHome.phtml";
+                require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
                 // Code block 5: User is connected via Google and username is set , but game settings not done. Redirect for both games
                 $template = "views/signup/both";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
-                require "views/layoutHome.phtml";
+                require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 6: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         } else {
             // Code block 7: Redirect to index.php if none of the above conditions are met
             header("Location: index.php");

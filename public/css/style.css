@@ -149,7 +149,9 @@
       justify-content: center;
       padding: 20px 50px;
       width: 50%;
+      border-radius: 20px;
       position: relative;
+      margin: auto;
   }
   
   .form_signup img {
@@ -177,6 +179,7 @@
   .form_signup p {
   font-size: 1.5vh;
   font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 10px;
   }
   
   .form_signup a {
@@ -308,6 +311,7 @@
     .form_signup h2 {
       font-size: 3vh;
       font-family: 'Geologica', sans-serif;
+      margin-bottom: 20px;
     }
   
     #title_form_login {
@@ -727,6 +731,8 @@
       border-radius: 20px;
       margin-bottom: 40px;
       text-align: center;
+      max-height: 60vh;
+      overflow: scroll;
     }
   
     #message_text {
@@ -1205,6 +1211,7 @@
   
   .dark-mode .form_signup input {
     background-color: var(--ligher--grey);
+    color: white;
   }
   
   .dark-mode .form_signup textarea {
@@ -1236,11 +1243,11 @@
   
   .dark-mode .reply-box input[type="text"]:focus,
   .dark-mode .reply-box textarea:focus {
-    color: white;
+    color: rgb(194, 181, 181);
   }
   
   .dark-mode #send-button {
-    border: 1px solid white;
+    border: 1px solid rgb(207, 192, 192);
   }
   
   .dark-mode .no_display_phone {
@@ -1524,11 +1531,29 @@ cursor: pointer;
     overflow: hidden;
 }
 
+.mid_main_section_signup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30vh;
+  width: 100%;
+  overflow: hidden;
+}
+
 .mid_main_section p {
     font-size: 7vw;
     font-family: 'Libre Franklin', sans-serif;
     text-shadow: 4px 4px 8px black;
     text-align: center;
+}
+
+.mid_main_section_signup p {
+  font-size: 7vw;
+  font-family: 'Libre Franklin', sans-serif;
+  text-shadow: 4px 4px 8px black;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 #mid_main_section_button {
@@ -1770,6 +1795,10 @@ cursor: pointer;
 
 /* HEADER DARK MODE */
 
+.dark-mode body, .dark-mode main {
+  background-color: var(--dark-grey);
+}
+
 .dark-mode .nav_swiping {
     background-color: #3d3a3a;
 }
@@ -1805,6 +1834,10 @@ cursor: pointer;
 
 .dark-mode .download_app_dialog p {
     color: rgb(255, 255, 255);
+}
+
+.dark-mode  .form_container {
+  background-color: var(--dark-ligher-grey);
 }
 
 @media only screen and (max-width: 1300px) {
@@ -2040,6 +2073,11 @@ cursor: pointer;
 
   .mid_main_section p {
   font-size: 3em;
+  }
+
+  .mid_main_section_signup {
+    font-size: 3em;
+    margin-bottom: 15px;
   }
 
   .signup_button {

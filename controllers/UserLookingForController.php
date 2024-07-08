@@ -44,20 +44,20 @@ class UserLookingForController
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
             $user = $this-> user -> getUserById($_SESSION['userId']);
                 $template = "views/signup/leagueoflegendsuser";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
-                require "views/layoutHome.phtml";
+                require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
-            require "views/layoutHome.phtml";
+            require "views/layoutSignup.phtml";
         } else {
             // Code block 4: Redirect to index.php if none of the above conditions are met
             header("Location: index.php");

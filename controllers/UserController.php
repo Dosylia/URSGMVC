@@ -99,7 +99,7 @@ class UserController
                         $_SESSION['game'] = $user['user_game'];
 
     
-                if($user['user_game'] === "leagueoflegends" || $user['user_game'] === "both") 
+                if($user['user_game'] === "League of Legends" || $user['user_game'] === "LoL and Valorant") 
                 { 
                     header("location:index.php?action=leagueuser&user_id=".$user['user_id']);
                     exit();
@@ -108,6 +108,9 @@ class UserController
                 {
                     header("location:index.php?action=valorantUser&user_id=".$user['user_id']);
                     exit();
+                }
+                else {
+                    header("location:index.php?action=home");
                 }
             }
         }
@@ -381,15 +384,6 @@ class UserController
 
     public function pageAnotherUserProfile()
     {
-
-        if (isset($_SESSION['mode'])) {
-            $mode = $_SESSION['mode'];
-          } else {
-            $mode = 'light';
-          }
-          
-          $darkMode = ($mode === 'dark');
-
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
         {

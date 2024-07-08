@@ -28,17 +28,17 @@ class CreateLoLAccount{
 
     
     set account(newAccount) {
-        const regex = new RegExp(/^[a-zA-Z0-9_]{3,20}$/);
+        const regex = new RegExp(/^[a-zA-Z0-9_][a-zA-Z0-9_ #]{1,18}[a-zA-Z0-9_#]$/);
 
         if(newAccount.value == "")
         {
-            let span = new ErrorSpan(newAccount.id,"Cannot be empty");
+            let span = new ErrorSpan(newAccount.id,"League of legends account cannot be empty");
             span.displaySpan();
             this._accountError = true;
         } 
         else if(!regex.test(newAccount.value))
         {
-            let span = new ErrorSpan(newAccount.id,"Must respect format");
+            let span = new ErrorSpan(newAccount.id,"Must respect format for League account");
             span.displaySpan();
             this._accountError = true;   
         }
