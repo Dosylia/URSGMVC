@@ -43,7 +43,7 @@ class CreateAccount{
         } 
         else if(!regex.test(newUsername.value))
         {
-            let span = new ErrorSpan(newUsername.id,"Must respect format");
+            let span = new ErrorSpan(newUsername.id,"Must respect format (3 to 20 characters)");
             span.displaySpan();
             this._usernameError = true;   
         }
