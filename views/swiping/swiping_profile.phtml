@@ -14,11 +14,7 @@
                             <a href="index.php?action=updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
                             <a href="index.php?action=updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
                             <a href="index.php?action=updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a> 
-                            <?php if(isset($user['lol_account']) && $user['lol_account'] !== null) : ?>
-                                <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE LOL ACCOUNT</button></a> 
-                            <?php else : ?>
-                                <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>ADD LOL ACCOUNT</button></a> 
-                            <?php endif; ?>  
+                            <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>BIND LEAGUE ACCOUNT</button></a> 
                             <?php if(isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
                             <?php else : ?>

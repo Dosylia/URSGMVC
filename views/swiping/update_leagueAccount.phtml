@@ -9,7 +9,17 @@
             <div id="verification_code"></div>
 
             <label for="account_lol">Link your League of Legends account, # is needed </label>
-            <input type="text" id="account_lol" name="account_lol" value="Exemple : OTPYasuoEh#EUW">
+            <input type="text" id="account_lol" name="account_lol" placeholder="Exemple : OTPYasuoEh#EUW">
+
+            <label for="server">Confirm your server</label>
+            <select id="server" name="server">
+                <option value="<?= $lolUser['lol_server'] ?>" ><?= $lolUser['lol_server'] ?></option>
+                <?php foreach ($lol_servers as $server_key => $server_name) : ?>
+                    <?php if ($server_name !== $lolUser['lol_server']) : ?>
+                        <option value="<?= $server_name ?>"><?= $server_name ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
 
         <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  

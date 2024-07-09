@@ -259,6 +259,8 @@ class GoogleUserController
                 if($createGoogleUser) 
                 {
 
+                    require 'keys.php';
+
                     $this->setGoogleUserId($createGoogleUser);
 
                     $lifetime = 7 * 24 * 60 * 60;
@@ -284,7 +286,7 @@ class GoogleUserController
                     $mail->Host = 'smtp.ionos.de';
                     $mail->SMTPAuth = true;
                     $mail->Username = 'dosylia@ur-sg.com';
-                    $mail->Password = 'Zangetsu_Serano1';
+                    $mail->Password = $password_gmail;
                     $mail->SMTPSecure = 'tls';
                     $mail->Port = 587;
                 

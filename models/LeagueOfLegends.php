@@ -106,6 +106,58 @@ class LeagueOfLegends extends DataBase
         }
     }
 
+    public function addLoLAccount($loLServer, $loLAccount, $verificationCode, $summonerId, $userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `leagueoflegends`
+                                            SET
+                                                `lol_server` = ?,
+                                                `lol_account` = ?,
+                                                `lol_verificationCode` = ?,
+                                                `lol_sUsernameId`= ?                                                                                                
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addAccountTest  = $query -> execute([$loLServer, $loLAccount, $verificationCode, $summonerId, $userId]);
+
+        if($addAccountTest)
+        {
+            return $addAccountTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function updateSummonerData($summonerName, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `leagueoflegends`
+                                            SET
+                                                `lol_sUsername` = ?,
+                                                `lol_sLevel` = ?,
+                                                `lol_sRank` = ?,
+                                                `lol_sProfileIcon`= ?                                                                                                
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addAccountTest  = $query -> execute([$summonerName, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId]);
+
+        if($addAccountTest)
+        {
+            return $addAccountTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function getLeageUserByUsername($lolAccount) 
     {
         $query = $this -> bdd -> prepare("

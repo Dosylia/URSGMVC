@@ -43,6 +43,7 @@ $actionMap = [
     'updateLeague' => [LeagueOfLegendsController::class, 'UpdateLeague'],
     'updateLeagueAccount' => [LeagueOfLegendsController::class, 'pageUpdateLeagueAccount'],
     'sendAccountToPhp' => [LeagueOfLegendsController::class, 'sendAccountToPhp'],
+    'verifyAccount' => [LeagueOfLegendsController::class, 'verifyAccount'],
     'updateLookingForPage' => [UserLookingForController::class, 'pageUpdateLookingFor'],
     'updateLookingFor' => [UserLookingForController::class, 'UpdateLookingFor'],
     'updateSocial' => [UserController::class, 'updateSocial'],
