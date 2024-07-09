@@ -1,0 +1,24 @@
+<div class="form_container"> 
+    <button id="closeButton" type="button">X</button>
+    <form class="form_signup" method="post">
+
+        <?php if (isset($_GET['error'])) : ?>
+        <p class="errorsForm"><?= $_GET['error'] ?></p>
+        <? endif ?>
+
+            <div id="verification_code"></div>
+
+            <label for="account_lol">Link your League of Legends account, # is needed </label>
+            <input type="text" id="account_lol" name="account_lol" value="Exemple : OTPYasuoEh#EUW">
+
+        <?php if($this->isConnectWebsite()) : ?>
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+        <?php endif ; ?>
+
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+</div>
+
+<script type="module" src="public/js/swiping/closebutton.js"></script>
+<script type="module" src="public/js/swiping/send_accountData.js"></script>

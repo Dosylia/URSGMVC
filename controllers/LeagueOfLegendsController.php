@@ -68,8 +68,6 @@ class LeagueOfLegendsController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
 
             
@@ -86,6 +84,47 @@ class LeagueOfLegendsController
         {
             header("Location: index.php");
             exit();
+        }
+    }
+
+    public function pageUpdateLeagueAccount()
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
+
+            $template = "views/swiping/update_leagueAccount";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    public function sendAccountToPhp()
+    {
+        if (isset($_POST['param']))
+        {
+            $data = json_decode($_POST['param']);
+            
+            $loLAccount = $data->lolAccount;
+            $this->setLolAccount($loLAccount);
+
+            $lolAccount = $this->leagueOfLegends->insertLolAccount($this->getLolAccount());
+    
+            if ($lolAccount) {
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to send message']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
     }
 
