@@ -106,7 +106,7 @@ class LeagueOfLegends extends DataBase
         }
     }
 
-    public function addLoLAccount($loLServer, $loLAccount, $verificationCode, $puudId, $userId) 
+    public function addLoLAccount($loLServer, $loLAccount, $verificationCode, $userId) 
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE
@@ -114,13 +114,12 @@ class LeagueOfLegends extends DataBase
                                             SET
                                                 `lol_server` = ?,
                                                 `lol_account` = ?,
-                                                `lol_verificationCode` = ?,
-                                                `lol_sPuuid`= ?                                                                                                
+                                                `lol_verificationCode` = ?,                                                                                             
                                             WHERE
                                                 `user_id` = ?
         ");
 
-        $addAccountTest  = $query -> execute([$loLServer, $loLAccount, $verificationCode, $puudId, $userId]);
+        $addAccountTest  = $query -> execute([$loLServer, $loLAccount, $verificationCode, $userId]);
 
         if($addAccountTest)
         {

@@ -163,7 +163,7 @@ class LeagueOfLegendsController
                             $_SESSION['summoner_name'] = $summoner_name;
                             $_SESSION['server'] = $selectedRegionValue;
 
-                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $puudId, $this->getUserId());
+                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $this->getUserId());
 
                             if ($insertLeagueData)
                             {
@@ -245,6 +245,57 @@ class LeagueOfLegendsController
     public function getSummonerRankedStats($summonerId, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
         return json_decode(file_get_contents($url), true);
+    }
+
+    public function refreshRiotData()
+    {
+        $allUsers = $this->user->getAllUsers();
+    
+        foreach ($allUsers as $user)
+        {
+            if ($user['lol_sPuuid'] && $user['lol_verified'] === 1)
+            {
+                $regionMap = [
+                    "Europe West" => "euw1",
+                    "North America" => "na1",
+                    "Europe Nordic" => "eun1",
+                    "Brazil" => "br1",
+                    "Latin America North" => "la1",
+                    "Latin America South" => "la2",
+                    "Oceania" => "oc1",
+                    "Russia" => "ru1",
+                    "Turkey" => "tr1",
+                    "Japan" => "jp1",
+                    "Korea" => "kr",
+                ];
+    
+                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+    
+                require_once 'keys.php';
+    
+                $summonerProfile = $this->getSummonerProfile($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
+    
+                if ($summonerProfile)
+                {
+                    $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+    
+                    $rankedStats = isset($summonerRankedStats[0]) ? $summonerRankedStats[0] : null;
+                    $rankAndTier = $rankedStats ? $rankedStats['tier'] . ' ' . $rankedStats['rank'] : 'Unranked';
+    
+                    $username = $user['lol_sUsername'];
+                    $userId = $user['user_id'];
+    
+                    $this->leagueOfLegends->updateSummonerData(
+                        $username, 
+                        $summonerProfile['id'],
+                        $summonerProfile['summonerLevel'], 
+                        $rankAndTier,
+                        $summonerProfile['profileIconId'], 
+                        $userId
+                    );
+                }
+            }
+        }
     }
 
     public function createLeagueUser()

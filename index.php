@@ -61,6 +61,7 @@ $actionMap = [
     'getUserMatching' => [UserController::class, 'getUserMatching'],
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
+    'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
 ];
 
 // Get the action from the request
