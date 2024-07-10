@@ -76,7 +76,7 @@ class UserLookingForController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];

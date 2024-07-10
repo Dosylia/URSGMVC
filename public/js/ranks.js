@@ -4,6 +4,7 @@ const selectedRanksLol = [
   { name: 'Silver', image: 'images/ranks/Silver.png' },
   { name: 'Gold', image: 'images/ranks/Gold.png' },
   { name: 'Platinum', image: 'images/ranks/Platinum.png' },
+  { name: 'Emerald', image: 'images/ranks/Emerald.png' },
   { name: 'Diamond', image: 'images/ranks/Diamond.png' },
   { name: 'Master', image: 'images/ranks/Master.png' },
   { name: 'Grand Master', image: 'images/ranks/Grandmaster.png' },
