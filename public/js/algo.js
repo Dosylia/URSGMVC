@@ -708,10 +708,12 @@ function matchRankLol(match_rank, user_rank) {
         'Silver': 4,
         'Gold': 5,
         'Platinum': 6,
-        'Diamond': 7,
-        'Master': 8,
-        'Grandmaster': 9,
-        'Challenger': 10,
+        'Emerald':7,
+        'Diamond': 8,
+        'Master': 9,
+        'Grandmaster': 10,
+        'Challenger': 11,
+        'Any': 11
     }
     if (match_rank in rankScore && user_rank in rankScore) {
         const score1 = rankScore[match_rank];
@@ -962,8 +964,6 @@ function championValorant(
 function match_profiles(profile_list, user_profile) {
     for (let i = 0; i < profile_list.length; i++) {
         const profile = profile_list[i];
-        console.log("profile: ",profile)
-        console.log("user_profile: ",user_profile)
         var finalScore = 0
         // Match games
         // const game = matchGame(profile.game, profile.lookingGame, user_profile.game, user_profile.lookingGame)
@@ -985,10 +985,8 @@ function match_profiles(profile_list, user_profile) {
                     profile.lookingMainLol3,
 
                 );
-                console.log("champion_match: ",finalScore)
                 //Matching for rank
                 finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
-                console.log("matchRankLol: ",finalScore)
                 break;
             case "Valorant":
                 finalScore += championValorant(
@@ -1059,11 +1057,19 @@ function match_profiles(profile_list, user_profile) {
         console.log("Server: ",finalScore)
 
         //Match kind of gamer
-        if (user_profile.lookingGamerkind === profile.gamerkind) {
+        if (user_profile.lookingGamerkind === "competition and chill") {
             finalScore += 40
-        } else if (user_profile.lookingGamerkind === "competition and chill") {
+        } else if (user_profile.lookingGamerkind === profile.gamerkind) {
             finalScore += 40
-        }else if(profile.gamerkind === "competition and chill") {
+        } else if (profile.gamerkind === "competition and chill") {
+            finalScore += 40
+        }
+
+        if (profile.lookingGamerkind === "competition and chill") {
+            finalScore += 40
+        } else if (user_profile.lookingGamerkind === profile.gamerkind) {
+            finalScore += 40
+        } else if (user_profile.gamerkind === "competition and chill") {
             finalScore += 40
         }
 
@@ -1085,11 +1091,18 @@ function match_profiles(profile_list, user_profile) {
 
         //Sort by the gender they selected
         if (profile.gender === user_profile.lookingGender) {
-            if (profile.lookingGender === user_profile.gender) {
-                finalScore += 20
-            } else {
-                finalScore += 10
-            }
+            finalScore += 60
+        } else if (user_profile.lookingGender === "All") {
+            finalScore += 40
+        } else {
+            finalScore -= 40
+        }
+        if (profile.lookingGender === user_profile.gender) {
+            finalScore += 60
+        } else if (profile.lookingGender === "All") {
+            finalScore += 40
+        } else {
+            finalScore -= 40
         }
         console.log("gender: ",finalScore)
 
@@ -1109,6 +1122,7 @@ function match_profiles(profile_list, user_profile) {
 function sendDataToPHP(dataToSend) {
     // Stringify the array of objects
     const jsonData = JSON.stringify(dataToSend);
+
     // Create a new fetch request
     fetch('index.php?action=algoData', {
         method: 'POST',

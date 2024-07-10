@@ -206,17 +206,35 @@ class LeagueOfLegendsController
             if($summonerProfile && $summonerProfile['profileIconId'] === 7) 
             {
 
+
                 $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $server, $apiKey);
 
-                // Verification success
-
-                    $rankedStats = isset($summonerRankedStats[0]) ? $summonerRankedStats[0] : null;
-                    $rankAndTier = $rankedStats ? $rankedStats['tier'] . ' ' . $rankedStats['rank'] : 'Unranked';
+                // Default to 'Unranked'
+                $rankAndTier = 'Unranked';
+                $soloQueueRankAndTier = null;
+                $flexQueueRankAndTier = null;
+                
+                // Loop through the ranked stats array to find the desired queue types
+                foreach ($summonerRankedStats as $rankedStats) {
+                    if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+                        $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                    } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+                        $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                    }
+                }
+                
+                // Prioritize solo queue rank, if available
+                if ($soloQueueRankAndTier !== null) {
+                    $rankAndTier = $soloQueueRankAndTier;
+                } elseif ($flexQueueRankAndTier !== null) {
+                    $rankAndTier = $flexQueueRankAndTier;
+                }
         
                     // Save updated summoner data to the database
                     $this->leagueOfLegends->updateSummonerData(
                         $username, 
                         $summonerProfile['id'],
+                        $puudId,
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
                         $summonerProfile['profileIconId'], 
@@ -249,6 +267,7 @@ class LeagueOfLegendsController
 
     public function refreshRiotData()
     {
+
         $allUsers = $this->user->getAllUsers();
     
         foreach ($allUsers as $user)
@@ -278,16 +297,17 @@ class LeagueOfLegendsController
                 if ($summonerProfile)
                 {
                     $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
-    
-                    $rankedStats = isset($summonerRankedStats[0]) ? $summonerRankedStats[0] : null;
-                    $rankAndTier = $rankedStats ? $rankedStats['tier'] . ' ' . $rankedStats['rank'] : 'Unranked';
+
+                    $rankAndTier = $this->determineRankAndTier($summonerRankedStats);
     
                     $username = $user['lol_sUsername'];
                     $userId = $user['user_id'];
+                    $puudId = $user['lol_sPuuid'];
     
                     $this->leagueOfLegends->updateSummonerData(
                         $username, 
                         $summonerProfile['id'],
+                        $puudId,
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
                         $summonerProfile['profileIconId'], 
@@ -297,6 +317,71 @@ class LeagueOfLegendsController
             }
         }
     }
+
+    public function determineRankAndTier($summonerRankedStats)
+{
+    // Default to 'Unranked'
+    $rankAndTier = 'Unranked';
+    $soloQueueRank = null;
+    $flexQueueRank = null;
+
+    // Define tier and division order for comparison
+    $tiers = [
+        'IRON' => 1,
+        'BRONZE' => 2,
+        'SILVER' => 3,
+        'GOLD' => 4,
+        'PLATINUM' => 5,
+        'DIAMOND' => 6,
+        'MASTER' => 7,
+        'GRANDMASTER' => 8,
+        'CHALLENGER' => 9
+    ];
+
+    $divisions = [
+        'IV' => 1,
+        'III' => 2,
+        'II' => 3,
+        'I' => 4
+    ];
+
+    // Loop through the ranked stats array to find the desired queue types
+    foreach ($summonerRankedStats as $rankedStats) {
+        if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+            $soloQueueRank = [
+                'tier' => $rankedStats['tier'],
+                'rank' => $rankedStats['rank']
+            ];
+        } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+            $flexQueueRank = [
+                'tier' => $rankedStats['tier'],
+                'rank' => $rankedStats['rank']
+            ];
+        }
+    }
+
+    // Compare solo queue and flex queue ranks to determine the higher one
+    if ($soloQueueRank && $flexQueueRank) {
+        if ($tiers[$soloQueueRank['tier']] > $tiers[$flexQueueRank['tier']]) {
+            $rankAndTier = $soloQueueRank['tier'] . ' ' . $soloQueueRank['rank'];
+        } elseif ($tiers[$soloQueueRank['tier']] < $tiers[$flexQueueRank['tier']]) {
+            $rankAndTier = $flexQueueRank['tier'] . ' ' . $flexQueueRank['rank'];
+        } else {
+            // If tiers are the same, compare divisions
+            if ($divisions[$soloQueueRank['rank']] > $divisions[$flexQueueRank['rank']]) {
+                $rankAndTier = $soloQueueRank['tier'] . ' ' . $soloQueueRank['rank'];
+            } else {
+                $rankAndTier = $flexQueueRank['tier'] . ' ' . $flexQueueRank['rank'];
+            }
+        }
+    } elseif ($soloQueueRank) {
+        $rankAndTier = $soloQueueRank['tier'] . ' ' . $soloQueueRank['rank'];
+    } elseif ($flexQueueRank) {
+        $rankAndTier = $flexQueueRank['tier'] . ' ' . $flexQueueRank['rank'];
+    }
+
+    return $rankAndTier;
+}
 
     public function createLeagueUser()
     {
