@@ -28,7 +28,7 @@ function sendAccountToPhp(lolAccount, lolServer) {
     })
     .then(data => {
         if (data.status === 'success') {
-            displayVerificationCode(data.verification_code);
+            displayVerificationCode();
         } else {
             console.error('Error:', data.message);
             verificationDiv.innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
@@ -41,10 +41,10 @@ function sendAccountToPhp(lolAccount, lolServer) {
 }
 
 // Function to display the verification code and instructions
-function displayVerificationCode(code) {
+function displayVerificationCode() {
     verificationDiv.innerHTML = `
-        <p>Your verification code is: <strong>${code}</strong></p>
-        <p>Please enter this code in your League of Legends profile and click the verify button below once done.</p>
+        <img id="picture_verify" src="public/images/profileicon/7.png">
+        <p>Change your picture in game to this one to verify your account.</p>
     `;
 
     // Create and add a button for verification
@@ -62,9 +62,14 @@ function displayVerificationCode(code) {
 
 // Function to verify the account after the user enters the verification code in their profile
 function verifyAccount() {
-    const jsonData = JSON.stringify({
-        action: 'verifyAccount'
-    });
+
+    const action = "verifyLeagueAccount";
+
+    const dataToSend = {
+        action
+    };
+
+    const jsonData = JSON.stringify(dataToSend);
 
     fetch('index.php?action=verifyLeagueAccount', {
         method: 'POST',
@@ -81,9 +86,9 @@ function verifyAccount() {
     })
     .then(data => {
         if (data.status === 'success') {
-            verificationDiv.innerHTML = `<p style="color: green;">Account verified successfully!</p>`;
+            verificationDiv.innerHTML = `<p style="color: green;">Account verified and binded successfully!</p>`;
         } else {
-            verificationDiv.innerHTML = `<p style="color: red;">Verification failed: ${data.message}</p>`;
+            verificationDiv.innerHTML = `<p style="color: red;">${data.message}</p>`;
         }
     })
     .catch(error => {

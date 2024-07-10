@@ -145,23 +145,25 @@ class LeagueOfLegendsController
 
             $selectedRegionValue = $regionMap[$this->getLolServer()] ?? null;
 
-            require 'keys.php';
+            require_once 'keys.php';
 
-            $summoner = getSummonerByNameAndTag($username, $tagLine, $apiKey);
+            $summoner = $this->getSummonerByNameAndTag($username, $tagLine, $apiKey);
+
 
             if ($summoner)
             {
-                $summonerId = $summoner['puuid'];
+                $puudId = $summoner['puuid'];
                 $summoner_name = $summoner['gameName'];
                 $verificationCode = bin2hex(random_bytes(5));
 
                             // Save to the session
                             $_SESSION['verification_code'] = $verificationCode;
-                            $_SESSION['summoner_id'] = $summonerId;
+                            $_SESSION['$puudId'] = $puudId;
                             $_SESSION['tag_line'] = $tagLine;
                             $_SESSION['summoner_name'] = $summoner_name;
+                            $_SESSION['server'] = $selectedRegionValue;
 
-                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $summonerId, $this->getUserId());
+                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $puudId, $this->getUserId());
 
                             if ($insertLeagueData)
                             {
@@ -182,19 +184,6 @@ class LeagueOfLegendsController
         $region = "americas";
         $url = "https://{$region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" . urlencode($summonerName) . "/{$tagLine}?api_key={$apiKey}";
         return json_decode(file_get_contents($url), true);
-
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        //     'X-Riot-Token: ' . $apiKey,
-        // ]);
-
-        // $response = curl_exec($ch);
-        // curl_close($ch);
-
-        // $data = json_decode($response, true);
-        // return $data
     }
 
     public function verifyLeagueAccount()
@@ -202,39 +191,45 @@ class LeagueOfLegendsController
         
         if (isset($_POST['param']))
         {
-            $data = json_decode($_POST['param']);
+
             $userId = $this->validateInput($_SESSION['userId']);
             $this->setUserId($userId);
-            $verificationCode = $_SESSION['verification_code'];
-            $summonerId = $_SESSION['summoner_id'];
+            $puudId = $_SESSION['$puudId'];
+            $server = $_SESSION['server'];
             $tagLine = $_SESSION['tag_line'];
-            
-            require 'keys.php';
-            
-            $summonerProfile = $this->getSummonerProfile($summonerId, $tagLine, $apiKey);
+            $username = $_SESSION['summoner_name'];
 
+            require_once 'keys.php';
             
-            if ($summonerProfile && strpos($summonerProfile['profileIconId'], $verificationCode) !== false) {
+            $summonerProfile = $this->getSummonerProfile($puudId, $server, $apiKey);
 
-                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $tagLine, $apiKey);
+            if($summonerProfile && $summonerProfile['profileIconId'] === 7) 
+            {
+
+                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $server, $apiKey);
+
                 // Verification success
-                $rankedStats = isset($summonerRankedStats[0]) ? $summonerRankedStats[0] : null;
-                $rankAndTier = $rankedStats ? $rankedStats['tier'] . ' ' . $rankedStats['rank'] : null;
-    
-                // Save updated summoner data to the database
-                $this->leagueOfLegends->updateSummonerData(
-                    $summonerProfile['name'], 
-                    $summonerProfile['summonerLevel'], 
-                    $summonerProfile['profileIconId'], 
-                    $rankAndTier,
-                    $this->getUserId()
-                );
-    
-                echo json_encode(['status' => 'success', 'message' => 'Account verified successfully!']);
-            } else {
-                // Verification failed
-                echo json_encode(['status' => 'failure', 'message' => 'Verification failed. Please check your profile icon and try again.']);
+
+                    $rankedStats = isset($summonerRankedStats[0]) ? $summonerRankedStats[0] : null;
+                    $rankAndTier = $rankedStats ? $rankedStats['tier'] . ' ' . $rankedStats['rank'] : 'Unranked';
+        
+                    // Save updated summoner data to the database
+                    $this->leagueOfLegends->updateSummonerData(
+                        $username, 
+                        $summonerProfile['id'],
+                        $summonerProfile['summonerLevel'], 
+                        $rankAndTier,
+                        $summonerProfile['profileIconId'], 
+                        $this->getUserId()
+                    );
+        
+                    echo json_encode(['status' => 'success', 'message' => 'Account verified successfully!']);
             }
+            else
+            {
+                echo json_encode(['status' => 'failure', 'message' => 'Verification failed. Picture does not match.']);
+            }
+            
         } 
         else 
         {
@@ -242,13 +237,13 @@ class LeagueOfLegendsController
         }
     }
 
-    public function getSummonerProfile($summonerId, $tagLine ,$apiKey) {
-        $url = "https://". strtolower($tagLine) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$summonerId}?api_key={$apiKey}";
+    public function getSummonerProfile($puudId, $server ,$apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$puudId}?api_key={$apiKey}";
         return json_decode(file_get_contents($url), true);
     }
     
-    public function getSummonerRankedStats($summonerId, $tagLine, $apiKey) {
-        $url = "https://". strtolower($tagLine) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
+    public function getSummonerRankedStats($summonerId, $server, $apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
         return json_decode(file_get_contents($url), true);
     }
 

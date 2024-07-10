@@ -165,6 +165,31 @@
     align-items: center;
   }
 
+  #picture_verify {
+    border-radius: 50%;
+    border: none;
+    margin-bottom: 10px;
+  }
+
+  #verification_code {
+    text-align: center;
+  }
+
+  #verify-button {
+    padding: 10px 15px;
+    background-color: rgb(18, 191, 18);
+    border-radius: 20px;
+    border: 1px solid black;
+    color: white;
+    cursor: pointer;
+    width: 20%;
+  }
+
+  #verify-button:hover {
+    background-color: var(--ligher--grey);
+    color: white;
+  }
+
   span.form-error {
     display: block;
     background-color: rgba(255, 100, 100, 1);
@@ -1930,6 +1955,11 @@ cursor: pointer;
 .dark-mode #favDialogSocialLinks form label {
   color : white;
 }
+
+.dark-mode #verify-button {
+  border: 1px solid white;
+}
+
 
 @media only screen and (max-width: 1300px) {
   .form_container {

@@ -106,7 +106,7 @@ class LeagueOfLegends extends DataBase
         }
     }
 
-    public function addLoLAccount($loLServer, $loLAccount, $verificationCode, $summonerId, $userId) 
+    public function addLoLAccount($loLServer, $loLAccount, $verificationCode, $puudId, $userId) 
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE
@@ -115,12 +115,12 @@ class LeagueOfLegends extends DataBase
                                                 `lol_server` = ?,
                                                 `lol_account` = ?,
                                                 `lol_verificationCode` = ?,
-                                                `lol_sUsernameId`= ?                                                                                                
+                                                `lol_sPuuid`= ?                                                                                                
                                             WHERE
                                                 `user_id` = ?
         ");
 
-        $addAccountTest  = $query -> execute([$loLServer, $loLAccount, $verificationCode, $summonerId, $userId]);
+        $addAccountTest  = $query -> execute([$loLServer, $loLAccount, $verificationCode, $puudId, $userId]);
 
         if($addAccountTest)
         {
@@ -132,21 +132,23 @@ class LeagueOfLegends extends DataBase
         }
     }
 
-    public function updateSummonerData($summonerName, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId) 
+    public function updateSummonerData($summonerName, $summonerId, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId) 
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE
                                                 `leagueoflegends`
                                             SET
+                                                `lol_verified` = 1,
                                                 `lol_sUsername` = ?,
+                                                `lol_sUsernameId` = ?,
                                                 `lol_sLevel` = ?,
                                                 `lol_sRank` = ?,
-                                                `lol_sProfileIcon`= ?                                                                                                
+                                                `lol_sProfileIcon`= ?                                                                                              
                                             WHERE
                                                 `user_id` = ?
         ");
 
-        $addAccountTest  = $query -> execute([$summonerName, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId]);
+        $addAccountTest  = $query -> execute([$summonerName, $summonerId, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId]);
 
         if($addAccountTest)
         {
