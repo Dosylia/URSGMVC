@@ -14,7 +14,7 @@
                             <a href="index.php?action=updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
                             <a href="index.php?action=updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
                             <a href="index.php?action=updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a> 
-                            <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>BIND LEAGUE ACCOUNT</button></a> 
+                            <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</button></a> 
                             <?php if(isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
                             <?php else : ?>
@@ -77,7 +77,9 @@
                             <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
                             <div class="box_league_account_main_row_column">
                                 <p><strong><?= $lolUser['lol_sUsername']?></strong></p> 
-                                <p><?= strtoupper($lolUser['lol_server']) ?>, <?= strtoupper($lolUser['lol_sRank']) ?>, <?= strtoupper($lolUser['lol_sLevel']) ?> </p> 
+                                <p><?= strtoupper($lolUser['lol_server']) ?></p>
+                                <p> <?= strtoupper($lolUser['lol_sRank']) ?></p>
+                                <p>Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
                             </div>
                         </div>
                     </div><br>

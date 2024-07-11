@@ -385,8 +385,6 @@ class UserController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
@@ -428,12 +426,8 @@ class UserController
             }
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $anotherUser = $this-> user -> getUserByUsername($username);
-            $allUsers = $this-> user -> getAllUsers();
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
 
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
@@ -444,7 +438,6 @@ class UserController
             $username = $_GET['username'];
             $anotherUser = $this-> user -> getUserByUsername($username);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
             require "views/layoutSwiping_noheader.phtml";
@@ -460,8 +453,6 @@ class UserController
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];

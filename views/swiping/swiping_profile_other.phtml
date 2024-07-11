@@ -44,13 +44,15 @@
         <div class="user_box">
             <br><h2 id="title_generalbox">About them</h2><br>
             <?php if ($anotherUser['user_game'] !== 'valorant'): ?> 
-                <?php if (!empty($lolUser['lol_sUsername'])): ?>
+                <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
                             <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
                             <div class="box_league_account_main_row_column">
                                 <p><strong><?= $lolUser['lol_sUsername']?></strong></p> 
-                                <p><?= strtoupper($lolUser['lol_sRank']) ?>, <?= strtoupper($lolUser['lol_sLevel']) ?> </p> 
+                                <p><?= strtoupper($lolUser['lol_server']) ?></p>
+                                <p> <?= strtoupper($lolUser['lol_sRank']) ?></p>
+                                <p>Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
                             </div>
                         </div>
                     </div><br>

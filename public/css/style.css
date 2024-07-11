@@ -894,7 +894,7 @@
     .box_league_account_main_row_column {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 5px;
       padding-top: 10px;
     }
   
