@@ -83,10 +83,6 @@ function fillUnread(unreadCounts) {
     anchor.appendChild(span);
     container.appendChild(anchor);
     }
-    else 
-    {
-        container.innerHTML = "";
-    }
 
 }
 

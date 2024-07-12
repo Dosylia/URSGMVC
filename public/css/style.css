@@ -897,6 +897,13 @@
       gap: 5px;
       padding-top: 10px;
     }
+
+    #myForm {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    } 
   
     #unread_message,  #unread_message_header {
       background-color: rgb(202, 69, 69);
@@ -913,6 +920,35 @@
       padding: 0 10px;
       color: grey;
     }
+
+    .emote-picker {
+      position: relative;
+      display: inline-block;
+  }
+  
+  .emote-container {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      z-index: 10;
+  }
+  
+  .emote {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      margin: 2px;
+  }
+  
+  #toggleEmotePicker {
+      background: none;
+      border: none;
+      cursor: pointer;
+  }
   
     .chat-link-relative {
       right: 40px;
@@ -1964,6 +2000,10 @@ cursor: pointer;
 
 .dark-mode #verify-button {
   border: 1px solid white;
+}
+
+.dark-mode #toggleEmotePicker i {
+  color: white;
 }
 
 

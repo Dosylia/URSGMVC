@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
                     messageContent = `
-                        <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${message.chat_message}</p>
+                        <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${renderEmotes(message.chat_message)}</p>
                     `;
                 } else {
                     // Display full message with icon, avatar, and timestamp
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                         </p>
-                        <p id="last-message">${message.chat_message}</p>
+                        <p id="last-message">${renderEmotes(message.chat_message)}</p>
                     `;
                 }
             } else {
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                     </p>
-                    <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${message.chat_message}</p>
+                    <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${renderEmotes(message.chat_message)}</p>
                 `;
             }
     
@@ -153,15 +153,17 @@ document.addEventListener("DOMContentLoaded", function() {
     
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');
-            timestampSpan.style.display = 'none'; // Initially hide the timestamp
+            if (timestampSpan) {
+                timestampSpan.style.display = 'none'; // Initially hide the timestamp
     
-            messageDiv.addEventListener('mouseenter', function() {
-                timestampSpan.style.display = 'inline-block'; // Show timestamp on hover
-            });
+                messageDiv.addEventListener('mouseenter', function() {
+                    timestampSpan.style.display = 'inline-block'; // Show timestamp on hover
+                });
     
-            messageDiv.addEventListener('mouseleave', function() {
-                timestampSpan.style.display = 'none'; // Hide timestamp when not hovering
-            });
+                messageDiv.addEventListener('mouseleave', function() {
+                    timestampSpan.style.display = 'none'; // Hide timestamp when not hovering
+                });
+            }
         });
     
         console.log('Messages container updated. Now scrolling to bottom.');
@@ -169,6 +171,27 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     
+    // Function to replace emote codes with actual emote images
+    function renderEmotes(message) {
+        const emoteMap = {
+            ':surprised-cat:': '<img src="public/images/emotes/surprised-cat.png" alt="surprised-cat" class="emote">',
+            ':cat-smile:': '<img src="public/images/emotes/cat-smile.png" alt="cat-smile" class="emote">',
+            ':cat-cute:': '<img src="public/images/emotes/cat-cute.png" alt="cat-cute" class="emote">',
+            ':goofy-ah-cat:': '<img src="public/images/emotes/goofy-ah-cat.png" alt="goofy-ah-cat" class="emote">',
+            ':cat-surprised:': '<img src="public/images/emotes/cat-surprised.png" alt="cat-surprised" class="emote">',
+            ':cat-liked:': '<img src="public/images/emotes/cat-liked.png" alt="cat-liked" class="emote">',
+            ':cat-sus:': '<img src="public/images/emotes/cat-sus.png" alt="cat-sus" class="emote">',
+            ':cat-bruh:': '<img src="public/images/emotes/cat-bruh.png" alt="cat-bruh" class="emote">',
+            ':cat-licking:': '<img src="public/images/emotes/cat-licking.png" alt="cat-licking" class="emote">'
+        };
+    
+        const replacedMessage = message.replace(/:\w+(-\w+)*:/g, function(match) {
+            console.log("Matching emote:", match);
+            return emoteMap[match] || match;
+        });
+    
+        return replacedMessage;
+    }
 
     // Function to see friend's data
     function showFriendInfo(friend) {

@@ -64,4 +64,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
         sendMessageToPhp(senderId, receiverId, message);
     });
+
+    // Emote picker functionality
+    const toggleEmotePickerButton = document.getElementById('toggleEmotePicker');
+    const emoteContainer = document.getElementById('emoteContainer');
+    const emotes = document.querySelectorAll('.emote');
+
+    toggleEmotePickerButton.addEventListener('click', function() {
+        emoteContainer.style.display = emoteContainer.style.display === 'none' ? 'block' : 'none';
+    });
+
+    emotes.forEach(emote => {
+        emote.addEventListener('click', function() {
+            const emoteAlt = emote.alt;
+            messageInput.value += ` ${emoteAlt} `;
+            emoteContainer.style.display = 'none';
+            messageInput.focus();
+        });
+    });
 });
