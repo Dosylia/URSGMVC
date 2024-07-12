@@ -90,7 +90,9 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateMessageContainer(messages, friend, user) {
         let messagesContainer = document.getElementById("messages");
         messagesContainer.innerHTML = ''; // Clear current messages
-
+    
+        let previousMessage = null; // Variable to store the previous message
+    
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
             let messageClass = isCurrentUser ? 'message-from-user' : 'message-to-user';
@@ -98,34 +100,62 @@ document.addEventListener("DOMContentLoaded", function() {
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
             let pictureLink;
-
-            let messageDiv = document.createElement("div");
-            messageDiv.classList.add("message", messageClass);
-            messageDiv.style.textAlign = messagePosition;
-
+    
             if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
                 pictureLink = "images/defaultprofilepicture.jpg";
             } else {
                 pictureLink = `upload/${messageUser.user_picture}`;
             }
-
+    
+            let messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", messageClass);
+            messageDiv.style.textAlign = messagePosition;
+    
             // Create message content
-            let messageContent = `
-                <p id="username_message">
-                    <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
-                    <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                    <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
-                </p>
-                <p id="last-message">${message.chat_message}</p>
-            `;
-
+            let messageContent = '';
+    
+            // Check if previous message exists and is from the same sender within 5 minutes
+            if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
+                let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
+                if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
+                    // Display only the message without icon, avatar, and timestamp
+                    messageContent = `
+                        <p id="last-message">${message.chat_message}</p>
+                    `;
+                } else {
+                    // Display full message with icon, avatar, and timestamp
+                    messageContent = `
+                        <p id="username_message">
+                            <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
+                            <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                            <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        </p>
+                        <p id="last-message">${message.chat_message}</p>
+                    `;
+                }
+            } else {
+                // First message from this sender or different sender
+                messageContent = `
+                    <p id="username_message">
+                        <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
+                        <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                        <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                    </p>
+                    <p id="last-message">${message.chat_message}</p>
+                `;
+            }
+    
             messageDiv.innerHTML = messageContent;
             messagesContainer.appendChild(messageDiv);
+    
+            // Store the current message as previousMessage for the next iteration
+            previousMessage = message;
         });
-
+    
         console.log('Messages container updated. Now scrolling to bottom.');
         setTimeout(scrollToBottom, 100); // Delay scrolling to ensure container is updated
     }
+    
 
     // Function to see friend's data
     function showFriendInfo(friend) {
