@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
                     messageContent = `
-                        <p id="last-message">${message.chat_message}</p>
+                        <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${message.chat_message}</p>
                     `;
                 } else {
                     // Display full message with icon, avatar, and timestamp
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                     </p>
-                    <p id="last-message">${message.chat_message}</p>
+                    <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${message.chat_message}</p>
                 `;
             }
     
@@ -150,11 +150,24 @@ document.addEventListener("DOMContentLoaded", function() {
     
             // Store the current message as previousMessage for the next iteration
             previousMessage = message;
+    
+            // Add hover behavior for timestamp
+            let timestampSpan = messageDiv.querySelector('.timestamp-hover');
+            timestampSpan.style.display = 'none'; // Initially hide the timestamp
+    
+            messageDiv.addEventListener('mouseenter', function() {
+                timestampSpan.style.display = 'inline-block'; // Show timestamp on hover
+            });
+    
+            messageDiv.addEventListener('mouseleave', function() {
+                timestampSpan.style.display = 'none'; // Hide timestamp when not hovering
+            });
         });
     
         console.log('Messages container updated. Now scrolling to bottom.');
         setTimeout(scrollToBottom, 100); // Delay scrolling to ensure container is updated
     }
+    
     
 
     // Function to see friend's data
