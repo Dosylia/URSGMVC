@@ -135,6 +135,27 @@ class ChatMessageController
         }
     }
 
+    public function deleteOldMessage()
+    {
+        try {
+            $this->chatmessage->createRecentMessagesTable();
+            $deleteOldMessage = $this->chatmessage->deleteOldMessage();
+
+            if ($deleteOldMessage)
+            {
+                echo "Old messages deleted successfully.";
+            }
+            else
+            {
+                throw new Exception("Failed to delete old messages.");
+            }
+
+        } catch (Exception $e){
+            error_log($e->getMessage());
+            echo "An error occurred: " . $e->getMessage();
+        }
+    }
+
     public function getUnreadMessage()
     {
         if (isset($_POST['userId'])) {

@@ -62,6 +62,7 @@ $actionMap = [
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
     'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
+    'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
 ];
 
 // Get the action from the request

@@ -106,6 +106,43 @@ class ChatMessage extends DataBase
         }
     }
 
+    public function createRecentMessagesTable()
+    {
+        try {
+            $this->bdd->exec("
+                CREATE TEMPORARY TABLE recent_messages AS
+                (
+                    SELECT chat_id
+                    FROM (
+                        SELECT chat_id, ROW_NUMBER() OVER (PARTITION BY chat_senderId, chat_receiverId ORDER BY chat_date DESC) AS row_num
+                        FROM chatmessage
+                    ) AS ranked_messages
+                    WHERE row_num <= 20
+                );
+            ");
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            throw new Exception("Failed to create recent messages table.");
+        }
+    }
+
+
+    public function deleteOldMessage()
+    {
+        $query = $this->bdd->prepare("
+                                        DELETE FROM chatmessage
+                                    WHERE chat_id NOT IN (SELECT chat_id FROM recent_messages);
+    ");
+    
+        $deleteOldMessageTest = $query->execute();
+    
+        if ($deleteOldMessageTest) {
+            return $deleteOldMessageTest;
+        } else {
+            return false;
+        }
+    }
+
     public function updateMessageStatus($statuts, $userId, $friendId)
     {
         $query = $this -> bdd -> prepare("
