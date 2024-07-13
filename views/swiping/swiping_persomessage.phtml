@@ -1,9 +1,5 @@
-<div class="chat_page">
-    <?php if (isset($_GET['friend_id'])) : ?>    
-        <div class="chat-interface"> <br>
-    <?php else : ?>
-        <div class="chat-interface-big"> <br>
-    <?php endif; ?>
+<div class="chat_page">   
+    <div class="chat-interface"> <br>
         <div class="chat_box"><br>
             <h1 id="title_generalbox">Chat</h1>    <br>
 
@@ -55,8 +51,7 @@
                     <?php endforeach; ?>
             </div>   
         </div>
-
-        <?php if (isset($_GET['friend_id'])) : ?>                 
+            
             <div class="messages-container" style="display : block;">
                 <button type="button" id="buttonSwitchChat"><i class="fa-solid fa-arrow-left"></i></button>
                 <div class="chat-link-relative">
@@ -112,12 +107,16 @@
                         </div>
                         <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                         <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
-                        <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>"><br>
-                        <input id="submit_chat" type="submit" name="submit" value="Send">
+                        <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
+                        <div>
+                            <button id="btnDesign" type="button" class="send-message-button">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
                     </form>
                 </div>
             </div>
-        <?php endif; ?>
         <script type="module" src="public/js/swiping/perso_chat.js"></script>
         <script type="module" src="public/js/swiping/get_message.js"></script>
         <script type="module" src="public/js/swiping/send_messagephp.js"></script>

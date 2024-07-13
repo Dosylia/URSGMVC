@@ -6,6 +6,7 @@ let senderId;
 let receiverId;
 let messageInput;
 let btnSubmit;
+let btnDesign;
 
 function sendMessageToPhp(senderId, receiverId, message) {
     const dataToSend = {
@@ -45,25 +46,38 @@ document.addEventListener("DOMContentLoaded", function() {
     let receiverIdElement = document.getElementById("receiverId");
     messageInput = document.getElementById("message_text");
     btnSubmit = document.getElementById("submit_chat");
+    btnDesign = document.getElementById("btnDesign");
 
     senderId = senderIdElement ? senderIdElement.value : null;
     receiverId = receiverIdElement ? receiverIdElement.value : null;
 
-    if (!senderIdElement || !receiverIdElement || !messageInput || !btnSubmit) {
-        return;
-    }
+    messageInput.addEventListener("focus", function() {
+        setTimeout(function() {
+            messageInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+    });
 
-    btnSubmit.addEventListener("click", function(event) {
+    function handleSendMessage(event) {
         event.preventDefault();
 
         const message = messageInput.value.trim();
 
         if (message === "") {
+            console.log('Message is empty');
             return;
         }
 
         sendMessageToPhp(senderId, receiverId, message);
-    });
+    }
+
+    if (!senderIdElement || !receiverIdElement || !messageInput || !btnSubmit || !btnDesign) {
+        return;
+    }
+
+    btnDesign.addEventListener("click", handleSendMessage);
+    btnSubmit.addEventListener("click", handleSendMessage);
+    btnDesign.addEventListener("touchstart", handleSendMessage);
+
 
     // Emote picker functionality
     const toggleEmotePickerButton = document.getElementById('toggleEmotePicker');

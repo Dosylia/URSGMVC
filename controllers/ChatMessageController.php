@@ -35,15 +35,30 @@ class ChatMessageController
     public function pagePersoMessage()
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+
             // Get important data
             $user = $this->user->getUserById($_SESSION['userId']);
             $usersAll = $this->user->getAllUsers();
             $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+            $firstFriend = reset($getFriendlist);
     
             if (isset($_GET['friend_id'])) {
                 $friendId = $_GET['friend_id'];
                 $friendChat = $this->user->getUserById($friendId);
+            }
+            else 
+            {
+                if (isset($firstFriend)) 
+                {
+                    if ($user['user_id'] == $firstFriend['sender_id']) {
+                        $friendId = $firstFriend['receiver_id'];
+                    } else {
+                        $friendId = $firstFriend['sender_id'];
+                    }
+    
+                    $friendChat = $this->user->getUserById($friendId);
+                }
             }
     
             $template = "views/swiping/swiping_persomessage";

@@ -230,6 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function checkScreenSize() {
         const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
+
         if (isMax1018px) {
             if (chatInterface !== null) {
                 chatInterface.style.display = 'none';

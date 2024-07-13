@@ -2,6 +2,7 @@
     --dark-grey: rgb(21, 20, 22);
     --dark-ligher-grey: rgb(48, 46, 49);
     --ligher--grey: rgb(79, 75, 82);
+    --main--red: rgb(231, 64, 87);
   }
   
   
@@ -11,7 +12,7 @@
 
   body
   {
-    max-height: 100vh;
+    min-height: 100vh;
     background-color: rgb(243, 237, 237);
   }
 
@@ -457,13 +458,12 @@
     }
   
     .user_page {
-      padding: 20px 30px 0 30px;
-      background-color: rgb(245, 245, 245);
+      padding: 0 30px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
+      min-height: 90vh;
     }
 
     #image_users {
@@ -486,6 +486,7 @@
       justify-content: center;
       background-color: rgb(245, 245, 245);
       width: 95%;
+      margin-top: 20px;
     }
   
     .user_page_update_name {
@@ -596,8 +597,8 @@
   .btn_user_updates {
     background: #cb5242;
     border-radius: 11px;
-    width: 250px;
-    min-height: 30px;
+    width: 500px;
+    min-height: 50px;
     height: fit-content;
     color: #ffffff;
     display: flex;
@@ -657,7 +658,6 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      background-color: rgb(245, 245, 245);
       width: 95%;
       gap: 50px;
     }
@@ -787,7 +787,7 @@
     .button_swiping {
       border: none;
       border-radius: 5px;
-      background-color: white;
+      background-color: transparent;
     }
     
     .message-receiver {
@@ -832,6 +832,10 @@
      padding: 10px 0;
      display: none;
     }
+
+    .send-message-button {
+      display: none;
+    }
   
     .reply-box {
       margin-top: 10px;
@@ -852,7 +856,7 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      min-height: 80vh;
+      min-height: 90vh;
     }
   
     .friendrequest_box {
@@ -1089,7 +1093,6 @@
     }
   
     .row_buttons_swipe img{
-      width: 50%;
       height: 75%;
     }
   
@@ -1238,6 +1241,7 @@
   
   .dark-mode .message_text {
     background-color: var(--dark-ligher-grey);
+    color: grey;
   }
 
   .dark-mode #friendTop {
@@ -1739,12 +1743,12 @@ cursor: pointer;
     justify-content: space-around;
     align-items: center;
     background-color: #d8d3d3;
-    padding: 20px;
+    min-height: 10vh;
 }
 
 .nav_swiping img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 1000px;
 }
 
@@ -2006,6 +2010,18 @@ cursor: pointer;
   color: white;
 }
 
+@media only screen and (max-width: 1420px) {
+
+  .btn_user_updates {
+    width: 250px;
+  }
+
+  .user_box {
+    width: 60%;
+  }
+
+}
+
 
 @media only screen and (max-width: 1300px) {
   .form_container {
@@ -2024,6 +2040,12 @@ cursor: pointer;
     width: 400px;
     height: auto;
   }
+
+  .btn_user_updates {
+    width: 250px;
+    margin: 0 10px;
+  }
+
 }
 
 @media only screen and (max-width: 1018px) {
@@ -2032,7 +2054,6 @@ cursor: pointer;
     width: 300px;
     height: auto;
   }
-
 
   .messages-container {
     display: none;
@@ -2070,6 +2091,10 @@ cursor: pointer;
 
   #buttonSwitchChat:hover {
     color: #e74057;
+  }
+
+  .user_box {
+    width: 80%;
   }
 }
 
@@ -2149,6 +2174,7 @@ cursor: pointer;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    min-height: 90vh;
   }
 
   .friendlist-page .chat-interface {
@@ -2338,6 +2364,19 @@ cursor: pointer;
   height: 25px;
   }
 
+  .send-message-button {
+    margin: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: var(--main--red);
+    padding: 10px;
+    border: none;
+   }
+
+   .send-message-button i {
+    color: white;
+    font-size: 1rem;
+   }
 }
 
   @media only screen and (max-width: 600px) {
