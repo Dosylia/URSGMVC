@@ -5,7 +5,7 @@
             <?php if(empty($getFriendlist)): ?>
                 <section class="no_friend"><br><br>     
                     <img src="public/images/sadbee.webp" alt="jhinshrug">
-                    <h2>You have no friends yet, wait until they accept your request or swipe more!</h2>
+                    <h2 id="title_generalbox">You have no friends yet, wait until they accept your request or swipe more!</h2>
                 </section>  
             <?php else :?>
                 <?php foreach($getFriendlist as $friend) : ?>
@@ -33,21 +33,23 @@
                             <span class="friendlist-name">
                                 <a href="index.php?action=anotherUser&username=<?= $friendUsername ?>">
                                     <p class="person_button"><?= $friendUsername ?></a>
-                                    <button class="block_user" onclick="openConfirmationPopup('<?= $friendUsername ?>', '<?= $friendId ?>')">Block</button>
+                                    <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
                                 </p>
                             </span>
                         </div>
                     </div>                
-                        <dialog id="confirmationPopup">
+                        <dialog id="confirmationPopup_<?= $friendId ?>" class="confirmationPopup">
                             <div class="popup-content">
-                                <button id="closeButton_user_picture" onclick="closeConfirmationPopup()">X</button>
-                                <h2>Are you sure you want to block <span id="friendUsername"></span>?</h2>
-                                <form id="blockFriendForm" action="index.php?action=blockPerson" method="post">
-                                    <input type="hidden" id="senderId" name="senderId" value="<?= $user['user_id'] ?>">
-                                    <input type="hidden" id="receiverId" name="receiverId" value="<?= $friendId ?>">
-                                    <button name="submit" type="submit">Yes</button>
+                                <button id="closeButton" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">X</button>
+                                <h2 id="title_generalbox">Are you sure you want to block <span><?= $friendUsername ?></span>?</h2>
+                                <form action="index.php?action=blockPerson" method="post">
+                                    <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
+                                    <input type="hidden" name="receiverId" value="<?= $friendId ?>">
+                                    <div class="button_container">
+                                        <button class="confirmation-button" name="submit" type="submit">Yes</button>
+                                        <button class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">No</button>
+                                    </div>
                                 </form>
-                                <button onclick="closeConfirmationPopup()">No</button>
                             </div>
                         </dialog>
                 <?php endforeach; ?>
@@ -78,20 +80,22 @@
                         <span class="chat-name">
                             <a href="index.php?action=anotherUser&username=<?= $blocked['user_username'] ?>"> 
                                 <p class="person_button"><?=  $blocked['user_username'] ?></a>   
-                                <button class="unblock_user" onclick="openConfirmationPopup2('<?= $blocked['user_username'] ?>', '<?php $blocked['block_id']; ?>')">Unblock</button>
+                                <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')">Unblock</button>
                             </p>                    
                         </span>
                     </div>
 
-                    <dialog id="confirmationPopup2">
+                    <dialog id="confirmationPopup2_<?= $blocked['block_id'] ?>" class="confirmationPopup2">
                         <div class="popup-content">
-                            <button id="closeButton_user_picture" onclick="closeConfirmationPopup2()">X</button>
-                            <h2>Are you sure you want to unblock <span id="friendUsername"></span>?</h2>
-                            <form id="unblockFriendForm" action="index.php?action=unblockPerson" method="post">
-                                <input type="hidden" id="blockId" name="blockId" value="<?= $blocked['block_id'] ?>">
-                                <button class="confirmation-button" name="submit" type="submit">Yes</button><br>
+                            <button id="closeButton" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">X</button>
+                            <h2 id="title_generalbox">Are you sure you want to unblock <span><?= $blocked['user_username'] ?></span>?</h2>
+                            <form action="index.php?action=unblockPerson" method="post">
+                                <input type="hidden" name="blockId" value="<?= $blocked['block_id'] ?>">
+                                <div class="button_container">
+                                    <button class="confirmation-button" name="submit" type="submit">Yes</button><br>
+                                    <button class="confirmation-button" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">No</button>
+                                </div>
                             </form>
-                            <button class="confirmation-button" onclick="closeConfirmationPopup2()">No</button>
                         </div>
                     </dialog>
                 <?php endforeach; ?>
@@ -100,6 +104,4 @@
     </div>
 </div>
 
-
 <script src="public/js/swiping/friendlist.js"></script>
-

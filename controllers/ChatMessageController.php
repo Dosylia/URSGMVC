@@ -5,10 +5,8 @@ namespace controllers;
 use models\ChatMessage;
 use models\User;
 use models\FriendRequest;
-use models\GoogleUser;
 
 use traits\SecurityController;
-
 
 class ChatMessageController
 {
@@ -17,50 +15,38 @@ class ChatMessageController
     private ChatMessage $chatmessage;
     private User $user;
     private FriendRequest $friendrequest;
-    private $senderId;
-    private $receiverId;
-    private $message;
-    private $userId;
-    private $friendId;
+    private int $senderId;
+    private int $receiverId;
+    private string $message;
+    private int $userId;
+    private int $friendId;
 
-    
     public function __construct()
     {
-        $this -> chatmessage = new ChatMessage();
-        $this -> user = new User();
-        $this -> friendrequest = new FriendRequest();
-
+        $this->chatmessage = new ChatMessage();
+        $this->user = new User();
+        $this->friendrequest = new FriendRequest();
     }
 
-    public function pagePersoMessage()
+    public function pagePersoMessage(): void
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
-
-            // Get important data
             $user = $this->user->getUserById($_SESSION['userId']);
             $usersAll = $this->user->getAllUsers();
             $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
             $firstFriend = reset($getFriendlist);
-    
+
             if (isset($_GET['friend_id'])) {
                 $friendId = $_GET['friend_id'];
                 $friendChat = $this->user->getUserById($friendId);
-            }
-            else 
-            {
-                if (isset($firstFriend)) 
-                {
-                    if ($user['user_id'] == $firstFriend['sender_id']) {
-                        $friendId = $firstFriend['receiver_id'];
-                    } else {
-                        $friendId = $firstFriend['sender_id'];
-                    }
-    
+            } else {
+                if (isset($firstFriend)) {
+                    $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
                     $friendChat = $this->user->getUserById($friendId);
                 }
             }
-    
+
             $template = "views/swiping/swiping_persomessage";
             $page_title = "URSG - Chat";
             require "views/layoutSwiping.phtml";
@@ -70,23 +56,19 @@ class ChatMessageController
         }
     }
 
-    public function sendMessageData()
+    public function sendMessageData(): void
     {
-        if (isset($_POST['param']))
-        {
+        if (isset($_POST['param'])) {
             $data = json_decode($_POST['param']);
-            
+
             $status = "unread";
-            
-            $senderId = $data->senderId;
-            $this->setSenderId($senderId);
-            $receiverId = $data->receiverId;
-            $this->setReceiverId($receiverId);
-            $message = $data->message;
-            $this->setMessage($message);
-    
+
+            $this->setSenderId($data->senderId);
+            $this->setReceiverId($data->receiverId);
+            $this->setMessage($data->message);
+
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
-    
+
             if ($insertMessage) {
                 echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
             } else {
@@ -97,24 +79,20 @@ class ChatMessageController
         }
     }
 
-    public function getMessageData()
+    public function getMessageData(): void
     {
         if (isset($_POST['userId']) && isset($_POST['friendId'])) {
-            $userId = $_POST['userId'];
-            $this->setUserId($userId);
-            $friendId = $_POST['friendId'];
-            $this->setFriendId($friendId);
-    
-            $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
-            $friend = $this->user->getUserById($friendId);
-            $user = $this->user->getUserById($userId);
+            $this->setUserId($_POST['userId']);
+            $this->setFriendId($_POST['friendId']);
 
-            if($messages)
-            {
-                $status = "read";
-                $updateStatus = $this->chatmessage->updateMessageStatus($status, $userId, $friendId);
+            $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
+            $friend = $this->user->getUserById($this->getFriendId());
+            $user = $this->user->getUserById($this->getUserId());
+
+            if ($messages) {
+                $this->chatmessage->updateMessageStatus('read', $this->getUserId(), $this->getFriendId());
             }
-    
+
             if ($messages !== false && $friend !== false && $user !== false) {
                 $data = [
                     'success' => true,
@@ -130,125 +108,106 @@ class ChatMessageController
                     ],
                     'messages' => $messages
                 ];
-    
-                // Send JSON response
-                echo json_encode($data);
-            } else {
-                $data = [
-                    'success' => true,
-                    'friend' => [
-                        'user_id' => $friend['user_id'],
-                        'user_username' => $friend['user_username'],
-                        'user_picture' => $friend['user_picture']
-                    ]
-                ];
 
                 echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Could not retrieve data']);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
     }
 
-    public function deleteOldMessage()
+    public function deleteOldMessage(): void
     {
         try {
             $this->chatmessage->createRecentMessagesTable();
             $deleteOldMessage = $this->chatmessage->deleteOldMessage();
 
-            if ($deleteOldMessage)
-            {
+            if ($deleteOldMessage) {
                 echo "Old messages deleted successfully.";
+            } else {
+                throw new \Exception("Failed to delete old messages.");
             }
-            else
-            {
-                throw new Exception("Failed to delete old messages.");
-            }
-
-        } catch (Exception $e){
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             echo "An error occurred: " . $e->getMessage();
         }
     }
 
-    public function getUnreadMessage()
+    public function getUnreadMessage(): void
     {
         if (isset($_POST['userId'])) {
-            $userId = $_POST['userId'];
-            $this->setUserId($userId);
-    
+            $this->setUserId($_POST['userId']);
+
             $unreadCounts = $this->chatmessage->countMessage($this->getUserId());
-    
+
             if ($unreadCounts !== false) {
-                // If $unreadCounts is not already an array, convert it to an array of objects
                 if (!is_array($unreadCounts)) {
                     $unreadCounts = [$unreadCounts];
                 }
-    
+
                 $data = [
                     'success' => true,
                     'unreadCount' => $unreadCounts
                 ];
-    
-                // Send JSON response
+
                 echo json_encode($data);
             } else {
                 echo json_encode(['success' => false, 'error' => 'No unread messages found']);
             }
-    
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
     }
 
-    public function getSenderId()
+    public function getSenderId(): int
     {
         return $this->senderId;
     }
 
-    public function setSenderId($senderId)
+    public function setSenderId(int $senderId): void
     {
         $this->senderId = $senderId;
     }
 
-    public function getReceiverId()
+    public function getReceiverId(): int
     {
         return $this->receiverId;
     }
 
-    public function setReceiverId($receiverId)
+    public function setReceiverId(int $receiverId): void
     {
         $this->receiverId = $receiverId;
     }
 
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
-    public function setMessage($message)
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }
 
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    public function setUserId($userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
 
-    public function getFriendId()
+    public function getFriendId(): int
     {
         return $this->friendId;
     }
 
-    public function setFriendId($friendId)
+    public function setFriendId(int $friendId): void
     {
         $this->friendId = $friendId;
     }
-
 }
