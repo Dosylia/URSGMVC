@@ -14,154 +14,130 @@ class FriendRequestController
     private FriendRequest $friendrequest;
     private User $user;
     private Block $block;
-    private $frId;
-    private $userId;
+    private ?int $frId = null;
+    private ?int $userId = null;
+    private ?int $senderId = null;
+    private ?int $receiverId = null;
+    private ?int $friendId = null;
 
-    
     public function __construct()
     {
-        $this -> friendrequest = new FriendRequest();
-        $this -> user = new User();
-        $this -> block = new Block();
+        $this->friendrequest = new FriendRequest();
+        $this->user = new User();
+        $this->block = new Block();
     }
 
-    public function pageFriendlist()
-    {      
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
-        {
-
+    public function pageFriendlist(): void
+    {
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Get important datas
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
-            $getFriendlist = $this-> friendrequest -> getFriendlist($_SESSION['userId']);
-            $getBlocklist = $this-> block -> getBlocklist($_SESSION['userId']);
+            $user = $this->user->getUserByUsername($_SESSION['username']);
+            $allUsers = $this->user->getAllUsers();
+            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+            $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
 
             $template = "views/swiping/swiping_friendlist";
             $page_title = "URSG - Friendlist";
             require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
+        } else {
             header("Location: index.php");
             exit();
         }
     }
 
-    public function swipeStatus()
+    public function swipeStatus(): void
     {
-
-        if(isset($_POST['swipe_yes']))
-        {
+        if (isset($_POST['swipe_yes'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'pending';
 
             $senderId = $this->validateInput($_POST["sender_id"]);
-            $this->setSenderId($senderId);
+            $this->setSenderId((int)$senderId);
             $receiverId = $this->validateInput($_POST["receiver_id"]);
-            $this->setReceiverId($receiverId);
+            $this->setReceiverId((int)$receiverId);
 
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
-            if ($checkIfPending)
-            {
-                $updateFriendRequest = $this-> friendrequest -> updateFriendRequest($this->getSenderId(), $this->getReceiverId());
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId());
 
-                if ($updateFriendRequest)
-                {
+                if ($updateFriendRequest) {
                     header("location:index.php?action=swiping");
-                    exit();      
-                } 
-                else 
-                {
+                    exit();
+                } else {
                     header("location:index.php?action=swiping");
-                    exit();      
+                    exit();
                 }
             }
 
             $swipeStatusYes = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
 
-            if ($swipeStatusYes)
-            {
+            if ($swipeStatusYes) {
                 header("location:index.php?action=swiping");
-                exit();                  
+                exit();
             }
-
-        } 
-        elseif (isset($_POST['swipe_no']))
-        {
+        } elseif (isset($_POST['swipe_no'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'rejected';
 
             $senderId = $this->validateInput($_POST["sender_id"]);
-            $this->setSenderId($senderId);
+            $this->setSenderId((int)$senderId);
             $receiverId = $this->validateInput($_POST["receiver_id"]);
-            $this->setReceiverId($receiverId);
+            $this->setReceiverId((int)$receiverId);
 
             $swipeStatusNo = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
 
-            if ($swipeStatusNo)
-            {
+            if ($swipeStatusNo) {
                 header("location:index.php?action=swiping");
-                exit();                  
+                exit();
             }
-
-        }
-        else
-        {
+        } else {
             header("location:index.php?action=swiping&message=Couldnt add/reject user");
-            exit();             
+            exit();
         }
-
     }
 
-    public function acceptFriendRequest()
+    public function acceptFriendRequest(): void
     {
         $frId = $this->validateInput($_GET["fr_id"]);
         $friendId = $this->validateInput($_GET["friend_id"]);
-        $this->setFrId($frId);
-        $this->setFriendId($friendId);
+        $this->setFrId((int)$frId);
+        $this->setFriendId((int)$friendId);
 
-        $updateStatus = $this-> friendrequest -> acceptFriendRequest($this->getFrId());
+        $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
 
-        if ($updateStatus)
-        {
+        if ($updateStatus) {
             header("Location: index.php?action=persoChat&friend_id=" . $this->getFriendId() . "&mark_as_read=true");
-            exit();  
-        }
-        else
-        {
+            exit();
+        } else {
             header("location:index.php?action=userProfile&message=Could not accept it");
             exit();
         }
     }
 
-    public function rejectFriendRequest()
+    public function rejectFriendRequest(): void
     {
         $frId = $this->validateInput($_GET["fr_id"]);
-        $this->setFrId($frId);
+        $this->setFrId((int)$frId);
 
-        $updateStatus = $this-> friendrequest -> rejectFriendRequest($this->getFrId());
+        $updateStatus = $this->friendrequest->rejectFriendRequest($this->getFrId());
 
-        if ($updateStatus)
-        {
+        if ($updateStatus) {
             header("location:index.php?action=userProfile&message=Friend request rejected");
-            exit();  
-        }
-        else
-        {
+            exit();
+        } else {
             header("location:index.php?action=userProfile&message=Could not accept it");
             exit();
         }
     }
 
-    public function getFriendRequest()
+    public function getFriendRequest(): void
     {
-        if (isset($_POST['userId']))
-        {
+        if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
-            $this->setUserId($userId);
+            $this->setUserId((int)$userId);
 
-            $pendingCount = $this-> friendrequest -> countFriendRequest($this->getUserId());
+            $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
 
             if ($pendingCount !== false) {
                 $data = [
@@ -170,75 +146,70 @@ class FriendRequestController
                         'pendingFriendRequest' => $pendingCount,
                     ]
                 ];
-    
+
                 // Send JSON response
                 echo json_encode($data);
-            } 
-            else
-            {
-                echo json_encode(['success' => false, 'error' => 'No friend requests found']);   
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No friend requests found']);
             }
-
-        }
-        else
-        {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);     
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
     }
 
-    public function validateInput($input) 
+    public function validateInput(string $input): string
     {
         $input = trim($input);
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
         return $input;
     }
 
-    public function getFrId()
+    public function getFrId(): ?int
     {
         return $this->frId;
     }
 
-    public function setFrId($frId)
+    public function setFrId(int $frId): void
     {
         $this->frId = $frId;
     }
 
-    public function getSenderId()
+    public function getSenderId(): ?int
     {
         return $this->senderId;
     }
 
-    public function setSenderId($senderId)
+    public function setSenderId(int $senderId): void
     {
         $this->senderId = $senderId;
     }
 
-    public function getReceiverId()
+    public function getReceiverId(): ?int
     {
         return $this->receiverId;
     }
 
-    public function setReceiverId($receiverId)
+    public function setReceiverId(int $receiverId): void
     {
         $this->receiverId = $receiverId;
     }
 
-    public function getFriendId()
+    public function getFriendId(): ?int
     {
         return $this->friendId;
     }
 
-    public function setFriendId($friendId)
+    public function setFriendId(int $friendId): void
     {
         $this->friendId = $friendId;
     }
 
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    public function setUserId($userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
