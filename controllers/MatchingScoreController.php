@@ -3,8 +3,6 @@
 namespace controllers;
 
 use models\MatchingScore;
-
-
 use traits\SecurityController;
 
 class MatchingScoreController
@@ -12,80 +10,68 @@ class MatchingScoreController
     use SecurityController;
 
     private MatchingScore $matchingscore;
-    private $userMatching;
-    private $userMatched;
-    private $score;
+    private ?int $userMatching = null;
+    private ?int $userMatched = null;
+    private ?int $score = null;
 
-
-    
     public function __construct()
     {
-        $this -> matchingscore = new MatchingScore();
+        $this->matchingscore = new MatchingScore();
     }
 
     public function getAlgoData()
     {
-        if (isset($_POST['param']))
-        {
+        if (isset($_POST['param'])) {
             $datas = json_decode($_POST['param']);
 
-            foreach ($datas as $data)
-            {
-                $userMatching = $data->user_id;
+            foreach ($datas as $data) {
+                $userMatching = (int)$data->user_id;
                 $this->setUserMatching($userMatching);
-                $userMatched = $data->user_matching;
+                $userMatched = (int)$data->user_matching;
                 $this->setUserMatched($userMatched);
-                $score = $data->score;
+                $score = (int)$data->score;
                 $this->setScore($score);
 
                 $checkMatching = $this->matchingscore->checkMatching($this->getUserMatching(), $this->getUserMatched());
 
-                if($checkMatching)
-                {
-                    if($checkMatching['match_score'] !== $this->getScore())
-                    {
+                if ($checkMatching) {
+                    if ($checkMatching['match_score'] !== $this->getScore()) {
                         $updateMatching = $this->matchingscore->updateMatching($this->getScore(), $this->getUserMatching(), $this->getUserMatched());
                     }
-
-                }
-                else
-                {
+                } else {
                     $insertMatching = $this->matchingscore->insertMatching($this->getUserMatching(), $this->getUserMatched(), $this->getScore());
                 }
-
-
             }
         }
     }
 
-    public function getUserMatching()
+    public function getUserMatching(): ?int
     {
         return $this->userMatching;
     }
 
-    public function setUserMatching($userMatching)
+    public function setUserMatching(?int $userMatching): void
     {
         $this->userMatching = $userMatching;
     }
 
-    public function getUserMatched()
+    public function getUserMatched(): ?int
     {
         return $this->userMatched;
     }
 
-    public function setUserMatched($userMatched)
+    public function setUserMatched(?int $userMatched): void
     {
         $this->userMatched = $userMatched;
     }
 
-    public function getScore()
+    public function getScore(): ?int
     {
         return $this->score;
     }
 
-    public function setScore($score)
+    public function setScore(?int $score): void
     {
         $this->score = $score;
     }
-
 }
