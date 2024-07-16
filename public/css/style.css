@@ -1189,6 +1189,10 @@
   .dark-mode .user_page {
     background-color: var(--dark-grey);
   }
+
+  .dark-mode #legalNotice {
+    color: white;
+  }
     
   .dark-mode .user_page_update {
     background-color: var(--dark-grey);
@@ -1370,10 +1374,73 @@
   .dark-mode span.friendlist-name a {
     color: white;
   }
+
+
+
   
-  /* LIGHT MODE */
+/* LEGAL NOTICE PAGE */
   
-  
+#legalNotice {
+  padding: 20px;
+}
+
+#legalNotice h1, #legalNotice h2 {
+  color: var(--main--red);
+  text-transform: uppercase;
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+#legalNotice h1 {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 2rem;
+}
+
+#legalNotice h2 {
+  border-bottom: 2px solid #ccc;
+  border-top: 2px solid #ccc;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  margin: 20px 0;
+  font-size: 1.5rem;
+}
+
+#legalNotice h3 {
+    margin: 20px 0;
+    font-size: 1.3rem;
+    font-family: 'Libre Franklin', sans-serif;
+}
+
+#legalNotice h4 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+#legalNotice ul {
+  margin: 20px 0;
+  padding-left: 30px;
+}
+
+#legalNotice ul li {
+  margin: 10px 0;
+}
+
+#legalNotice .date {
+  font-style: italic;
+  font-weight: 200;
+  margin-bottom: 3px;
+}
+
+#legalNotice p {
+  padding: 5px 0;
+  font-family: 'Geologica', sans-serif;
+}
+
+#legalNotice a {
+  text-decoration: none;
+  color: var(--main--red);
+}
   
   /* BLOCKLIST PAGE */
   

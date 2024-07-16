@@ -152,7 +152,16 @@ class GoogleUserController
         }
     }  
 
-    public function getGoogleData() {
+    public function legalNoticePage() 
+    {
+            $template = "views/legalnotice";
+            $title = "Legal Notice";
+            $page_title = "URSG - Legal notice";
+            require "views/layoutSwiping_noheader.phtml";
+    }
+
+    public function getGoogleData() 
+    {
 
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {

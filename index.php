@@ -22,6 +22,7 @@ spl_autoload_register('loadClass');
 // Define a map of actions to controller classes and methods
 $actionMap = [
     'home' => [GoogleUserController::class, 'homePage'],
+    'legalNotice' => [GoogleUserController::class, 'legalNoticePage'],
     'logout' => [GoogleUserController::class, 'logOut'],
     'usepage' => [GoogleUserController::class, 'usePage'],
     'acceptConfirm' => [GoogleUserController::class, 'emailConfirmDb'],
