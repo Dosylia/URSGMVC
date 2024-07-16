@@ -108,6 +108,36 @@ class User extends DataBase
 
     }
 
+    
+    public function getAllUsersExceptFriends($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                u.*
+                                            FROM
+                                                `user` AS u
+                                            INNER JOIN
+                                                `leagueoflegends` AS l ON u.user_id = l.user_id
+                                            INNER JOIN
+                                                `userlookingfor` AS lf ON u.user_id = lf.user_id
+                                            LEFT JOIN
+                                                `friendrequest` AS fr1 ON u.user_id = fr1.fr_senderId AND fr1.fr_receiverId = ?
+                                            LEFT JOIN
+                                                `friendrequest` AS fr2 ON u.user_id = fr2.fr_receiverId AND fr2.fr_senderId = ?
+                                            WHERE
+                                                fr1.fr_id IS NULL AND fr2.fr_id IS NULL
+        ");
+    
+        $query -> execute([$userId, $userId]);
+        $users = $query -> fetchAll();
+    
+        if ($users) {
+            return $users;
+        } else {
+            return false;
+        }
+    }
+
     public function createUser($googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game) 
     {
 

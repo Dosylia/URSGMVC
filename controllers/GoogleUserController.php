@@ -101,7 +101,7 @@ class GoogleUserController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
+            $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
 
             if ($user && $usersAll) {
                 echo '<script>';

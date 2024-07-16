@@ -111,7 +111,15 @@ class ChatMessageController
 
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Could not retrieve data']);
+                $data = [
+                    'success' => true,
+                    'friend' => [
+                        'user_id' => $friend['user_id'],
+                        'user_username' => $friend['user_username'],
+                        'user_picture' => $friend['user_picture']
+                    ],
+                ];
+                echo json_encode($data);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);

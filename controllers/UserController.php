@@ -302,7 +302,7 @@ class UserController
 
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
+            $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
             if ($user && $usersAll) {
                 echo '<script>';
                 echo 'window.user = ' . json_encode($user) . ';';
