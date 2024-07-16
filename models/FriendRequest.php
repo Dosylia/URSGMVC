@@ -221,6 +221,20 @@ class FriendRequest extends DataBase
         }        
     }
 
+    public function deleteFriendRequestAfterWeek()
+    {
+        $query = $this->bdd->prepare("
+                                        DELETE FROM
+                                            `friendrequest`
+                                        WHERE
+                                            `fr_RejectedAt` < NOW() - INTERVAL 1 WEEK
+        ");
+
+        $success = $query->execute();
+
+        return $success;
+    }
+
     public function updateFriend($senderId, $receiverId) 
     {
         $query = $this -> bdd -> prepare("

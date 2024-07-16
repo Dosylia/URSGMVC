@@ -157,6 +157,22 @@ class FriendRequestController
         }
     }
 
+    public function deleteFriendRequestAfterWeek()
+    {
+        try {
+            $deleteFriendRequest = $this->friendrequest->deleteFriendRequestAfterWeek();
+
+            if ($deleteFriendRequest) {
+                echo "Old friend requests deleted successfully.";
+            } else {
+                throw new \Exception("Failed to delete old friend requests.");
+            }
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            echo "An error occurred: " . $e->getMessage();
+        }
+    }
+
     public function validateInput(string $input): string
     {
         $input = trim($input);
