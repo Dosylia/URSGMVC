@@ -3,6 +3,8 @@
     --dark-ligher-grey: rgb(48, 46, 49);
     --ligher--grey: rgb(79, 75, 82);
     --main--red: rgb(231, 64, 87);
+    --dark--red: rgb(152, 12, 31);
+    --white: rgb(255, 255, 255);
   }
   
   
@@ -13,12 +15,12 @@
   body
   {
     min-height: 100vh;
-    background-color: rgb(243, 237, 237);
+    background-color: var(--white);
   }
 
   main {
     min-height: 65vh;
-    background-color: rgb(243, 237, 237);
+    background-color: var(--white);
   }
   
   .main_section {
@@ -35,7 +37,7 @@
       justify-content: center;
       gap: 20px;
       padding: 20px 0px;
-      background-color: white;
+      background-color: var(--white);
   }
   
   .download_app p {
@@ -73,7 +75,7 @@
       align-items: center;
       padding: 20px;
       gap: 50px;
-      background-color: white;
+      background-color: var(--white);
   }
   
   .frequently_asked_question h2 {
@@ -120,7 +122,7 @@
   }
   
   .section_form_signup {
-      background-color: white;
+      background-color: var(--white);
       padding: 50px 0px;
       overflow: hidden;
   }
@@ -464,12 +466,13 @@
       justify-content: center;
       align-items: center;
       min-height: 90vh;
+      background-color: rgb(243, 237, 237);
     }
 
     #image_users {
       height: 200px;
       width: 200px;
-      border: 0.5px solid;
+      border: none;
       margin-left: 20px;
       border-radius: 1000px;
     }
@@ -487,6 +490,7 @@
       background-color: rgb(245, 245, 245);
       width: 95%;
       margin-top: 20px;
+      border-radius: 30px;
     }
   
     .user_page_update_name {
@@ -525,6 +529,7 @@
     .user_page_picture {
       display: flex;
       flex-direction: row;
+      align-items: center;
     }
   
     .user_page_main_league,
@@ -909,7 +914,7 @@
       gap: 5px;
     } 
   
-    #unread_message,  #unread_message_header {
+    .unread_message,  #unread_message_header, #unread_message {
       background-color: rgb(202, 69, 69);
       border-radius: 50px;
       border: none;
@@ -1193,6 +1198,14 @@
   .dark-mode #legalNotice {
     color: white;
   }
+
+  .dark-mode #legalNotice h1, .dark-mode #legalNotice h2 {
+    color: var(--dark--red);
+  }
+
+  .dark-mode #legalNotice a {
+    color: var(--dark--red);
+  }
     
   .dark-mode .user_page_update {
     background-color: var(--dark-grey);
@@ -1382,6 +1395,8 @@
   
 #legalNotice {
   padding: 20px;
+  max-width: 1100px;
+  margin: auto;
 }
 
 #legalNotice h1, #legalNotice h2 {
@@ -1424,6 +1439,7 @@
 
 #legalNotice ul li {
   margin: 10px 0;
+  font-family: 'Geologica', sans-serif;
 }
 
 #legalNotice .date {
@@ -2274,7 +2290,7 @@ cursor: pointer;
     max-width: 300px;
     min-width: 150px;
     min-width: 150px;
-    border: 0.5px solid;
+    border: none;
     margin-left: 20px;
     border-radius: 1000px;
   }
@@ -2516,7 +2532,7 @@ cursor: pointer;
         height: 20px;
     }
 
-    #unread_message {
+    .unread_message, #unread_message {
         padding: 1px 4px;
     }
 

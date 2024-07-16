@@ -28,6 +28,7 @@ function fetchFriendRequest(userId) {
 
 // Fonction pour récupérer les messages non lus pour l'utilisateur principal
 function fetchUnreadMessage(userId) {
+    
     fetch('index.php?action=getUnreadMessage', {
         method: 'POST',
         headers: {
@@ -42,12 +43,23 @@ function fetchUnreadMessage(userId) {
             fillUnread(data.unreadCount);
             updateUnreadMessagesForFriends(data.unreadCount);
         } else {
+            clearContainer();
             console.log('No unread messages or success flag not set');
-            // Gérer le cas où il n'y a pas de messages non lus
         }
     })
     .catch(error => {
         console.error('Fetch error:', error);
+    });
+}
+
+function clearContainer() {
+    const container = document.getElementById('unread_messages_container');
+    const containerFriend = document.querySelectorAll('.unread_message');
+    container.innerHTML = '';
+
+
+    containerFriend.forEach(function(element) {
+        element.remove();
     });
 }
 
@@ -56,8 +68,6 @@ function fillUnread(unreadCounts) {
     const container = document.getElementById('unread_messages_container');
     container.innerHTML = ''; // Efface le contenu précédent
     let count = 0;
-
-
 
     unreadCounts.forEach(unreadCount => {
         if (unreadCount.unread_count > 0) {
@@ -115,7 +125,7 @@ function updateUnreadMessagesForFriends(unreadCounts) {
             span.style.marginLeft = '10px';
 
             const button = document.createElement('button');
-            button.id = 'unread_message';
+            button.className = 'unread_message';
             button.textContent = unreadCount;
 
             span.appendChild(button);
@@ -157,5 +167,6 @@ function fetchUpdates() {
 // Démarrer les mises à jour périodiques au chargement de la page
 document.addEventListener("DOMContentLoaded", function() {
     fetchUpdates();
+    setTimeout(fetchUpdates, 1000)
     setInterval(fetchUpdates, 20000); // Rafraîchir toutes les 20 secondes (20000 ms)
 });
