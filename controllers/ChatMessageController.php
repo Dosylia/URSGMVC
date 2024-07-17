@@ -35,15 +35,18 @@ class ChatMessageController
             $usersAll = $this->user->getAllUsers();
             $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-            $firstFriend = reset($getFriendlist);
 
-            if (isset($_GET['friend_id'])) {
-                $friendId = $_GET['friend_id'];
-                $friendChat = $this->user->getUserById($friendId);
-            } else {
-                if (isset($firstFriend)) {
-                    $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
+            if ($getFriendlist) {
+                $firstFriend = reset($getFriendlist);
+
+                if (isset($_GET['friend_id'])) {
+                    $friendId = $_GET['friend_id'];
                     $friendChat = $this->user->getUserById($friendId);
+                } else {
+                    if (isset($firstFriend)) {
+                        $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
+                        $friendChat = $this->user->getUserById($friendId);
+                    }
                 }
             }
 
@@ -65,7 +68,7 @@ class ChatMessageController
 
             $this->setSenderId($data->senderId);
             $this->setReceiverId($data->receiverId);
-            $this->setMessage($data->message);
+            $this->setMessage($this->validateInput($data->message));
 
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
 
@@ -168,6 +171,14 @@ class ChatMessageController
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
     }
+
+    public function validateInput(string $input): string
+    {
+        $input = trim($input);
+        $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        return $input;
+    }
+
 
     public function getSenderId(): int
     {

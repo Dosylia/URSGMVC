@@ -33,6 +33,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listener for screen resize
     window.addEventListener('resize', checkScreenSize);
 
+    document.querySelectorAll('.username_chat_friend').forEach(link => {
+        link.addEventListener('click', function(event) {
+            window.open(this.href, '_blank');
+        });
+    });
+
 });
 
 
@@ -195,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to see friend's data
     function showFriendInfo(friend) {
-        console.log(friend);
 
         const pictureLink = friend.user_picture ? `upload/${friend.user_picture}` : "images/defaultprofilepicture.jpg";
 

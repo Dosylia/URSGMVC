@@ -25,8 +25,44 @@
   
   .main_section {
       background: url('../images/pc_background.webp');
-      border-bottom: 0.5px solid black;
   }
+
+/* KOFI SECTION */
+
+.kofi {
+  background-color: var(--main--red);
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+}
+
+.kofi h2 {
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+.kofi a {
+  font-family: 'Geologica', sans-serif;  
+  color: white;
+  text-decoration: none;
+}
+
+.kofi_row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;    
+}
+
+.kofi img {
+  width: 100px;
+  height: 80px;
+}
   
   .download_app {
       display: flex;
@@ -2483,6 +2519,19 @@ cursor: pointer;
 }
 
   @media only screen and (max-width: 600px) {
+
+    .kofi {
+      padding: 0px;
+    }
+
+    .kofi h2 {
+      font-size: 1.2rem;
+    }
+
+    .kofi img {
+      width: 80px;
+      height: 60px;
+    }
 
     .separator 
     {
