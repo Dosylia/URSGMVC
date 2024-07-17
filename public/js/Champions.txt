@@ -161,3 +161,7 @@ Ziggs;mid;mage;AP;poke+zone control
 Zilean;support/mid;control mage;AP;utility+revive
 Zoe;mid;burst mage;AP;burst+crowd control
 Zyra;support/mid;mage;AP;zone control+crowd control
+Naafiri;mid;assassin;AD;burst+roaming
+Briar;jungle;bruiser;AD+AP;roaming+sustain
+Hwei;mid;mage;AP;poke+long range
+Smolder;adc;marksman;AD;mobility+scaling

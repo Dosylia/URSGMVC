@@ -113,7 +113,7 @@ class User extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                u.*
+                                                *
                                             FROM
                                                 `user` AS u
                                             INNER JOIN

@@ -117,6 +117,7 @@ const profile_list = window.usersAll.map(obj => new Profile(
     obj["usersRoleValorantLf"]
 ));
 
+
 const user_profile = new Profile(
     window.user["user_id"],
     window.user["user_gender"],
@@ -149,6 +150,7 @@ const user_profile = new Profile(
     window.user["usersRankValorantLf"],
     window.user["usersRoleValorantLf"]
 );
+
 
 //Here we load the txt files
 const baseUrl = window.location.href.replace(/\/[^/]+$/, '/');
@@ -218,7 +220,7 @@ function champion_match_new(
     matchLookingMain3,
 ) {
     //create an array for each user Mains and looking for champions
-    var score=0
+    var score = 0
     const userMains = [userMain1, userMain2, userMain3];
     const userLookingMains = [userLookingMain1, userLookingMain2, userLookingMain3];
     const matchMains = [matchMain1, matchMain2, matchMain3];
@@ -229,13 +231,11 @@ function champion_match_new(
         mainArray.forEach(champ => {
             if (lookingArray.includes(champ)) {
                 score += 40;  // raise the score if a match is found
-            }else {
-                score -= 10;
             }
         });
     }
     //match the main user looking for to the match user mains
-    // findMatches(userMains, matchLookingMains);
+    findMatches(userMains, matchLookingMains);
     findMatches(matchMains, userLookingMains);
 
     // Return the score
@@ -700,56 +700,67 @@ function compare_speciallty(champion_ability, user_ability) {
 }
 
 // Other Matching Functions for Lol
-function matchRankLol(match_rank, user_rank) {
-    const rankScore = {
-        'Unranked': 1,
-        'Iron': 2,
-        'Bronze': 3,
-        'Silver': 4,
-        'Gold': 5,
-        'Platinum': 6,
-        'Emerald':7,
-        'Diamond': 8,
-        'Master': 9,
-        'Grandmaster': 10,
-        'Challenger': 11,
-        'Any': 11
-    }
-    if (match_rank in rankScore && user_rank in rankScore) {
-        const score1 = rankScore[match_rank];
-        const score2 = rankScore[user_rank];
-        var score = 0
-        if (score1 > score2) {
-            score = score1 - score2
-        } else if (score1 < score2) {
-            score = score2 - score1
-        }
-        if (score <= 1) {
-            return 20
-        } else { return 0 }
+function matchRankLol(matchRank, matchRankLooking, userRank, userRankLooking) {
+    // const rankScore = {
+    //     'Unranked': 1,
+    //     'Iron': 2,
+    //     'Bronze': 3,
+    //     'Silver': 4,
+    //     'Gold': 5,
+    //     'Platinum': 6,
+    //     'Diamond': 7,
+    //     'Master': 8,
+    //     'Grandmaster': 9,
+    //     'Challenger': 10,
+    // }
+    // if (user_rank === "Any") {
+    //     return 50
+    // }
+
+    // if (match_rank in rankScore && user_rank in rankScore) {
+    //     const score1 = rankScore[match_rank];
+    //     const score2 = rankScore[user_rank];
+    //     var score = 0
+
+    //     if (score1 >= score2) {
+    //         score = Math.abs(score1 - score2) * 5;
+    //     } else if (score1 < score2) {
+    //         score = Math.abs(score1 - score2) * 5;
+    //     }
+
+    //     return 50 - score
+    // }
+
+    var tmpScore = 0
+    if (matchRank === userRankLooking) {
+        tmpScore += 50
     }
 
+    if (matchRankLooking === userRank) {
+        tmpScore += 50
+    }
+
+
+    return tmpScore
 
 }
 
 function matchAge(match_age, user_age) {
 
 
-    const minAge = user_age /2 + 7
-    const maxAge = (user_age-7) * 2 
+    const minAge = user_age / 2 + 7
+    const maxAge = (user_age - 7) * 2
 
-    var ageDiff = Math.abs(match_age - user_age);
-    var maxAgeDiff = 100;
-    var score = 10 - (ageDiff / maxAgeDiff) * 9;
+    var score = 0
 
-    if (match_age < minAge){
-        score += 60;
+    if (match_age > minAge) {
+        score += 20;
     }
 
-    if(match_age < maxAge){
-        score += 60;
+    if (match_age < maxAge) {
+        score += 20;
     }
-    
+
 
     return score;
 }
@@ -985,8 +996,11 @@ function match_profiles(profile_list, user_profile) {
                     profile.lookingMainLol3,
 
                 );
+                console.log("champion_match_new", finalScore)
+
                 //Matching for rank
                 finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
+                console.log("matchRankLol", finalScore)
                 break;
             case "Valorant":
                 finalScore += championValorant(
@@ -1045,49 +1059,43 @@ function match_profiles(profile_list, user_profile) {
                 finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
                 finalScore = finalScore / 2
                 break
-            case "No Match":
-                finalScore = finalScore - 40
-                break
+
         }
 
         //Match Server
         if (profile.server === user_profile.server) {
-            finalScore += 10
+            finalScore -= 500
         }
-        console.log("Server: ",finalScore)
-
+        console.log("server", finalScore)
         //Match kind of gamer
-        if (user_profile.lookingGamerkind === "competition and chill") {
+        if (user_profile.lookingGamerkind === "Competition and Chill") {
             finalScore += 40
         } else if (user_profile.lookingGamerkind === profile.gamerkind) {
             finalScore += 40
-        } else if (profile.gamerkind === "competition and chill") {
+        } else if (profile.gamerkind === "Competition and Chill") {
             finalScore += 40
         }
 
-        if (profile.lookingGamerkind === "competition and chill") {
+        if (profile.lookingGamerkind === "Competition and Chill") {
             finalScore += 40
         } else if (user_profile.lookingGamerkind === profile.gamerkind) {
             finalScore += 40
-        } else if (user_profile.gamerkind === "competition and chill") {
+        } else if (user_profile.gamerkind === "Competition and Chill") {
             finalScore += 40
         }
-
-        console.log("kind of gamer: ",finalScore)
+        console.log("kind of gamer", finalScore)
 
         //Same role gives negative points and if role fits the looking for role it gives points
-        if (profile.role === user_profile.role) {
-            finalScore += -50
+        if (profile.roleLol === user_profile.roleLol) {
+            finalScore += -70
         }
-        
-        if (profile.role === user_profile.lookingRole) {
-            finalScore += 10
+        if (profile.roleLol === user_profile.lookingRoleLol || profile.roleLol === "Fill") {
+            finalScore += 70
         }
-
-        if (profile.lookingRole === user_profile.role) {
-            finalScore += 10
+        if (profile.lookingRoleLol === user_profile.roleLol || user_profile.roleLol === "Fill") {
+            finalScore += 70
         }
-        console.log("role: ",finalScore)
+        console.log("role", finalScore)
 
         //Sort by the gender they selected
         if (profile.gender === user_profile.lookingGender) {
@@ -1104,12 +1112,11 @@ function match_profiles(profile_list, user_profile) {
         } else {
             finalScore -= 40
         }
-        console.log("gender: ",finalScore)
+        console.log("gender", finalScore)
 
         //Matching for age
         finalScore += matchAge(profile.age, user_profile.age)
-        console.log("age: ",finalScore)
-
+        console.log("matchAge", finalScore)
         profile.score = finalScore
 
     }
