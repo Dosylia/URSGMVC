@@ -36,14 +36,14 @@ class LeagueOfLegendsController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
-            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
-            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
@@ -402,13 +402,6 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
-            $loLAccount = $this->validateInput($_POST["account_lol"]);
-            $this->setLoLAccount($loLAccount);
-
-            if ($this->emptyInputSignup($this->getLoLAccount()) !== false) {
-                header("location:index.php?action=leagueuser&message=Account input cannot be empty");
-                exit();
-            }
 
             $createLoLUser = $this->leagueOfLegends->createLoLUser(
                 $this->getUserId(), 
@@ -417,13 +410,12 @@ class LeagueOfLegendsController
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
                 $this->getLoLRole(), 
-                $this->getLoLServer(), 
-                $this->getLoLAccount());
+                $this->getLoLServer()); // This also get the ID 
 
             if ($createLoLUser)
             {
 
-                $lolUser = $this->leagueOfLegends->getLeageUserByUsername($this->getLoLAccount());
+                $lolUser = $this->leagueOfLegends->getLeageAccountByLeagueId($createLoLUser);
 
                 if (session_status() == PHP_SESSION_NONE) 
                 {
@@ -433,7 +425,6 @@ class LeagueOfLegendsController
                 }
                 
                     $_SESSION['lol_id'] = $lolUser['lol_id'];
-                    $_SESSION['lol_account'] = $lolUser['lol_account'];
 
                 header("location:index.php?action=lookingforuserlol");
                 exit();

@@ -236,7 +236,6 @@ class GoogleUserController
                                 if ($lolUser)
                                 {
                                     $_SESSION['lol_id'] = $lolUser['lol_id'];
-                                    $_SESSION['lol_account'] = $lolUser['lol_account'];
 
                                     $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 

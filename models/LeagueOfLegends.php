@@ -13,7 +13,7 @@ class LeagueOfLegends extends DataBase
     }  
     
     
-    public function createLoLUser($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount) 
+    public function createLoLUser($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -24,11 +24,9 @@ class LeagueOfLegends extends DataBase
                                                 `lol_main3`,
                                                 `lol_rank`,
                                                 `lol_role`,
-                                                `lol_server`,
-                                                `lol_account`
+                                                `lol_server`
                                             )
                                             VALUES (
-                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -39,12 +37,12 @@ class LeagueOfLegends extends DataBase
                                             )
                                         ");
 
-        $createLeagueUser = $query -> execute([$userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $loLAccount]);
+        $createLeagueUser = $query -> execute([$userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer]);
 
 
         if($createLeagueUser)
         {
-            return true;
+            return $this->bdd-> lastInsertId();
         }
         else 
         {
@@ -173,6 +171,32 @@ class LeagueOfLegends extends DataBase
         ");
 
         $query -> execute([$lolAccount]);
+        $lolAccountTest = $query -> fetch();
+
+
+        if ($lolAccountTest)
+        {
+            return $lolAccountTest;
+        } 
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getLeageAccountByLeagueId($lolId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                *
+                                            FROM
+                                                `leagueoflegends`
+                                            WHERE
+                                                `lol_id` = ?
+
+        ");
+
+        $query -> execute([$lolId]);
         $lolAccountTest = $query -> fetch();
 
 

@@ -19,21 +19,21 @@
 
                     <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
                       
-                    <?php if($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) :?>
+                    <?php if($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) :?>  <!-- Connected to all -->
                             <a href="index.php?action=logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
                             <a href="index.php?action=userProfile&username=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>
-                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>
+                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for  -->
                             <a href="index.php?action=logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
                             <a href="index.php?action=signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
-                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>
+                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for, league  -->
                             <a href="index.php?action=logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>

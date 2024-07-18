@@ -94,11 +94,6 @@
                 <option value="Korea">Korea</option>
             </select>
 
-
-        <label for="account_lol">Link your League of Legends account, region from account must be same as one said above</label>
-        <input type="text" id="account_lol" name="account_lol" placeholder="Your LoL account username..">
-
-
         <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
         <?php endif ; ?>
