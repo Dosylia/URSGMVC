@@ -82,10 +82,6 @@
                 <?php endforeach; ?>
             </select>
 
-            <label for="account_lol">Link your League of Legends account</label>
-            <input type="text" id="account_lol" name="account_lol" value="<?= $lolUser['lol_account']?>">
-
-
         <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
         <?php endif ; ?>

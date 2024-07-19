@@ -82,7 +82,7 @@ function handleCredentialResponse(response)
   window.onload = function () 
   {
     google.accounts.id.initialize({
-      client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+      client_id: "666369513537-18keb7arpa8p69nsqddfar4ar5vdmkpq.apps.googleusercontent.com", // Key for test version
       callback: handleCredentialResponse
     });
     google.accounts.id.renderButton(
@@ -171,7 +171,7 @@ function handleCredentialResponse(response)
   window.onload = function () 
   {
     google.accounts.id.initialize({
-      client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+      client_id: "666369513537-18keb7arpa8p69nsqddfar4ar5vdmkpq.apps.googleusercontent.com",
       callback: handleCredentialResponse
     });
     google.accounts.id.renderButton(

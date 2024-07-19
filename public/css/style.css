@@ -1823,6 +1823,7 @@ cursor: pointer;
   height: 30vh;
   width: 100%;
   overflow: hidden;
+  padding-bottom: 20px;
 }
 
 .mid_main_section p {

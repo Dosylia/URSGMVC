@@ -454,13 +454,6 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
-            $loLAccount = $this->validateInput($_POST["account_lol"]);
-            $this->setLoLAccount($loLAccount);
-
-            if ($this->emptyInputSignup($this->getLoLAccount()) !== false) {
-                header("location:index.php?action=updateLeague&message=No data sent");
-                exit();
-            }
 
             $updateLeague = $this->leagueOfLegends->updateLeagueData(
                 $this->getUserId(), 
@@ -469,8 +462,7 @@ class LeagueOfLegendsController
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
                 $this->getLoLRole(), 
-                $this->getLoLServer(), 
-                $this->getLoLAccount());
+                $this->getLoLServer());
 
             if ($updateLeague)
             {

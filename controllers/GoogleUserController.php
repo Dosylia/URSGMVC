@@ -11,9 +11,7 @@ use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'plugins/PHPMailer/src/Exception.php';
-require 'plugins/PHPMailer/src/PHPMailer.php';
-require 'plugins/PHPMailer/src/SMTP.php';
+require 'vendor/autoload.php';
 
 class GoogleUserController
 {
@@ -42,7 +40,8 @@ class GoogleUserController
         $this -> matchingscore = new MatchingScore();
     }
 
-    public function homePage() {
+    public function homePage() 
+    {
         if($this->isConnectGoogle())
         {
             $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
