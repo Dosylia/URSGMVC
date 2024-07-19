@@ -17,7 +17,7 @@
         </select>  
 
         <label for="age">Age</label>
-        <input type="text" id="age" name="age" placeholder="<?= $user['user_age'] ?>" maxlength="2" required>
+        <input type="text" id="age" name="age" value="<?= $user['user_age'] ?>" maxlength="2" required>
 
         <label for="kindofgamer">What kind of gamer are you?</label>
         <select id="kindofgamer" name="kindofgamer" required>
@@ -36,7 +36,7 @@
         </select>
 
         <label for="short_bio">Short bio about you</label>
-        <textarea type="text" id="short_bio" name="short_bio" placeholder="<?= $user['user_shortBio'] ?>" required></textarea>
+        <textarea id="short_bio" name="short_bio" required><?= htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES) ?></textarea>
 
         <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  

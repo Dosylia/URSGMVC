@@ -70,7 +70,7 @@
             <div class="about_you_users"><br>
                 <p><strong>Gender</strong>: <?= ucfirst($anotherUser['user_gender']) ?></p><br>
                 <p><strong>Kind of gamer</strong>: <?= ucfirst($anotherUser['user_kindOfGamer']) ?></p><br>
-                <p><strong>Their short bio</strong>: <?= $anotherUser['user_shortBio'] ?></p><br>
+                <p><strong>Your short bio</strong>: <?= htmlspecialchars_decode($anotherUser['user_shortBio'], ENT_QUOTES) ?></p><br>
             </div>
         </div>
     </div>

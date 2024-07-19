@@ -97,7 +97,7 @@
             <div class="about_you_users"><br>
                 <p><strong>Gender</strong>: <?= ucfirst($user['user_gender']) ?></p><br>
                 <p><strong>Kind of gamer</strong>: <?= ucfirst($user['user_kindOfGamer']) ?></p><br>
-                <p><strong>Your short bio</strong>: <?= $user['user_shortBio'] ?></p><br>
+                <p><strong>Your short bio</strong>: <?= htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES) ?></p><br>
             </div>
         </div>
     </div>
@@ -119,13 +119,35 @@
         <br><p id="title_generalbox">Your social links:</p><br>  
         <form action="index.php?action=updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
-            <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
+            <?php if (!empty($user['user_discord'])): ?>  
+                <input type="text" id="discord" name="discord" value="<?= $user['user_discord'] ?>"><br><br>
+            <?php else : ?>
+                <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
+            <?php endif; ?>   
             <label for="twitter">Twitter:</label><br><br>
-            <input type="text" id="twitter" name="twitter" placeholder="Your Twitter link.."><br><br>
+            <?php if (!empty($user['user_twitter'])): ?>  
+                <input type="text" id="twitter" name="twitter" value="<?= $user['user_twitter'] ?>"><br><br>
+            <?php else : ?>
+                <input type="text" id="twitter" name="twitter" placeholder="Your Twitter link.."><br><br>
+            <?php endif; ?>  
+
+
             <label for="instagram">Instagram:</label><br><br>
-            <input type="text" id="instagram" name="instagram" placeholder="Your Instagram link.."><br><br>
+            <?php if (!empty($user['user_instagram'])): ?>  
+                <input type="text" id="instagram" name="instagram" value="<?= $user['user_instagram'] ?>"><br><br>
+            <?php else : ?>
+                <input type="text" id="instagram" name="instagram" placeholder="Your Instagram link.."><br><br>
+            <?php endif; ?> 
+
+
             <label for="instagram">Twitch:</label><br><br>
-            <input type="text" id="twitch" name="twitch" placeholder="Your Instagram link.."><br><br>
+            <?php if (!empty($user['user_twitch'])): ?>  
+                <input type="text" id="twitch" name="twitch" value="<?= $user['user_twitch'] ?>"><br><br>
+            <?php else : ?>
+                <input type="text" id="twitch" name="twitch" placeholder="Your Twitch link.."><br><br>
+            <?php endif; ?> 
+
+
             <br><br><input name="submit" type="submit" value="Save" id="send-button">
         </form>
         <button id="closeButton_social_links">X</button>
