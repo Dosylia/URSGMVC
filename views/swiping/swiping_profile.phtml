@@ -57,7 +57,16 @@
             <h2 id="title_generalbox">Friend requests</h2><br>
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn">
-                    <p> From: <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['user_username']) ?>"><?= strtoupper($request['user_username']) ?></a>, the <?= date('d/m/y', strtotime($request['fr_date'])) ?></p><br>
+                    <p> From: 
+                        <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['user_username']) ?>">
+                        <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                            <img id="image_users_small" src="public/upload/<?= $request['user_picture'] ?>" alt="Picture of <?= $request['user_username'] ?>" />  
+                        <?php else :?>
+                            <img id="image_users_smal" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                        <?php endif; ?>
+                            <?= strtoupper($request['user_username']) ?></a>
+                        , the <?= date('d/m/y', strtotime($request['fr_date'])) ?>
+                    </p><br>
                     <div class="friend_request_ctn_btn">
                         <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>&friend_id=<?= $request['user_id'] ?>'><button id="accept_friend_button">Accept</button></a>
                         <a href='index.php?action=requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>
@@ -76,15 +85,15 @@
                         <div class="box_league_account_main_row">
                             <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
                             <div class="box_league_account_main_row_column">
-                                <p><strong><?= $lolUser['lol_sUsername']?></strong></p> 
-                                <p><?= strtoupper($lolUser['lol_server']) ?></p>
-                                <p> <?= strtoupper($lolUser['lol_sRank']) ?></p>
-                                <p>Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
+                                <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                                <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                <p class="small_text"> <?= strtoupper($lolUser['lol_sRank']) ?></p>
+                                <p class="small_text">Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
                             </div>
                         </div>
                     </div><br>
                 <?php endif; ?>
-                <?php if (!empty($lolUser['lol_account'])): ?>
+                <?php if (!empty($lolUser['lol_account']) && empty($lolUser['lol_sUsername'])): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
                             <p><?= strtoupper($lolUser['lol_server']) ?></p> 
@@ -100,17 +109,17 @@
                 <p><strong>Your short bio</strong>: <?= htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES) ?></p><br>
             </div>
         </div>
-    </div>
 
-    <div class="user_box">
-        <br><h2 id="title_generalbox">Looking for</h2><br>
-            <?php if ($user['user_game'] !== 'valorant'): ?>
-                <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
-            <?php endif; ?>    
-            <div class="about_you_users"><br>
-                <p><strong>Gender</strong>: <?= ($lfUser['lf_gender']) ?></p><br>
-                <p><strong>Kind of gamer</strong>: <?= ($lfUser['lf_kindofgamer']); ?></p><br>
-            </div> 
+        <div class="user_box">
+            <br><h2 id="title_generalbox">Looking for</h2><br>
+                <?php if ($user['user_game'] !== 'valorant'): ?>
+                    <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
+                <?php endif; ?>    
+                <div class="about_you_users"><br>
+                    <p><strong>Gender</strong>: <?= ($lfUser['lf_gender']) ?></p><br>
+                    <p><strong>Kind of gamer</strong>: <?= ($lfUser['lf_kindofgamer']); ?></p><br>
+                </div> 
+            </div>
         </div>
     </div>
    

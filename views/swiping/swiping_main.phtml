@@ -26,7 +26,7 @@
                         <img id="profilepicture_lol" alt="icon_league">
                         <div class="box_league_account_main_row_column">
                             <p id="lolsUsername"><strong></strong></p>
-                            <p id="lolsRank"></p>
+                            <p class="small_text" id="lolsRank"></p>
                         </div>
                     </div>
                 </div><br>
@@ -45,14 +45,12 @@
             </div>
         </div>
 
-        <form method="POST">
             <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
             <input id="receiverId" type="hidden" name="receiver_id">
             <div class="row_buttons_swipe">
-                <button id="swipe_no" class="button_swiping" type="submit" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
-                <button id="swipe_yes" class="button_swiping" type="submit" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
+                <button id="swipe_no" class="button_swiping" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
+                <button id="swipe_yes" class="button_swiping" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
             </div>
-        </form>
     </section>
 
     <section class="noUserToSee" style="display: none;">

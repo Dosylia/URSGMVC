@@ -78,7 +78,8 @@ class FriendRequest extends DataBase
                                             fr.fr_date,
                                             fr.fr_status,
                                             u.user_username,
-                                            u.user_id
+                                            u.user_id,
+                                            u.user_picture
                                         FROM
                                             `friendrequest` AS fr
                                         INNER JOIN

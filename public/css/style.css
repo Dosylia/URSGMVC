@@ -27,10 +27,36 @@
       background: url('../images/pc_background.webp');
   }
 
+/* SCROLL BAR */
+
+::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; 
+}
+
+
+::-webkit-scrollbar-button {
+  display: none; 
+}
+
+::-webkit-scrollbar-track {
+  background: none; 
+  margin: 0; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; 
+}
+
 /* KOFI SECTION */
 
 .kofi {
-  background-color: var(--main--red);
+  background: linear-gradient(135deg, var(--main--red), #8e2730); 
   color: white;
   display: flex;
   flex-direction: row;
@@ -44,6 +70,7 @@
   text-transform: uppercase;
   font-size: 2rem;
   font-family: 'Libre Franklin', sans-serif;
+  text-align: center;
 }
 
 .kofi a {
@@ -63,6 +90,47 @@
   width: 100px;
   height: 80px;
 }
+
+/* DISCORD SECTION */
+
+.discord {
+  background: linear-gradient(135deg, #7289da, #2e419e);
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+}
+
+.discord h2 {
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-family: 'Libre Franklin', sans-serif;
+  text-align: center;
+}
+
+.discord a {
+  font-family: 'Geologica', sans-serif;  
+  color: white;
+  text-decoration: none;
+}
+
+.discord_row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;    
+}
+
+.discord i {
+  font-size: 3rem;
+  color: white;
+}
+
+
   
   .download_app {
       display: flex;
@@ -129,17 +197,19 @@
   }
   
   .faq_row_box {
-      font-family: 'Geologica', sans-serif;   
-      width: 50%;
-      height: auto;
-      border: 1px solid black;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      padding: 30px;
-  }
+    font-family: 'Geologica', sans-serif;
+    width: 50%;
+    height: auto;
+    min-height: 200px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 30px;
+    background: linear-gradient(135deg, white, #e0e0e0);
+}
   
   .faq_row_box h3 {
       padding-bottom: 20px;
@@ -235,7 +305,6 @@
     color: white;
     padding: 1em;
     border: 5px;
-    width: 100%;
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -460,6 +529,7 @@
       font-family: 'Geologica', sans-serif;   
       font-size: 4vh;
       padding: 30px;
+      text-align: center;
     }
 
     .no_friend {
@@ -503,145 +573,154 @@
       align-items: center;
       min-height: 90vh;
       background-color: rgb(243, 237, 237);
-      touch-action: none;
       position: relative;
     }
     
-.buttonSwipe {
-  position: absolute;
-  top: 50%;
-  left: 50%; 
-  font-size: 7rem;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  opacity: 0;
-  animation: fadeInOut 1s ease-in-out;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
-  color: white; 
-}
-
-.buttonSwipe.fa-check {
-  color: green;
-}
-
-.buttonSwipe.fa-xmark {
-  color: red;
-}
-
-@keyframes fadeInOut {
-  0% {
+  .buttonSwipe {
+    position: absolute;
+    top: 50%;
+    left: 50%; 
+    font-size: 7rem;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
     opacity: 0;
-    transform: scale(0.5) translate(-50%, -50%);
+    animation: fadeInOut 1s ease-in-out;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
+    color: white; 
   }
-  50% {
-    opacity: 1;
-    transform: scale(1.2) translate(-50%, -50%); 
+
+  .buttonSwipe.fa-check {
+    color: green;
   }
-  100% {
-    opacity: 0;
-    transform: scale(1.5) translate(-50%, -50%);
+
+  .buttonSwipe.fa-xmark {
+    color: red;
   }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) translate(-50%, -50%);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2) translate(-50%, -50%); 
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.5) translate(-50%, -50%);
+    }
+  }
+
+  #swipe_yes, #swipe_no {
+    cursor: pointer;
+  }
+
+  #image_users {
+    height: 200px;
+    width: 200px;
+    border: none;
+    margin-left: 20px;
+    border-radius: 1000px;
+    word-wrap: break-word;
+  }
+
+  #image_users_small {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+  }
+
+  #user_page_username {
+    font-family: 'Geologica', sans-serif;
+    font-size: 7vw;
+
+  }
+
+  .user_page_update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#e0e0e0, white);
+    width: 95%;
+    margin-top: 20px;
+    border-radius: 30px;
+  }
+
+  .user_page_update_name {
+    text-align: center;
+    width: 100%;
+  }
+
+  .user_page_main_content_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .user_page_update_row, .user_page_update_row_buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-top: 20px;
+    width: 100%;
+  }
+
+  .user_page_update_row a, .user_page_update_row_buttons a {
+    text-decoration: none;
+  }
+
+  .user_page_update_row a:hover, .user_page_update_row_buttons:hover {
+    color: red;
+  }
+
+
+  .user_page_picture {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .user_page_main_league,
+  .user_page_main_valorant {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-top: 0.5vh;
+  }
+
+  .user_page_discord 
+  {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #hidden_p 
+  {
+    display: none;
+    padding-top: 5px;
+  }
+
+  #popup_user_picture {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: none;
 }
-
-    #image_users {
-      height: 200px;
-      width: 200px;
-      border: none;
-      margin-left: 20px;
-      border-radius: 1000px;
-      word-wrap: break-word;
-    }
-  
-    #user_page_username {
-      font-family: 'Geologica', sans-serif;
-      font-size: 7vw;
-
-    }
-  
-    .user_page_update {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: rgb(243, 237, 237);
-      width: 95%;
-      margin-top: 20px;
-      border-radius: 30px;
-    }
-  
-    .user_page_update_name {
-      text-align: center;
-      width: 100%;
-    }
-  
-    .user_page_main_content_row {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-  
-    .user_page_update_row, .user_page_update_row_buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      padding-top: 20px;
-      width: 100%;
-    }
-  
-    .user_page_update_row a, .user_page_update_row_buttons a {
-      text-decoration: none;
-    }
-  
-    .user_page_update_row a:hover, .user_page_update_row_buttons:hover {
-      color: red;
-    }
-  
-  
-    .user_page_picture {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-  
-    .user_page_main_league,
-    .user_page_main_valorant {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      padding-top: 0.5vh;
-    }
-
-    .user_page_discord 
-    {
-      display: flex;
-      flex-direction: column;
-    }
-
-    #hidden_p 
-    {
-      display: none;
-      padding-top: 5px;
-    }
-  
-    #popup_user_picture {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px;
-      padding: 20px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      z-index: 9999;
-      display: none;
-  }
   
   /* Style pour le bouton de fermeture */
   #closeButton_user_picture, #closeButton_social_links, #closeButton {
@@ -676,7 +755,7 @@
   
   
   .btn_user_updates {
-    background: #cb5242;
+    background: linear-gradient(135deg, var(--main--red), #8e2730); 
     border-radius: 11px;
     width: 500px;
     min-height: 50px;
@@ -701,7 +780,7 @@
   
   
   .btn_user_updates:hover {
-    background:    rgba(88, 86, 86, 0.9);
+    background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
     transform: scale(1.05);
     cursor: pointer;
   }
@@ -738,7 +817,6 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-      align-items: center;
       width: 95%;
       gap: 50px;
     }
@@ -818,7 +896,7 @@
   
     .user_box {
       padding: 10px 20px;
-      background: white;
+      background: linear-gradient(135deg, white, #e0e0e0);
       margin-top: 20px;
       margin-bottom: 20px;
       width: 40%;
@@ -827,7 +905,7 @@
   
     .general_box {
       padding: 10px 20px;
-      background: white;
+      background: linear-gradient(135deg, white, #e0e0e0);
       margin-top: 20px;
       width: 40%;
       border-radius: 20px;
@@ -835,7 +913,7 @@
   
     .chat_box {
       padding: 10px 20px;
-      background: white;
+      background: linear-gradient(135deg, white, #f5f2f2);
       margin-top: 20px;
       width: 100%;
       border-radius: 20px;
@@ -844,6 +922,7 @@
       max-height: 60vh;
       overflow-y: auto; 
       overflow-x: hidden; 
+      background: linear-gradient(135deg, white, #ede8e8);
   }
   
     #message_text {
@@ -928,14 +1007,14 @@
       min-height: 50vh;
       overflow-y: scroll;
       width: 800px;
-      margin: auto;
       display: block;
+      margin: auto;
+      transform: translateX(-80px);
     }
 
     .chat_page {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 20px;
       min-height: 90vh;
     }
@@ -951,23 +1030,41 @@
     .main_box {
       width: 100%;
       padding: 10px 0;
-      background: white;
       border-radius: 20px;
     }
 
     .main_box-swiping-main {
       width: 100%;
       padding: 10px 0;
-      background: white;
       border-radius: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: linear-gradient(135deg,#e0e0e0, white);
     }
   
     .box_league_account {
       width: 50%;
-      background-color: rgb(255, 253, 253);
+      font-family: 'Geologica', sans-serif;
+    }
+
+    #lolUserText {
+      cursor: pointer;
+      user-select: none; /* Prevent text selection */
+      position: relative;
+    }
+
+    .fa-copy {
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .fa-copy.visible {
+      opacity: 1;
     }
   
     .box_league_account_main_row {
@@ -983,6 +1080,10 @@
       padding-top: 10px;
     }
 
+    .box_league_account_main_row_column .small_text {
+      color: rgb(72, 69, 69);
+    }
+
     #myForm {
       display: flex;
       justify-content: center;
@@ -995,7 +1096,7 @@
       border-radius: 50px;
       border: none;
       color: white;
-      position: absolute;
+      position: relative;
       z-index: 2;
       cursor: pointer;
     }
@@ -1064,7 +1165,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: auto;
     }
 
     .chat-interface-big {
@@ -1303,7 +1403,7 @@
   }
     
   .dark-mode .user_page_update {
-    background-color: var(--dark-grey);
+    background: linear-gradient(135deg, #171616, var(--dark-ligher-grey));
   }
   
   .dark-mode .user_page_main_content {
@@ -1311,18 +1411,13 @@
   }
   
   .dark-mode .user_page_main_content_row {
-    background-color: var(--dark-ligher-grey);
+    background: linear-gradient(135deg, #171616, var(--dark-ligher-grey));
     border-radius: 20px;
   }
   
   .dark-mode .general_box, .dark-mode .user_box  {
-    background-color: var(--dark-ligher-grey);
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #1e1d1d);
     border-radius: 20px;
-  }
-  
-  
-  .dark-mode .main_box, .dark-mode .main_box-swiping-main {
-    background-color: var(--dark-ligher-grey);
   }
   
   .dark-mode p {
@@ -1337,10 +1432,6 @@
     background-color: var(--dark-grey);
   }
   
-  .dark-mode .box_league_account_main_row {
-    background-color: var(--dark-ligher-grey);
-  }
-  
   .dark-mode .chat-interface {
     background-color: var(--dark-grey);
   }
@@ -1350,7 +1441,7 @@
   }
   
   .dark-mode .chat_box {
-    background-color: var(--dark-ligher-grey);
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #1e1d1d);
   }
   
   .dark-mode a {
@@ -1407,8 +1498,8 @@
   }
   
   .dark-mode .faq_row_box {
-    background-color: var(--dark-ligher-grey);
-  }
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+}
   
   .dark-mode .faq_row_box h3 {
     color: white;
@@ -1941,7 +2032,7 @@ cursor: pointer;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    background-color: #d8d3d3;
+    background: linear-gradient(225deg, #e0dbdb, #b8b1b1);
     min-height: 10vh;
 }
 
@@ -2097,8 +2188,8 @@ cursor: pointer;
 /* DARK MODE */
 
 .toggle-container {
-    width: 100px;
-    height: 50px;
+    width: 80px;
+    height: 40px;
     background-color: #ccc;
     border-radius: 25px;
     position: relative;
@@ -2109,8 +2200,8 @@ cursor: pointer;
   }
   
   .toggle-button {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background-color: #fff;
     border-radius: 50%;
     position: absolute;
@@ -2128,7 +2219,7 @@ cursor: pointer;
   }
   
   .dark-mode .toggle-button {
-    transform: translateX(50px);
+    transform: translateX(40px);
     background-color: #ddd; /* Ajout de la couleur de fond pour le mode sombre */
   }
   
@@ -2144,7 +2235,7 @@ cursor: pointer;
 }
 
 .dark-mode .nav_swiping {
-    background-color: #3d3a3a;
+  background: linear-gradient(225deg, #444040, #222020);
 }
 
 .dark-mode #signup_button {
@@ -2172,6 +2263,14 @@ cursor: pointer;
 
 .dark-mode .file-name {
   color: white;
+}
+
+.dark-mode .box_league_account_main_row_column .small_text {
+  color: rgb(193, 184, 184);
+}
+
+.dark-mode .main_box-swiping-main {
+  background: linear-gradient(135deg, #171616, var(--dark-ligher-grey));
 }
 
 /* FOOTER DARK MODE */
@@ -2243,6 +2342,10 @@ cursor: pointer;
   .btn_user_updates {
     width: 250px;
     margin: 0 10px;
+  }
+
+  .messages-container {
+    transform: translateX(0px);
   }
 
 }
@@ -2506,7 +2609,7 @@ cursor: pointer;
 
   #signup_button {
   font-size: 1.5vh;
-  width: fit-content;
+  width: 100px;
   height: 40px;
   }
 
@@ -2588,6 +2691,18 @@ cursor: pointer;
     .kofi img {
       width: 80px;
       height: 60px;
+    }
+
+    .discord {
+      padding: 10px;
+    }
+
+    .discord h2 {
+      font-size: 1.2rem;
+    }
+
+    .discord i {
+      font-size: 2rem;
     }
 
     .separator 

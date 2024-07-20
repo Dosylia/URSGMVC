@@ -219,17 +219,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let touchstartX = 0;
     let touchendX = 0;
-    const threshold = 30;
+    const threshold = 50;
 
     function handleSwipeGesture() {
         console.log('Handling swipe gesture');
         if (Math.abs(touchendX - touchstartX) > threshold) {
             if (touchendX < touchstartX) {
+                swipeNo(userId, receiverId.value);
                 console.log('Swipe left detected');
-                swipeYes(userId, receiverId.value);
             } else if (touchendX > touchstartX) {
                 console.log('Swipe right detected');
-                swipeNo(userId, receiverId.value);
+                swipeYes(userId, receiverId.value);
             }
         }
     }
