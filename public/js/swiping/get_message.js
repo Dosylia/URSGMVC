@@ -103,8 +103,10 @@ document.addEventListener("DOMContentLoaded", function() {
             let isCurrentUser = (message.chat_senderId == userId);
             let messageClass = isCurrentUser ? 'message-from-user' : 'message-to-user';
             let messagePosition = isCurrentUser ? 'right' : 'left';
+            let lastMessagePosition = isCurrentUser ? 'flex-end' : 'flex-start';
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
+            let timestampPosition = isCurrentUser ? "normal" : "inverted";
             let pictureLink;
     
             if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
@@ -126,7 +128,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
                     messageContent = `
-                        <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${renderEmotes(message.chat_message)}</p>
+                    <p class="last-message">
+                        <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                    </p>
                     `;
                 } else {
                     // Display full message with icon, avatar, and timestamp
@@ -136,7 +141,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                         </p>
-                        <p id="last-message">${renderEmotes(message.chat_message)}</p>
+                        <p class="last-message">
+                            <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                            <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                        </p>
                     `;
                 }
             } else {
@@ -147,7 +155,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                     </p>
-                    <p id="last-message"><span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>${renderEmotes(message.chat_message)}</p>
+                    <p class="last-message">
+                        <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                    </p>
                 `;
             }
     
@@ -156,6 +167,11 @@ document.addEventListener("DOMContentLoaded", function() {
     
             // Store the current message as previousMessage for the next iteration
             previousMessage = message;
+
+            
+            const lastMessage = messageDiv.querySelector('.last-message');
+            lastMessage.classList.add(timestampPosition);
+            lastMessage.style.justifyContent = lastMessagePosition;
     
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');

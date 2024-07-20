@@ -503,7 +503,45 @@
       align-items: center;
       min-height: 90vh;
       background-color: rgb(243, 237, 237);
+      touch-action: none;
+      position: relative;
     }
+    
+.buttonSwipe {
+  position: absolute;
+  top: 50%;
+  left: 50%; 
+  font-size: 7rem;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInOut 1s ease-in-out;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
+  color: white; 
+}
+
+.buttonSwipe.fa-check {
+  color: green;
+}
+
+.buttonSwipe.fa-xmark {
+  color: red;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translate(-50%, -50%);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) translate(-50%, -50%); 
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5) translate(-50%, -50%);
+  }
+}
 
     #image_users {
       height: 200px;
@@ -511,11 +549,13 @@
       border: none;
       margin-left: 20px;
       border-radius: 1000px;
+      word-wrap: break-word;
     }
   
     #user_page_username {
       font-family: 'Geologica', sans-serif;
       font-size: 7vw;
+
     }
   
     .user_page_update {
@@ -523,7 +563,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: rgb(245, 245, 245);
+      background-color: rgb(243, 237, 237);
       width: 95%;
       margin-top: 20px;
       border-radius: 30px;
@@ -662,7 +702,7 @@
   
   .btn_user_updates:hover {
     background:    rgba(88, 86, 86, 0.9);
-    transform: scale(1.1);
+    transform: scale(1.05);
     cursor: pointer;
   }
   
@@ -960,11 +1000,6 @@
       cursor: pointer;
     }
 
-    #last-message .timestamp-hover {
-      font-weight: 200;
-      padding: 0 10px;
-      color: grey;
-    }
 
     .emote-picker {
       position: relative;
@@ -1173,10 +1208,34 @@
       font-size: 2.2vh;
       font-family: 'Geologica', sans-serif;
     }
+
+    .last-message .timestamp-hover {
+      font-weight: 200;
+      padding: 0 10px;
+      color: grey;
+    }
   
-    #last-message {
+    .last-message {
       font-family: Arial, Helvetica, sans-serif;
       word-wrap: break-word;
+      display: flex;
+      align-items: center;
+    }
+
+    .last-message.normal .timestamp-hover {
+      order: 1;
+    } 
+
+    .last-message.normal .message-text {
+      order: 2;
+    }
+
+    .last-message.inverted .timestamp-hover {
+      order: 2;
+    }
+
+    .last-message.inverted .message-text {
+      order: 1;
     }
   
     .username_chat_friend {
@@ -2324,9 +2383,6 @@ cursor: pointer;
 
   #image_users {
     max-width: 300px;
-    max-width: 300px;
-    min-width: 150px;
-    min-width: 150px;
     border: none;
     margin-left: 20px;
     border-radius: 1000px;
@@ -2565,6 +2621,18 @@ cursor: pointer;
 }
 
 
+@media only screen and (max-width: 500px) {
+
+  #image_users {
+    width: 150px;
+    height: 150px;
+    margin-left: 15px;
+    border-radius: 1000px;
+  }
+    
+}
+
+
 @media only screen and (max-width: 400px) {
 
   .box_league_account_main_row {
@@ -2600,4 +2668,15 @@ cursor: pointer;
       }
     
 
+}
+
+@media only screen and (max-width: 350px) {
+
+  #image_users {
+    width: 75px;
+    height: 75px;
+    margin-left: 15px;
+    border-radius: 1000px;
+  }
+    
 }

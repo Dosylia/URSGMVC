@@ -4,7 +4,7 @@
     <script type="module" src="public/js/algo.js"></script>
     <script type="module" src="public/js/swiping/get_userMatching.js"></script>
 
-    <section class="user_page" style="display: none;">
+    <section class="user_page" id="swipe-area" style="display: none;">
         <div class="user_page_main_content_row">
             <div class="main_box-swiping-main">
                 <div class="user_page_picture">
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <form method="POST" action="index.php?action=swipeDone">
+        <form method="POST">
             <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
             <input id="receiverId" type="hidden" name="receiver_id">
             <div class="row_buttons_swipe">
@@ -59,4 +59,5 @@
         <img src="public/images/vayne_emote.png" alt="jhinshrug">
         <h2>You have seen all available profiles.</h2>
     </section>
+
 <?php endif; ?>

@@ -51,9 +51,9 @@ class FriendRequestController
             $requestDate = date('Y-m-d H:i:s');
             $status = 'pending';
 
-            $senderId = $this->validateInput($_POST["sender_id"]);
+            $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
-            $receiverId = $this->validateInput($_POST["receiver_id"]);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
             $this->setReceiverId((int)$receiverId);
 
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
@@ -61,39 +61,27 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId());
 
-                if ($updateFriendRequest) {
-                    header("location:index.php?action=swiping");
-                    exit();
-                } else {
-                    header("location:index.php?action=swiping");
-                    exit();
-                }
+                echo json_encode(['success' => true, 'error' => 'Swipped yes']);
+            } else {
+                $swipeStatusYes = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                echo json_encode(['success' => true, 'error' => 'Swipped yes']);
             }
 
-            $swipeStatusYes = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-
-            if ($swipeStatusYes) {
-                header("location:index.php?action=swiping");
-                exit();
-            }
         } elseif (isset($_POST['swipe_no'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'rejected';
 
-            $senderId = $this->validateInput($_POST["sender_id"]);
+            $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
-            $receiverId = $this->validateInput($_POST["receiver_id"]);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
             $this->setReceiverId((int)$receiverId);
 
             $swipeStatusNo = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
 
-            if ($swipeStatusNo) {
-                header("location:index.php?action=swiping");
-                exit();
-            }
+            echo json_encode(['success' => true, 'error' => 'Swipped No']);
+
         } else {
-            header("location:index.php?action=swiping&message=Couldnt add/reject user");
-            exit();
+            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
         }
     }
 
