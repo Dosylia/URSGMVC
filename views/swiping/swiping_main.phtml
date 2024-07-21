@@ -5,7 +5,7 @@
     <script type="module" src="public/js/swiping/get_userMatching.js"></script>
 
     <section class="user_page" id="swipe-area" style="display: none;">
-        <div class="user_page_main_content_row">
+        <div class="user_page_main_content_row swiping_row">
             <div class="main_box-swiping-main">
                 <div class="user_page_picture">
                     <img id="image_users" alt="" />
@@ -48,8 +48,8 @@
             <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
             <input id="receiverId" type="hidden" name="receiver_id">
             <div class="row_buttons_swipe">
-                <button id="swipe_no" class="button_swiping" name="swipe_no"><img src="public/images/swipe_no.png" alt="swipe_no"></button>
-                <button id="swipe_yes" class="button_swiping" name="swipe_yes"><img src="public/images/swipe_yes.png" alt="swipe_yes"></button>
+                <button id="swipe_no" class="button_swiping" name="swipe_no"><i class="fa-solid fa-xmark"></i></button>
+                <button id="swipe_yes" class="button_swiping" name="swipe_yes"><i class="fa-solid fa-heart"></i></button>
             </div>
     </section>
 

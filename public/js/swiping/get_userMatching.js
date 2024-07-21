@@ -75,9 +75,9 @@ document.addEventListener("DOMContentLoaded", function() {
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
         lolAccount.innerText = data.lol_account;
-        gender.innerText = ` ${data.user_gender}`;
-        kindOfGamer.innerText = ` ${data.user_kindOfGamer}`;
-        shortBio.innerText = ` ${data.user_shortBio}`;
+        gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
+        kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
+        shortBio.innerHTML += ` ${sanitizeHtlm(data.user_shortBio)}`;
         receiverId.value = data.user_id;
         lolMain1P.innerText = data.lol_main1;
         lolMain2P.innerText = data.lol_main2;
@@ -100,6 +100,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // Sanitize function
     function sanitize(input) {
         return input.trim().replace(/\s+/g, '');
+    }
+
+    function sanitizeHtlm(input) {
+        const element = document.createElement('div');
+        element.innerText = input;
+        return element.innerHTML;
     }
 
     // Function swipping
@@ -179,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function buttonSuccess() {
         // Create checkmark icon element
         const iElement = document.createElement('i');
-        iElement.classList.add('fa-solid', 'fa-check', 'buttonSwipe');
+        iElement.classList.add('fa-solid', 'fa-heart', 'buttonSwipe');
         iElement.style.color = "green";
         swipeArea.appendChild(iElement);
     
