@@ -1,6 +1,7 @@
 // Variables
 let userIdElementHeader = document.getElementById('userId');
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null;
+let originalTitle = document.title;
 
 // Fonction pour récupérer les demandes d'ami en attente
 function fetchFriendRequest(userId) {
@@ -63,37 +64,44 @@ function clearContainer() {
     });
 }
 
-// Fonction pour remplir les notifications non lues globales
 function fillUnread(unreadCounts) {
     const container = document.getElementById('unread_messages_container');
-    container.innerHTML = ''; // Efface le contenu précédent
+    if (!container) {
+        console.error('Container element not found');
+        return;
+    }
+    
+    container.innerHTML = ''; // Clear previous content
     let count = 0;
 
     unreadCounts.forEach(unreadCount => {
         if (unreadCount.unread_count > 0) {
             count += unreadCount.unread_count;
-
         }
     });
 
-    if (count > 0)
-    {
-    const anchor = document.createElement('a');
-    anchor.href = 'index.php?action=persoChat';
+    if (count > 0) {
+        const anchor = document.createElement('a');
+        anchor.href = 'index.php?action=persoChat';
 
-    const span = document.createElement('span');
-    span.className = 'pending-count-header';
+        const span = document.createElement('span');
+        span.className = 'pending-count-header';
 
-    const button = document.createElement('button');
-    button.title = 'Unread Message';
-    button.id = 'unread_message';
-    button.textContent = count;
+        const button = document.createElement('button');
+        button.title = 'Unread Message';
+        button.id = 'unread_message';
+        button.textContent = count;
 
-    span.appendChild(button);
-    anchor.appendChild(span);
-    container.appendChild(anchor);
+        span.appendChild(button);
+        anchor.appendChild(span);
+        container.appendChild(anchor);
+
+        if (count = 1) {
+            document.title = `${count} New message - ${originalTitle}`;
+        } else {
+            document.title = `${count} New messages - ${originalTitle}`;
+        }
     }
-
 }
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami

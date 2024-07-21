@@ -225,26 +225,34 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let touchstartX = 0;
     let touchendX = 0;
-    const threshold = 50;
-
+    const threshold = 50; 
+    const screenWidth = window.innerWidth;
+    
     function handleSwipeGesture() {
+        const swipeDistance = touchendX - touchstartX;
+        const center = screenWidth / 2;
         console.log('Handling swipe gesture');
-        if (Math.abs(touchendX - touchstartX) > threshold) {
-            if (touchendX < touchstartX) {
-                swipeNo(userId, receiverId.value);
-                console.log('Swipe left detected');
-            } else if (touchendX > touchstartX) {
+        
+        // Only proceed if the swipe distance is greater than the threshold
+        if (Math.abs(swipeDistance) > threshold) {
+            // Swipe right detection
+            if (touchstartX < center && touchendX > touchstartX) {
                 console.log('Swipe right detected');
                 swipeYes(userId, receiverId.value);
             }
+            // Swipe left detection
+            else if (touchstartX > center && touchendX < touchstartX) {
+                console.log('Swipe left detected');
+                swipeNo(userId, receiverId.value);
+            }
         }
     }
-
+    
     swipeArea.addEventListener('touchstart', function(event) {
         touchstartX = event.changedTouches[0].screenX;
         console.log('Touch start:', touchstartX);
     }, false);
-
+    
     swipeArea.addEventListener('touchend', function(event) {
         touchendX = event.changedTouches[0].screenX;
         console.log('Touch end:', touchendX);
