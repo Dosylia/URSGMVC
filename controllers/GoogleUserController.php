@@ -73,19 +73,19 @@ class GoogleUserController
         else if($googleUser['google_confirmEmail'] == 1 && !$this->isConnectWebsite())
         {
             ob_start();
-            header("Location: index.php?action=signup");
+            header("Location: /signup");
             exit();
         }
         else if($googleUser['google_confirmEmail'] == 1 && $this->isConnectWebsite())
         {
             ob_start();
-            header("Location: index.php?action=signup");
+            header("Location: /signup");
             exit();
         }
         else
         {
             ob_start();
-            header("Location: index.php?action=swippingmain");
+            header("Location: /swippingmain");
             exit();
         }
     }
@@ -94,8 +94,12 @@ class GoogleUserController
 
     public function pageSignUp()
     {
-        $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
+        if (isset($_SESSION['email'])) {
+            $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
+        }
+        if (isset($_SESSION['google_userId'])) {
+            $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
+        }
 
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
@@ -145,8 +149,8 @@ class GoogleUserController
             $page_title = "URSG - Sign";
             require "views/layoutSignup.phtml";
         } else {
-            // Code block 7: Redirect to index.php if none of the above conditions are met
-            header("Location: index.php");
+            // Code block 7: Redirect to / if none of the above conditions are met
+            header("Location: /");
             exit();
         }
     }  
@@ -318,7 +322,7 @@ class GoogleUserController
                     $mail->Body = "URSG.com - Email Confirmation\r\n";
                     $mail->Body .= "Your email: " . $this->getGoogleEmail() . "\r\n";
                     $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-                    $mail->Body .= "Link: https://ur-sg.com/index.php?action=acceptConfirm&mail=" . $this->getGoogleEmail();
+                    $mail->Body .= "Link: https://ur-sg.com//acceptConfirm&mail=" . $this->getGoogleEmail();
                 
                     $mail->send();
                 }
@@ -343,7 +347,7 @@ class GoogleUserController
             unset($_COOKIE['googleId']);
             session_unset();
             session_destroy();
-            header("location:index.php?message=You are now offline");
+            header("location:/?message=You are now offline");
             exit();
         }
 
@@ -360,18 +364,18 @@ class GoogleUserController
                 $confirmEmail = $this->googleUser->updateEmailStatus($email);
                 if($confirmEmail)
                 {
-                    header("location:index.php?action=signup&message=Email confirmed");
+                    header("location:/signup&message=Email confirmed");
                     exit();                   
                 }
                 else 
                 {
-                    header("location:index.php?message=Couldnt confirm email");
+                    header("location:/?message=Couldnt confirm email");
                     exit();                    
                 }
             }
             else
             {
-                header("location:index.php?message=Email does not exists");
+                header("location:/?message=Email does not exists");
                 exit();
             }
 
@@ -407,7 +411,7 @@ class GoogleUserController
             $mail->Body = "URSG.com - Email Confirmation\r\n";
             $mail->Body .= "Your email: " . $email . "\r\n";
             $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-            $mail->Body .= "Link: https://ur-sg.com/index.php?action=acceptConfirm&mail=" . $email;
+            $mail->Body .= "Link: https://ur-sg.com//acceptConfirm&mail=" . $email;
         
             $mail->send();
 

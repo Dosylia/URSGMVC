@@ -11,10 +11,10 @@
                     <div class="user_page_update_name">
                         <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>     
                         <div class="user_page_update_row_buttons">
-                            <a href="index.php?action=updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
-                            <a href="index.php?action=updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
-                            <a href="index.php?action=updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a> 
-                            <a href="index.php?action=updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</button></a> 
+                            <a href="/updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
+                            <a href="/updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
+                            <a href="/updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a> 
+                            <a href="/updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</button></a> 
                             <?php if(isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
                             <?php else : ?>
@@ -58,7 +58,7 @@
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn">
                     <p> From: 
-                        <a target="_blank" href="user.php?action=anotherUser&username=<?= urlencode($request['user_username']) ?>">
+                        <a target="_blank" href="user.phpanotherUser&username=<?= urlencode($request['user_username']) ?>">
                         <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
                             <img id="image_users_small" src="public/upload/<?= $request['user_picture'] ?>" alt="Picture of <?= $request['user_username'] ?>" />  
                         <?php else :?>
@@ -68,8 +68,8 @@
                         , the <?= date('d/m/y', strtotime($request['fr_date'])) ?>
                     </p><br>
                     <div class="friend_request_ctn_btn">
-                        <a href='index.php?action=requestAccepted&fr_id=<?= $request['fr_id'] ?>&friend_id=<?= $request['user_id'] ?>'><button id="accept_friend_button">Accept</button></a>
-                        <a href='index.php?action=requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>
+                        <a href='/requestAccepted&fr_id=<?= $request['fr_id'] ?>&friend_id=<?= $request['user_id'] ?>'><button id="accept_friend_button">Accept</button></a>
+                        <a href='/requestRejected&fr_id=<?= $request['fr_id'] ?>'><button id="refuse_friend_button">Refuse</button></a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -126,7 +126,7 @@
 
     <dialog id="favDialogSocialLinks">
         <br><p id="title_generalbox">Your social links:</p><br>  
-        <form action="index.php?action=updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
+        <form action="/updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
             <?php if (!empty($user['user_discord'])): ?>  
                 <input type="text" id="discord" name="discord" value="<?= $user['user_discord'] ?>"><br><br>
@@ -163,7 +163,7 @@
     </dialog>
 
     <dialog id="favDialogPicture">
-        <form action="index.php?action=updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
+        <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
             <p id="title_generalbox">Add a profile picture or update it</p>
             <p>Accepted format : JPG, JPEG and PNG</p>
             <div class="file-input-container">

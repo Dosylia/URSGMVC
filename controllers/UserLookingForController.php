@@ -59,8 +59,8 @@ class UserLookingForController
             $page_title = "URSG - Sign";
             require "views/layoutSignup.phtml";
         } else {
-            // Code block 4: Redirect to index.php if none of the above conditions are met
-            header("Location: index.php");
+            // Code block 4: Redirect to / if none of the above conditions are met
+            header("Location: /");
             exit();
         }
     }
@@ -88,7 +88,7 @@ class UserLookingForController
         } 
         else
         {
-            header("Location: index.php");
+            header("Location: /");
             exit();
         }
     }
@@ -143,7 +143,7 @@ class UserLookingForController
                 
                     $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
 
-                header("location:index.php?action=swiping");
+                header("location:/swiping");
                 exit();
             }
 
@@ -189,12 +189,12 @@ class UserLookingForController
 
             if ($updateLookingFor)
             {
-                header("location:index.php?action=userProfile&message=Udpated successfully");
+                header("location:/userProfile&message=Udpated successfully");
                 exit();  
             }
             else
             {
-                header("location:index.php?action=userProfile&message=Could not update");
+                header("location:/userProfile&message=Could not update");
                 exit();  
             }
 

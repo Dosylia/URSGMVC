@@ -900,16 +900,8 @@ section.siteMap tr:nth-child(even) {
       flex-direction: column;
       text-align: center;
     }
-  
-    .league_champions_user {
-      border-radius: 1000px;
-      display: flex;
-      flex-direction: column;
-      width: 5vh;
-      height: auto;
-    }
 
-    #league_champions_user
+    #league_champions_user, .league_champions_user
     {
       border-radius: 1000px;
       display: flex;

@@ -1,6 +1,6 @@
 <div class="form_container"> 
     <button id="closeButton" type="button">X</button>
-    <form class="form_signup" method="post" action="index.php?action=updateLookingFor">
+    <form class="form_signup" method="post" action="/updateLookingFor">
 
     <?php if (isset($_GET['error'])) : ?>
         <p class="errorsForm"><?= $_GET['error'] ?></p>

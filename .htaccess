@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove index.php from the URL
+RewriteCond %{REQUEST_URI} !^/index\.php
+
+# Handle requests that are not actual files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirect to index.php with the path as a query string
+RewriteRule ^(.*)$ /index.php?$1 [L,QSA]

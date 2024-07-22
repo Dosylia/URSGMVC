@@ -22,15 +22,15 @@
                             }
                         ?>
                     
-                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
                         <div class="friend" data-sender-id="<?= $friendId ?>">
                             <div class="friend-avatar">
                                 <?php if (!empty($friendPicture)): ?>  
-                                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
+                                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
                                     <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
                                     </a>
                                 <?php else :?>
-                                    <a href="index.php?action=persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
                                     <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
                                     </a>
                                 <?php endif; ?>        
@@ -39,8 +39,8 @@
 
                             <div class="friend-details">
                                 <span class="chat-name">
-                                    <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
-                                    <a href="index.php?action=persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
+                                    <a href="/persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
+                                    <a href="/persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
                                     <div id="unread_messages_for_friend_container_<?= $friendId ?>"></div>
                                     </a>         
                                 </span>
@@ -72,7 +72,7 @@
                                     <?php else : ?>
                                         <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $user['user_username'] ?>">
                                     <?php endif; ?>
-                                    <a class="username_chat_friend" target="_blank" href="index.php?action=userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
+                                    <a class="username_chat_friend" target="_blank" href="/userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
                                     <span class="timestamp left"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
                                 <?php else : ?>
                                     <?php if (!empty($friendChat['user_picture'])) : ?>
@@ -80,7 +80,7 @@
                                     <?php else : ?>
                                         <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendChat['user_username'] ?>">
                                     <?php endif; ?>
-                                    <a class="username_chat_friend" target="_blank" href="index.php?action=anotherUser&username=<?= urlencode($friendChat['user_username']) ?>"><strong class="strong_text"><?= $friendChat['user_username'] ?></strong></a>
+                                    <a class="username_chat_friend" target="_blank" href="/anotherUser&username=<?= urlencode($friendChat['user_username']) ?>"><strong class="strong_text"><?= $friendChat['user_username'] ?></strong></a>
                                     <span class="timestamp right"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
                                 <?php endif; ?>
                             </p>

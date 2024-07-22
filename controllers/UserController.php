@@ -64,17 +64,17 @@ class UserController
             $this->setShortBio($short_bio);
 
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
-                header("location:index.php?action=signup&message=Inputs cannot be empty");
+                header("location:/signup&message=Inputs cannot be empty");
                 exit();
             }
 
             if ($this->user->getUserByUsername($this->getUsername())) {
-                header("location:index.php?action=signup&message=Username already exists");
+                header("location:/signup&message=Username already exists");
                 exit();
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
-                header("location:index.php?action=signup&message=Username is not valid");
+                header("location:/signup&message=Username is not valid");
                 exit();
             }
 
@@ -101,16 +101,16 @@ class UserController
     
                 if($user['user_game'] === "League of Legends" || $user['user_game'] === "LoL and Valorant") 
                 { 
-                    header("location:index.php?action=leagueuser&user_id=".$user['user_id']);
+                    header("location:/leagueuser&user_id=".$user['user_id']);
                     exit();
                 }
                 else if($user['user_game'] === "valorant")
                 {
-                    header("location:index.php?action=valorantUser&user_id=".$user['user_id']);
+                    header("location:/valorantUser&user_id=".$user['user_id']);
                     exit();
                 }
                 else {
-                    header("location:index.php?action=home");
+                    header("location:/home");
                 }
             }
         }
@@ -136,12 +136,12 @@ class UserController
 
             if ($updateSocial)
             {
-                header("location:index.php?action=userProfile&message=Udpated successfully");
+                header("location:/userProfile&message=Udpated successfully");
                 exit();  
             }
             else
             {
-                header("location:index.php?action=userProfile&message=Could not update");
+                header("location:/userProfile&message=Could not update");
                 exit();
             }
         }
@@ -167,12 +167,12 @@ class UserController
             $this->setShortBio($short_bio);
 
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
-                header("location:index.php?action=signup&message=Inputs cannot be empty");
+                header("location:/signup&message=Inputs cannot be empty");
                 exit();
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
-                header("location:index.php?action=signup&message=Username is not valid");
+                header("location:/signup&message=Username is not valid");
                 exit();
             }
 
@@ -181,12 +181,12 @@ class UserController
 
             if ($updateUser)
             {
-                header("location:index.php?action=userProfile&message=Udpated successfully");
+                header("location:/userProfile&message=Udpated successfully");
                 exit();  
             }
             else
             {
-                header("location:index.php?action=userProfile&message=Could not update");
+                header("location:/userProfile&message=Could not update");
                 exit();
             }
         }
@@ -210,7 +210,7 @@ class UserController
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
                     // Check for animated images (for GIFs)
                     if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
-                        header("location:index.php?action=userProfile&message=Animated GIFs are not allowed");
+                        header("location:/userProfile&message=Animated GIFs are not allowed");
                         exit;
                     }
 
@@ -221,26 +221,26 @@ class UserController
                         $uploadPicture = $this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename());
 
                         if ($uploadPicture) {
-                            header("location:index.php?action=userProfile&message=Updated successfully");
+                            header("location:/userProfile&message=Updated successfully");
                             exit;
                         } else {
-                            header("location:index.php?action=userProfile&message=Couldn't update");
+                            header("location:/userProfile&message=Couldn't update");
                             exit;
                         }
                     } else {
-                        header("location:index.php?action=userProfile&message=Error resizing image");
+                        header("location:/userProfile&message=Error resizing image");
                         exit;
                     }
                 } else {
-                    header("location:index.php?action=userProfile&message=Error uploading");
+                    header("location:/userProfile&message=Error uploading");
                     exit;
                 }
             } else {
-                header("location:index.php?action=userProfile&message=Wrong type of picture"); // Not accepted format
+                header("location:/userProfile&message=Wrong type of picture"); // Not accepted format
                 exit;
             }
         } else {
-            header("location:index.php?action=userProfile&message=Nothing to upload"); // If no picture or no form
+            header("location:/userProfile&message=Nothing to upload"); // If no picture or no form
             exit;
         }
     }
@@ -287,7 +287,6 @@ class UserController
 
     public function pageswiping()
     {
-
         if (isset($_SESSION['mode'])) {
             $mode = $_SESSION['mode'];
           } else {
@@ -318,7 +317,7 @@ class UserController
         } 
         else
         {
-            header("Location: index.php");
+            header("Location: /");
             exit();
         }
     }
@@ -399,13 +398,13 @@ class UserController
                 if($_GET['username'] !== $_SESSION['username']) 
                 {
                     $username = $_GET['username'];
-                    header("Location: index.php?action=anotherUser&username=" . $username);
+                    header("Location: /anotherUser&username=" . $username);
                     exit();                    
                 }
             }
             else 
             {
-                header("Location: index.php");
+                header("Location: /");
                 exit();
             }
         }
@@ -421,7 +420,7 @@ class UserController
             $username = $_GET['username'];
             if ($_GET['username'] === $_SESSION['username'])
             {
-                header("Location: index.php?action=userProfile");
+                header("Location: /userProfile");
                 exit();
             }
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -464,7 +463,7 @@ class UserController
         } 
         else
         {
-            header("Location: index.php");
+            header("Location: /");
             exit();
         }
     }

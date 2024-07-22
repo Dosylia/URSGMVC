@@ -68,8 +68,31 @@ $actionMap = [
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
 ];
 
-// Get the action from the request
-$action = $_GET['action'] ?? 'home';
+    $action = "home";
+
+
+    if (isset($_GET['action'])) {
+        $action = $_GET['action'];
+    } else {
+        $delimiter = "&";
+        $URL = $_SERVER['REQUEST_URI'];
+        $parsedURL = parse_url($URL);
+        $path = $parsedURL['path'] ?? '';
+        $query = $parsedURL['query'] ?? '';
+        
+        if ($path == '/' || $path == '') {
+        } else {
+            if (strpos($path, $delimiter) === false) {
+                $result = str_replace(['/', '?'], '', $path);
+                $action = htmlspecialchars($result);
+            } else {
+                $pos = strpos($path, $delimiter);
+                $action = substr($path, 0, $pos);
+                $action = str_replace(['/', '?'], '', $action);
+                $action = htmlspecialchars($action);
+            }
+        }
+    }
 
 if (isset($actionMap[$action])) {
     [$controllerClass, $method] = $actionMap[$action];

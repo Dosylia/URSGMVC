@@ -3,7 +3,7 @@
     <h2>Waiting for you to confirm mail</h2><br>
         <p>Check your spam!</p><br>
         <p>If you lost this email, click on the button below</p><br>
-    <form method="POST" action="index.php?action=newMail">
+    <form method="POST" action="/newMail">
         <input type="hidden" name="email_confirm" id="email_confirm" value="<?php echo $googleUser['google_email']; ?>">
         <input style="padding: 10px;" name="submit" id="send-button" type="submit" value="Send new email">
     </form>

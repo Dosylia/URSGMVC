@@ -54,7 +54,7 @@ class ChatMessageController
             $page_title = "URSG - Chat";
             require "views/layoutSwiping.phtml";
         } else {
-            header("Location: index.php");
+            header("Location: /");
             exit();
         }
     }

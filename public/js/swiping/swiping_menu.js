@@ -23,7 +23,7 @@ menuProfile.id = 'menu_profile';
 
 // Option 1: Profile
 const optionProfile = document.createElement('a');
-optionProfile.href = 'index.php?action=userProfile&username='+username;
+optionProfile.href = '/userProfile&username='+username;
 optionProfile.innerText = 'Profile';
 optionProfile.classList.add('menu-option');
 menuProfile.appendChild(optionProfile);
@@ -35,7 +35,7 @@ menuProfile.appendChild(separator);
 
 // Option 2: Blocklist
 const optionBlocklist = document.createElement('a');
-optionBlocklist.href = 'index.php?action=friendlistPage';
+optionBlocklist.href = '/friendlistPage';
 optionBlocklist.innerText = 'Friendlist';
 optionBlocklist.classList.add('menu-option');
 menuProfile.appendChild(optionBlocklist);
@@ -47,7 +47,7 @@ menuProfile.appendChild(separator2);
 
 // Option 3: Logout
 const optionLogout = document.createElement('a');
-optionLogout.href = 'index.php?action=logout';
+optionLogout.href = '/logout';
 optionLogout.innerText = 'Logout';
 optionLogout.classList.add('menu-option');
 menuProfile.appendChild(optionLogout);

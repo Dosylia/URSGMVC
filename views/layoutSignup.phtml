@@ -6,7 +6,7 @@
         <!-- Top of website start -->
         <div class="top_main_section"> 
             <div class="top_left_main_section">
-                <a href="index.php">
+                <a href="/">
                     <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
                 </a>
             </div> 
@@ -20,31 +20,31 @@
                     <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
                       
                     <?php if($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) :?>  <!-- Connected to all -->
-                            <a href="index.php?action=logout"><!-- Log out button -->
+                            <a href="/logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
-                            <a href="index.php?action=userProfile&username=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
+                            <a href="/userProfile&username=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>
                         <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for  -->
-                            <a href="index.php?action=logout"><!-- Log out button -->
+                            <a href="/logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
-                            <a href="index.php?action=signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
+                            <a href="/signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
                         <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for, league  -->
-                            <a href="index.php?action=logout"><!-- Log out button -->
+                            <a href="/logout"><!-- Log out button -->
                                 <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
-                            <a href="index.php?action=signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
+                            <a href="/signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
                         <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
-                            <a href="index.php?action=logout"> <!-- Log out button -->
+                            <a href="/logout"> <!-- Log out button -->
                                 <button id="fix_mobile_signup" class="signup_button" title="Log in" >Log out</button>
                             </a>
-                            <a href="index.php?signup"> <!-- User page / Diff name-->
+                            <a href="/?signup"> <!-- User page / Diff name-->
                                 <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
                             </a>
                         <?php else : ?>
@@ -58,11 +58,11 @@
                     <br><br><br><br>
 
                     <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) : ?>
-                        <a href="index.php?action=swiping">
+                        <a href="/swiping">
                             <button id="mid_main_section_button2">Swipe now</button> 
                         </a>
                     <?php elseif ($this->isConnectGoogle()) : ?>
-                        <a href="index.php?action=signup">
+                        <a href="/signup">
                             <button id="mid_main_section_button2">Join now</button> 
                         </a>
                     <?php else : ?>
@@ -114,8 +114,8 @@
         </div>
 
         <div class="mid_footer">
-        <a href="index.php?action=legalNotice">Legal notice</a>
-        <a href="index.php?action=siteMap"> Site map</a>
+        <a href="/legalNotice">Legal notice</a>
+        <a href="/siteMap"> Site map</a>
         </div>
 
         <div class="social_footer">

@@ -22,7 +22,7 @@
                     ?>
                     <div class="friend" data-sender-id="<?= $friendId ?>">
                         <div class="friend-avatar">
-                            <a href="index.php?action=anotherUser&username=<?= $friendUsername ?>">
+                            <a href="/anotherUser&username=<?= $friendUsername ?>">
                                 <?php if ($friendPicture !== NULL) : ?>
                                     <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername ?>"></a>
                                 <?php else : ?>
@@ -31,7 +31,7 @@
                         </div>
                         <div class="friend-details">
                             <span class="friendlist-name">
-                                <a href="index.php?action=anotherUser&username=<?= $friendUsername ?>">
+                                <a href="/anotherUser&username=<?= $friendUsername ?>">
                                     <p class="person_button"><?= $friendUsername ?></a>
                                     <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
                                 </p>
@@ -42,7 +42,7 @@
                             <div class="popup-content">
                                 <button id="closeButton" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">X</button>
                                 <h2 id="title_generalbox">Are you sure you want to block <span><?= $friendUsername ?></span>?</h2>
-                                <form action="index.php?action=blockPerson" method="post">
+                                <form action="/blockPerson" method="post">
                                     <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
                                     <input type="hidden" name="receiverId" value="<?= $friendId ?>">
                                     <div class="button_container">
@@ -68,7 +68,7 @@
             <?php else : ?>
                 <?php foreach($getBlocklist as $blocked) :?>
                     <div class="friend-avatar">
-                        <a href="index.php?action=anotherUser&username=<?= $blocked['user_username'] ?>">
+                        <a href="/anotherUser&username=<?= $blocked['user_username'] ?>">
                         <?php if($blocked['user_picture'] !== NULL) :?>
                             <img src="public/upload/<?= $blocked['user_picture'] ?>" alt="Avatar <?= $blocked['user_username'] ?>"></a>
                         <?php else :?>
@@ -78,7 +78,7 @@
                     
                     <div class="friend-details">
                         <span class="chat-name">
-                            <a href="index.php?action=anotherUser&username=<?= $blocked['user_username'] ?>"> 
+                            <a href="/anotherUser&username=<?= $blocked['user_username'] ?>"> 
                                 <p class="person_button"><?=  $blocked['user_username'] ?></a>   
                                 <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')">Unblock</button>
                             </p>                    
@@ -89,7 +89,7 @@
                         <div class="popup-content">
                             <button id="closeButton" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">X</button>
                             <h2 id="title_generalbox">Are you sure you want to unblock <span><?= $blocked['user_username'] ?></span>?</h2>
-                            <form action="index.php?action=unblockPerson" method="post">
+                            <form action="/unblockPerson" method="post">
                                 <input type="hidden" name="blockId" value="<?= $blocked['block_id'] ?>">
                                 <div class="button_container">
                                     <button class="confirmation-button" name="submit" type="submit">Yes</button><br>

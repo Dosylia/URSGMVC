@@ -40,7 +40,7 @@ class FriendRequestController
             $page_title = "URSG - Friendlist";
             require "views/layoutSwiping.phtml";
         } else {
-            header("Location: index.php");
+            header("Location: /");
             exit();
         }
     }
@@ -95,10 +95,10 @@ class FriendRequestController
         $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
 
         if ($updateStatus) {
-            header("Location: index.php?action=persoChat&friend_id=" . $this->getFriendId() . "&mark_as_read=true");
+            header("Location: /persoChat&friend_id=" . $this->getFriendId() . "&mark_as_read=true");
             exit();
         } else {
-            header("location:index.php?action=userProfile&message=Could not accept it");
+            header("location:/userProfile&message=Could not accept it");
             exit();
         }
     }
@@ -111,10 +111,10 @@ class FriendRequestController
         $updateStatus = $this->friendrequest->rejectFriendRequest($this->getFrId());
 
         if ($updateStatus) {
-            header("location:index.php?action=userProfile&message=Friend request rejected");
+            header("location:/userProfile&message=Friend request rejected");
             exit();
         } else {
-            header("location:index.php?action=userProfile&message=Could not accept it");
+            header("location:/userProfile&message=Could not accept it");
             exit();
         }
     }
