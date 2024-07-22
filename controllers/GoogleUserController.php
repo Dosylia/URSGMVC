@@ -153,10 +153,19 @@ class GoogleUserController
 
     public function legalNoticePage() 
     {
-            $template = "views/legalnotice";
-            $title = "Legal Notice";
-            $page_title = "URSG - Legal notice";
-            require "views/layoutSwiping_noheader.phtml";
+        $template = "views/legalnotice";
+        $title = "Legal Notice";
+        $page_title = "URSG - Legal notice";
+        require "views/layoutSwiping_noheader.phtml";
+    }
+
+    public function siteMapPage() 
+    {
+        $xml = simplexml_load_file('sitemap.xml');
+        $template = "views/sitemap";
+        $title = "Site map";
+        $page_title = "URSG - Site map";
+        require "views/layoutSwiping_noheader.phtml";
     }
 
     public function getGoogleData() 

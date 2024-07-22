@@ -1,0 +1,21 @@
+<section class="siteMap">
+        <h1>Site Map</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>Last Modified</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($xml->url as $url): ?>
+                    <tr>
+                        <td><a href="<?= $url->loc ?>" target="_blank"><?= $url->loc ?></a></td>
+                        <td><?= $url->lastmod ?></td>
+                        <td><?= $url->priority ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>

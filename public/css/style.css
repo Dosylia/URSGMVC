@@ -2,7 +2,7 @@
     --dark-grey: rgb(21, 20, 22);
     --dark-ligher-grey: rgb(48, 46, 49);
     --ligher--grey: rgb(79, 75, 82);
-    --main--red: rgb(231, 64, 87);
+    --main--red: #e74057;
     --dark--red: rgb(152, 12, 31);
     --white: rgb(255, 255, 255);
   }
@@ -130,7 +130,47 @@
   color: white;
 }
 
+/* SITE MAP PAGE */
 
+section.siteMap {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+section.siteMap h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+section.siteMap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+section.siteMap th, section.siteMap td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+section.siteMap th {
+  background-color: #f8f8f8;
+}
+section.siteMap tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.dark-mode section.siteMap p, .dark-mode section.siteMap h1, .dark-mode section.siteMap table {
+  color: white;
+}
+
+.dark-mode section.siteMap, .dark-mode section.siteMap th {
+  background-color: var(--dark-grey);
+}
+
+.dark-mode section.siteMap tr:nth-child(even) {
+  background-color: var(--ligher--grey);
+}
   
   .download_app {
       display: flex;
@@ -2282,7 +2322,7 @@ cursor: pointer;
   }
 
   .dark-mode .toggle-container {
-    background-color: var(--dark-grey);
+    background-color: var(--ligher--grey);
   }
 
   .dark-mode #buttonSwitchChat {

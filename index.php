@@ -23,6 +23,7 @@ spl_autoload_register('loadClass');
 $actionMap = [
     'home' => [GoogleUserController::class, 'homePage'],
     'legalNotice' => [GoogleUserController::class, 'legalNoticePage'],
+    'siteMap' => [GoogleUserController::class, 'siteMapPage'],
     'logout' => [GoogleUserController::class, 'logOut'],
     'usepage' => [GoogleUserController::class, 'usePage'],
     'acceptConfirm' => [GoogleUserController::class, 'emailConfirmDb'],
