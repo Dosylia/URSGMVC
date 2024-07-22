@@ -1792,7 +1792,16 @@ nav img {
     transition: transform 1s;
 }
 
-nav .scale:hover {
+nav .scale {
+  cursor: pointer;
+  border-radius: 1000px;
+}
+
+nav .scaleNoRound {
+  cursor: pointer;
+}
+
+nav .scale:hover, nav .scaleNoRound:hover {
     transform: scale(1.1);
 }
 
@@ -2090,17 +2099,23 @@ cursor: pointer;
     align-items: center;
     background: linear-gradient(225deg, #e0dbdb, #b8b1b1);
     min-height: 10vh;
+    max-height: 20vh;
 }
 
 .nav_swiping img {
     width: 60px;
     height: 60px;
-    border-radius: 1000px;
 }
 
 .rotate {
     transform: rotate(180deg);
   }
+
+#pending_friend_requests_container, #unread_messages_container {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+}
 
 
 #open_menu_profile {
@@ -2362,6 +2377,11 @@ cursor: pointer;
 
 .dark-mode #toggleEmotePicker i {
   color: white;
+}
+
+.dark-mode   .block_user {
+  background-color: var(--ligher--grey);
+
 }
 
 @media only screen and (max-width: 1420px) {

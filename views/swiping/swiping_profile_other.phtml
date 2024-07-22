@@ -50,9 +50,9 @@
                             <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
                             <div class="box_league_account_main_row_column">
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                <p><?= strtoupper($lolUser['lol_server']) ?></p>
-                                <p> <?= strtoupper($lolUser['lol_sRank']) ?></p>
-                                <p>Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
+                                <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                <p class="small_text"> <?= strtoupper($lolUser['lol_sRank']) ?></p>
+                                <p class="small_text">Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
                             </div>
                         </div>
                     </div><br>
