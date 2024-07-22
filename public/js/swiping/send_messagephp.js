@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     btnDesign.addEventListener("click", handleSendMessage);
-    btnSubmit.addEventListener("click", handleSendMessage);
     btnDesign.addEventListener("touchstart", handleSendMessage);
 
 
