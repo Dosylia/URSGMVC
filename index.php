@@ -66,6 +66,7 @@ $actionMap = [
     'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
+    'notFound' => [GoogleUserController::class, 'notFoundPage'],
 ];
 
     $action = "home";
@@ -99,6 +100,7 @@ if (isset($actionMap[$action])) {
     $controller = new $controllerClass();
     $controller->$method();
 } else {
-    http_response_code(404);
-    echo "Page not found";
+    [$controllerClass, $method] = $actionMap['notFound'];
+    $controller = new $controllerClass();
+    $controller->$method();
 }

@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let touchstartX = 0;
     let touchendX = 0;
-    const threshold = 50; 
+    const threshold = 100; 
     const screenWidth = window.innerWidth;
     
     function handleSwipeGesture() {

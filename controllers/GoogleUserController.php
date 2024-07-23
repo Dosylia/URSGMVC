@@ -172,6 +172,14 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
+    public function notFoundPage() 
+    {
+        $template = "views/pageNotFound";
+        $title = "404 - Page not found";
+        $page_title = "URSG - 404 - Page not found";
+        require "views/layoutSwiping_noheader.phtml";
+    }
+
     public function getGoogleData() 
     {
 

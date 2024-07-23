@@ -565,12 +565,54 @@ section.siteMap tr:nth-child(even) {
       align-items: center;
       flex-direction: column;
     }
+
+    .notFound {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .notFound h2 {
+      color: var(--main--red);
+      font-size: 10vh;
+      font-family: 'Libre Franklin', sans-serif;
+      padding: 30px;
+      text-align: center; 
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .dark-mode .notFound h2, .dark-mode .notFound a {
+      color: var(--main--red);
+    }
+
+    .notFound p {
+      font-size: 4vh;
+      font-family: 'Geologica', sans-serif;  
+      text-align: center;
+    }
+
+    .notFound a {
+      text-decoration: none;
+      color: var(--main--red);
+    } 
   
+    .notFound p a:hover {
+      color: var(--ligher--grey);
+    } 
+
     .google_needed h2, .noUserToSee h2 {
-      font-family: 'Geologica', sans-serif;   
+      font-family: 'Libre Franklin', sans-serif;
       font-size: 4vh;
       padding: 30px;
       text-align: center;
+    }
+
+    .google_needed p, .noUserToSee p {
+      font-size: 2vh;
+      font-family: 'Geologica', sans-serif;  
     }
 
     .no_friend {
