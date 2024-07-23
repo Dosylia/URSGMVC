@@ -41,24 +41,24 @@ class BlockController
 
                 if ($updateFriend)
                 {
-                    header("location:/friendlistPage&message=User blocked");
+                    header("location:/friendlistPage?message=User blocked");
                     exit();  
                 }
                 else
                 {
-                    header("location:/friendlistPage&message=Could not block user");
+                    header("location:/friendlistPage?message=Could not block user");
                     exit();
                 }
             }
             else
             {
-                header("location:/friendlistPage&message=Could not block user");
+                header("location:/friendlistPage?message=Could not block user");
                 exit();
             }
         }
         else
         {
-            header("location:/friendlistPage&message=No form");
+            header("location:/friendlistPage?message=No form");
             exit();    
         }
     }
@@ -74,18 +74,18 @@ class BlockController
 
             if ($unblockPerson)
             {
-                header("location:/friendlistPage&message=User unblocked");
+                header("location:/friendlistPage?message=User unblocked");
                 exit();  
             }
             else
             {
-                header("location:/friendlistPage&message=Could not unblock user");
+                header("location:/friendlistPage?message=Could not unblock user");
                 exit();
             }
         }
         else
         {
-            header("location:/friendlistPage&message=No form");
+            header("location:/friendlistPage?message=No form");
             exit();    
         }
     }

@@ -76,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     btnDesign.addEventListener("click", handleSendMessage);
     btnDesign.addEventListener("touchstart", handleSendMessage);
+    btnSubmit.addEventListener("touchstart", handleSendMessage);
+    btnSubmit.addEventListener("click", handleSendMessage);
 
 
     // Emote picker functionality

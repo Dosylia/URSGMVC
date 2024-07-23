@@ -58,11 +58,11 @@
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn">
                     <p> From: 
-                        <a target="_blank" href="user.phpanotherUser&username=<?= urlencode($request['user_username']) ?>">
-                        <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                        <a target="_blank" href="/anotherUser&username=<?= urlencode($request['user_username']) ?>">
+                        <?php if (isset($request['user_picture']) && $request['user_picture'] !== null): ?>
                             <img id="image_users_small" src="public/upload/<?= $request['user_picture'] ?>" alt="Picture of <?= $request['user_username'] ?>" />  
                         <?php else :?>
-                            <img id="image_users_smal" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                            <img id="image_users_small" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                         <?php endif; ?>
                             <?= strtoupper($request['user_username']) ?></a>
                         , the <?= date('d/m/y', strtotime($request['fr_date'])) ?>

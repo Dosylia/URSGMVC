@@ -189,12 +189,12 @@ class UserLookingForController
 
             if ($updateLookingFor)
             {
-                header("location:/userProfile&message=Udpated successfully");
+                header("location:/userProfile?message=Udpated successfully");
                 exit();  
             }
             else
             {
-                header("location:/userProfile&message=Could not update");
+                header("location:/userProfile?message=Could not update");
                 exit();  
             }
 

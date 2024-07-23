@@ -82,7 +82,7 @@ function fillUnread(unreadCounts) {
 
     if (count > 0) {
         const anchor = document.createElement('a');
-        anchor.href = 'index.php?action=persoChat';
+        anchor.href = '/persoChat';
 
         const span = document.createElement('span');
         span.className = 'pending-count-header';
@@ -150,7 +150,7 @@ function fillPendingFriendRequest(pendingCount) {
 
     if (pendingCount.pendingFriendRequest > 0) {
         const anchor = document.createElement('a');
-        anchor.href = 'index.php?action=userProfile';
+        anchor.href = '/userProfile';
 
         const span = document.createElement('span');
         span.className = 'pending-count';

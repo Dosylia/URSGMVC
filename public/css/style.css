@@ -958,6 +958,13 @@ section.siteMap tr:nth-child(even) {
       display: flex;
       align-items: center;
       gap: 10px;
+      color: black;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .friend_request_ctn p a:hover {
+      color: var(--dark--red);
     }
   
     .friend_request_ctn_btn {
@@ -2151,8 +2158,9 @@ cursor: pointer;
 
 
 #open_menu_profile {
-    width: 15px;
-    height: 15px;
+  position: relative;
+  width: 15px;
+  height: 15px;
 }
 
 #menu_profile {
@@ -2284,7 +2292,7 @@ cursor: pointer;
     background:    rgba(255, 255, 255,0.7);
 }
 
-.chat_nav {
+.chat_nav, .chat_profile {
     position: relative;
 }
 
@@ -2408,6 +2416,10 @@ cursor: pointer;
 }
 
 .dark-mode #toggleEmotePicker i {
+  color: white;
+}
+
+.dark-mode .friend_request_ctn p a {
   color: white;
 }
 
