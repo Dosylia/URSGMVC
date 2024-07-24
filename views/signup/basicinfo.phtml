@@ -2,7 +2,7 @@
     <form class="form_signup" method="post" action="/basicinfo">
         <?php if (isset($_GET['error'])) : ?>
         <p class="errorsForm"><?= $_GET['error'] ?></p>
-        <? endif ?>
+        <?php endif; ?>
 
         <label for="uid">Username</label>
         <input type="text" id="username" name="username" placeholder="Your username" required> 

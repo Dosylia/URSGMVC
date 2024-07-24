@@ -14,7 +14,7 @@
     <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
 <?php else : ?>
     <body>
-<? endif; ?>
+<?php endif; ?>
     <main>
         <?php if(isset($_GET['message'])) :?>
             <span class="form-error"><?= $_GET['message'] ?></span>
@@ -37,9 +37,9 @@
 
         <div class="social_footer">
             <a href="https://discord.gg/Bfpkws74V3" target="_blank">
-                <img src="public/images/discord2.png" alt="logo discord"></a>
+                <img src="public/images/discord2.png" alt="logo discord" loading="lazy"></a>
             <a href="https://twitter.com/Dosylia" target="_blank">
-                <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
+                <img src="public/images/twitter2.png" alt="logo twitter/x" loading="lazy"></a>
         </div>
 
         <div class="bot_footer">

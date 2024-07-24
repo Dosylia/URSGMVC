@@ -82,7 +82,7 @@ function handleCredentialResponse(response)
   window.onload = function () 
   {
     google.accounts.id.initialize({
-      client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com", // Key for test version
+      client_id: "666369513537-04q4qedj0rsg2qrifgsrsv43bkvtieuv.apps.googleusercontent.com", // Key for test version
       callback: handleCredentialResponse
     });
     google.accounts.id.renderButton(

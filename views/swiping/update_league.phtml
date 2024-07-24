@@ -4,7 +4,7 @@
 
         <?php if (isset($_GET['error'])) : ?>
         <p class="errorsForm"><?= $_GET['error'] ?></p>
-        <? endif ?>
+        <?php endif; ?>
 
         <h2>Pick your 3 mains</h2>
             <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lolUser['lol_main1']) ?>.png">)</label>

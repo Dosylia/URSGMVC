@@ -85,7 +85,5 @@ document.addEventListener('DOMContentLoaded', function() {
         copyIcon.classList.remove('visible');
       }, 1000); 
     });
-  } else {
-    console.error('Element with id "lolUserText" not found.');
   }
 });

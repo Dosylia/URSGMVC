@@ -330,7 +330,7 @@ class GoogleUserController
                     $mail->Body = "URSG.com - Email Confirmation\r\n";
                     $mail->Body .= "Your email: " . $this->getGoogleEmail() . "\r\n";
                     $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-                    $mail->Body .= "Link: https://ur-sg.com//acceptConfirm&mail=" . $this->getGoogleEmail();
+                    $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $this->getGoogleEmail();
                 
                     $mail->send();
                 }
@@ -372,7 +372,7 @@ class GoogleUserController
                 $confirmEmail = $this->googleUser->updateEmailStatus($email);
                 if($confirmEmail)
                 {
-                    header("location:/signup&message=Email confirmed");
+                    header("location:/signup?message=Email confirmed");
                     exit();                   
                 }
                 else 
@@ -419,7 +419,7 @@ class GoogleUserController
             $mail->Body = "URSG.com - Email Confirmation\r\n";
             $mail->Body .= "Your email: " . $email . "\r\n";
             $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-            $mail->Body .= "Link: https://ur-sg.com//acceptConfirm&mail=" . $email;
+            $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $email;
         
             $mail->send();
 
