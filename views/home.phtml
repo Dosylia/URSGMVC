@@ -4,9 +4,6 @@
     <a href=""><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
 </section> -->
 
-<!-- Cookies -->
-<script src="https://cdn.easycookie.io/ec-MzVr09Otq7yXYjPJRKqEBBoLGdh62wLIGrXr9C0k.js"></script>
-
 <section class="discord">
     <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="Click to join our discord server">
         <div class="discord_row">
@@ -50,3 +47,22 @@
         </div>
     </a>
 </section>
+
+<!-- Cookies -->
+<dialog id="dialogCookie">
+    <h2><i class="fa-solid fa-cookie"></i> Cookie Management</h2>
+    <div class="dialogCookieRowButtons">
+        <button id="btn_optionsCookie">Cookies</button>
+        <button id="btn_aboutCookie">About cookies</button>
+    </div>
+    <div class="dialogCookieRow" id="optionsCookies">
+        <h3>Strictly necessary</h3>
+        <p class="cookieState">Always active</p>
+    </div>
+    <div class="dialogCookieRow" id="aboutCookies">
+        <p>Cookies are small text files stored on your device by your web browser. They help websites remember information about your visit, such as login details or preferences, to improve your browsing experience.</p>
+    </div>
+    <button id="saveCookies">Save</button>
+</dialog>
+
+<script src="public/js/home.js"></script>

@@ -39,6 +39,14 @@
     background-color: var(--white);
   }
 
+  h1, h2, h3, h4, h5 {
+    font-family: 'Libre Franklin', sans-serif;
+  }
+
+  p, a {
+    font-family: 'Geologica', sans-serif;  
+  }
+
   main {
     min-height: 65vh;
     background-color: var(--white);
@@ -442,7 +450,7 @@ section.siteMap tr:nth-child(even) {
   #send-button {
       background-color: rgb(43, 121, 199);
       color: white;
-      font-size: 3vh;
+      font-size: 2.5rem;
       font-family: 'Geologica', sans-serif;
       width: 100%; 
       border: 0.5px solid black;
@@ -2063,6 +2071,90 @@ cursor: pointer;
     text-shadow: 0.5px 0.5px 1px rgb(0, 0, 0);
 }
 
+#dialogCookie {
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  position: fixed;
+  top: unset;
+  bottom: 0;
+  left: 0;
+  transform: unset;
+  width: 100%;
+  padding: 30px;
+  border-radius: 10px 10px 0 0;
+  border: none;
+  text-align: center;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dialogCookieRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.dialogCookieRowButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+}
+
+#aboutCookies {
+  display: none;
+}
+
+#btn_optionsCookie, #btn_aboutCookie {
+  border: 1px solid var(--main--red);
+  color: var(--main--red);
+  background-color: white;
+  border-radius: 20px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+#btn_optionsCookie:hover, #btn_aboutCookie:hover {
+  border: 1px solid var(--ligher--grey);
+  color: var(--ligher--grey);
+}
+
+#dialogCookie h2 {
+  color: var(--main--red);
+  font-size: 3rem;
+}
+
+#dialogCookie h3{
+  color: var(--main--red);
+}
+
+#dialogCookie p {
+  color: #707070;
+}
+
+#saveCookies {
+  background-color: var(--main--red);
+  border-radius: 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 10px 15px;
+}
+
+#optionsCookies .cookieState {
+  font-weight: 600;
+}
+
+#saveCookies:hover {
+  background-color: var(--ligher--grey);
+}
+
 .file-input-container {
   position: relative;
   display: inline-block;
@@ -2098,6 +2190,7 @@ cursor: pointer;
 
 #favDialogPicture form #send-button, #favDialogSocialLinks form #send-button {
   width: 50%;
+  min-width: fit-content;
   background-color: #007bff;
   cursor: pointer;
   border: none;
