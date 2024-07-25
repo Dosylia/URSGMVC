@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
         lolAccount.innerText = data.lol_account;
         gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
         kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
-        shortBio.innerHTML += ` ${sanitizeHtlm(data.user_shortBio)}`;
+        shortBio.innerHTML += ` ${sanitizeHtlm(decodeHtmlEntities(data.user_shortBio))}`;
         receiverId.value = data.user_id;
         lolMain1P.innerText = data.lol_main1;
         lolMain2P.innerText = data.lol_main2;
@@ -106,6 +106,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const element = document.createElement('div');
         element.innerText = input;
         return element.innerHTML;
+    }
+
+    function decodeHtmlEntities(encodedString) {
+        const element = document.createElement('div');
+        element.innerHTML = encodedString;
+        return element.innerText;
     }
 
     // Function swipping

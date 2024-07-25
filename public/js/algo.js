@@ -151,7 +151,6 @@ const user_profile = new Profile(
     window.user["usersRoleValorantLf"]
 );
 
-
 //Here we load the txt files
 const baseUrl = window.location.href.replace(/\/[^/]+$/, '/');
 let champion_list = [];
@@ -996,11 +995,9 @@ function match_profiles(profile_list, user_profile) {
                     profile.lookingMainLol3,
 
                 );
-                console.log("champion_match_new", finalScore)
 
                 //Matching for rank
                 finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
-                console.log("matchRankLol", finalScore)
                 break;
             case "Valorant":
                 finalScore += championValorant(
@@ -1063,10 +1060,9 @@ function match_profiles(profile_list, user_profile) {
         }
 
         //Match Server
-        if (profile.server === user_profile.server) {
+        if (profile.server !== user_profile.server) {
             finalScore -= 500
         }
-        console.log("server", finalScore)
         //Match kind of gamer
         if (user_profile.lookingGamerkind === "Competition and Chill") {
             finalScore += 40
@@ -1083,7 +1079,6 @@ function match_profiles(profile_list, user_profile) {
         } else if (user_profile.gamerkind === "Competition and Chill") {
             finalScore += 40
         }
-        console.log("kind of gamer", finalScore)
 
         //Same role gives negative points and if role fits the looking for role it gives points
         if (profile.roleLol === user_profile.roleLol) {
@@ -1095,7 +1090,6 @@ function match_profiles(profile_list, user_profile) {
         if (profile.lookingRoleLol === user_profile.roleLol || user_profile.roleLol === "Fill") {
             finalScore += 70
         }
-        console.log("role", finalScore)
 
         //Sort by the gender they selected
         if (profile.gender === user_profile.lookingGender) {
@@ -1112,11 +1106,9 @@ function match_profiles(profile_list, user_profile) {
         } else {
             finalScore -= 40
         }
-        console.log("gender", finalScore)
 
         //Matching for age
         finalScore += matchAge(profile.age, user_profile.age)
-        console.log("matchAge", finalScore)
         profile.score = finalScore
 
     }
@@ -1159,7 +1151,7 @@ if (champion_list && champion_valo) {
         return user_profile.userid !== obj.userid;
     });
 
-    console.log(matched_profiles)
+    console.log(matched_profiles);
     sendDataToPHP(matched_profiles.map((obj) => {
         const dataToSend = ({
             user_id: user_profile.userid,
