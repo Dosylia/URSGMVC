@@ -909,7 +909,8 @@ section.siteMap tr:nth-child(even) {
     display: flex;
     align-items: center;
     justify-content: center;
-    font: normal bold 1.5vh/1 "Open Sans", sans-serif;
+    font-weight: bold;
+    font-family: "Open Sans", sans-serif; 
     text-align: center;
     border: none;
     text-shadow: 0.2px 0.2px 0.5px black;
@@ -936,7 +937,9 @@ section.siteMap tr:nth-child(even) {
     padding:       7px 15px;
     color:         #ffffff;
     display:       inline-block;
-    font:          normal bold 20px/1 "Open Sans", sans-serif;
+    font-weight: bold;
+    font-family: "Open Sans", sans-serif;
+    font-size: 20px; 
     text-align:    center; 
     border: none;
     transition: all 2s;
@@ -1437,10 +1440,12 @@ section.siteMap tr:nth-child(even) {
     #accept_friend_button {
       background:    #93c47d;
       border-radius: 11px;
+      font-size: 20px;
       padding:       7px 10px;
       color:         #ffffff;
       display:       inline-block;
-      font:          normal bold 20px/1 "Open Sans", sans-serif;
+      font-weight: bold;
+      font-family: "Open Sans", sans-serif; 
       text-align:    center; 
       border: none;
       cursor: pointer;
@@ -1449,10 +1454,12 @@ section.siteMap tr:nth-child(even) {
     #refuse_friend_button {
       background:    #e06666;
       border-radius: 11px;
+      font-size: 20px;
       padding:       7px 10px;
       color:         #ffffff;
       display:       inline-block;
-      font:          normal bold 20px/1 "Open Sans", sans-serif;
+      font-weight: bold;
+      font-family: "Open Sans", sans-serif; 
       text-align:    center;  
       border: none;
       cursor: pointer;
@@ -1977,7 +1984,8 @@ width: fit-content;
 height: 50px;
 color:         #666666;
 display:       inline-block;
-font:          normal bold 15px/1 "Open Sans", sans-serif;
+font-weight: bold;
+font-family: "Open Sans", sans-serif; 
 text-align:    center;
 font-size: 2vh;
 padding:       10px 25px;
@@ -2439,18 +2447,18 @@ cursor: pointer;
 }
 
 #signup_button {
-    display: inline-block;
-    font-size: 2vh;
-    background:    #ffffff;
-    border-radius: 1000px;
-    border: none;
-    color:         #666666;
-    display:       inline-block;
-    font:          normal bold "Open Sans", sans-serif;
-    text-align:    center;
-    width: fit-content;
-    height: 50px;
-    cursor: pointer;
+  display: inline-block;
+  font-size: 2vh; 
+  background: #ffffff;
+  border-radius: 1000px;
+  border: none;
+  color: #666666;
+  font-weight: bold;
+  font-family: "Open Sans", sans-serif; 
+  text-align: center;
+  width: fit-content;
+  height: 50px;
+  cursor: pointer;
 }
 
 #signup_button:hover {

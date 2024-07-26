@@ -313,12 +313,12 @@ class GoogleUserController
                     $mail->isSMTP();
                     $mail->Host = 'smtp.ionos.de';
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'dosylia@ur-sg.com';
+                    $mail->Username = 'contact@ur-sg.com';
                     $mail->Password = $password_gmail;
                     $mail->SMTPSecure = 'tls';
                     $mail->Port = 587;
                 
-                    $mail->setFrom('dosylia@ur-sg.com', 'URSG.com');
+                    $mail->setFrom('contact@ur-sg.com', 'URSG.com');
                     $mail->addAddress($this->getGoogleEmail());
                     $mail->Subject = 'Confirm your email for URSG.com';
                     $mail->isHTML(true);
@@ -357,6 +357,9 @@ class GoogleUserController
             session_destroy();
             header("location:/?message=You are now offline");
             exit();
+        } else {
+            header("location:/?message=You are now offline");
+            exit();
         }
 
     }
@@ -365,6 +368,7 @@ class GoogleUserController
     {
         if(isset($_GET['mail']))
         {
+
             $email = ($_GET['mail']);
             $testEmail = $this->googleUser->getGoogleUserByEmail($email);
             if($testEmail) 
@@ -393,21 +397,20 @@ class GoogleUserController
 
     public function sendEmail() 
     {
-
+        require 'keys.php';
         if(isset($_POST['email_confirm']))
         {
             $email = ($_POST['email_confirm']);
-
             $mail = new PHPMailer;
             $mail->isSMTP();
             $mail->Host = 'smtp.ionos.de';
             $mail->SMTPAuth = true;
-            $mail->Username = 'dosylia@ur-sg.com';
-            $mail->Password = 'Zangetsu_Serano1';
+            $mail->Username = 'contact@ur-sg.com';
+            $mail->Password = $password_gmail;
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
         
-            $mail->setFrom('dosylia@ur-sg.com', 'URSG.com');
+            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
             $mail->addAddress($email);
             $mail->Subject = 'Confirm your email for URSG.com';
             $mail->isHTML(true);
@@ -423,8 +426,19 @@ class GoogleUserController
         
             $mail->send();
 
-            $this->confirmMailPage();
-        }
+            if (!$mail->send()) {
+                header("location:/?message=Could not send mail");
+                exit();
+            } else {
+                $this->confirmMailPage($mail);
+            }
+
+            // if (!$mail->send()) {
+            //     echo 'Mailer Error: ' . $mail->ErrorInfo;
+            // } else {
+            //     echo 'Message sent!';
+            // }
+        } 
     }
 
     public function getGoogleId()

@@ -68,7 +68,7 @@
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">
-                <option value="<?= $lfUser['lf_lolrank'] ?>" ><?= $lfUser['lf_lolrank'] ?></option>
+                <option value="<?= $lfUser['lf_lolrank'] ?>" data-image="public/images/ranks/<?= $lfUser['lf_lolrank'] ?>.png"><?= $lfUser['lf_lolrank'] ?></option>
                 <?php foreach ($lol_ranks as $rank) : ?>
                     <?php if ($rank !== $lfUser['lf_lolrank']) : ?>
                         <option value="<?= $rank ?>" data-image="public/images/ranks/<?= $rank ?>.png"><?= $rank ?></option>
@@ -82,7 +82,7 @@
 
             <label for="role_lol">Role you are looking for</label>
             <select id="role_lol" name="role_lol">
-                <option value="<?= $lfUser['lf_lolrole'] ?>" ><?= $lfUser['lf_lolrole'] ?></option>
+                <option value="<?= $lfUser['lf_lolrole'] ?>" data-image="public/images/roles/<?= strtolower(str_replace(' ', '', $lfUser['lf_lolrole'])) ?>.png"><?= $lfUser['lf_lolrole'] ?></option>
                 <?php foreach ($lol_roles as $role) : ?>
                     <?php if ($role !== $lfUser['lf_lolrole']) : ?>
                         <option value="<?= $role ?>" data-image="public/images/roles/<?= strtolower(str_replace(' ', '', $role)) ?>.png"><?= $role ?></option>
