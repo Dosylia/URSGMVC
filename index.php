@@ -1,19 +1,6 @@
 <?php
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', 1); 
-
 // Start the session
 session_start();
-
-setcookie('SIDCC', 'value', [
-    'expires' => time() + 3600, 
-    'path' => '/',
-    'domain' => '',
-    'secure' => true, 
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-
 
 // USE CONTROLLERS
 use controllers\UserController;

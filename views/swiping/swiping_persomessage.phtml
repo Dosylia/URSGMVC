@@ -59,34 +59,6 @@
                 <div id="friendInfo"></div>
 
                 <div id="messages">
-                    <?php foreach ($messages as $message) : ?>
-                        <?php
-                        $messageClass = ($message['chat_senderId'] == $user['user_id']) ? 'message-from-user' : 'message-to-user';
-                        $messagePosition = ($message['chat_senderId'] == $user['user_id']) ? 'right' : 'left';
-                        ?>
-                        <div class="message <?= $messageClass ?>" style="text-align: <?= $messagePosition ?>;">
-                            <p id="username_message">
-                                <?php if ($message['chat_senderId'] == $user['user_id']) : ?>
-                                    <?php if (!empty($user['user_picture'])) : ?>
-                                        <img class="avatar" src="public/upload/<?= $user['user_picture'] ?>" alt="Avatar <?= $user['user_username'] ?>">
-                                    <?php else : ?>
-                                        <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $user['user_username'] ?>">
-                                    <?php endif; ?>
-                                    <a class="username_chat_friend" target="_blank" href="/userProfile&username=<?= urlencode($user['user_username']) ?>"><strong class="strong_text"><?= $user['user_username'] ?></strong></a>
-                                    <span class="timestamp left"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
-                                <?php else : ?>
-                                    <?php if (!empty($friendChat['user_picture'])) : ?>
-                                        <img class="avatar" src="public/upload/<?= $friendChat['user_picture'] ?>" alt="Avatar <?= $friend['user_username'] ?>">
-                                    <?php else : ?>
-                                        <img class="avatar" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendChat['user_username'] ?>">
-                                    <?php endif; ?>
-                                    <a class="username_chat_friend" target="_blank" href="/anotherUser&username=<?= urlencode($friendChat['user_username']) ?>"><strong class="strong_text"><?= $friendChat['user_username'] ?></strong></a>
-                                    <span class="timestamp right"><?= date('H:i d/m', strtotime($message['timestamp'])) ?></span>
-                                <?php endif; ?>
-                            </p>
-                            <p id="last-message"><?= $message['chat_message'] ?></p>
-                        </div>
-                    <?php endforeach; ?>
                 </div>
 
                 <div class="reply-box">

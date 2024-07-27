@@ -77,10 +77,10 @@
         <!-- Display of Log in button, cancel and terms of use -->
         <section class="loginsignin">
             <h2>Sign up/Log in</h2><br><br>
-                <p>When clicking on sign in,<br> you agree to <a href="">our terms of use</a>.</p><br>
-                <script nonce="YourNonceValue" src="public/js/ajaxGoogle.js"></script>
+                <p>When clicking on sign in,<br> you agree to <a href="/legalNotice">our terms of use</a>.</p><br>
+                <script  src="public/js/ajaxGoogle.js"></script>
             <div class="social_buttons2">
-                <div id="buttonDiv"></div>
+                <div id="buttonDiv" data-use_fedcm_for_prompt="true"></div>
             </div><br>
             <!-- Get out of pop up -->
             <button id="cancelBtn">Cancel</button>
@@ -132,7 +132,5 @@
     </div>   
 </footer>
 
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="public/js/dialogGoogle.js"></script>
 

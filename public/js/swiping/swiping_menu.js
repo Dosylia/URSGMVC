@@ -1,3 +1,4 @@
+"use strict";
 const openMenuProfile = document.getElementById('open_menu_profile');
 let username = document.getElementById('userUsername').value;
 // Function to toggle the menu visibility and rotate the image

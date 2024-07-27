@@ -2037,6 +2037,7 @@ cursor: pointer;
     text-align: center;
     width: fit-content;
     padding: 30px;
+    min-width: 500px;
   }
 
   .form-picture {
@@ -2087,12 +2088,12 @@ cursor: pointer;
   gap: 20px;
   position: fixed;
   top: unset;
-  bottom: 0;
+  top: 0;
   left: 0;
   transform: unset;
   width: 100%;
   padding: 30px;
-  border-radius: 10px 10px 0 0;
+  border-radius: 0 0 10px 10px;
   border: none;
   text-align: center;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
@@ -2262,7 +2263,6 @@ cursor: pointer;
 
 .mid_main_section_signup p {
   font-size: 7vw;
-  font-family: 'Libre Franklin', sans-serif;
   text-shadow: 4px 4px 8px black;
   text-align: center;
   margin-bottom: 20px;
@@ -2717,6 +2717,10 @@ cursor: pointer;
       background-size: 100% 100%;
   }
 
+  .mid_main_section_signup {
+    height: fit-content;
+  }
+
   .download_app {
     width: 100%;
     align-items: center;
@@ -2913,7 +2917,6 @@ cursor: pointer;
   .top_main_section {
   display: flex;
   flex-wrap: wrap;
-  padding: 5px;
   }
 
   .top_main_section img {
@@ -2986,6 +2989,23 @@ cursor: pointer;
   #swipe_yes i {
     font-size: 3.5rem;
   }
+
+  #dialogCookie {
+    width: unset;
+  }
+
+  dialog {
+    min-width: 80%;
+  }
+
+  .form_signup h2 {
+    font-size: 3vh;
+  }
+
+  .form_signup p {
+    font-size: 2vh;
+  }
+
 }
 
 @media only screen and (max-width: 600px) {

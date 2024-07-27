@@ -386,6 +386,7 @@ class UserController
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
 
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";

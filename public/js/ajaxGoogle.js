@@ -1,92 +1,90 @@
-function handleCredentialResponse(response)
-{
+function handleCredentialResponse(response) {
+  function decodeJwtResponse(credential) {
+      try {
+          const jwt = atob(credential.split('.')[1]);
+          return JSON.parse(jwt);
+      } catch (error) {
+          console.error("Failed to decode JWT:", error);
+          return null;
+      }
+  }
 
-    function decodeJwtResponse(credential) 
-    {
-  
-      const jwt = atob(credential.split('.')[1]);
-  
-  
-      const payload = JSON.parse(jwt);
-  
-      return payload;
-    }
-  
-  
-      const responsePayload = decodeJwtResponse(response.credential);
-  
-      const googleId = responsePayload.sub;
-      const fullName = responsePayload.name;
-      const givenName = responsePayload.given_name;
-      const familyName = responsePayload.family_name;
-      const imageUrl = responsePayload.picture;
-      const email = responsePayload.email;
-  
-  
-      console.log("ID: " + googleId);
-      console.log('Full Name: ' + fullName);
-      console.log('Given Name: ' + givenName);
-      console.log('Family Name: ' + familyName);
-      console.log("Image URL: " + imageUrl);
-      console.log("Email: " + email);
-  
-      const userData = {
-        googleId: googleId,
-        fullName: fullName,
-        givenName: givenName,
-        familyName: familyName,
-        imageUrl: imageUrl,
-        email: email
+  const responsePayload = decodeJwtResponse(response.credential);
+  if (!responsePayload) {
+      console.error("Invalid JWT response");
+      return;
+  }
+
+  const googleId = responsePayload.sub;
+  const fullName = responsePayload.name;
+  const givenName = responsePayload.given_name;
+  const familyName = responsePayload.family_name;
+  const imageUrl = responsePayload.picture;
+  const email = responsePayload.email;
+
+  console.log("ID: " + googleId);
+  console.log('Full Name: ' + fullName);
+  console.log('Given Name: ' + givenName);
+  console.log('Family Name: ' + familyName);
+  console.log("Image URL: " + imageUrl);
+  console.log("Email: " + email);
+
+  const userData = {
+      googleId: googleId,
+      fullName: fullName,
+      givenName: givenName,
+      familyName: familyName,
+      imageUrl: imageUrl,
+      email: email
+  };
+
+  async function fetchOrder(userData) {
+      const requestOptions = {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: "googleData=" + encodeURIComponent(JSON.stringify(userData))
       };
 
-      function fetchOrder(userData) {
-
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded' // Indique que vous envoyez des données JSON
-            },
-            body: "googleData="+JSON.stringify(userData) // Convertit les données en JSON
-          };
-
-        fetch("/googleTest", requestOptions)
-        .then(handleResponse)
-        .then(dataHandle)
-        .catch(handleError);
-    }
-
-    function handleResponse(response) {
-      // console.log(response.text());
-      if(!response.ok) {
-          throw new Error("La requete a échoué avec le statut : " + response.status);
+      try {
+          const response = await fetch("/googleTest", requestOptions);
+          await handleResponse(response);
+      } catch (error) {
+          handleError(error);
       }
-
-
-      return response.json();
   }
 
-  function dataHandle(data) 
-  {
-    console.log('Données envoyées avec succès au serveur:', data);
-    window.location.href = '/confirmMail';
+  async function handleResponse(response) {
+      if (!response.ok) {
+          throw new Error("Request failed with status: " + response.status);
+      }
+      const data = await response.json();
+      dataHandle(data);
   }
-    
-    function handleError(error) {
-      console.error("Une erreur est survenue lors de la requete : "+error);
-    }
 
-    fetchOrder(userData);
+  function dataHandle(data) {
+      console.log('Data successfully sent to the server:', data);
+      window.location.href = '/confirmMail';
+  }
 
+  function handleError(error) {
+      console.error("An error occurred during the request:", error);
+  }
+
+  fetchOrder(userData);
 }
-  
-  window.onload = function () 
-  {
+
+window.onload = function () {
     google.accounts.id.initialize({
-      client_id: "666369513537-04q4qedj0rsg2qrifgsrsv43bkvtieuv.apps.googleusercontent.com", // Key for test version
-      callback: handleCredentialResponse
+        client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+        ux_mode: 'popup', 
+        auto_select: true,
+        use_fedcm_for_prompt: true  // Enable FedCM
     });
     google.accounts.id.renderButton(
-      document.getElementById("buttonDiv"),
-      { theme: "outline", size: "medium" }
+        document.getElementById("buttonDiv"),
+        { theme: "outline", size: "medium" }
     );
-  }
+}

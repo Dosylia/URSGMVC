@@ -61,7 +61,12 @@ class GoogleUserController
     public function confirmMailPage() 
     {
 
-        $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
+        if (isset($_SESSION['email'])) {
+            $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
+        } else {
+            header("Location: /?message=No email");
+            exit();
+        }
 
         if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
         {
@@ -221,7 +226,15 @@ class GoogleUserController
 
                     session_destroy();
 
-                    session_set_cookie_params($lifetime);
+                    $cookieParams = session_get_cookie_params();
+                    session_set_cookie_params([
+                        'lifetime' => $lifetime,
+                        'path' => $cookieParams['path'],
+                        'domain' => $cookieParams['domain'],
+                        'secure' => $cookieParams['secure'],
+                        'httponly' => $cookieParams['httponly'],
+                        'domain' => 'ur-sg.com'
+                    ]);
 
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
@@ -277,6 +290,7 @@ class GoogleUserController
 
                 header('Content-Type: application/json');
                 echo json_encode($response);
+
                 exit;
 
             }

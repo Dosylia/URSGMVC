@@ -21,34 +21,32 @@
                       
                     <?php if($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) :?>  <!-- Connected to all -->
                             <a href="/logout"><!-- Log out button -->
-                                <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                                <button type="button" title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
                             <a href="/userProfile&username=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>
                         <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for  -->
                             <a href="/logout"><!-- Log out button -->
-                                <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                                <button type="button" title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
                             <a href="/signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
                         <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session looking for, league  -->
                             <a href="/logout"><!-- Log out button -->
-                                <button title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                                <button type="button" title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
                             </a>
                             <a href="/signup=<?= ucfirst($user['user_username'])?>"> <!-- User page / name = username -->
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
                         <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
-                            <a href="/logout"> <!-- Log out button -->
-                                <button id="fix_mobile_signup" class="signup_button" title="Log in" >Log out</button>
-                            </a>
                             <a href="/?signup"> <!-- User page / Diff name-->
                                 <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
                             </a>
-                        <?php else : ?>
-                            <input value="Sign up/Log in" type="text" title="Sign up/Sign in" id="signup_button">
+                            <a href="/logout"><!-- Log out button -->
+                                <button type="button" title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                            </a>
                         <?php endif; ?>
                 </div>
             </div>
@@ -71,31 +69,6 @@
                 </div>
             </nav>           
     </section>
-
-    <!-- POP UP FOR LOG IN -->
-    <dialog id="favDialog">
-        <!-- Display of Log in button, cancel and terms of use -->
-        <section class="loginsignin">
-            <h2>Sign up/Log in</h2><br><br>
-                <p>When clicking on sign in,<br> you agree to <a href="">our terms of use</a>.</p><br>
-                <script nonce="YourNonceValue" src="public/js/ajaxGoogle.js"></script>
-            <div class="social_buttons2">
-                <div id="buttonDiv"></div>
-            </div><br>
-            <!-- Get out of pop up -->
-            <button id="cancelBtn">Cancel</button>
-            <br><br>
-        </section>
-
-        <!-- Display of buttons to download app on App store/Google Store -->
-        <!-- <section class="download_app_dialog">  
-            <p>Download the app</p>
-            <div class="download_app_dialog_logos">
-                <a href=""><img id="apple_logo" src="public/images/appstore.png" alt="appstore"></a>
-                <a href=""><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
-            </div>  
-        </section> -->
-    </dialog>
 </header>
 
     <main>
@@ -131,8 +104,4 @@
         </div>
     </div>   
 </footer>
-
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="public/js/dialogGoogle.js"></script>
 
