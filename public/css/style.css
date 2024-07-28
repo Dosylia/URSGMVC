@@ -872,7 +872,7 @@ section.siteMap tr:nth-child(even) {
 }
   
   /* Style pour le bouton de fermeture */
-  #closeButton_user_picture, #closeButton_social_links, #closeButton {
+  #closeButton_user_picture, #closeButton_social_links, #closeButton, .closeButton {
       position: absolute;
       top: 5px;
       right: 5px;
@@ -884,7 +884,7 @@ section.siteMap tr:nth-child(even) {
       cursor: pointer;
   }
   
-  #closeButton_user_picture:hover, #closeButton_social_links:hover, #closeButton:hover {
+  #closeButton_user_picture:hover, #closeButton_social_links:hover, #closeButton:hover, .closeButton:hover {
     background-color: var(--ligher--grey);
 }
 
@@ -919,7 +919,9 @@ section.siteMap tr:nth-child(even) {
     border: none;
     text-shadow: 0.2px 0.2px 0.5px black;
     transition: transform 2s;
-    padding: 5px 10px;
+    font-size: 0.8rem;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 .btn_user_updates > i {
@@ -1014,12 +1016,16 @@ section.siteMap tr:nth-child(even) {
       color: #504e4e;
     }
   
-    #title_generalbox {
+    .chat_box .title_generalbox,  .user_box .title_generalbox, dialog .title_generalbox{
       font-size: 3vh;
       font-family: 'Geologica', sans-serif;
       color: #cb5242;
       padding-left: 20px;
       text-shadow: 0.5px 0.5px 1px black;
+    }
+
+    .chat_box a {
+      text-decoration: none;
     }
   
     #age_user {
@@ -1121,7 +1127,7 @@ section.siteMap tr:nth-child(even) {
       margin-bottom: 5px;
     }
   
-    span.chat-name a, span.friendlist-name a {
+    span.chat-name, span.friendlist-name a {
       text-decoration: none;
       color: black;
     }
@@ -1134,7 +1140,10 @@ section.siteMap tr:nth-child(even) {
 
   
     span.chat-name, span.friendlist-name {
-      transition: transform 1s;
+    transition: transform 1s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     }
   
     span.chat-name span.friendlist-name{
@@ -2048,7 +2057,7 @@ cursor: pointer;
   }
 
 
-  dialog #title_generalbox {
+  dialog .title_generalbox {
     font-size: 2em;
     font-family: 'Geologica', sans-serif;  
     font-weight: 600;  
@@ -2598,7 +2607,10 @@ cursor: pointer;
 
 .dark-mode   .block_user {
   background-color: var(--ligher--grey);
+}
 
+.dark-mode dialog .title_generalbox {
+  color: #cb5242;  
 }
 
 @media only screen and (max-width: 1420px) {
@@ -2769,7 +2781,7 @@ cursor: pointer;
     padding-left: 0;
   }
 
-  #title_generalbox {
+  .title_generalbox {
     padding-left: 0;
   }
 

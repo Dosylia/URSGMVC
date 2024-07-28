@@ -1,7 +1,7 @@
 <div class="chat_page">   
     <div class="chat-interface"> <br>
         <div class="chat_box"><br>
-            <h1 id="title_generalbox">Chat</h1>    <br>
+            <h1 class="title_generalbox">Chat</h1>    <br>
 
                 <?php if (empty($getFriendlist)) :?>
                     <section class="google_needed"><br><br>
@@ -26,23 +26,17 @@
                         <div class="friend" data-sender-id="<?= $friendId ?>">
                             <div class="friend-avatar">
                                 <?php if (!empty($friendPicture)): ?>  
-                                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">  
                                     <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
-                                    </a>
                                 <?php else :?>
-                                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
                                     <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
-                                    </a>
                                 <?php endif; ?>        
                             </div>
 
 
                             <div class="friend-details">
                                 <span class="chat-name">
-                                    <a href="/persoChat&friend_id=<?= $friendId ?>&mark_as_read=true"><?= $friendUsername ?></a>
-                                    <a href="/persoChat&friend_id=<?= $friendId ?>&mark_as_read=true">    
-                                    <div id="unread_messages_for_friend_container_<?= $friendId ?>"></div>
-                                    </a>         
+                                    <?= $friendUsername ?>
+                                    <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span>      
                                 </span>
                             </div>
                         </div>
@@ -93,7 +87,5 @@
         <script type="module" src="public/js/swiping/get_message.js"></script>
         <script type="module" src="public/js/swiping/send_messagephp.js"></script>
     <?php endif; ?>
-
-
-
+</div>
 </div>

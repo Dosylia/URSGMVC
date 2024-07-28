@@ -1,4 +1,9 @@
 <?php require "views/layout.phtml"; ?>
+<?php if (isset($_SESSION['mode'])) : ?>
+    <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
+<?php else : ?>
+    <body>
+<?php endif; ?>
 
 <input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
 <input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
@@ -16,9 +21,9 @@
 
             <div class="chat_profile">
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) : // Profile picture test ?>
-                    <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username'] ?>" /></a>
+                    <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username'] ?>" ></a>
                 <?php else : ?>
-                    <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" /></a>
+                    <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" ></a>
                 <?php endif; ?>
                 <span id="pending_friend_requests_container"></span>
             </div>
@@ -29,19 +34,14 @@
         </div>
     </nav>
 </header>
-
-<?php if (isset($_SESSION['mode'])) : ?>
-    <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
-<?php else : ?>
-    <body>
-<?php endif; ?>
     <main>
         <?php if (isset($_GET['message'])) : ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
         <?php require $template . ".phtml"; ?>
     </main>
+    <script src="public/js/swiping/swiping_menu.js"></script>
+    <script src="public/js/swiping/get_notifications.js"></script>  
 </body>
 
-<script src="public/js/swiping/swiping_menu.js"></script>
-<script src="public/js/swiping/get_notifications.js"></script>
+</html>

@@ -85,10 +85,15 @@ document.addEventListener("DOMContentLoaded", function() {
         lolRankP.innerText = data.lol_rank;
         lolRoleP.innerText = data.lol_role;
         lolMain1Pic.src = `public/images/champions/${sanitize(data.lol_main1)}.png`;
+        lolMain1Pic.alt = data.lol_main1;
         lolMain2Pic.src = `public/images/champions/${sanitize(data.lol_main2)}.png`;
+        lolMain2Pic.alt = data.lol_main2;
         lolMain3Pic.src = `public/images/champions/${sanitize(data.lol_main3)}.png`;
+        lolMain3Pic.alt = data.lol_main3;
         lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank)}.png`;
+        lolRankPic.alt = data.lol_rank;
         lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
+        lolRolePic.alt = data.lol_role;
     }
 
     // Function to show the no more profiles message

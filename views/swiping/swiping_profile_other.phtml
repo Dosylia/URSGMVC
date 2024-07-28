@@ -42,7 +42,7 @@
 
     <div class="user_page_main_content">
         <div class="user_box">
-            <br><h2 id="title_generalbox">About them</h2><br>
+            <br><h2 class="title_generalbox">About them</h2><br>
             <?php if ($anotherUser['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
@@ -76,7 +76,7 @@
     </div>
 
     <dialog id="favDialogSocialLinks">
-        <br><h2 id="title_generalbox">Your social links:</h2><br>  
+        <br><h2 class="title_generalbox">Your social links:</h2><br>  
         <form action="/updateSocial&username=<?= urlencode($anotherUser['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
             <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
@@ -93,7 +93,7 @@
 
     <dialog id="favDialogPicture">
         <form action="/updatePicture&username=<?= urlencode($anotherUser['user_username']) ?>" method="post" enctype="multipart/form-data">
-            <br><p id="title_generalbox">Add a profile picture or update it</p><br>
+            <br><p class="title_generalbox">Add a profile picture or update it</p><br>
             <input type="file" name="file"><br>
             <input type="submit" name="submit" value="Upload">
         </form>

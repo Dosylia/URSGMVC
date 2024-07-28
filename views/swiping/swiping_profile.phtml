@@ -11,10 +11,10 @@
                     <div class="user_page_update_name">
                         <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>     
                         <div class="user_page_update_row_buttons">
-                            <a href="/updateProfilePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</button></a> 
-                            <a href="/updateLeaguePage"><button class="btn_user_updates" id="opendialog_update_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</button></a> 
-                            <a href="/updateLookingForPage"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</button></a> 
-                            <a href="/updateLeagueAccount"><button class="btn_user_updates" id="opendialog_update_looking"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</button></a> 
+                            <a href="/updateProfilePage" class="btn_user_updates"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
+                            <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a> 
+                            <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a> 
+                            <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a> 
                             <?php if(isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
                             <?php else : ?>
@@ -58,7 +58,7 @@
 
     <?php if(!empty($friendRequest)) :?>
         <div class="friendrequest_box"><br>
-            <h2 id="title_generalbox">Friend requests</h2><br>
+            <h2 class="title_generalbox">Friend requests</h2><br>
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn">
                     <p> From: 
@@ -82,7 +82,7 @@
 
     <div class="user_page_main_content">
         <div class="user_box">
-            <br><h2 id="title_generalbox">About you</h2><br>
+            <br><h2 class="title_generalbox">About you</h2><br>
             <?php if ($user['user_game'] !== 'valorant'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
@@ -115,7 +115,7 @@
         </div>
 
         <div class="user_box">
-            <br><h2 id="title_generalbox">Looking for</h2><br>
+            <br><h2 class="title_generalbox">Looking for</h2><br>
                 <?php if ($user['user_game'] !== 'valorant'): ?>
                     <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
                 <?php endif; ?>    
@@ -125,11 +125,10 @@
                 </div> 
             </div>
         </div>
-    </div>
    
 
     <dialog id="favDialogSocialLinks">
-        <br><p id="title_generalbox">Your social links:</p><br>  
+        <br><p class="title_generalbox">Your social links:</p><br>  
         <form action="/updateSocial&username=<?= urlencode($user['user_username']) ?>" method="post">
         <label for="discord">Discord:</label><br><br>
             <?php if (!empty($user['user_discord'])): ?>  
@@ -168,7 +167,7 @@
 
     <dialog id="favDialogPicture">
         <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
-            <p id="title_generalbox">Add a profile picture or update it</p>
+            <p class="title_generalbox">Add a profile picture or update it</p>
             <p>Accepted format : JPG, JPEG and PNG</p>
             <div class="file-input-container">
                 <input type="file" id="file" name="file" class="file-input">
@@ -177,7 +176,8 @@
             </div>
             <input type="submit" name="submit" value="Upload" id="send-button">
         </form>
-    <button id="closeButton_user_picture">X</button></dialog>
+        <button id="closeButton_user_picture">X</button>
+    </dialog>
 </section>
 
 <script src="public/js/swiping/dialog_picture_social.js"></script>

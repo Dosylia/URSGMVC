@@ -1,5 +1,8 @@
 <?php if ($user): ?>
-    <input id="userId" type="hidden" name="userId" value="<?= $user['user_id']; ?>">
+        <script>
+            window.user = <?= $userData ?>;
+            window.usersAll = <?= $usersAllData ?>;
+        </script>
 
     <script type="module" src="public/js/algo.js"></script>
     <script type="module" src="public/js/swiping/get_userMatching.js"></script>

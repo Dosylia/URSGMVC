@@ -1,7 +1,8 @@
 <?php require "views/layout.phtml"; ?> 
+<body>
 
 <header>
-    <section class="main_section_small" proload>
+    <section class="main_section_small">
         <div class="overlay"></div>
         <!-- Top of website start -->
         <div class="top_main_section"> 
@@ -41,11 +42,11 @@
                                 <button title="Profile" id="fix_mobile_signup" class="signup_button"><?= ucfirst($user['user_username']) ?></button>
                             </a>   
                         <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
-                            <a href="/signup"> <!-- User page / Diff name-->
-                                <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
-                            </a>
                             <a href="/logout"><!-- Log out button -->
                                 <button type="button" title="Log out" id="fix_mobile_signup" class="signup_button" >Log out</button>
+                            </a>
+                            <a href="/signup"> <!-- User page / Diff name-->
+                                <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
                             </a>
                         <?php endif; ?>
                 </div>
@@ -75,7 +76,6 @@
         <?php endif; ?>
         <?php require $template.".phtml"; ?> 
     </main>
-</body>
 
 <footer>
     <div class="footer_black">
@@ -103,3 +103,5 @@
     </div>   
 </footer>
 
+</body>
+</html>

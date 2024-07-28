@@ -42,6 +42,7 @@ class UserLookingForController
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/lookingforlol";
+            $current_url = "https://ur-sg.com/lookingforuserlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutSignup.phtml";
@@ -49,11 +50,13 @@ class UserLookingForController
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
                 $template = "views/signup/leagueoflegendsuser";
+            $current_url = "https://ur-sg.com/leagueuser";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
+            $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
@@ -81,7 +84,7 @@ class UserLookingForController
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
 
-
+            $current_url = "https://ur-sg.com/updateLookingForPage";
             $template = "views/swiping/update_lookingFor";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";

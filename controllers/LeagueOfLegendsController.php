@@ -37,6 +37,7 @@ class LeagueOfLegendsController
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $current_url = "https://ur-sg.com/lookingforuserlol";
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
@@ -44,12 +45,14 @@ class LeagueOfLegendsController
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $current_url = "https://ur-sg.com/leagueuser";
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
+            $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
@@ -77,7 +80,7 @@ class LeagueOfLegendsController
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
-
+            $current_url = "https://ur-sg.com/updateLeaguePage";
             $template = "views/swiping/update_league";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";
@@ -100,7 +103,7 @@ class LeagueOfLegendsController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
-
+            $current_url = "https://ur-sg.com/updateLeagueAccount";
             $template = "views/swiping/update_leagueAccount";
             $page_title = "URSG - Bind league account";
             require "views/layoutSwiping.phtml";

@@ -26,3 +26,15 @@ RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
         Header set Cache-Control "max-age=31536000, public"
     </FilesMatch>
 </IfModule>
+
+# X-XSS-Protection
+Header set X-XSS-Protection "1; mode=block"
+
+# X-Content-Type-Options
+Header set X-Content-Type-Options "nosniff"
+
+# Strict-Transport-Security
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# Cache-Control
+Header set Cache-Control "public, max-age=3600"

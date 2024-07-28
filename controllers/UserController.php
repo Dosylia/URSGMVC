@@ -303,14 +303,12 @@ class UserController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
             if ($user && $usersAll) {
-                echo '<script>';
-                echo 'window.user = ' . json_encode($user) . ';';
-                echo 'window.usersAll = ' . json_encode($usersAll) . ';';
-                echo '</script>';
+                $userData = json_encode($user);
+                $usersAllData = json_encode($usersAll);
             }
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-
+            $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
             require "views/layoutSwiping.phtml";
@@ -387,7 +385,7 @@ class UserController
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-
+            $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";
@@ -428,7 +426,7 @@ class UserController
             $anotherUser = $this-> user -> getUserByUsername($username);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
-
+            $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
             require "views/layoutSwiping.phtml";
@@ -438,6 +436,7 @@ class UserController
             $username = $_GET['username'];
             $anotherUser = $this-> user -> getUserByUsername($username);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
             require "views/layoutSwiping_noheader.phtml";
@@ -457,7 +456,7 @@ class UserController
 
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
-
+            $current_url = "https://ur-sg.com/updateProfile";
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";

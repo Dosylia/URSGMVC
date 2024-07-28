@@ -50,6 +50,7 @@ class ChatMessageController
                 }
             }
 
+            $current_url = "https://ur-sg.com/persoChat";
             $template = "views/swiping/swiping_persomessage";
             $page_title = "URSG - Chat";
             require "views/layoutSwiping.phtml";
