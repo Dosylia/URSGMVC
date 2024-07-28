@@ -44,7 +44,7 @@
                             <a href="/logout"> <!-- Log out button -->
                                 <button id="fix_mobile_signup" class="signup_button" title="Log in" >Log out</button>
                             </a>
-                            <a href="/?signup"> <!-- User page / Diff name-->
+                            <a href="/signup"> <!-- User page / Diff name-->
                                 <button id="fix_mobile_signup" title="Profile" class="signup_button"><?= ucfirst($googleUser['google_fullName']) ?></button>
                             </a>
                         <?php else : ?>
@@ -55,8 +55,6 @@
 
                 <div class="mid_main_section">
                     <p><?= $title ?></p>
-                    <br><br><br><br>
-
                     <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) : ?>
                         <a href="/swiping">
                             <button id="mid_main_section_button2">Swipe now</button> 

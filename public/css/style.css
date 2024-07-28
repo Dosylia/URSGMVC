@@ -55,10 +55,14 @@
   .main_section {
       background: url('../images/pc_background.webp');
       height: 90vh;
+      background-size: 100% 100%;
+      color: white;
   }
 
   .main_section_small {
-    background: url('../images/pc_background.webp');
+    background: url('../images/pc_backgroundSignup.webp');
+    background-size: 100% 100%;
+    color: white;
   }
 
 /* SCROLL BAR */
@@ -1930,11 +1934,6 @@ nav .scale:hover, nav .scaleNoRound:hover {
     transform: scale(1.1);
 }
 
-.main_section, .main_section_small {
-    background-size: 100% 100%;
-    color: white;
-}
-
 .main_section .overlay, .main_section_small .overlay {
     position: absolute;
     top: 0;
@@ -1953,8 +1952,8 @@ nav .scale:hover, nav .scaleNoRound:hover {
 }
 
 .top_main_section img {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
 }
 
 .top_right_main_section {
@@ -2235,9 +2234,9 @@ cursor: pointer;
 .mid_main_section {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    justify-content: center;
-    height: 50vh;
+    height: 70vh;
     width: 100%;
     overflow: hidden;
 }
@@ -2251,6 +2250,7 @@ cursor: pointer;
   width: 100%;
   overflow: hidden;
   padding-bottom: 20px;
+  gap: 20px;
 }
 
 .mid_main_section p {
@@ -2277,7 +2277,7 @@ cursor: pointer;
     font-family: 'Rubik', sans-serif;
     text-shadow: 1px 1px 2px black;
     color: white;
-    margin: auto;
+    margin: 0 auto;
     text-align: center;
     text-transform: uppercase;
     font-weight: 600;
@@ -2649,6 +2649,16 @@ cursor: pointer;
     width: 100%;
   }
 
+  .main_section_small {
+    background: url('../images/pc_background.webp');
+    background-size: 100% 100%;
+  }
+
+  .main_section {
+    background: url('../images/tablet_background.webp');
+    background-size: 100% 100%;
+}
+
 
 }
 
@@ -2700,6 +2710,17 @@ cursor: pointer;
   .user_box {
     width: 80%;
   }
+
+  .main_section_small {
+    background: url('../images/mobile_background_smallSignup.webp');
+    background-size: 100% 100%;
+  }
+
+  .main_section {
+    background: url('../images/mobile_background.webp');
+    background-size: 100% 100%;
+}
+
 }
 
 @media only screen and (max-width: 900px) {
@@ -2711,11 +2732,6 @@ cursor: pointer;
     .faq_row {
       flex-direction: column;
     }
-
-    .main_section, .main_section_small {
-      background: url('../images/mobile_background.webp');
-      background-size: 100% 100%;
-  }
 
   .mid_main_section_signup {
     height: fit-content;
@@ -2843,27 +2859,15 @@ cursor: pointer;
   }
 
   #mid_main_section_button {
-    background: linear-gradient(to right, rgb(19, 80, 159), rgb(77, 170, 210), rgb(33, 232, 242));
-    border: 0.5px solid white;
     padding : 20px 10px;
     width: 50%;
   }
 
-  #mid_main_section_button:hover {
-    background: linear-gradient(to right, rgba(19, 80, 159,0.9), rgba(77, 170, 210,0.9), rgba(33, 232, 242,0.9));
-
-  }
 
   #mid_main_section_button2 {
-  background: linear-gradient(to right, rgb(19, 80, 159), rgb(77, 170, 210), rgb(33, 232, 242));
-  border: 0.5px solid white;
   padding: 15px 30px;
   }
 
-  #mid_main_section_button2:hover {
-  background: linear-gradient(to right, rgba(19, 80, 159,0.9), rgba(77, 170, 210,0.9), rgba(33, 232, 242,0.9));
-
-  }
 
   .mid_main_section p {
   font-size: 3em;
@@ -2927,7 +2931,7 @@ cursor: pointer;
   .nav_swiping {
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
   }
 
   .top_right_main_section {

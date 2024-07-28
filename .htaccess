@@ -18,10 +18,11 @@ RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
 </IfModule>
 
 <IfModule mod_headers.c>
-    <FilesMatch "\.(jpg|jpeg|png|gif)$">
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
         Header set Cache-Control "max-age=31536000, public"
     </FilesMatch>
 </IfModule>

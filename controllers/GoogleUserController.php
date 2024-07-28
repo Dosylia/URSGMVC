@@ -147,12 +147,19 @@ class GoogleUserController
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
                 require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
+        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 1) {
             // Code block 6: User is connected via Google but doesn't have a username
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
             require "views/layoutSignup.phtml";
+        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 0) {
+            // Code block 6: User is connected via Google but doesn't have a username
+            $template = "views/signup/waitingEmail";
+            $title = "Confirm Mail";
+            $page_title = "URSG - Confirm Mail";
+            require "views/layoutSignup.phtml";
+        
         } else {
             // Code block 7: Redirect to / if none of the above conditions are met
             header("Location: /");
