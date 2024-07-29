@@ -1966,6 +1966,16 @@ nav .scale:hover, nav .scaleNoRound:hover {
 }
 
 .top_right_main_section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.top_right_main_section nav {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1975,7 +1985,7 @@ nav .scale:hover, nav .scaleNoRound:hover {
 }
 
 
-.top_right_main_section a{
+.top_right_main_section nav a{
     font-size: 2em;
     text-decoration: none;
     color: white;
@@ -1999,6 +2009,9 @@ font-size: 2vh;
 padding:       10px 25px;
 white-space: nowrap;
 cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 .signup_button:hover {
@@ -2238,7 +2251,9 @@ cursor: pointer;
     font-size: 14px; 
   }
 
-
+  .top_left_main_section {
+    height: fit-content;
+  }
 
 .mid_main_section {
     display: flex;
@@ -2277,12 +2292,12 @@ cursor: pointer;
   margin-bottom: 20px;
 }
 
-#mid_main_section_button {
+.mid_main_section_button {
     padding: 20px 60px;
     background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
     border-radius: 50px;
     border: none;
-    font-size: 4vh;
+    font-size: 6vh;
     font-family: 'Rubik', sans-serif;
     text-shadow: 1px 1px 2px black;
     color: white;
@@ -2293,24 +2308,28 @@ cursor: pointer;
     cursor: pointer;
 }
 
-#mid_main_section_button:hover {
+.mid_main_section_button:hover {
     background: linear-gradient(to right, rgba(159, 19, 28,0.9), rgba(233, 64, 87,0.9), rgba(242, 113, 33,0.9));
 }
 
-#mid_main_section_button2 {
+.mid_main_section_button2 {
     padding: 20px 60px;
     background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
     border-radius: 50px;
     border: none;
-    font-size: 4vh;
+    font-size: 6vh;
     font-family: 'Rubik', sans-serif;
     text-shadow: 1px 1px 2px black;
     color: white;
     cursor: pointer;
 }
 
-#mid_main_section_button2:hover {
+.mid_main_section_button2:hover {
     background: linear-gradient(to right, rgba(159, 19, 28,0.9), rgba(233, 64, 87,0.9), rgba(242, 113, 33,0.9));
+}
+
+.mid_main_section a, .mid_main_section a {
+  text-decoration: none;
 }
 
 .nav_swiping {
@@ -2540,10 +2559,6 @@ cursor: pointer;
     background:    var(--dark-ligher-grey);
     color: white;
 }
-
-.dark-mode #fix_mobile_signup {
-    color: white;
-  }
 
 .dark-mode  #menu_profile.visible {
  background-color: #504c4c;   
@@ -2791,7 +2806,7 @@ cursor: pointer;
   }
 
   #user_page_username {
-    font-size: 25px;
+    font-size: 70px;
   }
 
   .user_page {
@@ -2870,13 +2885,13 @@ cursor: pointer;
     width: 30%;
   }
 
-  #mid_main_section_button {
+  .mid_main_section_button {
     padding : 20px 10px;
     width: 50%;
   }
 
 
-  #mid_main_section_button2 {
+  .mid_main_section_button2 {
   padding: 15px 30px;
   }
 
@@ -2891,17 +2906,12 @@ cursor: pointer;
   }
 
   .signup_button {
-  padding: 5px 8px; 
-  font-size: 15px;
-  width: fit-content;
-  height: 40px;
-  }
-
-  #fix_mobile_signup {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  padding: 7px 10px;    
+    padding: 8px 15px;  
+    font-size: 25px !important;
+    width: fit-content;
+    height: 40px;
+    white-space: nowrap;
+    text-overflow: clip;
   }
 
   .footer_black, .footer_grey {
