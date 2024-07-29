@@ -121,6 +121,12 @@ document.addEventListener("DOMContentLoaded", function() {
     
             // Create message content
             let messageContent = '';
+
+            let utcDate = new Date(message.chat_date);
+            let localOffset = utcDate.getTimezoneOffset();
+            console.log(localOffset);
+            let localDate = new Date(utcDate.getTime() - localOffset * 60000);
+            let formattedTime = localDate.toLocaleTimeString();
     
             // Check if previous message exists and is from the same sender within 5 minutes
             if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
@@ -129,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Display only the message without icon, avatar, and timestamp
                     messageContent = `
                     <p class="last-message" style="text-align: ${messagePosition};">
-                        <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        <span class="timestamp-hover">${formattedTime}</span>
                         <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                     </p>
                     `;
@@ -139,10 +145,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         <p id="username_message" style="text-align: ${userPosition};">
                             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                             <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                            <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                            <span class="timestamp ${messagePosition}">${formattedTime}</span>
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition};">
-                            <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                            <span class="timestamp-hover">${formattedTime}</span>
                             <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                         </p>
                     `;
@@ -153,10 +159,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     <p id="username_message" style="text-align: ${userPosition};">
                         <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                         <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                        <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        <span class="timestamp ${messagePosition}">${formattedTime}</span>
                     </p>
                     <p class="last-message" style="text-align: ${messagePosition};">
-                        <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
+                        <span class="timestamp-hover">${formattedTime}</span>
                         <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                     </p>
                 `;
