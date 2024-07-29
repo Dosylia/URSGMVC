@@ -1101,10 +1101,20 @@ section.siteMap tr:nth-child(even) {
       border: 2px solid rgb(36, 34, 34);
       padding: 10px;
       border-radius: 50px;
+      max-width: 60%;
     }
   
     #username_message {
       padding-top: 20px;
+    }
+
+    .message-text {
+      border-radius: 20px;
+      background-color: var(--main--red);
+      border: none;
+      padding: 10px;
+      color: white;
+      margin-bottom: 5px;
     }
   
     .message-sender {
@@ -2306,6 +2316,7 @@ justify-content: center;
     text-transform: uppercase;
     font-weight: 600;
     cursor: pointer;
+    width: 40%;
 }
 
 .mid_main_section_button:hover {
@@ -2313,15 +2324,19 @@ justify-content: center;
 }
 
 .mid_main_section_button2 {
-    padding: 20px 60px;
-    background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
-    border-radius: 50px;
-    border: none;
-    font-size: 6vh;
-    font-family: 'Rubik', sans-serif;
-    text-shadow: 1px 1px 2px black;
-    color: white;
-    cursor: pointer;
+  padding: 20px 60px;
+  background: linear-gradient(to right, rgb(159, 19, 28), #e94057, #f27121);
+  border-radius: 50px;
+  border: none;
+  font-size: 6vh;
+  font-family: 'Rubik', sans-serif;
+  text-shadow: 1px 1px 2px black;
+  color: white;
+  margin: 0 auto;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .mid_main_section_button2:hover {

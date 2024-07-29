@@ -102,11 +102,12 @@ document.addEventListener("DOMContentLoaded", function() {
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
             let messageClass = isCurrentUser ? 'message-from-user' : 'message-to-user';
-            let messagePosition = isCurrentUser ? 'right' : 'left';
+            let messagePosition = isCurrentUser  ? 'left' : 'left';
+            let userPosition = isCurrentUser ? 'right' : 'left';
             let lastMessagePosition = isCurrentUser ? 'flex-end' : 'flex-start';
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
-            let timestampPosition = isCurrentUser ? "normal" : "inverted";
+            let timestampPosition = isCurrentUser ? "inverted" : "inverted";
             let pictureLink;
     
             if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
@@ -117,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function() {
     
             let messageDiv = document.createElement("div");
             messageDiv.classList.add("message", messageClass);
-            messageDiv.style.textAlign = messagePosition;
     
             // Create message content
             let messageContent = '';
@@ -128,36 +128,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
                     messageContent = `
-                    <p class="last-message">
+                    <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
-                        <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                     </p>
                     `;
                 } else {
                     // Display full message with icon, avatar, and timestamp
                     messageContent = `
-                        <p id="username_message">
+                        <p id="username_message" style="text-align: ${userPosition};">
                             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                             <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                         </p>
-                        <p class="last-message">
+                        <p class="last-message" style="text-align: ${messagePosition};">
                             <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
-                            <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                            <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                         </p>
                     `;
                 }
             } else {
                 // First message from this sender or different sender
                 messageContent = `
-                    <p id="username_message">
+                    <p id="username_message" style="text-align: ${userPosition};">
                         <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                         <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${new Date(message.chat_date).toLocaleTimeString()}</span>
                     </p>
-                    <p class="last-message">
+                    <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${new Date(message.chat_date).toLocaleTimeString()}</span>
-                        <span class="message-text">${renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
                     </p>
                 `;
             }
