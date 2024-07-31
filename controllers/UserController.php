@@ -43,6 +43,75 @@ class UserController
         $this -> matchingscore = new MatchingScore();
     }
 
+    public function createUserPhone()
+    {
+        // Start the session
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        // Check if the request method is POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get the raw POST data
+            $postData = file_get_contents('php://input');
+            // Decode the JSON data
+            $data = json_decode($postData, true);
+    
+            // Validate and set user data
+            $googleUserId = $this->validateInput($data["googleId"]);
+            $this->setGoogleUserId($googleUserId);
+            $username = $this->validateInput($data["username"]);
+            $this->setUsername($username);
+            $gender = $this->validateInput($data["gender"]);
+            $this->setGender($gender);
+            $age = $this->validateInput($data["age"]);
+            $this->setAge($age);
+            $kindofgamer = $this->validateInput($data["kindofgamer"]);
+            $this->setKindOfGamer($kindofgamer);
+            $game = $this->validateInput($data["game"]);
+            $this->setGame($game);
+            $short_bio = $this->validateInput($data["short_bio"]);
+            $this->setShortBio($short_bio);
+    
+            // Perform validation and user creation logic
+            if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
+                echo json_encode(['message' => 'Inputs cannot be empty']);
+                exit();
+            }
+    
+            if ($this->user->getUserByUsername($this->getUsername())) {
+                echo json_encode(['message' => 'Username already exists']);
+                exit();
+            }
+    
+            if ($this->invalidUid($this->getUsername()) !== false) {
+                echo json_encode(['message' => 'Username is not valid']);
+                exit();
+            }
+    
+            $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
+    
+            if ($createUser) {
+                $user = $this->user->getUserByUsername($this->getUsername());
+    
+                // Set session variables
+                $_SESSION['userId'] = $user['user_id'];
+                $_SESSION['username'] = $user['user_username'];
+                $_SESSION['gender'] = $user['user_gender'];
+                $_SESSION['age'] = $user['user_age'];
+                $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
+                $_SESSION['game'] = $user['user_game'];
+    
+                // Return session ID and user data
+                echo json_encode([
+                    'sessionId' => session_id(),
+                    'user' => $user
+                ]);
+                exit();
+            }
+        }
+    }
+    
     public function createUser()
     {
         if (isset($_POST['submit']))

@@ -457,7 +457,7 @@ class GoogleUserController
             $mail->send();
 
             if (!$mail->send()) {
-                header("location:/?message=Could not send mail");
+                header("location:/signup?message=Could not send mail");
                 exit();
             } else {
                 $this->confirmMailPage($mail);

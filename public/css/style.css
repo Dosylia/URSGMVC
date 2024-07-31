@@ -1,8 +1,8 @@
 :root {
-    --dark-grey: rgb(21, 20, 22);
-    --dark-ligher-grey: rgb(48, 46, 49);
-    --ligher--grey: rgb(79, 75, 82);
-    --main--red: rgb(231, 64, 87);
+    --dark-grey: #151416;
+    --dark-ligher-grey: #302e31;
+    --ligher--grey: #4f4b52;
+    --main--red: #e74057;
     --dark--red: rgb(152, 12, 31);
     --white: rgb(255, 255, 255);
   }
@@ -2343,7 +2343,7 @@ justify-content: center;
     background: linear-gradient(to right, rgba(159, 19, 28,0.9), rgba(233, 64, 87,0.9), rgba(242, 113, 33,0.9));
 }
 
-.mid_main_section a, .mid_main_section a {
+.mid_main_section a, .mid_main_section_signup a {
   text-decoration: none;
 }
 

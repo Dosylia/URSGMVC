@@ -124,7 +124,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             let utcDate = new Date(message.chat_date);
             let localOffset = utcDate.getTimezoneOffset();
-            console.log(localOffset);
             let localDate = new Date(utcDate.getTime() - localOffset * 60000);
             let formattedTime = localDate.toLocaleTimeString();
     

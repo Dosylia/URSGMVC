@@ -33,6 +33,7 @@ $actionMap = [
     'googleTest' => [GoogleUserController::class, 'getGoogleData'],
     'signup' => [GoogleUserController::class, 'pageSignUp'],
     'basicinfo' => [UserController::class, 'createUser'],
+    'createUserPhone' => [UserController::class, 'createUserPhone'],
     'leagueuser' => [LeagueOfLegendsController::class, 'pageLeagueUser'],
     'createleagueuser' => [LeagueOfLegendsController::class, 'createLeagueUser'],
     'lookingforuserlol' => [UserLookingForController::class, 'pageLookingFor'],

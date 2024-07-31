@@ -9,10 +9,16 @@ let btnSubmit;
 let btnDesign;
 
 function sendMessageToPhp(senderId, receiverId, message) {
+    // If wanna convert time directly before sending it
+    // let utcDate = new Date();
+    // let localOffset = utcDate.getTimezoneOffset() * 60000;
+    // let localDate = new Date(utcDate.getTime() - localOffset);
+    // let formattedTime = localDate.toLocaleTimeString();
+
     const dataToSend = {
         senderId,
         receiverId,
-        message
+        message,
     };
 
     const jsonData = JSON.stringify(dataToSend);
