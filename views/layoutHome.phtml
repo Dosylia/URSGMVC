@@ -1,5 +1,4 @@
 <?php require "views/layout.phtml"; ?> 
-
 <body>
 
 <header>
@@ -22,7 +21,7 @@
                     <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in"> <!-- Log out button -->
                             Log out
                     </a>
-                    <a href="/signup=<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button"> <!-- User page / name = username -->
+                    <a href="/userProfile?<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button"> <!-- User page / name = username -->
                         <?= ucfirst($user['user_username']) ?>
                     </a>  
                 <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session for looking for -->
@@ -72,7 +71,24 @@
                 <p>When clicking on sign in,<br> you agree to <a href="/legalNotice">our terms of use</a>.</p><br>
                 <script  src="public/js/ajaxGoogle.js"></script>
             <div class="social_buttons2">
-                <div id="buttonDiv" data-use_fedcm_for_prompt="true"></div>
+                <div id="g_id_onload"
+                    data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="handleCredentialResponse"
+                    data-auto_prompt="false"
+                    data-use_fedcm_for_prompt="true">
+                </div>
+
+                
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="rectangular"
+                    data-theme="outline"
+                    data-text="signin_with"
+                    data-size="large"
+                    data-logo_alignment="left">
+                </div>
             </div><br>
             <!-- Get out of pop up -->
             <button id="cancelBtn">Cancel</button>

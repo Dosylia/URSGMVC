@@ -21,7 +21,7 @@
                         <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in"> <!-- Log out button -->
                                 Log out
                         </a>
-                        <a href="/signup=<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button"> <!-- User page / name = username -->
+                        <a href="/userProfile?<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button"> <!-- User page / name = username -->
                             <?= ucfirst($user['user_username']) ?>
                         </a>  
                     <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session for looking for -->
@@ -54,13 +54,6 @@
 
         <div class="mid_main_section_signup">
             <p><?= $title ?></p>
-            <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) : ?>
-                <a href="/swiping" class="mid_main_section_button2">Swipe now</a>
-            <?php elseif ($this->isConnectGoogle()) : ?>
-                <a href="/signup" class="mid_main_section_button2">Join now</a>
-            <?php else : ?>
-                <input class="mid_main_section_button" value="Join now" >
-            <?php endif; ?>
         </div>   
     </section>
 </header>

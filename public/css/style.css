@@ -2902,7 +2902,7 @@ justify-content: center;
 
   .mid_main_section_button {
     padding : 20px 10px;
-    width: 50%;
+    width: 80%;
   }
 
 
@@ -2921,10 +2921,10 @@ justify-content: center;
   }
 
   .signup_button {
-    padding: 8px 15px;  
+    padding: 10px;  
     font-size: 25px !important;
     width: fit-content;
-    height: 40px;
+    height: fit-content;
     white-space: nowrap;
     text-overflow: clip;
   }
@@ -3052,6 +3052,11 @@ justify-content: center;
 @media only screen and (max-width: 600px) {
   .main_section {
     height: 85vh;
+  }
+
+  .signup_button {
+    padding: 10px;  
+    font-size: 15px !important;
   }
 }
 

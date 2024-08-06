@@ -1,4 +1,18 @@
 <?php
+
+// Set session cookie parameters
+$cookieParams = session_get_cookie_params();
+$lifetime = 7 * 24 * 60 * 60;
+
+session_set_cookie_params([
+    'lifetime' => $lifetime,
+    'path' => $cookieParams['path'],
+    'domain' => $cookieParams['domain'],
+    'secure' => true,  
+    'httponly' => true,
+    'samesite' => 'None' 
+]);
+
 // Start the session
 session_start();
 
@@ -30,6 +44,7 @@ $actionMap = [
     'acceptConfirm' => [GoogleUserController::class, 'emailConfirmDb'],
     'confirmMail' => [GoogleUserController::class, 'confirmMailPage'],
     'newMail' => [GoogleUserController::class, 'sendEmail'],
+    'newMailPhone' => [GoogleUserController::class, 'sendEmailPhone'],
     'googleTest' => [GoogleUserController::class, 'getGoogleData'],
     'signup' => [GoogleUserController::class, 'pageSignUp'],
     'basicinfo' => [UserController::class, 'createUser'],
@@ -68,40 +83,40 @@ $actionMap = [
     'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
-    'notFound' => [GoogleUserController::class, 'notFoundPage'],
+    'notFound' => [GoogleUserController::class, 'notFoundPage']
 ];
 
-    $action = "home";
+$action = "home";
 
-
-    if (isset($_GET['action'])) {
-        $action = $_GET['action'];
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+} else {
+    $delimiter = "&";
+    $URL = $_SERVER['REQUEST_URI'];
+    $parsedURL = parse_url($URL);
+    $path = $parsedURL['path'] ?? '';
+    $query = $parsedURL['query'] ?? '';
+    
+    if ($path == '/' || $path == '') {
     } else {
-        $delimiter = "&";
-        $URL = $_SERVER['REQUEST_URI'];
-        $parsedURL = parse_url($URL);
-        $path = $parsedURL['path'] ?? '';
-        $query = $parsedURL['query'] ?? '';
-        
-        if ($path == '/' || $path == '') {
+        if (strpos($path, $delimiter) === false) {
+            $result = str_replace(['/', '?'], '', $path);
+            $action = htmlspecialchars($result);
         } else {
-            if (strpos($path, $delimiter) === false) {
-                $result = str_replace(['/', '?'], '', $path);
-                $action = htmlspecialchars($result);
-            } else {
-                $pos = strpos($path, $delimiter);
-                $action = substr($path, 0, $pos);
-                $action = str_replace(['/', '?'], '', $action);
-                $action = htmlspecialchars($action);
-            }
+            $pos = strpos($path, $delimiter);
+            $action = substr($path, 0, $pos);
+            $action = str_replace(['/', '?'], '', $action);
+            $action = htmlspecialchars($action);
         }
     }
+}
 
 if (isset($actionMap[$action])) {
     [$controllerClass, $method] = $actionMap[$action];
     $controller = new $controllerClass();
     $controller->$method();
 } else {
+    http_response_code(404);
     [$controllerClass, $method] = $actionMap['notFound'];
     $controller = new $controllerClass();
     $controller->$method();

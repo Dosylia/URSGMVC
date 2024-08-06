@@ -58,19 +58,19 @@ class UserController
             $data = json_decode($postData, true);
     
             // Validate and set user data
-            $googleUserId = $this->validateInput($data["googleId"]);
+            $googleUserId = $this->validateInput($data->googleId);
             $this->setGoogleUserId($googleUserId);
-            $username = $this->validateInput($data["username"]);
+            $username = $this->validateInput($data->username);
             $this->setUsername($username);
-            $gender = $this->validateInput($data["gender"]);
+            $gender = $this->validateInput($data->gender);
             $this->setGender($gender);
-            $age = $this->validateInput($data["age"]);
+            $age = $this->validateInput($data->age);
             $this->setAge($age);
-            $kindofgamer = $this->validateInput($data["kindofgamer"]);
+            $kindofgamer = $this->validateInput($data->kindOfGamer);
             $this->setKindOfGamer($kindofgamer);
-            $game = $this->validateInput($data["game"]);
+            $game = $this->validateInput($data->game);
             $this->setGame($game);
-            $short_bio = $this->validateInput($data["short_bio"]);
+            $short_bio = $this->validateInput($data->shortBio);
             $this->setShortBio($short_bio);
     
             // Perform validation and user creation logic

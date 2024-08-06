@@ -96,6 +96,39 @@ class GoogleUserController
         }
     }
 
+    public function confirmMailPhone() 
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        // Check if the request method is POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $postData = file_get_contents('php://input');
+            // Decode the JSON data
+            $data = json_decode($postData, true);
+
+            if (isset($data->email)) {
+                $googleUser = $this-> googleUser -> getGoogleUserByEmail($data->email);
+            } else {
+                echo json_encode(['message' => 'No email']);
+                exit();
+            }
+
+            if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
+            {
+                echo json_encode(['message' => 'Success']);
+                exit();
+            }
+            else
+            {
+                echo json_encode(['message' => 'Email is not confirmed']);
+                exit();
+            }
+        }
+    }
+
     
 
     public function pageSignUp()
@@ -201,6 +234,12 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
+    public function verifyIdToken($idToken) {
+        $client = new GoogleClient(['client_id' => '666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com']);
+        $payload = $client->verifyIdToken($idToken);
+        return $payload;
+    }
+
     public function getGoogleData() 
     {
 
@@ -268,6 +307,8 @@ class GoogleUserController
 
                         $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
                         if ($googleUser) {
+
+
                             $user = $this-> user -> getUserByUsername($googleUser['user_username']);
 
                             if ($user)
@@ -290,24 +331,64 @@ class GoogleUserController
 
                                     if ($lfUser)
                                     {
-                                        $_SESSION['lf_id'] = $lfUser['lf_id'];                                       
-                                    }
+                                        $_SESSION['lf_id'] = $lfUser['lf_id']; 
+                                        $response = array(
+                                            'message' => 'Success',
+                                            'newUser' => false,
+                                            'userExists' => true,
+                                            'leagueUserExists' => true,
+                                            'lookingForUserExists' => true,
+                                            'googleUser' => $testGoogleUser,
+                                            'user' => $user,
+                                            'leagueUser' => $lolUser,
+                                            'lookingForUser' => $lfUser
+                                        );                                
+                                    } else {
+                                        $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'userExists' => true,
+                                        'leagueUserExists' => true,
+                                        'lookingForUserExists' => false,
+                                        'googleUser' => $testGoogleUser,
+                                        'user' => $user,
+                                        'leagueUser' => $lolUser
+                                        );
+;                                    }
+                                } else {
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'googleUser' => $testGoogleUser,
+                                        'user' => $user,
+                                        'userExists' => true,
+                                        'leagueUserExists' => false
+                                    );
                                 }
+                            } else {
+                                $response = array(
+                                    'message' => 'Success',
+                                    'newUser' => false,
+                                    'googleUser' => $testGoogleUser,
+                                    'userExists' => false
+                                );
                             }
+                        } else {
+                            $response = array(
+                                'message' => 'Success',
+                                'newUser' => false,
+                                'googleUser' => $testGoogleUser,
+                                'userExists' => false
+                            );
                         }
 
                     }
     
                 }
 
-                $response = array(
-                    'message' => 'Success',
-                );
-
                 header('Content-Type: application/json');
                 echo json_encode($response);
-
-                exit;
+                exit;  
 
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
@@ -365,16 +446,27 @@ class GoogleUserController
                     $mail->send();
                 }
             }
-        } 
+        } else {
+            $response = array(
+                'message' => 'Contact an administrator', // No google data
+            );
+            
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
+        }
+    
 
         $response = array(
             'message' => 'Success',
+            'newUser' => true,
+            'googleUser' => $createGoogleUser,
         );
         
         header('Content-Type: application/json');
         echo json_encode($response);
         exit;
-    }
+    } 
 
     public function logOut() {
 
@@ -393,6 +485,7 @@ class GoogleUserController
         }
 
     }
+
 
     public function emailConfirmDb()
     {
@@ -468,6 +561,54 @@ class GoogleUserController
             // } else {
             //     echo 'Message sent!';
             // }
+        } 
+    }
+
+    public function sendEmailPhone() 
+    {
+        require 'keys.php';
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        // Check if the request method is POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get the raw POST data
+            $postData = file_get_contents('php://input');
+            // Decode the JSON data
+            $data = json_decode($postData, true);
+            $email = $data->email;
+            $mail = new PHPMailer;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.ionos.de';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'contact@ur-sg.com';
+            $mail->Password = $password_gmail;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+        
+            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+            $mail->addAddress($email);
+            $mail->Subject = 'Confirm your email for URSG.com';
+            $mail->isHTML(true);
+        
+            $boundary = md5(uniqid());
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'quoted-printable';
+        
+            $mail->Body = "URSG.com - Email Confirmation\r\n";
+            $mail->Body .= "Your email: " . $email . "\r\n";
+            $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
+            $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $email;
+        
+            $mail->send();
+            echo json_encode(['message' => 'Mail sent']);
+            exit();
+
+            if (!$mail->send()) {
+                echo json_encode(['message' => "Mail couldn't be sent"]);
+                exit();
+            } 
         } 
     }
 

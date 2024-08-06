@@ -1,7 +1,7 @@
 const showButton = document.getElementById('signup_button');
 const favDialog = document.getElementById('favDialog');
 const cancelBtn = favDialog.querySelector('#cancelBtn');
-const joinNowButton = document.getElementById('mid_main_section_button');
+const joinNowButton = document.querySelector('.mid_main_section_button');
 
 if (showButton)
 {
