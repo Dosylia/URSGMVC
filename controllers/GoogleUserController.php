@@ -144,7 +144,6 @@ class GoogleUserController
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-
             if ($user && $usersAll) {
                 $userData = json_encode($user);
                 $usersAllData = json_encode($usersAll);
@@ -154,15 +153,16 @@ class GoogleUserController
             $title = "Swipe test";
             $page_title = "URSG - Swiping";
             require "views/layoutSwiping.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()) {
             // Code block 2: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/lookingforuserlol";
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $secondTierUser['user_game'] === "leagueoflegends") { 
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && $secondTierUser['user_game'] === "League of Legends" && !$this->isConnectLeagueLf()) { 
             // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/leagueuser";

@@ -63,7 +63,8 @@ document.addEventListener("DOMContentLoaded", function() {
         imageUser.src = data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg";
 
         // Fill the league of legends data if available
-        if (data.lol_sUsername?.trim()) {
+        console.log(data.lol_sUsername)
+        if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
             sProfileIcon.src = `public/images/profileicon/${data.lol_sProfileIcon}`;
             sUsername.innerText = data.lol_sUsername;
             sRank.innerText = data.lol_sRank;

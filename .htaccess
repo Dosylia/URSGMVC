@@ -25,6 +25,8 @@ RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
     <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
         Header set Cache-Control "max-age=31536000, public"
     </FilesMatch>
+        # Add SameSite=None to all cookies
+    Header always edit Set-Cookie ^(.*)$ "$1; SameSite=None; Secure"
 </IfModule>
 
 # X-XSS-Protection

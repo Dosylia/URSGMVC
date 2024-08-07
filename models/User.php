@@ -41,37 +41,31 @@ class User extends DataBase
 
     public function getUserById($userId)
     {
-
         $query = $this -> bdd -> prepare("
                                             SELECT
                                                 *
                                             FROM
-                                                `user` As u
-                                            INNER JOIN
+                                                `user` AS u
+                                            LEFT JOIN
                                                 `leagueoflegends` AS l
                                             ON
                                                 u.user_id = l.user_id
-                                            INNER JOIN
+                                            LEFT JOIN
                                                 `userlookingfor` AS lf
                                             ON
                                                 u.user_id = lf.user_id
                                             WHERE
                                                 u.user_id = ?
         ");
-
+    
         $query -> execute([$userId]);
         $user = $query -> fetch();
-
-
-        if ($user)
-        {
+    
+        if ($user) {
             return $user;
-        }
-        else
-        {
+        } else {
             return false;
         }
-
     }
 
     public function getAllUsers()
