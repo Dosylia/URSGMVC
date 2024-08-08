@@ -406,6 +406,19 @@ class LeagueOfLegendsController
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
 
+            if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+            {
+                header("location:/signup?message=Inputs cannot be empty");
+                exit();
+            }
+
+            $testLeagueAccount = $this->user->getUserById($this->getUserId());
+
+            if ($testLeagueAccount && $testLeagueAccount['lol_id'] !== null) {
+                header("location:/signup?message=League of legends user already exists");
+                exit();
+            }
+
             $createLoLUser = $this->leagueOfLegends->createLoLUser(
                 $this->getUserId(), 
                 $this->getLoLMain1(), 

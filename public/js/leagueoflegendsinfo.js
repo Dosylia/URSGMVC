@@ -15,7 +15,7 @@ function onClickBtnSubmit(event)
     let createLoLaccount = new CreateLoLAccount();
     createLoLaccount.getInputs(inputs);
      
-    if(createLoLaccount._accountError == true)
+    if(createLoLaccount._main1Error == true || createLoLaccount._main2Error == true || createLoLaccount._main3Error == true)
     {
         event.preventDefault();
         console.log("Error champ");

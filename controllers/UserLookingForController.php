@@ -120,6 +120,20 @@ class UserLookingForController
             $loLRole = $this->validateInput($_POST["role_lol"]);
             $this->setLoLRole($loLRole);
 
+            if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
+            {
+                header("location:/signup?message=Inputs cannot be empty");
+                exit();
+            }
+
+            
+            $testLeagueAccount = $this->user->getUserById($this->getUserId());
+
+            if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
+                header("location:/signup?message=Looking for user already exists");
+                exit();
+            }
+
             $createLookingFor = $this->userlookingfor->createLookingForUser(
                 $this->getUserId(), 
                 $this->getLfGender(),
