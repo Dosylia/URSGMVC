@@ -47,7 +47,7 @@
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
-                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league">
+                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
                             <div class="box_league_account_main_row_column">
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                 <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>

@@ -227,11 +227,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     btnSwipeYes.addEventListener('click', (event) => {
         event.preventDefault();
+        btnSwipeYes.disabled = true;
+        btnSwipeNo.disabled = true;
         swipeYes(userId, receiverId.value);
     });
 
     btnSwipeNo.addEventListener('click', (event) => {
         event.preventDefault();
+        btnSwipeNo.disabled = true;
+        btnSwipeYes.disabled = true;
         swipeNo(userId, receiverId.value);
     });
 
@@ -249,12 +253,14 @@ document.addEventListener("DOMContentLoaded", function() {
         if (Math.abs(swipeDistance) > threshold) {
             // Swipe right detection
             if (touchstartX < center && touchendX > touchstartX) {
-                console.log('Swipe right detected');
+                btnSwipeNo.disabled = true;
+                btnSwipeYes.disabled = true;
                 swipeYes(userId, receiverId.value);
             }
             // Swipe left detection
             else if (touchstartX > center && touchendX < touchstartX) {
-                console.log('Swipe left detected');
+                btnSwipeNo.disabled = true;
+                btnSwipeYes.disabled = true;
                 swipeNo(userId, receiverId.value);
             }
         }

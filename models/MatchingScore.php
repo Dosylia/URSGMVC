@@ -94,35 +94,33 @@ class MatchingScore extends DataBase
 
     public function getMatchingScore($userId) 
     {
-        $query = $this -> bdd -> prepare("
-                                            SELECT
-                                                m.*
-                                            FROM
-                                                `matchingscore` AS m
-                                            LEFT JOIN
-                                                `friendrequest` AS fr
-                                            ON
-                                                (fr.fr_senderId = m.match_userMatching AND fr.fr_receiverId = m.match_userMatched)
-                                                OR
-                                                (fr.fr_receiverId = m.match_userMatching AND fr.fr_senderId = m.match_userMatched)
-                                            WHERE
-                                                m.match_userMatching = ?
-                                                AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
-                                            ORDER BY
-                                                m.match_score DESC
-                                            LIMIT
-                                                5
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            m.*
+                                        FROM
+                                            `matchingscore` AS m
+                                        LEFT JOIN
+                                            `friendrequest` AS fr
+                                        ON
+                                            (fr.fr_senderId = m.match_userMatching AND fr.fr_receiverId = m.match_userMatched)
+                                            OR
+                                            (fr.fr_receiverId = m.match_userMatching AND fr.fr_senderId = m.match_userMatched)
+                                        WHERE
+                                            m.match_userMatching = ?
+                                            AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
+                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = ?)
+                                        ORDER BY
+                                            m.match_score DESC
+                                        LIMIT
+                                            5
         ");
-
-        $query -> execute([$userId]);
-        $getMatchingTest = $query -> fetchAll();
-
-        if ($getMatchingTest)
-        {
+    
+        $query->execute([$userId, $userId]);
+        $getMatchingTest = $query->fetchAll();
+    
+        if ($getMatchingTest) {
             return $getMatchingTest;
-        } 
-        else
-        {
+        } else {
             return false;
         }
     }

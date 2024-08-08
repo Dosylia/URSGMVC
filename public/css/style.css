@@ -45,6 +45,7 @@
 
   p, a {
     font-family: 'Geologica', sans-serif;  
+    text-decoration: none;
   }
 
   main {
@@ -795,7 +796,10 @@ section.siteMap tr:nth-child(even) {
 
   .user_page_update_name {
     text-align: center;
-    width: 100%;
+    width: calc(100% - 120px);
+    overflow: hidden;
+    word-break: break-word;
+    margin-left: 10px;
   }
 
   .user_page_main_content_row {
@@ -834,6 +838,7 @@ section.siteMap tr:nth-child(even) {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .user_page_main_league,
@@ -1402,6 +1407,7 @@ section.siteMap tr:nth-child(even) {
       min-height: calc(var(--vh, 1vh) * 65);
       overflow-y: auto;
       padding: 10px;
+      scroll-behavior: smooth;
     }
 
     #friendTop {
@@ -2005,7 +2011,7 @@ nav .scale:hover, nav .scaleNoRound:hover {
 }
 
 .signup_button {
-background:    #535151;
+background: linear-gradient(45deg, #df4b1a 10%, #e74057 100%);
 border-radius: 1000px;
 border: none;
 width: fit-content;
@@ -2566,13 +2572,17 @@ justify-content: center;
 }
 
 .dark-mode #signup_button {
-    background:    var(--dark-ligher-grey);
-    color: white;
+  background: linear-gradient(135deg, #171616, var(--dark-ligher-grey));
+  color: white;
 }
 
 .dark-mode .signup_button {
-    background:    var(--dark-ligher-grey);
-    color: white;
+  background: linear-gradient(135deg, #171616, var(--dark-ligher-grey));
+  color: white;
+}
+
+.dark-mode .signup_button:hover {
+  background: linear-gradient(135deg, var(--dark-ligher-grey), var(--ligher--grey));
 }
 
 .dark-mode  #menu_profile.visible {
@@ -2821,7 +2831,10 @@ justify-content: center;
   }
 
   #user_page_username {
-    font-size: 70px;
+    font-size: 50px;
+    overflow: hidden;        
+    white-space: break-word;    
+    max-width: 100%;           
   }
 
   .user_page {
@@ -2864,10 +2877,13 @@ justify-content: center;
   }
 
   .user_page_update_name {
+    display: flex;
+    flex-direction: column;
     padding-left: 5%;
     padding-top: 20px;
     text-align: center;
     width: 100%;
+    word-break: break-word;
   }
 
   #no_display_phone {
@@ -2908,6 +2924,7 @@ justify-content: center;
 
   .mid_main_section_button2 {
   padding: 15px 30px;
+  font-size: 4vh;
   }
 
 
@@ -3051,7 +3068,11 @@ justify-content: center;
 
 @media only screen and (max-width: 600px) {
   .main_section {
-    height: 85vh;
+    height: 60vh;
+  }
+
+  .mid_main_section {
+    height: 30vh;
   }
 
   .signup_button {
@@ -3113,6 +3134,55 @@ justify-content: center;
 
   .user_page_update_row_buttons {
     flex-direction: column;
+  }
+
+  /* SITE MAP */
+
+  section.siteMap {
+    margin: 20px 10px;
+    padding: 10px;
+  }
+
+  section.siteMap tbody {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+  }
+
+  section.siteMap h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  section.siteMap th, section.siteMap td {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
+  section.siteMap table, section.siteMap th, section.siteMap td {
+    display: block;
+  }
+
+  section.siteMap th {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  section.siteMap td {
+    border: none;
+    position: relative;
+    text-align: center;
+  }
+
+  section.siteMap td:before {
+    display: none;
+  }
+
+  section.siteMap tr {
+    margin-bottom: 10px;
+    display: block;
+    border-bottom: 1px solid #ddd;
   }
 
 }

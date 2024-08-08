@@ -385,18 +385,15 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $user = $this->user->getUserById($userId);
-            $unreadCounts = $this->chatmessage->countMessage($_SESSION['userId']);
-            $pendingCount = $this->friendrequest->countFriendRequest($_SESSION['userId']);
             $usersAfterMatching = $this->matchingscore->getMatchingScore($_SESSION['userId']);
-            $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']);
+            // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
             
             $data = ['success' => false, 'error' => 'No matching users found'];
             
             foreach ($usersAfterMatching as $match) {
                 $matchedUserId = $match['match_userMatched'];
-                if (!in_array($matchedUserId, $userFriendRequest)) {
-                    $userMatched = $this->user->getUserById($matchedUserId);
-    
+                // if (!in_array($matchedUserId, $userFriendRequest)) {
+                    $userMatched = $this->user->getUserById($matchedUserId);               
                     if ($userMatched) {
                         $data = [
                             'success' => true,
@@ -424,7 +421,7 @@ class UserController
                         ];
                         break;
                     }
-                }
+                // }
             }
             echo json_encode($data);
         } else {

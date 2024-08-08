@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let lastMessagePosition = isCurrentUser ? 'flex-end' : 'flex-start';
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
-            let timestampPosition = isCurrentUser ? "inverted" : "inverted";
+            let timestampPosition = isCurrentUser ? "normal" : "inverted";
             let pictureLink;
     
             if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
