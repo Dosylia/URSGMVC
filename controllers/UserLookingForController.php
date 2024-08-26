@@ -168,6 +168,93 @@ class UserLookingForController
 
     }
 
+    public function createLookingForUserPhone()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['lookingforData'])) 
+        {
+            $data = json_decode($_POST['lookingforData']);
+            $userId = $this->validateInput($data->userId);
+            $this->setUserId($userId);
+            $lfGender = $this->validateInput($data->gender);
+            $this->setLfGender($lfGender);
+            $lfKindOfGamer = $this->validateInput($data->kindOfGamer);
+            $this->setLfKindOfGamer($lfKindOfGamer);
+            $lfGame = $this->validateInput($data->game);
+            $this->setLfGame($lfGame);
+            $loLMain1 = $this->validateInput($data->main1);
+            $this->setLoLMain1($loLMain1);
+            $loLMain2 = $this->validateInput($data->main2);
+            $this->setLoLMain2($loLMain2);
+            $loLMain3 = $this->validateInput($data->main3);
+            $this->setLoLMain3($loLMain3);
+            $loLRank = $this->validateInput($data->rank);
+            $this->setLoLRank($loLRank);
+            $loLRole = $this->validateInput($data->role);
+            $this->setLoLRole($loLRole);
+
+            if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
+            {
+                $response = array('message' => 'Fill all fields');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit();  
+            }
+
+            
+            $testLeagueAccount = $this->user->getUserById($this->getUserId());
+
+            if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
+                $response = array('message' => 'User already exist');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit();  
+            }
+
+            $createLookingFor = $this->userlookingfor->createLookingForUser(
+                $this->getUserId(), 
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),
+                $this->getLfGame(),               
+                $this->getLoLMain1(), 
+                $this->getLoLMain2(), 
+                $this->getLoLMain3(), 
+                $this->getLoLRank(), 
+                $this->getLoLRole());
+
+
+            if ($createLookingFor)
+            {
+
+                $lolLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
+
+                $lookingforUserData = array(
+                    'lfId' => $lolLookingFor['lf_id'],
+                    'lfGender' => $lolLookingFor['lf_gender'],
+                    'lfKingOfGamer' => $lolLookingFor['lf_kindofgamer'],
+                    'lfGame' => $lolLookingFor['lf_game'],
+                    'main1Lf' => $lolLookingFor['lf_lolmain1'],
+                    'main2Lf' => $lolLookingFor['lf_lolmain2'],
+                    'main3Lf' => $lolLookingFor['lf_lolmain3'],
+                    'rankLf' => $lolLookingFor['lf_lolrank'],
+                    'roleLf' => $lolLookingFor['lf_lolrole']
+                );
+
+                $response = array(
+                    'sessionId' => session_id(),
+                    'user' => $lookingforUserData,
+                    'message' => 'Success'
+                );
+
+            }
+
+        }
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();  
+
+    }
+
     public function updateLookingFor()
     {
         if (isset($_POST['submit'])) 
@@ -195,8 +282,7 @@ class UserLookingForController
             $updateLookingFor = $this->userlookingfor->updateLookingForData(
                 $this->getUserId(), 
                 $this->getLfGender(),
-                $this->getLfKindOfGamer(),
-                $this->getLfGame(),               
+                $this->getLfKindOfGamer(),             
                 $this->getLoLMain1(), 
                 $this->getLoLMain2(), 
                 $this->getLoLMain3(), 

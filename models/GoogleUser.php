@@ -71,6 +71,37 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function createGoogleUserPhone($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
+    {
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `googleuser`(
+                                                `google_id`,
+                                                `google_fullName`,
+                                                `google_firstName`,            
+                                                `google_lastName`,
+                                                `google_email`,
+                                                `google_confirmEmail`
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                TRUE
+                                            )
+        ");
+
+        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail]);
+
+        if($createGoogleUser)
+        {
+            return $this->bdd-> lastInsertId();
+        } else {
+            return false;
+        }
+    }
+
     public function getGoogleUserByEmail($email) 
     {
         $query = $this -> bdd -> prepare ("

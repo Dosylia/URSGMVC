@@ -21,6 +21,7 @@ class UserController
     private UserLookingFor $userlookingfor;    
     private MatchingScore $matchingscore;
     private $googleUserId;
+    private $userId;
     private $username;
     private $gender;
     private $age;
@@ -32,6 +33,20 @@ class UserController
     private $instagram;
     private $twitch;
     private $fileName;
+    private $loLMain1;
+    private $loLMain2;
+    private $loLMain3;
+    private $loLRank;
+    private $loLRole;
+    private $loLServer;
+    private $lfGender;
+    private $lfKindOfGamer;
+    private $lfGame;
+    private $loLMain1Lf;
+    private $loLMain2Lf;
+    private $loLMain3Lf;
+    private $loLRankLf;
+    private $loLRoleLf;
     
     public function __construct()
     {
@@ -43,20 +58,44 @@ class UserController
         $this -> matchingscore = new MatchingScore();
     }
 
+    public function getAllUsers()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['allUsers'])) 
+        {
+            $allUsers = $this->user->getAllUsers();
+
+            if ($allUsers)
+            {
+                $response = array(
+                    'allUsers' => $allUsers,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = array('message' => 'Couldnt get all users');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+        } else {
+            $response = array('message' => 'Cant access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;  
+        }
+    }
+
     public function createUserPhone()
     {
-        // Start the session
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        // Check if the request method is POST
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Get the raw POST data
-            $postData = file_get_contents('php://input');
-            // Decode the JSON data
-            $data = json_decode($postData, true);
-    
+        $response = array('message' => 'Error');
+        if (isset($_POST['userData'])) // DATA SENT BY AJAX
+        {
+            $data = json_decode($_POST['userData']);
             // Validate and set user data
             $googleUserId = $this->validateInput($data->googleId);
             $this->setGoogleUserId($googleUserId);
@@ -72,44 +111,45 @@ class UserController
             $this->setGame($game);
             $short_bio = $this->validateInput($data->shortBio);
             $this->setShortBio($short_bio);
-    
+
             // Perform validation and user creation logic
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
-                echo json_encode(['message' => 'Inputs cannot be empty']);
-                exit();
+                $response = array('message' => 'Inputs cannot be empty');
             }
-    
+
             if ($this->user->getUserByUsername($this->getUsername())) {
-                echo json_encode(['message' => 'Username already exists']);
-                exit();
+                $response = array('message' => 'Username already exists');
             }
-    
+
             if ($this->invalidUid($this->getUsername()) !== false) {
-                echo json_encode(['message' => 'Username is not valid']);
-                exit();
+                $response = array('message' => 'Username is not valid');
             }
-    
+
             $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
-    
+
             if ($createUser) {
                 $user = $this->user->getUserByUsername($this->getUsername());
-    
-                // Set session variables
-                $_SESSION['userId'] = $user['user_id'];
-                $_SESSION['username'] = $user['user_username'];
-                $_SESSION['gender'] = $user['user_gender'];
-                $_SESSION['age'] = $user['user_age'];
-                $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
-                $_SESSION['game'] = $user['user_game'];
-    
-                // Return session ID and user data
-                echo json_encode([
+
+                $userData = array(
+                    'userId' => $user['user_id'],
+                    'username' => $user['user_username'],
+                    'gender' => $user['user_gender'],
+                    'age' => $user['user_age'],
+                    'kindOfGamer' => $user['user_kindOfGamer'],
+                    'game' => $user['user_game'],
+                    'shortBio' => $user['user_shortBio']
+                );
+
+                $response = array(
                     'sessionId' => session_id(),
-                    'user' => $user
-                ]);
-                exit();
+                    'user' => $userData,
+                    'message' => 'Success'
+                );
             }
         }
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;  
     }
     
     public function createUser()
@@ -187,6 +227,7 @@ class UserController
 
     public function updateSocial()
     {
+        $response = array('message' => 'Error');
         if (isset($_POST['submit']))
         {
             $username = $this->validateInput($_GET["username"]);
@@ -217,13 +258,50 @@ class UserController
 
     }
 
+    public function updateSocialPhone()
+    {
+        if (isset($_POST['userData'])) // DATA SENT BY AJAX
+        {
+            $data = json_decode($_POST['userData']);
+            $username = $this->validateInput($data->username);
+            $this->setUsername($username);
+            $discord = $this->validateInput($data->discord);
+            $this->setDiscord($discord);
+            $twitter = $this->validateInput($data->twitter);
+            $this->setTwitter($twitter);
+            $instagram = $this->validateInput($data->instagram);
+            $this->setInstagram($instagram);
+            $twitch = $this->validateInput($data->twitch);
+            $this->setTwitch($twitch);
+
+            $updateSocial = $this->user->updateSocial($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch());
+
+
+            if ($updateSocial)
+            {
+                $response = array('message' => 'Success');
+                echo json_encode($response);
+                exit();  
+            }
+            else
+            {
+                $response = array('message' => 'Couldnt update user');
+                echo json_encode($response);
+                exit();
+            }
+        } else {
+            $response = array('message' => 'Couldnt update user');
+            echo json_encode($response);
+            exit();
+        }
+
+    }
+
     public function updateProfile()
     {
         if (isset($_POST['submit']))
         {
             $this->setGoogleUserId($googleUserId);
-            $username = $this->validateInput($_SESSION["username"]);
-            $this->setUsername($username);
             $gender = $this->validateInput($_POST["gender"]);
             $this->setGender($gender);
             $age = $this->validateInput($_POST["age"]);
@@ -245,7 +323,7 @@ class UserController
                 exit();
             }
 
-            $updateUser = $this->user->updateUser($this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
+            $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
 
 
             if ($updateUser)
@@ -260,6 +338,123 @@ class UserController
             }
         }
 
+    }
+
+    public function getUserData()
+    {
+        $response = array('message' => 'Error');
+    
+        if (isset($_POST['userId'])) {
+            // Directly get the userId from POST data
+            $userId = $this->validateInput($_POST['userId']); // No need for json_decode here
+    
+            // Assuming validateInput returns an integer or valid user ID
+            $user = $this->user->getUserById($userId);
+    
+            if ($user) {
+                $response = array(
+                    'user' => $user,
+                    'message' => 'Success'
+                );
+            } else {
+                $response = array('message' => 'Could not get user');
+            }
+        } else {
+            $response = array('message' => 'Proper data not sent');
+        }
+    
+        echo json_encode($response); // Make sure to output the JSON response
+    }
+
+    public function updateUserPhone()
+    {
+        $response = array('message' => 'Error');
+        
+        if (isset($_POST['userData'])) // Check if data is sent via AJAX
+        {
+            $data = json_decode($_POST['userData']);
+            
+            // Validate and set user data
+            $userId = $this->validateInput($data->userId);
+            $username = $this->validateInput($data->username);
+            $gender = $this->validateInput($data->gender);
+            $age = $this->validateInput($data->age);
+            $kindOfGamer = $this->validateInput($data->kindOfGamer);
+            $game = $this->validateInput($data->game);
+            $shortBio = $this->validateInput($data->shortBio);
+            $main1 = $this->validateInput($data->main1);
+            $main2 = $this->validateInput($data->main2);
+            $main3 = $this->validateInput($data->main3);
+            $rank = $this->validateInput($data->rank);
+            $role = $this->validateInput($data->role);
+            $server = $this->validateInput($data->server);
+            $genderLf = $this->validateInput($data->genderLf);
+            $kindOfGamerLf = $this->validateInput($data->kindOfGamerLf);
+            $main1Lf = $this->validateInput($data->main1Lf);
+            $main2Lf = $this->validateInput($data->main2Lf);
+            $main3Lf = $this->validateInput($data->main3Lf);
+            $rankLf = $this->validateInput($data->rankLf);
+            $roleLf = $this->validateInput($data->roleLf);
+    
+            $this->setUserId($userId);
+            $this->setUsername($username);
+            $this->setGender($gender);
+            $this->setAge($age);
+            $this->setKindOfGamer($kindOfGamer);
+            $this->setGame($game);
+            $this->setShortBio($shortBio);
+            $this->setLoLMain1($main1);
+            $this->setLoLMain2($main2);
+            $this->setLoLMain3($main3);
+            $this->setLoLRank($rank);
+            $this->setLoLRole($role);
+            $this->setLoLServer($server);
+            $this->setLfGender($genderLf);
+            $this->setLfKindOfGamer($kindOfGamerLf);
+            $this->setLoLMain1Lf($main1Lf);
+            $this->setLoLMain2Lf($main2Lf);
+            $this->setLoLMain3Lf($main3Lf);
+            $this->setLoLRankLf($rankLf);
+            $this->setLoLRoleLf($roleLf);
+
+            $updateUser = $this->user->updateUser($this->getUsername(),
+                $this->getGender(),
+                $this->getAge(),
+                $this->getKindOfGamer(),
+                $this->getShortBio(),
+                $this->getGame());
+
+            $updateLeague = $this->leagueoflegends->updateLeagueData(
+                $this->getUserId(), 
+                $this->getLoLMain1(), 
+                $this->getLoLMain2(), 
+                $this->getLoLMain3(), 
+                $this->getLoLRank(), 
+                $this->getLoLRole(), 
+                $this->getLoLServer());
+
+            $updateLookingFor = $this->userlookingfor->updateLookingForData(
+                $this->getUserId(), 
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),             
+                $this->getLoLMain1Lf(), 
+                $this->getLoLMain2Lf(), 
+                $this->getLoLMain3Lf(), 
+                $this->getLoLRankLf(), 
+                $this->getLoLRoleLf());
+
+                if($updateUser && $updateLeague && $updateLookingFor)
+                {
+                    $response = array('message' => 'Success');
+                }
+                else
+                {
+                    $response = array('message' => 'Could not update');
+                }
+        }
+    
+        // Return the response in JSON format
+        echo json_encode($response);
     }
 
     public function updatePicture() {
@@ -385,7 +580,7 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $user = $this->user->getUserById($userId);
-            $usersAfterMatching = $this->matchingscore->getMatchingScore($_SESSION['userId']);
+            $usersAfterMatching = $this->matchingscore->getMatchingScore($userId);
             // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
             
             $data = ['success' => false, 'error' => 'No matching users found'];
@@ -585,6 +780,16 @@ class UserController
         $this->googleUserId = $googleUserId;
     }
 
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
 
     public function getUsername()
     {
@@ -694,5 +899,137 @@ class UserController
     public function setFileName($fileName)
     {
         $this->fileName = $fileName;
+    }
+
+    public function getLoLMain1()
+    {
+        return $this->loLMain1;
+    }
+
+    public function setLoLMain1($loLMain1)
+    {
+        $this->loLMain1 = $loLMain1;
+    }
+
+    public function getLoLMain2()
+    {
+        return $this->loLMain2;
+    }
+
+    public function setLoLMain2($loLMain2)
+    {
+        $this->loLMain2 = $loLMain2;
+    }
+
+    public function getLoLMain3()
+    {
+        return $this->loLMain3;
+    }
+
+    public function setLoLMain3($loLMain3)
+    {
+        $this->loLMain3 = $loLMain3;
+    }
+
+    public function getLoLRank()
+    {
+        return $this->loLRank;
+    }
+
+    public function setLoLRank($loLRank)
+    {
+        $this->loLRank = $loLRank;
+    }
+
+
+    public function getLoLRole()
+    {
+        return $this->loLRole;
+    }
+
+    public function setLoLRole($loLRole)
+    {
+        $this->loLRole = $loLRole;
+    }
+
+    public function getLoLServer()
+    {
+        return $this->loLServer;
+    }
+
+    public function setLoLServer($loLServer)
+    {
+        $this->loLServer = $loLServer;
+    }
+
+    public function getLfGender()
+    {
+        return $this->lfGender;
+    }
+
+    public function setLfGender($lfGender)
+    {
+        $this->lfGender = $lfGender;
+    }
+
+    public function getLfKindOfGamer()
+    {
+        return $this->lfKindOfGamer;
+    }
+
+    public function setLfKindOfGamer($lfKindOfGamer)
+    {
+        $this->lfKindOfGamer = $lfKindOfGamer;
+    }
+
+    public function getLoLMain1Lf()
+    {
+        return $this->loLMain1Lf;
+    }
+
+    public function setLoLMain1Lf($loLMain1Lf)
+    {
+        $this->loLMain1Lf = $loLMain1Lf;
+    }
+
+    public function getLoLMain2Lf()
+    {
+        return $this->loLMain2Lf;
+    }
+
+    public function setLoLMain2Lf($loLMain2Lf)
+    {
+        $this->loLMain2Lf = $loLMain2Lf;
+    }
+
+    public function getLoLMain3Lf()
+    {
+        return $this->loLMain3Lf;
+    }
+
+    public function setLoLMain3Lf($loLMain3Lf)
+    {
+        $this->loLMain3Lf = $loLMain3Lf;
+    }
+
+    public function getLoLRankLf()
+    {
+        return $this->loLRankLf;
+    }
+
+    public function setLoLRankLf($loLRankLf)
+    {
+        $this->loLRankLf = $loLRankLf;
+    }
+
+
+    public function getLoLRoleLf()
+    {
+        return $this->loLRoleLf;
+    }
+
+    public function setLoLRoleLf($loLRoleLf)
+    {
+        $this->loLRole = $loLRoleLf;
     }
 }

@@ -215,6 +215,15 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
+    public function termsOfServicePage() 
+    {
+        $current_url = "https://ur-sg.com/termsOfService";
+        $template = "views/termsofservice";
+        $title = "Terms of service";
+        $page_title = "URSG - Terms of service";
+        require "views/layoutSwiping_noheader.phtml";
+    }
+
     public function siteMapPage() 
     {
         $xml = simplexml_load_file('sitemap.xml');
@@ -242,11 +251,10 @@ class GoogleUserController
 
     public function getGoogleData() 
     {
-
+        $response = array('message' => 'Error');
+    
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
-    
-
             $googleData = json_decode($_POST['googleData']);
             $googleId = $googleData->googleId;
             $this->setGoogleId($googleId); 
@@ -260,7 +268,7 @@ class GoogleUserController
                 $googleFirstName = $googleData->givenName;
                 $this->setGoogleFirstName($googleFirstName);  
             }
-
+    
             if (isset($googleData->familyName))
             {
                 $googleFamilyName = $googleData->familyName;
@@ -273,14 +281,13 @@ class GoogleUserController
 
             if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
             {
-
                 if (!$this->isConnectGoogle()) 
                 {
 
                     $lifetime = 7 * 24 * 60 * 60;
-
+    
                     session_destroy();
-
+    
                     $cookieParams = session_get_cookie_params();
                     session_set_cookie_params([
                         'lifetime' => $lifetime,
@@ -290,45 +297,39 @@ class GoogleUserController
                         'httponly' => $cookieParams['httponly'],
                         'domain' => 'ur-sg.com'
                     ]);
-
+    
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
                     }
                     
                     if (!isset($_SESSION['googleId'])) 
                     {
-
-                        
                         $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                         $_SESSION['full_name'] = $this->getGoogleFullName();
                         $_SESSION['google_id'] = $this->getGoogleId();
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
-
+    
                         $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
                         if ($googleUser) {
-
-
-                            $user = $this-> user -> getUserByUsername($googleUser['user_username']);
-
+                            $user = $this->user->getUserByUsername($googleUser['user_username']);
                             if ($user)
                             {
-
                                 $_SESSION['userId'] = $user['user_id'];
                                 $_SESSION['username'] = $user['user_username'];
                                 $_SESSION['gender'] = $user['user_gender'];
                                 $_SESSION['age'] = $user['user_age'];
                                 $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                                 $_SESSION['game'] = $user['user_game'];
-
+    
                                 $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-
+    
                                 if ($lolUser)
                                 {
                                     $_SESSION['lol_id'] = $lolUser['lol_id'];
-
+    
                                     $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
+    
                                     if ($lfUser)
                                     {
                                         $_SESSION['lf_id'] = $lfUser['lf_id']; 
@@ -345,16 +346,16 @@ class GoogleUserController
                                         );                                
                                     } else {
                                         $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => true,
-                                        'lookingForUserExists' => false,
-                                        'googleUser' => $testGoogleUser,
-                                        'user' => $user,
-                                        'leagueUser' => $lolUser
+                                            'message' => 'Success',
+                                            'newUser' => false,
+                                            'userExists' => true,
+                                            'leagueUserExists' => true,
+                                            'lookingForUserExists' => false,
+                                            'googleUser' => $testGoogleUser,
+                                            'user' => $user,
+                                            'leagueUser' => $lolUser
                                         );
-;                                    }
+                                    }
                                 } else {
                                     $response = array(
                                         'message' => 'Success',
@@ -381,33 +382,29 @@ class GoogleUserController
                                 'userExists' => false
                             );
                         }
-
                     }
-    
                 }
-
+    
                 header('Content-Type: application/json');
                 echo json_encode($response);
                 exit;  
-
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
                 $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
-
+    
                 if($createGoogleUser) 
                 {
-
                     require 'keys.php';
-
+    
                     $this->setGoogleUserId($createGoogleUser);
-
+    
                     $lifetime = 7 * 24 * 60 * 60;
-
+    
                     session_destroy();
-
+    
                     session_set_cookie_params($lifetime);
-
+    
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
                     }
@@ -419,7 +416,7 @@ class GoogleUserController
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
                     }
-
+    
                     $mail = new PHPMailer;
                     $mail->isSMTP();
                     $mail->Host = 'smtp.ionos.de';
@@ -444,29 +441,216 @@ class GoogleUserController
                     $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $this->getGoogleEmail();
                 
                     $mail->send();
+    
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => true,
+                        'googleUser' => $createGoogleUser,
+                    );
                 }
             }
-        } else {
+        }
+        else
+        {
             $response = array(
                 'message' => 'Contact an administrator', // No google data
             );
-            
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;
         }
     
-
-        $response = array(
-            'message' => 'Success',
-            'newUser' => true,
-            'googleUser' => $createGoogleUser,
-        );
-        
         header('Content-Type: application/json');
         echo json_encode($response);
         exit;
-    } 
+    }
+
+    public function getGoogleDataPhone() 
+    {
+        $response = array('message' => 'Error');
+    
+        if (isset($_POST['googleData'])) // DATA SENT BY AJAX
+        {
+            $googleData = json_decode($_POST['googleData']);
+            $googleId = $googleData->googleId;
+            $this->setGoogleId($googleId); 
+            if (isset($googleData->fullName))
+            {
+                $googleFullName = $googleData->fullName;
+                $this->setGoogleFullName($googleFullName);              
+            }
+            if (isset($googleData->givenName))
+            {
+                $googleFirstName = $googleData->givenName;
+                $this->setGoogleFirstName($googleFirstName);  
+            }
+    
+            if (isset($googleData->familyName))
+            {
+                $googleFamilyName = $googleData->familyName;
+                $this->setGoogleFamilyName($googleFamilyName);  
+            }
+            $googleEmail = $googleData->email;
+            $this->setGoogleEmail($googleEmail);  
+            
+            $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
+
+            if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
+            {
+            
+                $googleUserData = array(
+                    'googleId' => $testGoogleUser['google_id'],
+                    'fullName' => $testGoogleUser['google_fullName'],
+                    'firstName' => $testGoogleUser['google_firstName'],
+                    'lastName' => $testGoogleUser['google_lastName'],
+                    'email' => $testGoogleUser['google_email'],
+                    'googleUserId' => $testGoogleUser['google_userId']
+                );
+
+                $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
+                if ($googleUser) {
+
+                    $user = $this->user->getUserByUsername($googleUser['user_username']);
+                    if ($user)
+                    {
+                        $userData = array(
+                            'userId' => $user['user_id'],
+                            'username' => $user['user_username'],
+                            'gender' => $user['user_gender'],
+                            'age' => $user['user_age'],
+                            'kindOfGamer' => $user['user_kindOfGamer'],
+                            'game' => $user['user_game'],
+                            'shortBio' => $user['user_shortBio'],
+                            'picture' => $user['user_picture'] ?? null,
+                            'discord' => $user['user_discord'] ?? null,
+                            'twitch' => $user['user_twitch'] ?? null,
+                            'instagram' => $user['user_instagram'] ?? null,
+                            'twitter' => $user['user_twitter'] ?? null
+                        );
+
+                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+
+                        if ($lolUser)
+                        {
+                            $lolUserData = array(
+                                'lolId' => $lolUser['lol_id'],
+                                'main1' => $lolUser['lol_main1'],
+                                'main2' => $lolUser['lol_main2'],
+                                'main3' => $lolUser['lol_main3'],
+                                'rank' => $lolUser['lol_rank'],
+                                'role' => $lolUser['lol_role'],
+                                'server' => $lolUser['lol_server'],
+                                'account' => $lolUser['lol_account'],
+                                'sUsername' => $lolUser['lol_sUsername'],
+                                'sLevel' => $lolUser['lol_sLevel'],
+                                'sRank' => $lolUser['lol_sRank'],
+                                'sProfileIcon' => $lolUser['lol_sProfileIcon']
+                            );
+
+                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+                            if ($lfUser)
+                            {
+                                $lookingforUserData = array(
+                                    'lfId' => $lfUser['lf_id'],
+                                    'lfGender' => $lfUser['lf_gender'],
+                                    'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
+                                    'lfGame' => $lfUser['lf_game'],
+                                    'main1Lf' => $lfUser['lf_lolmain1'],
+                                    'main2Lf' => $lfUser['lf_lolmain2'],
+                                    'main3Lf' => $lfUser['lf_lolmain3'],
+                                    'rankLf' => $lfUser['lf_lolrank'],
+                                    'roleLf' => $lfUser['lf_lolrole']
+                                );
+
+                                
+                                $response = array(
+                                    'message' => 'Success',
+                                    'newUser' => false,
+                                    'userExists' => true,
+                                    'leagueUserExists' => true,
+                                    'lookingForUserExists' => true,
+                                    'googleUser' => $googleUserData,
+                                    'user' => $userData,
+                                    'leagueUser' => $lolUserData,
+                                    'lookingForUser' => $lookingforUserData
+                                );                                
+                            } else {
+                                $response = array(
+                                    'message' => 'Success',
+                                    'newUser' => false,
+                                    'userExists' => true,
+                                    'leagueUserExists' => true,
+                                    'lookingForUserExists' => false,
+                                    'googleUser' => $googleUserData,
+                                    'user' => $userData,
+                                    'leagueUser' => $lolUserData
+                                );
+                            }
+                        } else {
+                            $response = array(
+                                'message' => 'Success',
+                                'newUser' => false,
+                                'googleUser' => $googleUserData,
+                                'user' => $userData,
+                                'userExists' => true,
+                                'leagueUserExists' => false
+                            );
+                        }
+                    } else {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'googleUser' => $googleUserData,
+                            'userExists' => false
+                        );
+                    }
+                } else {
+                    
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => false,
+                        'googleUser' => $googleUserData,
+                        'userExists' => false
+                    );
+                }
+    
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+            else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
+            {
+                $createGoogleUser = $this->googleUser->createGoogleUserPhone($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
+    
+                if($createGoogleUser) 
+                {
+                    $googleData = array(
+                        'googleId' => $this->getGoogleId(),
+                        'fullName' => $this->getGoogleFullName(),
+                        'firstName' => $this->getGoogleFirstName(),
+                        'lastName' => $this->getGoogleFamilyName(),
+                        'email' => $this->getGoogleEmail(),
+                        'googleUserId' => $createGoogleUser
+                    );
+    
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => true,
+                        'googleUser' => $googleData,
+                    );
+                }
+            }
+        }
+        else
+        {
+            $response = array(
+                'message' => 'Contact an administrator', // No google data
+            );
+        }
+    
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
+    }
+    
 
     public function logOut() {
 

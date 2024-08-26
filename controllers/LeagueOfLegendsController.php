@@ -183,6 +183,73 @@ class LeagueOfLegendsController
         }
     }
 
+    public function bindAccount()
+    {
+        if (isset($_POST['userData']))
+        {
+            $data = json_decode($_POST['userData']);
+            
+            $userId = $this->validateInput($data->userId);
+            $this->setUserId($userId);
+            $loLAccount = $this->validateInput($data->account);
+            $this->setLolAccount(str_replace(' ', '', $loLAccount));
+            $parts = explode('#', $this->getLolAccount());
+            $username = $parts[0];
+            $tagLine = $parts[1];
+            $loLServer = $data->server;
+            $this->setLolServer($loLServer);
+
+            $regionMap = [
+                "Europe West" => "euw1",
+                "North America" => "na1",
+                "Europe Nordic" => "eun1",
+                "Brazil" => "br1",
+                "Latin America North" => "la1",
+                "Latin America South" => "la2",
+                "Oceania" => "oc1",
+                "Russia" => "ru1",
+                "Turkey" => "tr1",
+                "Japan" => "jp1",
+                "Korea" => "kr",
+            ];
+
+
+            $selectedRegionValue = $regionMap[$this->getLolServer()] ?? null;
+
+            require_once 'keys.php';
+
+            $summoner = $this->getSummonerByNameAndTag($username, $tagLine, $apiKey);
+
+
+            if ($summoner)
+            {
+                $puudId = $summoner['puuid'];
+                $summoner_name = $summoner['gameName'];
+                $verificationCode = bin2hex(random_bytes(5));
+
+                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $this->getUserId());
+
+                            if ($insertLeagueData)
+                            {
+                                echo json_encode(['status' => 'Success', 
+                                'message' => 'Verification code generated',
+                                'verification_code' => $verificationCode,
+                                'puuId' => $puudId,
+                                'summonerName' => $summoner_name,
+                                'tagLine' => $tagLine,
+                            ]);
+                            }
+            } 
+            else
+            {
+                echo json_encode(['success' => false, 'message' => "Couldn't find a LoL account"]);
+            }
+    
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+        }
+    }
+
     public function getSummonerByNameAndTag($summonerName, $tagLine, $apiKey) {
         $region = "americas";
         $url = "https://{$region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" . urlencode($summonerName) . "/{$tagLine}?api_key={$apiKey}";
@@ -245,6 +312,102 @@ class LeagueOfLegendsController
                     );
         
                     echo json_encode(['status' => 'success', 'message' => 'Account verified successfully!']);
+            }
+            else
+            {
+                echo json_encode(['status' => 'failure', 'message' => 'Verification failed. Picture does not match.']);
+            }
+            
+        } 
+        else 
+        {
+            echo json_encode(['status' => 'failure', 'message' => 'Invalid request method']);
+        }
+    }
+
+    public function verifyLeagueAccountPhone()
+    {
+        
+        if (isset($_POST['userData']))
+        {
+            $data = json_decode($_POST['userData']);
+            
+            $userId = $this->validateInput($data->userId);
+            $this->setUserId($userId);
+            $puudId = $data->puuId;
+            $server = $data->server;
+            $tagLine = $data->tagLine;
+            $username = $data->summonerName;
+
+            $regionMap = [
+                "Europe West" => "euw1",
+                "North America" => "na1",
+                "Europe Nordic" => "eun1",
+                "Brazil" => "br1",
+                "Latin America North" => "la1",
+                "Latin America South" => "la2",
+                "Oceania" => "oc1",
+                "Russia" => "ru1",
+                "Turkey" => "tr1",
+                "Japan" => "jp1",
+                "Korea" => "kr",
+            ];
+
+
+            $selectedRegionValue = $regionMap[$server] ?? null;
+
+            require_once 'keys.php';
+            
+            $summonerProfile = $this->getSummonerProfile($puudId, $selectedRegionValue, $apiKey);
+
+            if($summonerProfile && $summonerProfile['profileIconId'] === 7) 
+            {
+
+
+                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+
+                // Default to 'Unranked'
+                $rankAndTier = 'Unranked';
+                $soloQueueRankAndTier = null;
+                $flexQueueRankAndTier = null;
+                
+                // Loop through the ranked stats array to find the desired queue types
+                foreach ($summonerRankedStats as $rankedStats) {
+                    if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+                        $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                    } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+                        $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                    }
+                }
+                
+                // Prioritize solo queue rank, if available
+                if ($soloQueueRankAndTier !== null) {
+                    $rankAndTier = $soloQueueRankAndTier;
+                } elseif ($flexQueueRankAndTier !== null) {
+                    $rankAndTier = $flexQueueRankAndTier;
+                }
+        
+                    // Save updated summoner data to the database
+                    $this->leagueOfLegends->updateSummonerData(
+                        $username, 
+                        $summonerProfile['id'],
+                        $puudId,
+                        $summonerProfile['summonerLevel'], 
+                        $rankAndTier,
+                        $summonerProfile['profileIconId'], 
+                        $this->getUserId()
+                    );
+        
+                    echo json_encode([
+                        'status' => 'success',
+                        'message' => 'Account verified successfully!',
+                        'summonerName' => $username,
+                        'summonerId' => $summonerProfile['id'],
+                        'puuId' => $puudId,
+                        'summonerLevel' => $summonerProfile['summonerLevel'],
+                        'rankAndTier' => $rankAndTier,
+                        'profileIconId' => $summonerProfile['profileIconId']
+                    ]);
             }
             else
             {
@@ -448,6 +611,81 @@ class LeagueOfLegendsController
 
         }
 
+    }
+
+    public function createLeagueUserPhone()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['leagueData'])) 
+        {
+            $data = json_decode($_POST['leagueData']);
+            $userId = $this->validateInput($data->userId);
+            $this->setUserId($userId);
+            $loLMain1 = $this->validateInput($data->main1);
+            $this->setLoLMain1($loLMain1);
+            $loLMain2 = $this->validateInput($data->main2);
+            $this->setLoLMain2($loLMain2);
+            $loLMain3 = $this->validateInput($data->main3);
+            $this->setLoLMain3($loLMain3);
+            $loLRank = $this->validateInput($data->rank);
+            $this->setLoLRank($loLRank);
+            $loLRole = $this->validateInput($data->role);
+            $this->setLoLRole($loLRole);
+            $loLServer = $this->validateInput($data->server);
+            $this->setLoLServer($loLServer);
+
+            if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+            {
+                $response = array('message' => 'Fill all fields');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+            $testLeagueAccount = $this->user->getUserById($this->getUserId());
+
+            if ($testLeagueAccount && $testLeagueAccount['lol_id'] !== null) {
+                $response = array('message' => 'User already exist');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+            $createLoLUser = $this->leagueOfLegends->createLoLUser(
+                $this->getUserId(), 
+                $this->getLoLMain1(), 
+                $this->getLoLMain2(), 
+                $this->getLoLMain3(), 
+                $this->getLoLRank(), 
+                $this->getLoLRole(), 
+                $this->getLoLServer()); // This also get the ID 
+
+            if ($createLoLUser)
+            {
+
+                $lolUser = $this->leagueOfLegends->getLeageAccountByLeagueId($createLoLUser);
+
+                $lolUserData = array(
+                    'lolId' => $lolUser['lol_id'],
+                    'main1' => $lolUser['lol_main1'],
+                    'main2' => $lolUser['lol_main2'],
+                    'main3' => $lolUser['lol_main3'],
+                    'rank' => $lolUser['lol_rank'],
+                    'role' => $lolUser['lol_role'],
+                    'server' => $lolUser['lol_server']
+                );
+
+                $response = array(
+                    'sessionId' => session_id(),
+                    'user' => $lolUserData,
+                    'message' => 'Success'
+                );
+            }
+
+        }
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;  
     }
 
 

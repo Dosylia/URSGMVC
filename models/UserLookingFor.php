@@ -86,7 +86,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForData($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    public function updateLookingForData($userId, $lfGender, $lfKindOfGamer, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];

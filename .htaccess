@@ -27,6 +27,9 @@ RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
     </FilesMatch>
         # Add SameSite=None to all cookies
     Header always edit Set-Cookie "(.*)" "$1; SameSite=None; Secure"
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
 </IfModule>
 
 # X-XSS-Protection

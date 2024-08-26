@@ -58,6 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to fill the data
     function fillData(data) {
+
+        clearData();
         document.querySelector('.user_page').style.display = 'flex';
         // Fill the user image
         imageUser.src = data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg";
@@ -73,6 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // Fill other user data
+        btnSwipeYes.disabled = false;
+        btnSwipeNo.disabled = false;
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
         lolAccount.innerText = data.lol_account;
@@ -95,6 +99,45 @@ document.addEventListener("DOMContentLoaded", function() {
         lolRankPic.alt = data.lol_rank;
         lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
         lolRolePic.alt = data.lol_role;
+    }
+
+    function clearData() {
+        // Hide elements that might be shown based on conditions
+        document.querySelector('.box_league_account').style.display = 'none';
+    
+        // Clear image sources and alt text
+        imageUser.src = "public/images/defaultprofilepicture.jpg";
+        imageUser.alt = "Default profile picture";
+        sProfileIcon.src = "";
+        sProfileIcon.alt = "";
+        
+        // Clear text content
+        sUsername.innerText = "";
+        sRank.innerText = "";
+        username.innerText = "";
+        userAge.innerText = "";
+        lolAccount.innerText = "";
+        gender.innerHTML = "<strong>Gender:</strong> "; 
+        kindOfGamer.innerHTML = "<strong>Kind of Gamer:</strong> "; 
+        shortBio.innerHTML = "<strong>ShortBio:</strong>"; 
+        receiverId.value = "";
+    
+        // Clear the League of Legends data
+        lolMain1P.innerText = "";
+        lolMain2P.innerText = "";
+        lolMain3P.innerText = "";
+        lolRankP.innerText = "";
+        lolRoleP.innerText = "";
+        lolMain1Pic.src = "";
+        lolMain1Pic.alt = "";
+        lolMain2Pic.src = "";
+        lolMain2Pic.alt = "";
+        lolMain3Pic.src = "";
+        lolMain3Pic.alt = "";
+        lolRankPic.src = "";
+        lolRankPic.alt = "";
+        lolRolePic.src = "";
+        lolRolePic.alt = "";
     }
 
     // Function to show the no more profiles message
@@ -253,14 +296,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (Math.abs(swipeDistance) > threshold) {
             // Swipe right detection
             if (touchstartX < center && touchendX > touchstartX) {
-                btnSwipeNo.disabled = true;
-                btnSwipeYes.disabled = true;
                 swipeYes(userId, receiverId.value);
             }
             // Swipe left detection
             else if (touchstartX > center && touchendX < touchstartX) {
-                btnSwipeNo.disabled = true;
-                btnSwipeYes.disabled = true;
                 swipeNo(userId, receiverId.value);
             }
         }

@@ -45,6 +45,81 @@ class FriendRequestController
         }
     }
 
+    public function getFriendRequestPhone()
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+
+            $friendRequest = $this->friendrequest->getFriendRequest($this->getUserId());
+
+            if ($friendRequest) {
+                $data = [
+                    'message' => 'Success',
+                    'friendRequest' => $friendRequest,
+                ];
+
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'No friend requests found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        }
+    }
+
+    public function getFriendlist()
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+    
+            $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
+    
+            if ($getFriendlist) {
+                $formattedFriendList = [];
+    
+                foreach ($getFriendlist as $friend) {
+                    if ($userId == $friend['sender_id']) {
+                        $friendId = $friend['receiver_id'];
+                        $friendUsername = $friend['receiver_username'];
+                        $friendPicture = $friend['receiver_picture'];
+                    } else {
+                        $friendId = $friend['sender_id'];
+                        $friendUsername = $friend['sender_username'];
+                        $friendPicture = $friend['sender_picture'];
+                    }
+    
+                    // Add friend to the list, excluding the user themselves
+                    if ($userId != $friendId) {
+                        $formattedFriendList[] = [
+                            'fr_id' => $friend['fr_id'],
+                            'friend_id' => $friendId,
+                            'friend_username' => $friendUsername,
+                            'friend_picture' => $friendPicture,
+                            'latest_message_date' => $friend['latest_message_date']
+                        ];
+                    }
+                }
+    
+                // Check if there are any friends to return
+                if (count($formattedFriendList) > 0) {
+                    $data = [
+                        'success' => true,
+                        'friendlist' => $formattedFriendList,
+                    ];
+                    echo json_encode($data);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'No friends found']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No friends found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
     public function swipeStatus(): void
     {
         if (isset($_POST['swipe_yes'])) {
@@ -103,6 +178,52 @@ class FriendRequestController
         }
     }
 
+    public function acceptFriendRequestPhone(): void
+    {
+        if (isset($_POST["friendId"]) && isset($_POST["frId"])) {
+        $frId = $this->validateInput($_POST["frId"]);
+        $friendId = $this->validateInput($_POST["friendId"]);
+        $this->setFrId((int)$frId);
+        $this->setFriendId((int)$friendId);
+
+        $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
+
+        if ($updateStatus) {
+            echo json_encode(['success' => false, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
+            exit();
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Could not accept it']);
+            exit();
+        }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
+            exit();
+        }
+    }
+
+    public function refuseFriendRequestPhone(): void
+    {
+        if (isset($_POST["friendId"]) && isset($_POST["frId"])) {
+        $frId = $this->validateInput($_POST["frId"]);
+        $friendId = $this->validateInput($_POST["friendId"]);
+        $this->setFrId((int)$frId);
+        $this->setFriendId((int)$friendId);
+
+        $updateStatus = $this->friendrequest->rejectFriendRequest($this->getFrId());
+
+        if ($updateStatus) {
+            echo json_encode(['success' => false, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
+            exit();
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Could not accept it']);
+            exit();
+        }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
+            exit();
+        }
+    }
+
     public function rejectFriendRequest(): void
     {
         $frId = $this->validateInput($_GET["fr_id"]);
@@ -130,9 +251,7 @@ class FriendRequestController
             if ($pendingCount !== false) {
                 $data = [
                     'success' => true,
-                    'pendingCount' => [
-                        'pendingFriendRequest' => $pendingCount,
-                    ]
+                    'pendingCount' => $pendingCount
                 ];
 
                 // Send JSON response

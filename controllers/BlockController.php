@@ -63,6 +63,56 @@ class BlockController
         }
     }
 
+    public function blockPersonPhone(): void
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userData']))
+        {
+            $data = json_decode($_POST['userData']);
+            $senderId = $this->validateInput($data->senderId);
+            $this->setSenderId((int) $senderId);            
+            $receiverId = $this->validateInput($data->receiverId);
+            $this->setReceiverId((int) $receiverId);
+            $date = date("Y-m-d H:i:s");
+
+            $blockPerson = $this->block->blockPerson($this->getSenderId(), $this->getReceiverId(), $date);
+
+            if ($blockPerson)
+            {
+                $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
+
+                if ($updateFriend)
+                {
+                    $response = array('message' => 'Success');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit(); 
+                }
+                else
+                {
+                    $response = array('message' => 'Could not block user');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit(); 
+                }
+            }
+            else
+            {
+                $response = array('message' => 'Could not block user');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit(); 
+            }
+        }
+        else
+        {
+            $response = array('message' => 'No form');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit(); 
+        }
+    }
+
     public function unblockPerson(): void
     {
         if (isset($_POST['submit']))
