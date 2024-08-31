@@ -42,6 +42,9 @@ class MatchingScoreController
                     $insertMatching = $this->matchingscore->insertMatching($this->getUserMatching(), $this->getUserMatched(), $this->getScore());
                 }
             }
+            echo json_encode(['message' => 'Success']);
+        } else {
+            echo json_encode(['message' => 'Invalid request']);
         }
     }
 

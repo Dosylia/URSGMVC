@@ -76,6 +76,7 @@ $actionMap = [
     'updateSocial' => [UserController::class, 'updateSocial'],
     'updateSocialPhone' => [UserController::class, 'updateSocialPhone'],
     'updatePicture' => [UserController::class, 'updatePicture'],
+    'updatePicturePhone' => [UserController::class, 'updatePicturePhone'],
     'getUserData' => [UserController::class, 'getUserData'],
     'requestAccepted' => [FriendRequestController::class, 'acceptFriendRequest'],
     'requestRejected' => [FriendRequestController::class, 'rejectFriendRequest'],

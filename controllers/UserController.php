@@ -508,6 +508,61 @@ class UserController
             exit;
         }
     }
+
+    public function updatePicturePhone() {
+        $targetDir = "public/upload/";
+    
+        // Validate if the file is received
+        if (isset($_FILES["picture"]) && !empty($_FILES["picture"]["name"])) {
+            $fileName = basename($_FILES["picture"]["name"]);
+            $this->setFileName($fileName);
+            $targetFilePath = $targetDir . $fileName;
+            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+    
+            // Ensure the file type is allowed
+            $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
+    
+            if (in_array($fileType, $allowTypes)) {
+                // Attempt to move the uploaded file to the target directory
+                if (move_uploaded_file($_FILES["picture"]["tmp_name"], $targetFilePath)) {
+                    // Check for animated GIFs
+                    if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+                        echo json_encode(['message' => 'Animated GIFs are not allowed']);
+                        exit;
+                    }
+    
+                    // Resize the image to 200x200
+                    $resizedFilePath = $targetDir . 'resized_' . $fileName;
+                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                        // Retrieve userId from POST data
+                        $username = isset($_POST["username"]) ? $this->validateInput($_POST["username"]) : null;
+    
+                        if ($username) {
+                            // Update the database with the resized image
+                            $uploadPicture = $this->user->uploadPicture($username, 'resized_' . $this->getFilename());
+    
+                            if ($uploadPicture) {
+                                echo json_encode(['message' => 'Success']);
+                            } else {
+                                echo json_encode(['message' => 'Database update failed']);
+                            }
+                        } else {
+                            echo json_encode(['message' => 'User ID is missing']);
+                        }
+                    } else {
+                        echo json_encode(['message' => 'Error resizing image']);
+                    }
+                } else {
+                    echo json_encode(['message' => 'Error uploading file']);
+                }
+            } else {
+                echo json_encode(['message' => 'Invalid file type']);
+            }
+        } else {
+            echo json_encode(['message' => 'No file uploaded']);
+        }
+    }
+    
     
 
     public function resizeImage($sourcePath, $destPath, $newWidth, $newHeight) {
@@ -584,41 +639,47 @@ class UserController
             // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
             
             $data = ['success' => false, 'error' => 'No matching users found'];
-            
-            foreach ($usersAfterMatching as $match) {
-                $matchedUserId = $match['match_userMatched'];
-                // if (!in_array($matchedUserId, $userFriendRequest)) {
-                    $userMatched = $this->user->getUserById($matchedUserId);               
-                    if ($userMatched) {
-                        $data = [
-                            'success' => true,
-                            'user' => [
-                                'user_id' => $userMatched['user_id'],
-                                'user_username' => $userMatched['user_username'],
-                                'user_picture' => $userMatched['user_picture'],
-                                'user_age' => $userMatched['user_age'],
-                                'user_game' => $userMatched['user_game'],
-                                'user_gender' => $userMatched['user_gender'],
-                                'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
-                                'user_shortBio' => $userMatched['user_shortBio'],
-                                'lol_main1' => $userMatched['lol_main1'],
-                                'lol_main2' => $userMatched['lol_main2'],
-                                'lol_main3' => $userMatched['lol_main3'],
-                                'lol_rank' => $userMatched['lol_rank'],
-                                'lol_role' => $userMatched['lol_role'],
-                                'lol_account' => $userMatched['lol_account'],
-                                'lol_sUsername' => $userMatched['lol_sUsername'],
-                                'lol_sLevel' => $userMatched['lol_sLevel'],
-                                'lol_sRank' => $userMatched['lol_sRank'],
-                                'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
-                                'lol_sUsername' => $userMatched['lol_sUsername']
-                            ]
-                        ];
-                        break;
-                    }
-                // }
+            if ($usersAfterMatching) {
+                foreach ($usersAfterMatching as $match) {
+                    $matchedUserId = $match['match_userMatched'];
+                    // if (!in_array($matchedUserId, $userFriendRequest)) {
+                        $userMatched = $this->user->getUserById($matchedUserId);               
+                        if ($userMatched) {
+                            $data = [
+                                'success' => true,
+                                'user' => [
+                                    'error' => 'No error',
+                                    'user_id' => $userMatched['user_id'],
+                                    'user_username' => $userMatched['user_username'],
+                                    'user_picture' => $userMatched['user_picture'],
+                                    'user_age' => $userMatched['user_age'],
+                                    'user_game' => $userMatched['user_game'],
+                                    'user_gender' => $userMatched['user_gender'],
+                                    'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
+                                    'user_shortBio' => $userMatched['user_shortBio'],
+                                    'lol_main1' => $userMatched['lol_main1'],
+                                    'lol_main2' => $userMatched['lol_main2'],
+                                    'lol_main3' => $userMatched['lol_main3'],
+                                    'lol_rank' => $userMatched['lol_rank'],
+                                    'lol_role' => $userMatched['lol_role'],
+                                    'lol_account' => $userMatched['lol_account'],
+                                    'lol_sUsername' => $userMatched['lol_sUsername'],
+                                    'lol_sLevel' => $userMatched['lol_sLevel'],
+                                    'lol_sRank' => $userMatched['lol_sRank'],
+                                    'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
+                                    'lol_sUsername' => $userMatched['lol_sUsername']
+                                ]
+                            ];
+                            break;
+                        } else {
+                            $data = ['success' => false, 'error' => 'No matching users found'];
+                        }
+                    // }
+                }
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No matching users found']);
             }
-            echo json_encode($data);
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
