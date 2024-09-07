@@ -1,0 +1,16 @@
+<div class="form_container"> 
+    <button id="closeButton" type="button">X</button>
+    <form class="form_signup" method="post" action="/deleteAccountRequest">
+
+        <?php if (isset($_GET['error'])) : ?>
+        <p class="errorsForm"><?= $_GET['error'] ?></p>
+        <?php endif; ?>
+
+        <label for="email">Google email your account with registred with</label>
+        <p>You will receive an email to confirm your identity and your choice.</p>
+        <input type="email" id="email" name="email" placeholder="JohnDoe@gmail.com" required>
+
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="public/images/Ahri.png" alt="Ahri from League of legends">
+</div>

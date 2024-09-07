@@ -74,7 +74,8 @@ class ChatMessageController
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
 
             if ($insertMessage) {
-                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
+                $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }
@@ -171,6 +172,60 @@ class ChatMessageController
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
+    }
+
+    public function sendNotificationsPhone($userId, $message, $friendId) {
+        $deviceToken = $this->user->getToken($userId);
+    
+        if ($deviceToken) {
+            $friendData = $this->user->getUserById($friendId);
+            $title = "URSG - Message from " . $friendData['user_username'];
+            $body = $message;
+    
+            $expoPushUrl = 'https://exp.host/--/api/v2/push/send';
+    
+            $notificationPayload = [
+                'to' => $deviceToken['user_token'],
+                'sound' => 'default',
+                'title' => $title,
+                'body' => $body,
+            ];
+    
+            $headers = [
+                'Content-Type: application/json',
+            ];
+    
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $expoPushUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($notificationPayload));
+    
+            $result = curl_exec($ch);
+    
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }
+    
+            curl_close($ch);
+
+            return $result;
+        }
+    }
+
+    public function getAccessToken(): string
+    {
+        $serviceAccountPath = 'serviceAccountKey.json';
+        $scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        
+        require_once 'vendor/autoload.php';
+
+        $creds = new \Google\Auth\Credentials\ServiceAccountCredentials($scopes, $serviceAccountPath);
+        $accessToken = $creds->fetchAuthToken()['access_token'];
+
+        return $accessToken;
     }
 
     public function validateInput(string $input): string

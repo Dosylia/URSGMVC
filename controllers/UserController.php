@@ -366,6 +366,28 @@ class UserController
         echo json_encode($response); // Make sure to output the JSON response
     }
 
+    public function registerToken()
+    {
+        $response = array('message' => 'Error');
+    
+        if (isset($_POST['userId']) && isset($_POST['token'])) {
+            $userId = $this->validateInput($_POST['userId']);
+            $token = $this->validateInput($_POST['token']);
+    
+            $registerToken = $this->user->registerToken($userId, $token);
+    
+            if ($registerToken) {
+                $response = array('message' => 'Success');
+            } else {
+                $response = array('message' => 'Could not register token');
+            }
+        } else {
+            $response = array('message' => 'Proper data not sent');
+        }
+    
+        echo json_encode($response);
+    }
+
     public function updateUserPhone()
     {
         $response = array('message' => 'Error');

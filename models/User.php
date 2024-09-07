@@ -215,6 +215,47 @@ class User extends DataBase
         }
     }
 
+    public function registerToken($userId, $token)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_token` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $registerTokenTest = $query->execute([$token, $userId]);
+
+        if ($registerTokenTest) {
+            return true;
+        } else {
+            return false;  
+        }
+    }
+
+    public function getToken($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `user_token`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $query->execute([$userId]);
+        $token = $query->fetch();
+
+        if ($token) {
+            return $token;
+        } else {
+            return false;
+        }
+    }
+
     public function updateSocial($username, $discord, $twitter, $instagram, $twitch) 
     {
         $query = $this->bdd->prepare("

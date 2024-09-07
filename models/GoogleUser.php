@@ -155,4 +155,25 @@ class GoogleUser extends DataBase
         }
         
     }
+
+    public function deleteAccount($email) 
+    {
+        $query = $this->bdd->prepare("
+                                        DELETE FROM
+                                            `googleuser`
+                                        WHERE
+                                            `google_email` = ?
+        ");
+
+        $deleteAccountTest = $query->execute([$email]);
+
+        if($deleteAccountTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

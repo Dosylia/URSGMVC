@@ -16,17 +16,24 @@ class ChatMessage extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                `chat_receiverId`,
-                                                `chat_senderId`,
+                                                c.chat_receiverId,
+                                                c.chat_senderId,
+                                                c.chat_message,
+                                                u.user_username,
+                                                u.user_picture,
                                                 COUNT(*) AS `unread_count`
                                             FROM
-                                                `chatmessage`
+                                                `chatmessage` AS c
+                                            INNER JOIN
+                                                `user` AS u
+                                            ON 
+                                                c.chat_senderId = u.user_id
                                             WHERE
-                                                `chat_receiverId` = ? 
+                                                c.chat_receiverId = ? 
                                             AND
-                                                `chat_status` = 'unread'
+                                                c.chat_status = 'unread'
                                             GROUP BY
-                                                `chat_senderId`
+                                                c.chat_senderId
         ");
 
         $query -> execute([$userId]);

@@ -796,6 +796,88 @@ class GoogleUserController
         } 
     }
 
+    public function deleteAccountPage()
+    {
+        $current_url = "https://ur-sg.com/deleteAccount";
+        $template = "views/swiping/delete_account";
+        $page_title = "URSG - Delete account";
+        require "views/layoutSwiping_noheader.phtml";
+    }
+
+    public function deleteAccountRequest()
+    {
+        if (isset($_POST['submit']))
+        {
+            $email = $this->validateInput($_POST["email"]);
+
+            require 'keys.php';
+
+            $mail = new PHPMailer;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.ionos.de';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'contact@ur-sg.com';
+            $mail->Password = $password_gmail;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+        
+            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+            $mail->addAddress($email);
+            $mail->Subject = 'Confirm deleting your URSG account';
+            $mail->isHTML(true);
+        
+            $boundary = md5(uniqid());
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'quoted-printable';
+        
+            $mail->Body = "URSG.com - Email Confirmation\r\n";
+            $mail->Body .= "Your email: " . $email . "\r\n";
+            $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
+            $mail->Body .= "Link: https://ur-sg.com/deleteAccountConfirm?mail=" . $email;
+        
+            $mail->send();
+
+            if (!$mail->send()) {
+                header("location:/?message=Could not send mail");
+                exit();
+            } else {
+                header("location:/?message=Your received a mail to confirm your choice");
+            }
+        }
+    }
+
+    public function deleteAccountConfirm()
+    {
+        if (isset($_GET['mail']))
+        {
+            $email = $_GET['mail'];
+            $deleteAccount = $this-> googleUser -> deleteAccount($email);
+            if ($deleteAccount)
+            {
+                header("location:/?message=Account deleted");
+                exit();
+            }
+            else
+            {
+                header("location:/?message=Account not found");
+                exit();
+            }
+        }
+        else
+        {
+            header("location:/?message=Invalid request");
+            exit();
+        }
+
+    }
+
+    public function validateInput($input) 
+    {
+        $input = trim($input);
+        $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        return $input;
+    }
+
     public function getGoogleId()
     {
         return $this->googleId;
