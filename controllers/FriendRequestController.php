@@ -134,12 +134,12 @@ class FriendRequestController
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId());
+                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId(), $status);
 
-                echo json_encode(['success' => true, 'error' => 'Swipped yes']);
+                echo json_encode(['success' => true, 'error' => 'Swipped yes, updated']);
             } else {
-                $swipeStatusYes = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                echo json_encode(['success' => true, 'error' => 'Swipped yes']);
+                $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
 
         } elseif (isset($_POST['swipe_no'])) {
@@ -151,9 +151,16 @@ class FriendRequestController
             $receiverId = $this->validateInput($_POST["receiverId"]);
             $this->setReceiverId((int)$receiverId);
 
-            $swipeStatusNo = $this->friendrequest->swipeStatus($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
-            echo json_encode(['success' => true, 'error' => 'Swipped No']);
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId(), $status);
+
+                echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+            } else {
+                $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
+            }
 
         } else {
             echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);

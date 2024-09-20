@@ -416,6 +416,8 @@ class GoogleUserController
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
                     }
+
+                    $email = $this->getGoogleEmail();
     
                     $mail = new PHPMailer;
                     $mail->isSMTP();
@@ -425,35 +427,83 @@ class GoogleUserController
                     $mail->Password = $password_gmail;
                     $mail->SMTPSecure = 'tls';
                     $mail->Port = 587;
-                
-                    $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+                    
+                    $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
                     $mail->addAddress($this->getGoogleEmail());
-                    $mail->Subject = 'Confirm your email for URSG.com';
+                    $mail->Subject = 'Confirm your email for UR-SG.com';
                     $mail->isHTML(true);
-                
-                    $boundary = md5(uniqid());
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'quoted-printable';
-                
-                    $mail->Body = "URSG.com - Email Confirmation\r\n";
-                    $mail->Body .= "Your email: " . $this->getGoogleEmail() . "\r\n";
-                    $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-                    $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $this->getGoogleEmail();
-                
-                    $mail->send();
+                    
+                    $mail->CharSet = 'UTF-8'; 
+                    $mail->Encoding = 'quoted-printable'; 
+                    
+                    $mail->Body = "
+                    <html>
+                    <head>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f4f4f4;
+                                padding: 20px;
+                            }
+                            .container {
+                                background-color: #ffffff;
+                                padding: 20px;
+                                border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                            }
+                            .header {
+                                color: #333;
+                                font-size: 24px;
+                                margin-bottom: 20px;
+                            }
+                            .button {
+                                display: inline-block;
+                                padding: 10px 20px;
+                                color: #fff !important;
+                                background-color: #e74057;
+                                text-decoration: none;
+                                border-radius: 5px;
+                            }
+                            .footer {
+                                margin-top: 20px;
+                                font-size: 12px;
+                                color: #999;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>Confirm Your Email for UR-SG.com</div>
+                            <p>Thank you for registering on UR-SG.com!</p>
+                            <p>Your email: {$email}</p>
+                            <p>To confirm your email, please click the button below:</p>
+                            <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
+                        </div>
+                        <div class='footer'>If you didn't request this, please ignore this email.</div>
+                    </body>
+                    </html>
+                    ";
     
-                    $response = array(
-                        'message' => 'Success',
-                        'newUser' => true,
-                        'googleUser' => $createGoogleUser,
-                    );
+                    if ($mail->send()) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => true,
+                            'googleUser' => $createGoogleUser,
+                        );
+                    } else {
+                        $response = array(
+                            'message' => 'Failed to send email',
+                            'newUser' => false,
+                            'googleUser' => null,
+                        );
+                    }
                 }
             }
         }
         else
         {
             $response = array(
-                'message' => 'Contact an administrator', // No google data
+                'message' => 'Contact an administrator',
             );
         }
     
@@ -653,21 +703,21 @@ class GoogleUserController
     
 
     public function logOut() {
-
-        if($this->isConnectGoogle() || $this->isConnectWebsite()) {
+        if ($this->isConnectGoogle() || $this->isConnectWebsite()) {
             if (isset($_COOKIE['googleId'])) {
                 setcookie('googleId', "", time() - 42000, COOKIEPATH);
+                unset($_COOKIE['googleId']);
             }
-            unset($_COOKIE['googleId']);
+    
             session_unset();
             session_destroy();
+    
             header("location:/?message=You are now offline");
             exit();
         } else {
             header("location:/?message=You are now offline");
             exit();
         }
-
     }
 
 
@@ -705,9 +755,15 @@ class GoogleUserController
     public function sendEmail() 
     {
         require 'keys.php';
-        if(isset($_POST['email_confirm']))
-        {
-            $email = ($_POST['email_confirm']);
+        
+        if (isset($_POST['email_confirm'])) {
+            $email = filter_var($_POST['email_confirm'], FILTER_SANITIZE_EMAIL);
+    
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                header("Location: /signup?message=Invalid email address");
+                exit();
+            }
+    
             $mail = new PHPMailer;
             $mail->isSMTP();
             $mail->Host = 'smtp.ionos.de';
@@ -716,37 +772,72 @@ class GoogleUserController
             $mail->Password = $password_gmail;
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
-        
-            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+    
+            $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
             $mail->addAddress($email);
-            $mail->Subject = 'Confirm your email for URSG.com';
+            $mail->Subject = 'Confirm your email for UR-SG.com';
             $mail->isHTML(true);
-        
-            $boundary = md5(uniqid());
+            
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'quoted-printable';
-        
-            $mail->Body = "URSG.com - Email Confirmation\r\n";
-            $mail->Body .= "Your email: " . $email . "\r\n";
-            $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-            $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $email;
-        
-            $mail->send();
-
-            if (!$mail->send()) {
-                header("location:/signup?message=Could not send mail");
-                exit();
-            } else {
+            
+            $mail->Body = "
+            <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        padding: 20px;
+                    }
+                    .container {
+                        background-color: #ffffff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    }
+                    .header {
+                        color: #333;
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }
+                    .button {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        color: #fff !important;
+                        background-color: #e74057;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+                    .footer {
+                        margin-top: 20px;
+                        font-size: 12px;
+                        color: #999;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>Confirm Your Email for UR-SG.com</div>
+                    <p>Thank you for registering on UR-SG.com!</p>
+                    <p>Your email: {$email}</p>
+                    <p>To confirm your email, please click the button below:</p>
+                    <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
+                </div>
+                <div class='footer'>If you didn't request this, please ignore this email.</div>
+            </body>
+            </html>
+            ";
+    
+            if ($mail->send()) {
                 $this->confirmMailPage($mail);
+            } else {
+                header("Location: /signup?message=Could not send mail");
+                exit();
             }
-
-            // if (!$mail->send()) {
-            //     echo 'Mailer Error: ' . $mail->ErrorInfo;
-            // } else {
-            //     echo 'Message sent!';
-            // }
         } 
     }
+    
 
     public function sendEmailPhone() 
     {
@@ -771,28 +862,71 @@ class GoogleUserController
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
         
-            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+            $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
             $mail->addAddress($email);
-            $mail->Subject = 'Confirm your email for URSG.com';
+            $mail->Subject = 'Confirm your email for UR-SG.com';
             $mail->isHTML(true);
         
             $boundary = md5(uniqid());
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'quoted-printable';
         
-            $mail->Body = "URSG.com - Email Confirmation\r\n";
-            $mail->Body .= "Your email: " . $email . "\r\n";
-            $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-            $mail->Body .= "Link: https://ur-sg.com/acceptConfirm?mail=" . $email;
-        
-            $mail->send();
-            echo json_encode(['message' => 'Mail sent']);
-            exit();
+            $mail->Body = "
+                <html>
+                <head>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            padding: 20px;
+                        }
+                        .container {
+                            background-color: #ffffff;
+                            padding: 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        }
+                        .header {
+                            color: #333;
+                            font-size: 24px;
+                            margin-bottom: 20px;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            color: #fff !important;
+                            background-color: #e74057;
+                            text-decoration: none;
+                            border-radius: 5px;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            font-size: 12px;
+                            color: #999;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>Confirm Your Email for UR-SG.com</div>
+                        <p>Thank you for registering on UR-SG.com!</p>
+                        <p>Your email: {$email}</p>
+                        <p>To confirm your email, please click the button below:</p>
+                        <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
+                    </div>
+                    <div class='footer'>If you didn't request this, please ignore this email.</div>
+                </body>
+                </html>
+                ";
 
-            if (!$mail->send()) {
+            if ($mail->send()) {
+                echo json_encode(['message' => 'Mail sent']);
+                exit();
+            } else {
                 echo json_encode(['message' => "Mail couldn't be sent"]);
                 exit();
-            } 
+
+            }
         } 
     }
 
@@ -809,9 +943,9 @@ class GoogleUserController
         if (isset($_POST['submit']))
         {
             $email = $this->validateInput($_POST["email"]);
-
+    
             require 'keys.php';
-
+    
             $mail = new PHPMailer;
             $mail->isSMTP();
             $mail->Host = 'smtp.ionos.de';
@@ -821,30 +955,70 @@ class GoogleUserController
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
         
-            $mail->setFrom('contact@ur-sg.com', 'URSG.com');
+            $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
             $mail->addAddress($email);
             $mail->Subject = 'Confirm deleting your URSG account';
             $mail->isHTML(true);
         
-            $boundary = md5(uniqid());
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'quoted-printable';
         
-            $mail->Body = "URSG.com - Email Confirmation\r\n";
-            $mail->Body .= "Your email: " . $email . "\r\n";
-            $mail->Body .= "Confirm your email by clicking on the link below:\r\n";
-            $mail->Body .= "Link: https://ur-sg.com/deleteAccountConfirm?mail=" . $email;
+            // Set up the HTML content
+            $mail->Body = "
+            <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        padding: 20px;
+                    }
+                    .container {
+                        background-color: #ffffff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    }
+                    .header {
+                        color: #333;
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }
+                    .button {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        color: #fff !important;
+                        background-color: #e74057;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+                    .footer {
+                        margin-top: 20px;
+                        font-size: 12px;
+                        color: #999;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>Confirm Deleting Your URSG Account</div>
+                    <p>We are sad to lose you!</p>
+                    <p>Your email: {$email}</p>
+                    <p>Confirm deleting your account by clicking the link below:</p>
+                    <a href='https://ur-sg.com/deleteAccountConfirm?mail={$email}' class='button'>Confirm Deletion</a>
+                </div>
+                <div class='footer'>If you didn't request this, please ignore this email.</div>
+            </body>
+            </html>";
         
-            $mail->send();
-
             if (!$mail->send()) {
                 header("location:/?message=Could not send mail");
-                exit();
             } else {
-                header("location:/?message=Your received a mail to confirm your choice");
+                header("location:/?message=You received a mail to confirm your choice");
             }
         }
     }
+    
 
     public function deleteAccountConfirm()
     {
@@ -854,6 +1028,16 @@ class GoogleUserController
             $deleteAccount = $this-> googleUser -> deleteAccount($email);
             if ($deleteAccount)
             {
+                if($this->isConnectGoogle() || $this->isConnectWebsite()) {
+                    if (isset($_COOKIE['googleId'])) {
+                        setcookie('googleId', "", time() - 42000, COOKIEPATH);
+                    }
+                    unset($_COOKIE['googleId']);
+                    session_unset();
+                    session_destroy();
+                    header("location:/?message=Account deleted");
+                    exit();
+                }
                 header("location:/?message=Account deleted");
                 exit();
             }

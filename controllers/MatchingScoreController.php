@@ -37,12 +37,23 @@ class MatchingScoreController
                 if ($checkMatching) {
                     if ($checkMatching['match_score'] !== $this->getScore()) {
                         $updateMatching = $this->matchingscore->updateMatching($this->getScore(), $this->getUserMatching(), $this->getUserMatched());
+                        echo json_encode(['message' => 'Success', 'Action' => 'Updated']);
+                        exit();
+                    } else {
+                        echo json_encode(['message' => 'Success', 'Action' => 'No change']);
+                        exit();
                     }
                 } else {
                     $insertMatching = $this->matchingscore->insertMatching($this->getUserMatching(), $this->getUserMatched(), $this->getScore());
+
+                    if ($insertMatching) {
+                        echo json_encode(['message' => 'Success', 'Action' => 'Inserted']);
+                    } else {
+                        echo json_encode(['message' => 'Error']);
+                    }
                 }
             }
-            echo json_encode(['message' => 'Success']);
+
         } else {
             echo json_encode(['message' => 'Invalid request']);
         }

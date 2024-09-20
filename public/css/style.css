@@ -55,7 +55,7 @@
   
   .main_section {
       background: url('../images/pc_background.webp');
-      height: 90vh;
+      height: 100vh;
       background-size: 100% 100%;
       color: white;
   }
@@ -343,13 +343,25 @@ section.siteMap tr:nth-child(even) {
       position: relative;
       margin: auto;
   }
+
+  .form_signup_mail {
+    background-color: rgb(248, 244, 244);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 50px;
+    width: 50%;
+    border-radius: 20px;
+    position: relative;
+    margin: auto;    
+  }
   
-  .form_signup img {
+  .form_signup img, .form_signup_mail img {
       width: 100px;
       height: 100px;
   }
 
-  .form_signup label.label-container
+  .form_signup label.label-container, .form_signup_mail label.label-container
   {
     display: flex;
     align-items: center;
@@ -390,30 +402,30 @@ section.siteMap tr:nth-child(even) {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
   
-  .form_signup p {
+  .form_signup p, .form_signup_mail p {
   font-size: 1.5vh;
   font-family: Arial, Helvetica, sans-serif;
   margin-bottom: 10px;
   }
   
-  .form_signup a {
+  .form_signup a, .form_signup_mail a {
     font-size: 1.5vh;
     font-family: Arial, Helvetica, sans-serif;
     text-decoration: none;
     color: rgb(22, 90, 186);
     }
   
-    .form_signup a:hover {
+    .form_signup a:hover, .form_signup_mail a:hover {
       text-decoration: underline rgb(22, 90, 186);
       }
   
-  .form_signup label {
+  .form_signup label, .form_signup_mail label {
       margin: 30px 0px 10px 0px;
       font-family: 'Geologica', sans-serif;  
       font-size: 3vh;
   }
   
-  .form_signup select, .form_signup input {
+  .form_signup select, .form_signup input, .form_signup_mail select, .form_signup_mail input {
       margin: 20px 0px;
       font-family: 'Geologica', sans-serif;  
       font-size: 2vh;
@@ -524,7 +536,7 @@ section.siteMap tr:nth-child(even) {
       background-color: #cb5242;
     }
   
-    .form_signup h2 {
+    .form_signup h2, .form_signup_mail h2 {
       font-size: 3vh;
       font-family: 'Geologica', sans-serif;
       margin-bottom: 20px;
@@ -962,7 +974,7 @@ section.siteMap tr:nth-child(even) {
   
   }
 
-  .form_signup img.images_update {
+  .form_signup img.images_update, .form_signup_mail img.images_update  {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -1719,31 +1731,31 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark-grey);
   }
   
-  .dark-mode .form_signup {
+  .dark-mode .form_signup, .dark-mode .form_signup_mail {
     background-color: var(--dark-ligher-grey);
   }
   
-  .dark-mode .form_signup input {
+  .dark-mode .form_signup input, .dark-mode .form_signup_mail input {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup textarea {
+  .dark-mode .form_signup textarea, .dark-mode .form_signup_mail textarea {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup select {
+  .dark-mode .form_signup select, .dark-mode .form_signup_mail select {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup option {
+  .dark-mode .form_signup option, .dark-mode .form_signup_mail option {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup label {
+  .dark-mode .form_signup label, .dark-mode .form_signup_mail label {
     color: white;
   }
   
@@ -2777,6 +2789,14 @@ justify-content: center;
 
 @media only screen and (max-width: 900px) {
 
+  .main_section {
+    height: 60vh;
+  }
+
+  .mid_main_section {
+    height: 30vh;
+  }
+
   .picture_with_form {
     display: none;
   }
@@ -2805,7 +2825,7 @@ justify-content: center;
     width: 100px;
   }
 
-  .form_signup {
+  .form_signup, .form_signup_mail {
     width: 70%;
   }
 
@@ -2918,7 +2938,8 @@ justify-content: center;
 
   .mid_main_section_button {
     padding : 20px 10px;
-    width: 80%;
+    width: 60%;
+    font-size: 4vh;
   }
 
 
@@ -3056,25 +3077,17 @@ justify-content: center;
     min-width: 80%;
   }
 
-  .form_signup h2 {
+  .form_signup h2, .form_signup_mail h2 {
     font-size: 3vh;
   }
 
-  .form_signup p {
+  .form_signup p, .form_signup_mail p {
     font-size: 2vh;
   }
 
 }
 
 @media only screen and (max-width: 600px) {
-  .main_section {
-    height: 60vh;
-  }
-
-  .mid_main_section {
-    height: 30vh;
-  }
-
   .signup_button {
     padding: 10px;  
     font-size: 15px !important;

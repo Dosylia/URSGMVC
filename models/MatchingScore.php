@@ -53,7 +53,7 @@ class MatchingScore extends DataBase
         
         $updateMatchingTest =  $query->execute([$score, $userMatching, $userMatched]);
 
-        if($$updateMatchingTest)
+        if($updateMatchingTest)
         {
             return  $updateMatchingTest;
         }
@@ -108,14 +108,15 @@ class MatchingScore extends DataBase
                                         WHERE
                                             m.match_userMatching = ?
                                             AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
-                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = ?)
+                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = m.match_userMatching)
+                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = m.match_userMatched)
                                         ORDER BY
                                             m.match_score DESC
                                         LIMIT
                                             5
         ");
     
-        $query->execute([$userId, $userId]);
+        $query->execute([$userId]);
         $getMatchingTest = $query->fetchAll();
     
         if ($getMatchingTest) {

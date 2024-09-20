@@ -115,14 +115,33 @@ class UserController
             // Perform validation and user creation logic
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
                 $response = array('message' => 'Inputs cannot be empty');
+                echo json_encode($response);
+                exit;
             }
 
             if ($this->user->getUserByUsername($this->getUsername())) {
                 $response = array('message' => 'Username already exists');
+                echo json_encode($response);
+                exit;
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
                 $response = array('message' => 'Username is not valid');
+                echo json_encode($response);
+                exit;
+            }
+
+            if ($this->getAge() > 99)
+            {
+                $response = array('message' => 'Age is not valid');
+                echo json_encode($response);
+                exit;
+            }
+
+            if (strlen($this->getShortBio()) > 200) {
+                $response = array('message' => 'Short bio is too long');
+                echo json_encode($response);
+                exit;
             }
 
             $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
@@ -184,6 +203,17 @@ class UserController
 
             if ($this->invalidUid($this->getUsername()) !== false) {
                 header("location:/signup?message=Username is not valid");
+                exit();
+            }
+
+            if ($this->getAge() > 99)
+            {
+                header("location:/signup?message=Age is not valid");
+                exit();
+            }
+
+            if (strlen($this->getShortBio()) > 200) {
+                header("location:/signup?message=Short bio is too long");
                 exit();
             }
 
@@ -323,6 +353,12 @@ class UserController
                 exit();
             }
 
+            if ($this->getAge() > 99)
+            {
+                header("location:/signup?message=Age is not valid");
+                exit();
+            }
+
             $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
 
 
@@ -438,6 +474,13 @@ class UserController
             $this->setLoLMain3Lf($main3Lf);
             $this->setLoLRankLf($rankLf);
             $this->setLoLRoleLf($roleLf);
+
+            if ($this->getAge() > 99)
+            {
+                $response = array('message' => 'Age is not valid');
+                echo json_encode($response);
+                exit;
+            }
 
             $updateUser = $this->user->updateUser($this->getUsername(),
                 $this->getGender(),
@@ -660,7 +703,7 @@ class UserController
             $usersAfterMatching = $this->matchingscore->getMatchingScore($userId);
             // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
             
-            $data = ['success' => false, 'error' => 'No matching users found'];
+            $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {
                 foreach ($usersAfterMatching as $match) {
                     $matchedUserId = $match['match_userMatched'];
@@ -694,13 +737,13 @@ class UserController
                             ];
                             break;
                         } else {
-                            $data = ['success' => false, 'error' => 'No matching users found'];
+                            $data = ['success' => false, 'error' => 'No matching users found..', 'matching2' => $usersAfterMatching];
                         }
                     // }
                 }
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No matching users found']);
+                echo json_encode(['success' => false, 'error' => 'No matching users found...', 'matching3' => $usersAfterMatching]);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);

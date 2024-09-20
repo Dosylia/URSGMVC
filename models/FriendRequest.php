@@ -180,7 +180,8 @@ class FriendRequest extends DataBase
                                         UPDATE
                                             `friendrequest`
                                         SET
-                                            `fr_status` = 'accepted'
+                                            `fr_status` = 'accepted',
+                                            `fr_acceptedAt` = NOW()
                                         WHERE
                                             fr_id = ?
         ");
@@ -249,7 +250,7 @@ class FriendRequest extends DataBase
         ");
 
         
-        $updateFriendTest =  $query->execute([$receiverId, $senderId, $receiverId, $senderId]);
+        $updateFriendTest =  $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
 
         if($updateFriendTest)
         {
@@ -261,7 +262,7 @@ class FriendRequest extends DataBase
         }        
     }
 
-    public function swipeStatus($senderId, $receiverId, $requestDate, $status) 
+    public function swipeStatusYes($senderId, $receiverId, $requestDate, $status) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -269,13 +270,46 @@ class FriendRequest extends DataBase
                                                 `fr_senderId`,
                                                 `fr_receiverId`,                                    
                                                 `fr_date`,
-                                                `fr_status`            
+                                                `fr_status`
                                             )
                                             VALUES (
                                                 ?,
                                                 ?,
                                                 ?,
                                                 ?
+                                            )
+                                        ");
+
+        $swipeStatusTest = $query -> execute([$senderId, $receiverId, $requestDate, $status]);
+
+        if($swipeStatusTest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
+    public function swipeStatusNo($senderId, $receiverId, $requestDate, $status) 
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `friendrequest`(
+                                                `fr_senderId`,
+                                                `fr_receiverId`,                                    
+                                                `fr_date`,
+                                                `fr_status`,  
+                                                `fr_rejectedAt`   
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                NOW()
                                             )
                                         ");
 
@@ -318,19 +352,19 @@ class FriendRequest extends DataBase
         }
     }
 
-    public function updateFriendRequest($receiverId, $senderId) 
+    public function updateFriendRequest($receiverId, $senderId, $status) 
     {
         $query = $this -> bdd -> prepare("
                                         UPDATE
                                             `friendrequest`
                                         SET
-                                            `fr_status` = 'accepted'
+                                            `fr_status` = ?
                                         WHERE
                                            (`fr_receiverId` = ? OR `fr_senderId` = ?)
         ");
 
         
-        $acceptedFriendRequestTest =  $query->execute([$receiverId, $senderId]);
+        $acceptedFriendRequestTest =  $query->execute([$status, $receiverId, $senderId]);
 
         if($acceptedFriendRequestTest)
         {
