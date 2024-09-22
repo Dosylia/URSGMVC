@@ -334,12 +334,12 @@ class FriendRequest extends DataBase
                                     FROM 
                                         `friendrequest`
                                     WHERE 
-                                        (`fr_receiverId` = ? OR `fr_senderId` = ?)
+                                        (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
                                     AND 
                                         `fr_status` = 'pending'
         ");
     
-        $query->execute([$receiverId, $senderId]);
+        $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
         $checkPendingTest = $query->fetch();
         
         if ($checkPendingTest)
@@ -360,11 +360,11 @@ class FriendRequest extends DataBase
                                         SET
                                             `fr_status` = ?
                                         WHERE
-                                           (`fr_receiverId` = ? OR `fr_senderId` = ?)
+                                            (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
         ");
 
         
-        $acceptedFriendRequestTest =  $query->execute([$status, $receiverId, $senderId]);
+        $acceptedFriendRequestTest =  $query->execute([$status, $senderId, $receiverId, $senderId, $receiverId]);
 
         if($acceptedFriendRequestTest)
         {

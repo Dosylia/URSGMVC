@@ -19,7 +19,6 @@ function fetchFriendRequest(userId) {
             fillPendingFriendRequest(data.pendingCount);
         } else {
             console.log('No friend requests found');
-            // Gérer le cas où il n'y a pas de demandes d'ami
         }
     })
     .catch(error => {

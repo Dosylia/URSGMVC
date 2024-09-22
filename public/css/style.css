@@ -609,6 +609,7 @@ section.siteMap tr:nth-child(even) {
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      width: 100%;
     }
 
     .noUserToSee {
@@ -2368,7 +2369,8 @@ justify-content: center;
 .nav_swiping {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 0px 50px;
     align-items: center;
     background: linear-gradient(225deg, #e0dbdb, #b8b1b1);
     min-height: 10vh;
@@ -2376,8 +2378,43 @@ justify-content: center;
 }
 
 .nav_swiping img {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
+}
+
+.nav-swiping-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.currency {
+  border: 1px solid #b2a0a0;
+  border-radius: 50px;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b2a0a0;
+}
+
+.currency:hover {
+  background-color: var(--main--red);
+}
+
+.currency img {
+  width: 40px;
+  height: 40px;
+}
+
+.currency p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  color: white;
+  gap: 10px;
 }
 
 .rotate {
@@ -2663,6 +2700,15 @@ justify-content: center;
 
 .dark-mode dialog .title_generalbox {
   color: #cb5242;  
+}
+
+.dark-mode .currency {
+  border: 1px solid #565151;
+  background-color: #565151;
+}
+
+.dark-mode .currency:hover {
+  background-color: var(--main--red);
 }
 
 @media only screen and (max-width: 1420px) {
@@ -3196,6 +3242,10 @@ justify-content: center;
     margin-bottom: 10px;
     display: block;
     border-bottom: 1px solid #ddd;
+  }
+
+  .nav-swiping-row {
+    gap: 20px;
   }
 
 }

@@ -94,6 +94,7 @@ $actionMap = [
     'refuseFriendRequestPhone' => [FriendRequestController::class, 'refuseFriendRequestPhone'],
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
     'getUserMatching' => [UserController::class, 'getUserMatching'],
+    'getCurrency' => [UserController::class, 'getCurrency'],
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
     'registerToken' => [UserController::class, 'registerToken'],

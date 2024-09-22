@@ -846,6 +846,24 @@ class UserController
         }
     }
 
+    public function getCurrency() {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+
+            $currencyData = $this->user->getCurrencyByUserId($this->getUserId());
+            if ($currencyData) {
+                $response = array('message' => 'Success', 'currency' => $currencyData);
+            } else {
+                $response = array('message' => 'Could not get currency');
+            }
+        } else {
+            $response = array('message' => 'Proper data not sent');
+        }
+        echo json_encode($response);
+    }
+
     public function saveDarkMode()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -125,6 +125,13 @@ class FriendRequestController
         if (isset($_POST['swipe_yes'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'pending';
+            $amount = 10;
+
+            $user = $this->user->getUserById($userId);
+
+            if ($user['user_isVip'] == 1) {
+                $amount = 12;
+            }
 
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
@@ -134,17 +141,25 @@ class FriendRequestController
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId(), $status);
-
+                $updateFriendRequest = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped yes, updated']);
             } else {
                 $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
 
         } elseif (isset($_POST['swipe_no'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'rejected';
+            $amount = 10;
+
+            $user = $this->user->getUserById($userId);
+
+            if ($user['user_isVip'] == 1) {
+                $amount = 12;
+            }
 
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
@@ -154,11 +169,12 @@ class FriendRequestController
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->updateFriendRequest($this->getSenderId(), $this->getReceiverId(), $status);
-
+                $updateFriendRequest = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
             } else {
                 $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
             }
 
@@ -219,7 +235,7 @@ class FriendRequestController
         $updateStatus = $this->friendrequest->rejectFriendRequest($this->getFrId());
 
         if ($updateStatus) {
-            echo json_encode(['success' => false, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
+            echo json_encode(['success' => true, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
             exit();
         } else {
             echo json_encode(['success' => false, 'message' => 'Could not accept it']);
@@ -258,10 +274,9 @@ class FriendRequestController
             if ($pendingCount !== false) {
                 $data = [
                     'success' => true,
-                    'pendingCount' => $pendingCount
+                    'pendingCount' => ['pendingFriendRequest' => $pendingCount]
                 ];
 
-                // Send JSON response
                 echo json_encode($data);
             } else {
                 echo json_encode(['success' => false, 'error' => 'No friend requests found']);

@@ -74,6 +74,13 @@ class ChatMessageController
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
 
             if ($insertMessage) {
+                $amount = 10;
+                $user = $this->user->getUserById($this->getSenderId());
+
+                if ($user['user_isVip'] == 1) {
+                    $amount = 12;
+                }
+                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
                 $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
                 echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
             } else {

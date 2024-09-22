@@ -1,91 +1,91 @@
 <div class="chat_page">   
-    <div class="chat-interface"> <br>
-        <div class="chat_box"><br>
-            <h1 class="title_generalbox">Chat</h1>    <br>
+    <?php if (empty($getFriendlist)) :?>
+            <section class="google_needed"><br><br>
+                <img src="public/images/sadbee.webp" alt="jhinshrug">
+                <h2>You have no friends yet, wait until they accept your request or swipe more!<h2>
+            </section>
+    <?php else : ?>
+        <div class="chat-interface"> <br>
+            <div class="chat_box"><br>
+                <h1 class="title_generalbox">Chat</h1>    <br>
 
-                <?php if (empty($getFriendlist)) :?>
-                    <section class="google_needed"><br><br>
-                        <img src="public/images/sadbee.webp" alt="jhinshrug">
-                        <h2>You have no friends yet, wait until they accept your request or swipe more!<h2>
-                    </section>
-                <?php else :?>
-                    <?php foreach($getFriendlist as $friend) : ?>
-                        <?php
-                            if ($user['user_id'] == $friend['sender_id']) {
-                                $friendId = $friend['receiver_id'];
-                                $friendUsername = $friend['receiver_username'];
-                                $friendPicture = $friend['receiver_picture'];
-                            } else {
-                                $friendId = $friend['sender_id'];
-                                $friendUsername = $friend['sender_username'];
-                                $friendPicture = $friend['sender_picture'];
-                            }
-                        ?>
-                    
-                    <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
-                        <div class="friend" data-sender-id="<?= $friendId ?>">
-                            <div class="friend-avatar">
-                                <?php if (!empty($friendPicture)): ?>  
-                                    <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
-                                <?php else :?>
-                                    <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
-                                <?php endif; ?>        
+                        <?php foreach($getFriendlist as $friend) : ?>
+                            <?php
+                                if ($user['user_id'] == $friend['sender_id']) {
+                                    $friendId = $friend['receiver_id'];
+                                    $friendUsername = $friend['receiver_username'];
+                                    $friendPicture = $friend['receiver_picture'];
+                                } else {
+                                    $friendId = $friend['sender_id'];
+                                    $friendUsername = $friend['sender_username'];
+                                    $friendPicture = $friend['sender_picture'];
+                                }
+                            ?>
+                        
+                        <a href="/persoChat&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                            <div class="friend" data-sender-id="<?= $friendId ?>">
+                                <div class="friend-avatar">
+                                    <?php if (!empty($friendPicture)): ?>  
+                                        <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
+                                    <?php else :?>
+                                        <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
+                                    <?php endif; ?>        
+                                </div>
+
+
+                                <div class="friend-details">
+                                    <span class="chat-name">
+                                        <?= $friendUsername ?>
+                                        <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span>      
+                                    </span>
+                                </div>
                             </div>
+                        </a>
 
-
-                            <div class="friend-details">
-                                <span class="chat-name">
-                                    <?= $friendUsername ?>
-                                    <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span>      
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <?php endforeach; ?>
-            </div>   
-        </div>
-            
-            <div class="messages-container" style="display : block;">
-                <button type="button" id="buttonSwitchChat"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="chat-link-relative">
-
-                <div id="friendInfo"></div>
-
-                <div id="messages">
-                </div>
-
-                <div class="reply-box">
-                    <form method="POST" id="myForm">
-                        <div class="emote-picker">
-                            <button type="button" id="toggleEmotePicker"><i class="fa-solid fa-cat"></i></button>
-                            <div id="emoteContainer" class="emote-container" style="display: none;">
-                                <img src="public/images/emotes/surprised-cat.png" alt=":surprised-cat:" class="emote">
-                                <img src="public/images/emotes/cat-smile.png" alt=":cat-smile:" class="emote">
-                                <img src="public/images/emotes/cat-cute.png" alt=":cat-cute:" class="emote">
-                                <img src="public/images/emotes/goofy-ah-cat.png" alt=":goofy-ah-cat:" class="emote">
-                                <img src="public/images/emotes/cat-surprised.png" alt=":cat-surprised:" class="emote">
-                                <img src="public/images/emotes/cat-liked.png" alt=":cat-liked:" class="emote">
-                                <img src="public/images/emotes/cat-sus.png" alt=":cat-sus:" class="emote">
-                                <img src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
-                                <img src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
-                            </div>
-                        </div>
-                        <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
-                        <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
-                        <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
-                        <div>
-                            <button id="btnDesign" type="button" class="send-message-button">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                        <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
-                    </form>
-                </div>
+                        <?php endforeach; ?>
+                </div>   
             </div>
-        <script type="module" src="public/js/swiping/perso_chat.js"></script>
-        <script type="module" src="public/js/swiping/get_message.js"></script>
-        <script type="module" src="public/js/swiping/send_messagephp.js"></script>
+                
+                <div class="messages-container" style="display : block;">
+                    <button type="button" id="buttonSwitchChat"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="chat-link-relative">
+
+                    <div id="friendInfo"></div>
+
+                    <div id="messages">
+                    </div>
+
+                    <div class="reply-box">
+                        <form method="POST" id="myForm">
+                            <div class="emote-picker">
+                                <button type="button" id="toggleEmotePicker"><i class="fa-solid fa-cat"></i></button>
+                                <div id="emoteContainer" class="emote-container" style="display: none;">
+                                    <img src="public/images/emotes/surprised-cat.png" alt=":surprised-cat:" class="emote">
+                                    <img src="public/images/emotes/cat-smile.png" alt=":cat-smile:" class="emote">
+                                    <img src="public/images/emotes/cat-cute.png" alt=":cat-cute:" class="emote">
+                                    <img src="public/images/emotes/goofy-ah-cat.png" alt=":goofy-ah-cat:" class="emote">
+                                    <img src="public/images/emotes/cat-surprised.png" alt=":cat-surprised:" class="emote">
+                                    <img src="public/images/emotes/cat-liked.png" alt=":cat-liked:" class="emote">
+                                    <img src="public/images/emotes/cat-sus.png" alt=":cat-sus:" class="emote">
+                                    <img src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
+                                    <img src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
+                                </div>
+                            </div>
+                            <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
+                            <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
+                            <input id="message_text" maxlength="300" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
+                            <div>
+                                <button id="btnDesign" type="button" class="send-message-button">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
+                        </form>
+                    </div>
+                </div>
+            <script type="module" src="public/js/swiping/perso_chat.js"></script>
+            <script type="module" src="public/js/swiping/get_message.js"></script>
+            <script type="module" src="public/js/swiping/send_messagephp.js"></script>
+        </div>
     <?php endif; ?>
-</div>
 </div>

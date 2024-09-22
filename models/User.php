@@ -39,6 +39,47 @@ class User extends DataBase
 
     }
 
+    public function getCurrencyByUserId($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                `user_currency`
+                                            FROM
+                                                `user`
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $query -> execute([$userId]);
+        $currency = $query -> fetch();
+
+        if ($currency) {
+            return $currency;
+        } else {
+            return false;
+        }
+    }
+
+    public function addCurrency($userId, $currency)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_currency` = `user_currency` + ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addCurrencyTest = $query -> execute([$currency, $userId]);
+
+        if ($addCurrencyTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getUserById($userId)
     {
         $query = $this -> bdd -> prepare("
