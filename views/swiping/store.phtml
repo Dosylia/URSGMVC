@@ -1,0 +1,29 @@
+<div class="page-header">
+    <a href="/store" class="active">Store</a>
+    <a href="/leaderboard">Leaderboard</a>
+</div>
+
+<div class="filter-section">
+    <label for="category-filter">Filter by category:</label>
+    <select id="category-filter">
+        <option value="all">All Categories</option>
+        <?php
+        $categories = array_unique(array_column($items, 'items_category'));
+        foreach($categories as $category) : ?>
+            <option value="<?= $category ?>"><?= ucfirst($category) ?></option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+<div class="item-grid">
+    <?php foreach($items as $item) : ?>
+    <div class="item-card">
+        <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
+        <div class="item-info">
+            <h3><?= $item['items_name'] ?></h3>
+            <p class="price_display"><?= $item['items_price'] ?><img src="public/images/soulhard.png" alt="soulhard"></p>
+            <p><?= $item['items_desc'] ?></p>
+        </div>
+    </div>
+    <?php endforeach; ?>
+</div>

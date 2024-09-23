@@ -1,0 +1,51 @@
+<div class="page-header">
+    <a href="/store">Store</a>
+    <a href="/leaderboard" class="active">Leaderboard</a>
+</div>
+
+<div class="leaderboard-section">
+    <div class="leaderboard-wrapper">
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Currency</th>
+                    <th>Premium Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $rank = $offset + 1;
+                foreach ($usersOnPage as $user) : ?>
+                <tr>
+                    <td><?= $rank++ ?></td>
+                    <td><a href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?></a></td>
+                    <td><?= $user['user_currency'] ?><img src="/public/images/soulhard.png" alt="currency"></td>
+                    <td>
+                        <?php if ($user['user_isVip']) : ?>
+                            <span class="vip-badge">VIP<img src="/public/images/vip_badge.png" alt="VIP"></span>
+                        <?php else : ?>
+                            <span class="regular-badge">Regular</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <?php if ($page > 1) : ?>
+            <a href="?page=<?= $page - 1 ?>">&laquo; Previous</a>
+        <?php endif; ?>
+        
+        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+            <a href="?page=<?= $i ?>" class="<?= ($i === $page) ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+        
+        <?php if ($page < $totalPages) : ?>
+            <a href="?page=<?= $page + 1 ?>">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+</div>

@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
                             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
-                            <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                            <a class="username_chat_friend" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${formattedTime}</span>
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition};">
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 messageContent = `
                     <p id="username_message" style="text-align: ${userPosition};">
                         <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
-                        <a class="username_chat_friend" target="_blank" href="index.php?action=${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                        <a class="username_chat_friend" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${formattedTime}</span>
                     </p>
                     <p class="last-message" style="text-align: ${messagePosition};">
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let friendContent = `
         <p id="friendTop">
             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
-            <a class="username_chat_friend" target="_blank" href="index.php?action=anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
+            <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
         </p>
         <p id="firstToChat">Be the first one to chat <i class="fa-regular fa-comments"></i></p>`;
 

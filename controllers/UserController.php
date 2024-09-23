@@ -90,6 +90,47 @@ class UserController
         }
     }
 
+    public function pageLeaderboard()
+    {
+
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $allUsers = $this-> user -> getAllUsers();
+            $usersPerPage = 50;
+            $totalUsers = count($allUsers);
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $totalPages = ceil($totalUsers / $usersPerPage);
+
+            if ($page < 1) {
+                $page = 1;
+            } elseif ($page > $totalPages) {
+                $page = $totalPages;
+            }
+            
+
+            $offset = ($page - 1) * $usersPerPage;
+
+            usort($allUsers, function($a, $b) {
+                return $b['user_currency'] - $a['user_currency'];
+            });
+            
+            $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
+
+            $current_url = "https://ur-sg.com/leaderboard";
+            $template = "views/swiping/leaderboard";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
     public function createUserPhone()
     {
         $response = array('message' => 'Error');

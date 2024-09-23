@@ -25,6 +25,7 @@ use controllers\FriendRequestController;
 use controllers\ChatMessageController;
 use controllers\BlockController;
 use controllers\MatchingScoreController;
+use controllers\ItemsController;
 
 function loadClass($class)
 {
@@ -95,6 +96,8 @@ $actionMap = [
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
     'getUserMatching' => [UserController::class, 'getUserMatching'],
     'getCurrency' => [UserController::class, 'getCurrency'],
+    'leaderboard' => [UserController::class, 'pageleaderboard'],
+    'store' => [ItemsController::class, 'pageStore'],
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
     'registerToken' => [UserController::class, 'registerToken'],
