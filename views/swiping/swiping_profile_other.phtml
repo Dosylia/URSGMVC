@@ -3,11 +3,28 @@
         <div class="user_page_main_content_row">
             <div class="main_box">
                 <div class="user_page_picture">
-                    <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
-                        <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
-                    <?php else :?>
-                        <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
-                    <?php endif; ?>
+                <div class="profile-picture-container">
+                        <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
+                            <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
+                        <?php else :?>
+                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                        <?php endif; ?>
+                        
+                        <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+                            <?php
+                            $profilePictures = array_filter($ownedItems, function($item) {
+                                return $item['items_category'] === 'profile Picture';
+                            });
+                            ?>
+                            <?php if (count($profilePictures) > 0) : ?>
+                                <?php foreach ($profilePictures as $item) : ?>
+                                    <?php if ($item['userItems_isUsed'] === 1) : ?>
+                                        <img class="frame_around_picture" src="public/images/store/<?= str_replace('.jpg', '.png', $item['items_picture']) ?>" alt="<?= $item['items_name'] ?>">
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                     <div class="user_page_update_name">
                     <span id="user_page_username"><?= ucfirst($anotherUser['user_username']) ?></span>, <span id="age_user"><?= ucfirst($anotherUser['user_age']) ?></span>     
                     
@@ -100,4 +117,4 @@
     <button id="closeButton_user_picture">X</button></dialog>
 </section>
 
-<script src="public/js/swiping/buttons_otherUser.js"></script>
+<script src="public/js/swiping/button_otherUser.js"></script>

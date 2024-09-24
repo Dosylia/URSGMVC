@@ -3,23 +3,36 @@
         <div class="user_page_main_content_row">
             <div class="main_box">
                 <div class="user_page_picture">
-                    <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                        <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
-                    <?php else :?>
-                        <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
-                    <?php endif; ?>
+                    <div class="profile-picture-container">
+                        <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                            <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                        <?php else :?>
+                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                        <?php endif; ?>
+                        
+                        <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+                            <?php
+                            $profilePictures = array_filter($ownedItems, function($item) {
+                                return $item['items_category'] === 'profile Picture';
+                            });
+                            ?>
+                            <?php if (count($profilePictures) > 0) : ?>
+                                <?php foreach ($profilePictures as $item) : ?>
+                                    <?php if ($item['userItems_isUsed'] === 1) : ?>
+                                        <img class="frame_around_picture" src="public/images/store/<?= str_replace('.jpg', '.png', $item['items_picture']) ?>" alt="<?= $item['items_name'] ?>">
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                     <div class="user_page_update_name">
                         <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>     
                         <div class="user_page_update_row_buttons">
                             <a href="/updateProfilePage" class="btn_user_updates"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
                             <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a> 
                             <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a> 
-                            <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a> 
-                            <?php if(isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
-                                <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE</button>
-                            <?php else : ?>
-                                <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> ADD PICTURE</button>
-                            <?php endif; ?>     
+                            <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
+                                <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE/ PROFILE DESIGN</button>   
                             <?php if(isset($user['user_discord']) || isset($user['user_instagram']) || isset($user['user_twitter']) || isset($user['user_twitch'])) : ?>
                                 <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>UPDATE SOCIAL LINKS</button>
                             <?php else : ?>
@@ -176,6 +189,39 @@
             </div>
             <input type="submit" name="submit" value="Upload" id="send-button">
         </form>
+        <p class="title_generalbox">Add a profile picture frame</p>
+        <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+            <?php
+            $profilePictures = array_filter($ownedItems, function($item) {
+                return $item['items_category'] === 'profile Picture';
+            });
+            ?>
+            <span id="placeholder-message"></span>
+
+            <?php if (count($profilePictures) > 0) : ?>
+                <div class="picture_frame_ctn">
+                    <?php foreach ($profilePictures as $item) : ?>
+                        <div class="picture_frame">
+                            <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
+                            <p><?= $item['items_name'] ?></p>
+                            <?php if ($item['userItems_isUsed'] === 1) : ?>
+                                <button class="btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>">Remove</button>
+                            <?php else : ?>
+                                <button class="btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>">Use</button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <p>You don't have any profile picture frame yet</p>
+                <a href="/store">Go to the store</a>
+            <?php endif; ?>
+        <?php else : ?>
+            <p>You don't have any items yet</p>
+            <a href="/store">Go to the store</a>
+        <?php endif; ?>
+
+            </div>
         <button id="closeButton_user_picture">X</button>
     </dialog>
 </section>

@@ -3,6 +3,7 @@ const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
 const cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('file-name');
+const placeholderMessage = document.getElementById('placeholder-message');
 
 showButtonSocialLinks.addEventListener('click', () => {
   openDialogSocialLinks();
@@ -67,7 +68,99 @@ fileInput.addEventListener('change', (event) => {
   }
 });
 
+function usePictureFrame(itemId, userId) {
+  console.log(`Buying item ID: ${itemId}, userId: ${userId}`);
+
+  const dataToSend = {
+      itemId,
+      userId,
+  };
+
+  const jsonData = JSON.stringify(dataToSend);
+  
+  fetch('index.php?action=usePictureFrame', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: "param=" + encodeURIComponent(jsonData)
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      placeholderMessage.innerHTML = '';
+      console.log('Success:', data);
+      if (data.success) {
+        location.reload();
+      } else {
+          placeholderMessage.innerHTML = data.message;
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
+function RemovePictureFrame(itemId, userId) {
+  console.log(`Buying item ID: ${itemId}, userId: ${userId}`);
+
+  const dataToSend = {
+      itemId,
+      userId,
+  };
+
+  const jsonData = JSON.stringify(dataToSend);
+  
+  fetch('index.php?action=removePictureFrame', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: "param=" + encodeURIComponent(jsonData)
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      placeholderMessage.innerHTML = '';
+      console.log('Success:', data);
+      if (data.success) {
+        location.reload();
+      } else {
+          placeholderMessage.innerHTML = data.message;
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+
+  const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame');
+  const pictureFrameButtonsRemove = document.querySelectorAll('.btn_picture_frame_remove');
+
+  pictureFrameButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.getAttribute('data-item-id');
+      usePictureFrame(itemId, userIdHeader);
+    });
+  });
+
+  pictureFrameButtonsRemove.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.getAttribute('data-item-id');
+      RemovePictureFrame(itemId, userIdHeader);
+    });
+  });
+
   const lolUserText = document.getElementById('lolUserText');
   const copyIcon = document.querySelector('#lolUserText .fa-copy');
 

@@ -8,6 +8,7 @@ use models\ChatMessage;
 use models\LeagueOfLegends;
 use models\UserLookingFor;
 use models\MatchingScore;
+use models\Items;
 use traits\SecurityController;
 
 class UserController
@@ -20,6 +21,7 @@ class UserController
     private LeagueOfLegends $leagueoflegends;
     private UserLookingFor $userlookingfor;    
     private MatchingScore $matchingscore;
+    private Items $items;
     private $googleUserId;
     private $userId;
     private $username;
@@ -56,6 +58,7 @@ class UserController
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
+        $this -> items = new Items();
     }
 
     public function getAllUsers()
@@ -121,7 +124,7 @@ class UserController
 
             $current_url = "https://ur-sg.com/leaderboard";
             $template = "views/swiping/leaderboard";
-            $page_title = "URSG - Profile";
+            $page_title = "URSG - Leaderboard";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -801,6 +804,7 @@ class UserController
             $usersAll = $this-> user -> getAllUsers();
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
@@ -843,8 +847,8 @@ class UserController
             }
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $anotherUser = $this-> user -> getUserByUsername($username);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;

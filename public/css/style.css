@@ -775,14 +775,31 @@ section.siteMap tr:nth-child(even) {
     font-size: 3.7rem;
   }
 
-  #image_users {
+  .profile-picture-container {
+    position: relative;
+    display: inline-block;
+    width: 220px;
+    height: 220px; 
+    margin-left: 60px;
+}
+
+#image_users {
     height: 200px;
     width: 200px;
     border: none;
-    margin-left: 20px;
-    border-radius: 1000px;
+    border-radius: 50%; 
     word-wrap: break-word;
-  }
+    display: block;
+}
+
+.frame_around_picture {
+    position: absolute;
+    top: -60px;
+    left: -120px;
+    width: 445px; 
+    height: 320px;
+    pointer-events: none; 
+}
 
   #image_users_small {
     width: 50px;
@@ -2240,6 +2257,47 @@ justify-content: center;
   margin-left: 10px;
 }
 
+.picture_frame_ctn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.picture_frame {
+  width: 50%;
+}
+
+.picture_frame img {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+}
+
+.picture_frame p {
+  font-size: 1.5em;
+  text-shadow: 0.5px 0.5px 1px rgb(0, 0, 0);
+}
+
+.btn_picture_frame {
+  background-color: #007bff;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn_picture_frame_remove {
+  background-color: var(--main--red);
+  border-radius: 20px;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
 #favDialogSocialLinks form input:not([id="send-button"]) {
   border-radius: 20px;
   border: none;
@@ -2610,16 +2668,19 @@ justify-content: center;
 .item-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   gap: 20px;
   padding: 20px;
 }
 
 .item-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
   background-color: var(--white);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   width: calc(33.333% - 20px); 
   margin-bottom: 20px;
   transition: transform 0.3s ease;
@@ -2637,6 +2698,9 @@ justify-content: center;
 
 .item-info {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .item-info h3 {
@@ -2660,6 +2724,33 @@ justify-content: center;
 .price_display img {
   width: 40px;
   height: 40px;
+}
+
+.buy-button-container {
+  text-align: center;
+  margin-top: auto;
+}
+
+.buy-button {
+  margin-top: 20px;
+  background-color: var(--main--red);
+  color: white;
+  border: none;
+  font-size: 2em;
+  padding: 10px 50px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.buy-button:hover {
+  background-color: var(--ligher--grey);
+}
+
+#placeholder-message {
+  color: var(--main--red);
+  font-size: 2em;
+  padding: 20px;
+  font-weight: 600;
 }
 
 /* PAGE LEADERBOARD */
@@ -2710,6 +2801,10 @@ justify-content: center;
   margin-left: 10px;
 }
 
+.leaderboard-table td a {
+  color: black;
+}
+
 .vip-badge, .regular-badge {
   display: inline-flex;
   align-items: center;
@@ -2719,8 +2814,7 @@ justify-content: center;
 }
 
 .vip-badge {
-  background-color: var(--main--red);
-  color: white;
+  color: black;
 }
 
 .regular-badge {
@@ -2772,6 +2866,10 @@ justify-content: center;
   background-color: var(--dark-ligher-grey);
 }
 
+.dark-mode .leaderboard-table td a {
+  color: white;
+}
+
 .dark-mode .item-info p {
   color: white;
 }
@@ -2808,7 +2906,7 @@ justify-content: center;
 }
 
 .dark-mode .vip-badge {
-  background-color: var(--dark-red);
+  color: white;
 }
 
 .toggle-container {
@@ -3076,6 +3174,18 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 900px) {
+
+  .frame_around_picture {
+    top: -60px;
+    left: -100px;
+    width: 445px; 
+    height: 320px;
+  }
+
+  .profile-picture-container {
+    margin: 60px 0px;
+}
+
 
   .item-card {
     width: calc(50% - 20px);
@@ -3410,6 +3520,23 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    .page-header a {
+      font-size: 1rem;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 5px;
+      font-size: 1rem;
+    }
+
+    .leaderboard-wrapper {
+      padding: 10px;
+    }
+
+    .leaderboard-section {
+      margin: 0;
+    }
 
     .currency {
       padding: 5px 5px;

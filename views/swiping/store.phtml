@@ -15,15 +15,22 @@
     </select>
 </div>
 
+<span id="placeholder-message"></span>
+
 <div class="item-grid">
     <?php foreach($items as $item) : ?>
-    <div class="item-card">
+        <div class="item-card" data-category="<?= $item['items_category'] ?>">
         <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
         <div class="item-info">
             <h3><?= $item['items_name'] ?></h3>
             <p class="price_display"><?= $item['items_price'] ?><img src="public/images/soulhard.png" alt="soulhard"></p>
-            <p><?= $item['items_desc'] ?></p>
+            <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
+            <div class="buy-button-container">
+                <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+            </div>
         </div>
     </div>
     <?php endforeach; ?>
 </div>
+
+<script src="public/js/swiping/store.js"></script>

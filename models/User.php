@@ -80,6 +80,26 @@ class User extends DataBase
         }
     }
 
+    public function UpdateCurrency($userId, $currency)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_currency` =  ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updateCurrencyTest = $query -> execute([$currency, $userId]);
+
+        if ($updateCurrencyTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getUserById($userId)
     {
         $query = $this -> bdd -> prepare("
@@ -379,5 +399,19 @@ class User extends DataBase
         {
             return false;
         }
+    }
+
+    public function buyPremium($userId)
+    {
+        $query = $this->bdd->prepare("
+                                    UPDATE
+                                        `user`
+                                    SET
+                                        user_isVip = 1
+                                    WHERE
+                                        user_id = ?
+        ");
+    
+        $query->execute([$userId]);
     }
 }
