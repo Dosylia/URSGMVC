@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="chat_profile">
-                    <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) : // Profile picture test ?>
+                    <?php if (isset($user['user_picture']) && $user['user_picture'] !== null) : ?>
                         <a id="open_menu_profile"><img class="scale" src="public/upload/<?= $user['user_picture']; ?>" alt="Profile picture of user<?= $user['user_username'] ?>" ></a>
                     <?php else : ?>
                         <a id="open_menu_profile"><img class="scale" src="public/images/defaultprofilepicture.jpg" alt="default profile picture" ></a>

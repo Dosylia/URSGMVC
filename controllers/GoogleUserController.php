@@ -572,7 +572,9 @@ class GoogleUserController
                             'discord' => $user['user_discord'] ?? null,
                             'twitch' => $user['user_twitch'] ?? null,
                             'instagram' => $user['user_instagram'] ?? null,
-                            'twitter' => $user['user_twitter'] ?? null
+                            'twitter' => $user['user_twitter'] ?? null,
+                            'currency' => $user['user_currency'] ?? null,
+                            'isVip' => $user['user_isVip'] ?? null
                         );
 
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);

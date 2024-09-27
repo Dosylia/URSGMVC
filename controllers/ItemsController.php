@@ -43,6 +43,69 @@ class ItemsController
             exit();
         }
     }
+    public function getItems()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['items'])) 
+        {
+            $items = $this-> items -> getItems();
+
+            if ($items)
+            {
+                $response = array(
+                    'items' => $items,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = array('message' => 'Couldnt get all items');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+        } else {
+            $response = array('message' => 'Cant access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;  
+        }
+    }
+
+    public function getOwnedItems()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userId'])) 
+        {
+            $items = $this-> items -> getOwnedItems($_POST['userId']);
+
+            if ($items)
+            {
+                $response = array(
+                    'items' => $items,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = array('message' => 'Couldnt get all items');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+        } else {
+            $response = array('message' => 'Cant access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;  
+        }
+    }
 
     public function buyItem()
     {
@@ -55,11 +118,25 @@ class ItemsController
 
                 $item = $this->items->getItemById($itemId);
                 $user = $this->user->getUserById($userId);
+                $ownedItems = $this->items->getOwnedItems($userId);
+
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($item['items_id'] == $ownedItem['items_id']) {
+                            echo json_encode(['success' => false, 'message' => 'Item already owned']);
+                            return;
+                        }
+                    }
+                }
 
                 if ($item && $user) {
                     if ($user['user_currency'] >= $item['items_price']) {
                         $this->items->buyItem($itemId, $userId);
-                        $this->user->updateCurrency($userId, $user['user_currency'] - $item['items_price']);
+                        $price = $item['items_price'];
+                        if ($user['user_isVip'] == 1) {
+                            $price = $item['items_price'] * 0.8;
+                        } 
+                        $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Item bought successfully']);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Not enough currency']);
@@ -88,12 +165,26 @@ class ItemsController
 
                 $item = $this->items->getItemById($itemId);
                 $user = $this->user->getUserById($userId);
+                $ownedItems = $this->items->getOwnedItems($userId);
+
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($item['items_id'] == $ownedItem['items_id']) {
+                            echo json_encode(['success' => false, 'message' => 'Role already owned']);
+                            return;
+                        }
+                    }
+                }
 
                 if ($item && $user) {
                     if ($user['user_currency'] >= $item['items_price']) {
                         $this->items->buyItem($itemId, $userId);
                         $this->user->buyPremium($userId);
-                        $this->user->updateCurrency($userId, $user['user_currency'] - $item['items_price']);
+                        $price = $item['items_price'];
+                        if ($user['user_isVip'] == 1) {
+                            $price = $item['items_price'] * 0.8;
+                        } 
+                        $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Role bought successfully']);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Not enough currency']);

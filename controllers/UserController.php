@@ -200,7 +200,9 @@ class UserController
                     'age' => $user['user_age'],
                     'kindOfGamer' => $user['user_kindOfGamer'],
                     'game' => $user['user_game'],
-                    'shortBio' => $user['user_shortBio']
+                    'shortBio' => $user['user_shortBio'],
+                    'currency' => $user['user_currency'],
+                    'isVip' => $user['user_isVip']
                 );
 
                 $response = array(
@@ -859,6 +861,7 @@ class UserController
             $username = $_GET['username'];
             $anotherUser = $this-> user -> getUserByUsername($username);
             $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;

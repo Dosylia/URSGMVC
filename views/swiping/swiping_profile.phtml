@@ -26,7 +26,10 @@
                         <?php endif; ?>
                     </div>
                     <div class="user_page_update_name">
-                        <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>     
+                        <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>   
+                        <?php if ($user['user_isVip']) : ?>
+                            <span class="vip-badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                        <?php endif; ?>  
                         <div class="user_page_update_row_buttons">
                             <a href="/updateProfilePage" class="btn_user_updates"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
                             <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a> 
@@ -214,11 +217,11 @@
                 </div>
             <?php else : ?>
                 <p>You don't have any profile picture frame yet</p>
-                <a href="/store">Go to the store</a>
+                <a href="/store" class="btn_picture_frame">Go to the store</a>
             <?php endif; ?>
         <?php else : ?>
             <p>You don't have any items yet</p>
-            <a href="/store">Go to the store</a>
+            <a href="/store" class="btn_picture_frame">Go to the store</a>
         <?php endif; ?>
 
             </div>

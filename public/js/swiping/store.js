@@ -1,6 +1,7 @@
 // CONST
 const buyButtons = document.querySelectorAll(".buy-button");
-const placeholderMessage = document.getElementById('placeholder-message');
+const categoryFilter = document.getElementById('category-filter');
+const itemCards = document.querySelectorAll('.item-card');
 
 // FUNCTIONS
 function buyItem(itemId, userId) {
@@ -27,6 +28,7 @@ function buyItem(itemId, userId) {
         return response.json();
     })
     .then(data => {
+        const placeholderMessage = document.getElementById(`placeholder-message-${itemId}`);
         placeholderMessage.innerHTML = '';
         console.log('Success:', data);
         if (data.success) {
@@ -64,6 +66,7 @@ function buyRole(itemId, userId) {
         return response.json();
     })
     .then(data => {
+        const placeholderMessage = document.getElementById(`placeholder-message-${itemId}`);
         placeholderMessage.innerHTML = '';
         console.log('Success:', data);
         if (data.success) {
@@ -88,6 +91,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 buyRole(itemId, userIdHeader);
             } else {
                 buyItem(itemId, userIdHeader);
+            }
+        });
+    });
+
+    categoryFilter.addEventListener('change', function() {
+        const selectedCategory = categoryFilter.value;
+
+        itemCards.forEach(function(itemCard) {
+            const itemCategory = itemCard.getAttribute('data-category');
+
+
+            if (selectedCategory === 'all' || itemCategory === selectedCategory) {
+                itemCard.style.display = 'block';
+            } else {
+                itemCard.style.display = 'none';
             }
         });
     });

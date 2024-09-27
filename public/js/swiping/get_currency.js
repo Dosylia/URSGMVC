@@ -21,13 +21,21 @@ function getCurrency(userId) {
     });
 }
 
+function formatCurrency(value) {
+    if (value >= 1000) {
+        return Math.floor(value / 1000) + 'k';
+    }
+    return value;
+}
+
 function fillCurrency(currency) {
     let currencyElement = document.getElementById('currency');
-    const currencyFinal = currency.user_currency;
+    const currencyFinal = formatCurrency(currency.user_currency);
     if (currencyElement) {
         currencyElement.innerHTML = currencyFinal;
     }
 }
+
 const userId = userIdHeaderCurrency;
 
 document.addEventListener("DOMContentLoaded", function() {
