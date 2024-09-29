@@ -6,6 +6,7 @@ use models\User;
 use models\FriendRequest;
 use models\ChatMessage;
 use models\LeagueOfLegends;
+use models\Valorant;
 use models\UserLookingFor;
 use models\MatchingScore;
 use models\Items;
@@ -19,6 +20,7 @@ class UserController
     private FriendRequest $friendrequest;
     private ChatMessage $chatmessage;
     private LeagueOfLegends $leagueoflegends;
+    private Valorant $valorant;
     private UserLookingFor $userlookingfor;    
     private MatchingScore $matchingscore;
     private Items $items;
@@ -49,6 +51,16 @@ class UserController
     private $loLMain3Lf;
     private $loLRankLf;
     private $loLRoleLf;
+    private $valorantMain1;
+    private $valorantMain2;
+    private $valorantMain3;
+    private $valorantRank;
+    private $valorantRole;
+    private $valorantMain1Lf;
+    private $valorantMain2Lf;
+    private $valorantMain3Lf;
+    private $valorantRankLf;
+    private $valorantRoleLf;
     
     public function __construct()
     {
@@ -56,6 +68,7 @@ class UserController
         $this -> friendrequest = new FriendRequest();
         $this -> chatmessage = new ChatMessage();
         $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> valorant = new Valorant();
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
         $this -> items = new Items();
@@ -96,7 +109,12 @@ class UserController
     public function pageLeaderboard()
     {
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
 
             // Get important datas
@@ -289,9 +307,9 @@ class UserController
                     header("location:/leagueuser?user_id=".$user['user_id']);
                     exit();
                 }
-                else if($user['user_game'] === "valorant")
+                else if($user['user_game'] === "Valorant")
                 {
-                    header("location:/valorantUser?user_id=".$user['user_id']);
+                    header("location:/valorantuser?user_id=".$user['user_id']);
                     exit();
                 }
                 else {
@@ -477,7 +495,9 @@ class UserController
         if (isset($_POST['userData'])) // Check if data is sent via AJAX
         {
             $data = json_decode($_POST['userData']);
-            
+
+            if ($data->game == "League of Legends") 
+            {
             // Validate and set user data
             $userId = $this->validateInput($data->userId);
             $username = $this->validateInput($data->username);
@@ -562,6 +582,95 @@ class UserController
                 {
                     $response = array('message' => 'Could not update');
                 }
+            } 
+            else
+            {
+                            // Validate and set user data
+            $userId = $this->validateInput($data->userId);
+            $username = $this->validateInput($data->username);
+            $gender = $this->validateInput($data->gender);
+            $age = $this->validateInput($data->age);
+            $kindOfGamer = $this->validateInput($data->kindOfGamer);
+            $game = $this->validateInput($data->game);
+            $shortBio = $this->validateInput($data->shortBio);
+            $main1 = $this->validateInput($data->main1);
+            $main2 = $this->validateInput($data->main2);
+            $main3 = $this->validateInput($data->main3);
+            $rank = $this->validateInput($data->rank);
+            $role = $this->validateInput($data->role);
+            $server = $this->validateInput($data->server);
+            $genderLf = $this->validateInput($data->genderLf);
+            $kindOfGamerLf = $this->validateInput($data->kindOfGamerLf);
+            $main1Lf = $this->validateInput($data->main1Lf);
+            $main2Lf = $this->validateInput($data->main2Lf);
+            $main3Lf = $this->validateInput($data->main3Lf);
+            $rankLf = $this->validateInput($data->rankLf);
+            $roleLf = $this->validateInput($data->roleLf);
+    
+            $this->setUserId($userId);
+            $this->setUsername($username);
+            $this->setGender($gender);
+            $this->setAge($age);
+            $this->setKindOfGamer($kindOfGamer);
+            $this->setGame($game);
+            $this->setShortBio($shortBio);
+            $this->setValorantMain1($main1);
+            $this->setValorantMain2($main2);
+            $this->setValorantMain3($main3);
+            $this->setValorantRank($rank);
+            $this->setValorantRole($role);
+            $this->setValorantServer($server);
+            $this->setLfGender($genderLf);
+            $this->setLfKindOfGamer($kindOfGamerLf);
+            $this->setValorantMain1Lf($main1Lf);
+            $this->setValorantMain2Lf($main2Lf);
+            $this->setValorantMain3Lf($main3Lf);
+            $this->setValorantRankLf($rankLf);
+            $this->setValorantRoleLf($roleLf);
+
+            if ($this->getAge() > 99)
+            {
+                $response = array('message' => 'Age is not valid');
+                echo json_encode($response);
+                exit;
+            }
+
+            $updateUser = $this->user->updateUser($this->getUsername(),
+                $this->getGender(),
+                $this->getAge(),
+                $this->getKindOfGamer(),
+                $this->getShortBio(),
+                $this->getGame());
+
+            $updateValorant = $this->valorant->updateValorantData(
+                $this->getUserId(), 
+                $this->getValorantMain1(), 
+                $this->getValorantMain2(), 
+                $this->getValorantMain3(), 
+                $this->getValorantRank(), 
+                $this->getValorantRole(), 
+                $this->getValorantServer());
+
+            $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
+                $this->getUserId(), 
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),             
+                $this->getValorantMain1Lf(), 
+                $this->getValorantMain2Lf(), 
+                $this->getValorantMain3Lf(), 
+                $this->getValorantRankLf(), 
+                $this->getValorantRoleLf());
+
+                if($updateUser && $updateValorant && $updateLookingFor)
+                {
+                    $response = array('message' => 'Success');
+                }
+                else
+                {
+                    $response = array('message' => 'Could not update');
+                }
+            }
+
         }
     
         // Return the response in JSON format
@@ -717,7 +826,12 @@ class UserController
 
     public function pageswiping()
     {     
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
 
             // Get important datas
@@ -756,32 +870,56 @@ class UserController
                     // if (!in_array($matchedUserId, $userFriendRequest)) {
                         $userMatched = $this->user->getUserById($matchedUserId);               
                         if ($userMatched) {
-                            $data = [
-                                'success' => true,
-                                'user' => [
-                                    'error' => 'No error',
-                                    'user_id' => $userMatched['user_id'],
-                                    'user_username' => $userMatched['user_username'],
-                                    'user_picture' => $userMatched['user_picture'],
-                                    'user_age' => $userMatched['user_age'],
-                                    'user_game' => $userMatched['user_game'],
-                                    'user_gender' => $userMatched['user_gender'],
-                                    'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
-                                    'user_shortBio' => $userMatched['user_shortBio'],
-                                    'lol_main1' => $userMatched['lol_main1'],
-                                    'lol_main2' => $userMatched['lol_main2'],
-                                    'lol_main3' => $userMatched['lol_main3'],
-                                    'lol_rank' => $userMatched['lol_rank'],
-                                    'lol_role' => $userMatched['lol_role'],
-                                    'lol_account' => $userMatched['lol_account'],
-                                    'lol_sUsername' => $userMatched['lol_sUsername'],
-                                    'lol_sLevel' => $userMatched['lol_sLevel'],
-                                    'lol_sRank' => $userMatched['lol_sRank'],
-                                    'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
-                                    'lol_sUsername' => $userMatched['lol_sUsername']
-                                ]
-                            ];
-                            break;
+                            if ($userMatched['user_game'] == "League of Legends") {
+                                $data = [
+                                    'success' => true,
+                                    'user' => [
+                                        'error' => 'No error',
+                                        'user_id' => $userMatched['user_id'],
+                                        'user_username' => $userMatched['user_username'],
+                                        'user_picture' => $userMatched['user_picture'],
+                                        'user_age' => $userMatched['user_age'],
+                                        'user_game' => $userMatched['user_game'],
+                                        'user_gender' => $userMatched['user_gender'],
+                                        'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
+                                        'user_shortBio' => $userMatched['user_shortBio'],
+                                        'lol_main1' => $userMatched['lol_main1'],
+                                        'lol_main2' => $userMatched['lol_main2'],
+                                        'lol_main3' => $userMatched['lol_main3'],
+                                        'lol_rank' => $userMatched['lol_rank'],
+                                        'lol_role' => $userMatched['lol_role'],
+                                        'lol_account' => $userMatched['lol_account'],
+                                        'lol_sUsername' => $userMatched['lol_sUsername'],
+                                        'lol_sLevel' => $userMatched['lol_sLevel'],
+                                        'lol_sRank' => $userMatched['lol_sRank'],
+                                        'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
+                                        'lol_sUsername' => $userMatched['lol_sUsername']
+                                    ]
+                                ];
+                                break;
+                            } else {
+                                $data = [
+                                    'success' => true,
+                                    'user' => [
+                                        'error' => 'No error',
+                                        'user_id' => $userMatched['user_id'],
+                                        'user_username' => $userMatched['user_username'],
+                                        'user_picture' => $userMatched['user_picture'],
+                                        'user_age' => $userMatched['user_age'],
+                                        'user_game' => $userMatched['user_game'],
+                                        'user_gender' => $userMatched['user_gender'],
+                                        'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
+                                        'user_shortBio' => $userMatched['user_shortBio'],
+                                        'valorant_main1' => $userMatched['valorant_main1'],
+                                        'valorant_main2' => $userMatched['valorant_main2'],
+                                        'valorant_main3' => $userMatched['valorant_main3'],
+                                        'valorant_rank' => $userMatched['valorant_rank'],
+                                        'valorant_role' => $userMatched['valorant_role'],
+                                        'valorant_account' => $userMatched['valorant_account'],
+                                    ]
+                                ];
+                                break;
+                            }
                         } else {
                             $data = ['success' => false, 'error' => 'No matching users found..', 'matching2' => $usersAfterMatching];
                         }
@@ -799,7 +937,12 @@ class UserController
 
     public function pageUserProfile()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -837,7 +980,12 @@ class UserController
     public function pageAnotherUserProfile()
     {
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
             // Get important datas
 
@@ -872,7 +1020,7 @@ class UserController
     public function pageUpdateProfile()
     {
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf())
         {
 
             // Get important datas
@@ -1223,5 +1371,127 @@ class UserController
     public function setLoLRoleLf($loLRoleLf)
     {
         $this->loLRole = $loLRoleLf;
+    }
+
+    public function getValorantMain1()
+    {
+        return $this->valorantMain1;
+    }
+
+    public function setValorantMain1($valorantMain1)
+    {
+        $this->valorantMain1 = $valorantMain1;
+    }
+
+    public function getValorantMain2()
+    {
+        return $this->valorantMain2;
+    }
+
+    public function setValorantMain2($valorantMain2)
+    {
+        $this->valorantMain2 = $valorantMain2;
+    }
+
+    public function getValorantMain3()
+    {
+        return $this->valorantMain3;
+    }
+
+    public function setValorantMain3($valorantMain3)
+    {
+        $this->valorantMain3 = $valorantMain3;
+    }
+
+    public function getValorantRank()
+    {
+        return $this->valorantRank;
+    }
+
+    public function setValorantRank($valorantRank)
+    {
+        $this->valorantRank = $valorantRank;
+    }
+
+
+    public function getValorantRole()
+    {
+        return $this->valorantRole;
+    }
+
+    public function setValorantRole($valorantRole)
+    {
+        $this->valorantRole = $valorantRole;
+    }
+
+    public function getValorantServer()
+    {
+        return $this->valorantServer;
+    }
+
+    public function setValorantServer($valorantServer)
+    {
+        $this->valorantServer = $valorantServer;
+    }
+
+    public function getValorantAccount()
+    {
+        return $this->valorantAccount;
+    }
+
+    public function setValorantAccount($valorantAccount)
+    {
+        $this->valorantAccount = $valorantAccount;
+    }
+
+    public function getValorantMain1Lf()
+    {
+        return $this->valorantMain1Lf;
+    }
+
+    public function setValorantMain1Lf($valorantMain1Lf)
+    {
+        $this->valorantMain1Lf = $valorantMain1Lf;
+    }
+
+    public function getValorantMain2Lf()
+    {
+        return $this->valorantMain2Lf;
+    }
+
+    public function setValorantMain2Lf($valorantMain2Lf)
+    {
+        $this->valorantMain2Lf = $valorantMain2Lf;
+    }
+
+    public function getValorantMain3Lf()
+    {
+        return $this->valorantMain3Lf;
+    }
+
+    public function setValorantMain3Lf($valorantMain3Lf)
+    {
+        $this->valorantMain3Lf = $valorantMain3Lf;
+    }
+
+    public function getValorantRankLf()
+    {
+        return $this->valorantRankLf;
+    }
+
+    public function setValorantRankLf($valorantRankLf)
+    {
+        $this->valorantRankLf = $valorantRankLf;
+    }
+
+
+    public function getValorantRoleLf()
+    {
+        return $this->valorantRoleLf;
+    }
+
+    public function setValorantRoleLf($valorantRoleLf)
+    {
+        $this->valorantRoleLf = $valorantRoleLf;
     }
 }

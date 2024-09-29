@@ -29,7 +29,12 @@ class FriendRequestController
 
     public function pageFriendlist(): void
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
             // Get important datas
             $user = $this->user->getUserByUsername($_SESSION['username']);
             $allUsers = $this->user->getAllUsers();

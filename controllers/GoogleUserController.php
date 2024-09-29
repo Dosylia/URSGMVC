@@ -5,6 +5,7 @@ namespace controllers;
 use models\GoogleUser;
 use models\User;
 use models\LeagueOfLegends;
+use models\Valorant;
 use models\UserLookingFor;
 use models\MatchingScore;
 use traits\SecurityController;
@@ -20,6 +21,7 @@ class GoogleUserController
     private GoogleUser $googleUser;
     private User $user;
     private LeagueOfLegends $leagueoflegends;
+    private Valorant $valorant;
     private UserLookingFor $userlookingfor;
     private MatchingScore $matchingscore;
     private $googleId;
@@ -36,6 +38,7 @@ class GoogleUserController
         $this -> googleUser = new GoogleUser();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> valorant = new Valorant();
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
     }
@@ -91,7 +94,7 @@ class GoogleUserController
         else
         {
             ob_start();
-            header("Location: /swippingmain");
+            header("Location: /swiping");
             exit();
         }
     }
@@ -140,7 +143,15 @@ class GoogleUserController
             $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
         }
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+        if(
+            $this->isConnectGoogle() && 
+            $this->isConnectWebsite() && 
+            (
+                ($this->isConnectLeague() && !$this->isConnectValorant()) || 
+                ($this->isConnectValorant() && !$this->isConnectLeague())
+            ) && 
+            $this->isConnectLf()
+        ) {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
@@ -152,8 +163,13 @@ class GoogleUserController
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";
             $page_title = "URSG - Swiping";
-            require "views/layoutSwiping.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()) {
+            require "views/layoutSwiping.phtml";;
+        } elseif (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            !$this->isConnectLf()
+        ) {
             // Code block 2: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -162,7 +178,7 @@ class GoogleUserController
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && $secondTierUser['user_game'] === "League of Legends" && !$this->isConnectLeagueLf()) { 
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && $secondTierUser['user_game'] === "League of Legends" && !$this->isConnectLf()) { 
             // Code block 3: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/leagueuser";
@@ -170,7 +186,7 @@ class GoogleUserController
             $title = "More about you";
             $page_title = "URSG - Sign up";
             require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $secondTierUser['user_game'] === "valorant") {
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant() && $secondTierUser['user_game'] === "valorant") {
                 // Code block 4: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
             $current_url = "https://ur-sg.com/valorantuser";
                 $template = "views/signup/valorant";
@@ -192,7 +208,7 @@ class GoogleUserController
             $page_title = "URSG - Sign";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 0) {
-            // Code block 6: User is connected via Google but doesn't have a username
+            // Code block 7: User is connected via Google but doesn't have a username
             $current_url = "https://ur-sg.com/confirmMail";
             $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
@@ -321,50 +337,105 @@ class GoogleUserController
                                 $_SESSION['age'] = $user['user_age'];
                                 $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                                 $_SESSION['game'] = $user['user_game'];
-    
-                                $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-    
-                                if ($lolUser)
-                                {
-                                    $_SESSION['lol_id'] = $lolUser['lol_id'];
-    
-                                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-    
-                                    if ($lfUser)
+
+                                if ($user['user_game'] == 'League of Legends') {
+                                    $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'LolUser' => $lolUser,
+                                    );                    
+                                    
+                                    if ($lolUser)
                                     {
-                                        $_SESSION['lf_id'] = $lfUser['lf_id']; 
-                                        $response = array(
-                                            'message' => 'Success',
-                                            'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => true,
-                                            'lookingForUserExists' => true,
-                                            'googleUser' => $testGoogleUser,
-                                            'user' => $user,
-                                            'leagueUser' => $lolUser,
-                                            'lookingForUser' => $lfUser
-                                        );                                
+                                        $_SESSION['lol_id'] = $lolUser['lol_id'];
+        
+                                        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+        
+                                        if ($lfUser)
+                                        {
+                                            $_SESSION['lf_id'] = $lfUser['lf_id']; 
+                                            $response = array(
+                                                'message' => 'Success',
+                                                'newUser' => false,
+                                                'userExists' => true,
+                                                'leagueUserExists' => true,
+                                                'lookingForUserExists' => true,
+                                                'googleUser' => $testGoogleUser,
+                                                'user' => $user,
+                                                'leagueUser' => $lolUser,
+                                                'lookingForUser' => $lfUser
+                                            );                                
+                                        } else {
+                                            $response = array(
+                                                'message' => 'Success',
+                                                'newUser' => false,
+                                                'userExists' => true,
+                                                'leagueUserExists' => true,
+                                                'lookingForUserExists' => false,
+                                                'googleUser' => $testGoogleUser,
+                                                'user' => $user,
+                                                'leagueUser' => $lolUser
+                                            );
+                                        }
                                     } else {
                                         $response = array(
                                             'message' => 'Success',
                                             'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => true,
-                                            'lookingForUserExists' => false,
                                             'googleUser' => $testGoogleUser,
                                             'user' => $user,
-                                            'leagueUser' => $lolUser
+                                            'userExists' => true,
+                                            'leagueUserExists' => false
                                         );
                                     }
                                 } else {
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'googleUser' => $testGoogleUser,
-                                        'user' => $user,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false
-                                    );
+                                    $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
+                                    
+                                    if ($valorantUser)
+                                    {
+                                        $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
+                                
+                                        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                                
+                                        if ($lfUser)
+                                        {
+                                            $_SESSION['lf_id'] = $lfUser['lf_id']; 
+                                            $response = array(
+                                                'message' => 'Success',
+                                                'newUser' => false,
+                                                'userExists' => true,
+                                                'leagueUserExists' => false,
+                                                'lookingForUserExists' => true,
+                                                'googleUser' => $testGoogleUser,
+                                                'user' => $user,
+                                                'valorantUser' => $valorantUser,
+                                                'lookingForUser' => $lfUser,
+                                                'valorantUserExists' => true
+                                            );                                
+                                        } else {
+                                            $response = array(
+                                                'message' => 'Success',
+                                                'newUser' => false,
+                                                'userExists' => true,
+                                                'leagueUserExists' => true,
+                                                'lookingForUserExists' => false,
+                                                'googleUser' => $testGoogleUser,
+                                                'user' => $user,
+                                                'valorantUser' => $valorantUser,
+                                                'valorantUserExists' => true
+                                            );
+                                        }
+                                    } else {
+                                        $response = array(
+                                            'message' => 'Success',
+                                            'newUser' => false,
+                                            'googleUser' => $testGoogleUser,
+                                            'user' => $user,
+                                            'userExists' => true,
+                                            'leagueUserExists' => false,
+                                            'valorantUserExists' => false
+                                        );
+                                    }
                                 }
                             } else {
                                 $response = array(
@@ -577,75 +648,147 @@ class GoogleUserController
                             'isVip' => $user['user_isVip'] ?? null
                         );
 
-                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-
-                        if ($lolUser)
-                        {
-                            $lolUserData = array(
-                                'lolId' => $lolUser['lol_id'],
-                                'main1' => $lolUser['lol_main1'],
-                                'main2' => $lolUser['lol_main2'],
-                                'main3' => $lolUser['lol_main3'],
-                                'rank' => $lolUser['lol_rank'],
-                                'role' => $lolUser['lol_role'],
-                                'server' => $lolUser['lol_server'],
-                                'account' => $lolUser['lol_account'],
-                                'sUsername' => $lolUser['lol_sUsername'],
-                                'sLevel' => $lolUser['lol_sLevel'],
-                                'sRank' => $lolUser['lol_sRank'],
-                                'sProfileIcon' => $lolUser['lol_sProfileIcon']
-                            );
-
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
-                            if ($lfUser)
+                        if ($user['user_game'] == 'League of Legends') {
+                            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+                        
+                            if ($lolUser)
                             {
-                                $lookingforUserData = array(
-                                    'lfId' => $lfUser['lf_id'],
-                                    'lfGender' => $lfUser['lf_gender'],
-                                    'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                    'lfGame' => $lfUser['lf_game'],
-                                    'main1Lf' => $lfUser['lf_lolmain1'],
-                                    'main2Lf' => $lfUser['lf_lolmain2'],
-                                    'main3Lf' => $lfUser['lf_lolmain3'],
-                                    'rankLf' => $lfUser['lf_lolrank'],
-                                    'roleLf' => $lfUser['lf_lolrole']
+                                $lolUserData = array(
+                                    'lolId' => $lolUser['lol_id'],
+                                    'main1' => $lolUser['lol_main1'],
+                                    'main2' => $lolUser['lol_main2'],
+                                    'main3' => $lolUser['lol_main3'],
+                                    'rank' => $lolUser['lol_rank'],
+                                    'role' => $lolUser['lol_role'],
+                                    'server' => $lolUser['lol_server'],
+                                    'account' => $lolUser['lol_account'],
+                                    'sUsername' => $lolUser['lol_sUsername'],
+                                    'sLevel' => $lolUser['lol_sLevel'],
+                                    'sRank' => $lolUser['lol_sRank'],
+                                    'sProfileIcon' => $lolUser['lol_sProfileIcon']
                                 );
-
-                                
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => true,
-                                    'lookingForUserExists' => true,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'leagueUser' => $lolUserData,
-                                    'lookingForUser' => $lookingforUserData
-                                );                                
+                        
+                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                        
+                                if ($lfUser)
+                                {
+                                    $lookingforUserData = array(
+                                        'lfId' => $lfUser['lf_id'],
+                                        'lfGender' => $lfUser['lf_gender'],
+                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
+                                        'lfGame' => $lfUser['lf_game'],
+                                        'main1Lf' => $lfUser['lf_lolmain1'],
+                                        'main2Lf' => $lfUser['lf_lolmain2'],
+                                        'main3Lf' => $lfUser['lf_lolmain3'],
+                                        'rankLf' => $lfUser['lf_lolrank'],
+                                        'roleLf' => $lfUser['lf_lolrole']
+                                    );
+                        
+                                    
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'userExists' => true,
+                                        'leagueUserExists' => true,
+                                        'lookingForUserExists' => true,
+                                        'googleUser' => $googleUserData,
+                                        'user' => $userData,
+                                        'leagueUser' => $lolUserData,
+                                        'lookingForUser' => $lookingforUserData
+                                    );                                
+                                } else {
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'userExists' => true,
+                                        'leagueUserExists' => true,
+                                        'lookingForUserExists' => false,
+                                        'googleUser' => $googleUserData,
+                                        'user' => $userData,
+                                        'leagueUser' => $lolUserData
+                                    );
+                                }
                             } else {
                                 $response = array(
                                     'message' => 'Success',
                                     'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => true,
-                                    'lookingForUserExists' => false,
                                     'googleUser' => $googleUserData,
                                     'user' => $userData,
-                                    'leagueUser' => $lolUserData
+                                    'userExists' => true,
+                                    'leagueUserExists' => false
                                 );
                             }
                         } else {
-                            $response = array(
-                                'message' => 'Success',
-                                'newUser' => false,
-                                'googleUser' => $googleUserData,
-                                'user' => $userData,
-                                'userExists' => true,
-                                'leagueUserExists' => false
-                            );
+                            $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
+                        
+                            if ($valorantUser)
+                            {
+                                $valorantUserData = array(
+                                    'lolId' => $valorantUser['lol_id'],
+                                    'main1' => $valorantUser['lol_main1'],
+                                    'main2' => $valorantUser['lol_main2'],
+                                    'main3' => $valorantUser['lol_main3'],
+                                    'rank' => $valorantUser['lol_rank'],
+                                    'role' => $valorantUser['lol_role'],
+                                    'server' => $lolvalorantUserUser['lol_server']
+                                );
+                        
+                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                        
+                                if ($lfUser)
+                                {
+                                    $lookingforUserData = array(
+                                        'lfId' => $lfUser['lf_id'],
+                                        'lfGender' => $lfUser['lf_gender'],
+                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
+                                        'lfGame' => $lfUser['lf_game'],
+                                        'main1Lf' => $lfUser['lf_lolmain1'],
+                                        'main2Lf' => $lfUser['lf_lolmain2'],
+                                        'main3Lf' => $lfUser['lf_lolmain3'],
+                                        'rankLf' => $lfUser['lf_lolrank'],
+                                        'roleLf' => $lfUser['lf_lolrole']
+                                    );
+                        
+                                    
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'userExists' => true,
+                                        'leagueUserExists' => false,
+                                        'lookingForUserExists' => true,
+                                        'googleUser' => $googleUserData,
+                                        'user' => $userData,
+                                        'valorantUser' => $valorantUserData,
+                                        'lookingForUser' => $lookingforUserData,
+                                        'valorantUserExists' => true
+                                    );                                
+                                } else {
+                                    $response = array(
+                                        'message' => 'Success',
+                                        'newUser' => false,
+                                        'userExists' => true,
+                                        'leagueUserExists' => false,
+                                        'lookingForUserExists' => false,
+                                        'googleUser' => $googleUserData,
+                                        'user' => $userData,
+                                        'valorantUser' => $valorantUserData,
+                                        'valorantUserExists' => true
+                                    );
+                                }
+                            } else {
+                                $response = array(
+                                    'message' => 'Success',
+                                    'newUser' => false,
+                                    'googleUser' => $googleUserData,
+                                    'user' => $userData,
+                                    'userExists' => true,
+                                    'leagueUserExists' => false,
+                                    'valorantUserExists' => false
+                                );
+                            }
                         }
+
+                        
                     } else {
                         $response = array(
                             'message' => 'Success',

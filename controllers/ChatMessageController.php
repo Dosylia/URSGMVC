@@ -30,7 +30,12 @@ class ChatMessageController
 
     public function pagePersoMessage(): void
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
             $user = $this->user->getUserById($_SESSION['userId']);
             $usersAll = $this->user->getAllUsers();
             $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);

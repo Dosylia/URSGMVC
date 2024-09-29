@@ -66,7 +66,7 @@ class LeagueOfLegendsController
 
     public function pageUpdateLeague()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf())
         {
 
           // Get important datas
@@ -94,7 +94,7 @@ class LeagueOfLegendsController
 
     public function pageUpdateLeagueAccount()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf())
         {
 
             // Get important datas

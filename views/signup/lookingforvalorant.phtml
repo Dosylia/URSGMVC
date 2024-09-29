@@ -30,7 +30,7 @@
             <div id="popupMain1">
                     <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
                     <ul class="main1Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <?php include 'views/signup/options_champion_valorant.phtml' ?>
                     <ul>
             </div>
 
@@ -41,7 +41,7 @@
             <div id="popupMain2">
                     <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
                     <ul class="main2Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <?php include 'views/signup/options_champion_valorant.phtml' ?>
                     <ul>
             </div>
 
@@ -52,7 +52,7 @@
             <div id="popupMain3">
                     <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
                     <ul class="main3Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <?php include 'views/signup/options_champion_valorant.phtml' ?>
                     <ul>
             </div>
 
@@ -62,43 +62,42 @@
                 <script src="public/js/champions.js"></script>
 
 
-            <label for="rank_lol">Rank you are looking for</label>
-            <select id="rank_lol" name="rank_lol">
+            <label for="rank_valorant">Rank you are looking for</label>
+            <select id="rank_valorant" name="rank_valorant">
             <option value="" disabled selected>Select rank...</option>
-            <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-            <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-            <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-            <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-            <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-            <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-            <option value="Emerald" data-image="public/images/ranks/Emerald.png">Emerald</option>
-            <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-            <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-            <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-            <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
+            <option value="" disabled selected>Select rank...</option>
+            <option value="Unranked" data-image="public/images/valorant_ranks/Unranked.png">Unranked</option>
+            <option value="Iron" data-image="public/images/ranks/valorant_Iron.png">Iron</option>
+            <option value="Bronze" data-image="public/images/ranks/valorant_Bronze.png">Bronze</option>
+            <option value="Silver" data-image="public/images/ranks/valorant_Silver.png">Silver</option>
+            <option value="Gold" data-image="public/images/ranks/valorant_Gold.png">Gold</option>
+            <option value="Platinum" data-image="public/images/valorant_ranks/Platinum.png">Platinum</option>
+            <option value="Emerald" data-image="public/images/valorant_ranks/Emerald.png">Emerald</option>
+            <option value="Diamond" data-image="public/images/valorant_ranks/Diamond.png">Diamond</option>
+            <option value="Ascendant" data-image="public/images/valorant_ranks/Ascendant.png">Ascendant</option>
+            <option value="Immortal" data-image="public/images/valorant_ranks/Immortal.png">Immortal</option>
+            <option value="Radiant" data-image="public/images/valorant_ranks/Radiant.png">Radiant</option>
             <option value="Any">Any</option>
             </select>
 
-            <div id="selected-ranks-lol"></div>
+            <div id="selected-ranks-valorant"></div>
 
-            <script src="public/js/ranks.js"></script>
+            <script src="public/js/ranks-valorant.js"></script>
 
-            <label for="role_lol">Role you are looking for</label>
-            <select id="role_lol" name="role_lol">
-            <option value="" disabled selected>Select role...</option>
-            <option value="Support" data-image="public/images/roles/support.png">Support</option>
-            <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-            <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-            <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
-            <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
+            <label for="role_valorant">Role you are looking for</label>
+            <select id="role_valorant" name="role_valorant">
+            <option value="Controller" data-image="public/images/valorant_roles/Controller.webp">Controller</option>
+            <option value="Duelist" data-image="public/images/valorant_roles/Duelist.webp">Duelist</option>
+            <option value="Initiator" data-image="public/images/valorant_roles/Initiator.webp">Initiator</option>
+            <option value="Sentinel" data-image="public/images/valorant_roles/Sentinel.webp">Sentinel</option>
             <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
             </select>
 
-            <div id="selected-roles"></div>
+            <div id="selected-roles-valorant"></div>
 
-            <script src="public/js/roles.js"></script>
+            <script src="public/js/roles-valorant.js"></script>
 
-            <input type="hidden" name="game" value="League of Legends"> 
+            <input type="hidden" name="game" value="Valorant"> 
 
             <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
@@ -106,8 +105,8 @@
 
         <input name="submit" id="send-button" type="submit" value="Send">
     </form>
-<img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+    <img class="picture_with_form" src="public/images/jett.png" alt="Jett from Valorant">
 </div>
 
-<script type="module" src="public/js/leagueoflegendsinfo.js"></script>
+<script type="module" src="public/js/valorantinfo.js"></script>
 

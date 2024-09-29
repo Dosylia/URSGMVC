@@ -5,7 +5,11 @@
         </script>
 
     <script type="module" src="public/js/algo.js"></script>
-    <script type="module" src="public/js/swiping/get_userMatching.js"></script>
+    <?php if ($user['user_game'] === 'League of Legends'): ?>
+        <script type="module" src="public/js/swiping/get_userMatching.js"></script>
+    <?php else : ?>
+        <script type="module" src="public/js/swiping/get_userMatchingValorant.js"></script>
+    <?php endif; ?>
 
     <section class="user_page" id="swipe-area" style="display: none;">
         <div class="user_page_main_content_row swiping_row">
@@ -38,7 +42,11 @@
                         <p id="lolAccount"></p>
                     </div>
                 </div>
-                <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+                <?php if ($user['user_game'] === 'League of Legends'): ?>
+                    <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+                <?php else : ?>
+                    <?php include 'views/swiping/valorant_all_champions.phtml' ?><br>
+                <?php endif; ?>
 
                 <div class="about_you_users"><br>
                     <p id="gender"><span class="font-weight-600">Gender</span>: </p><br>

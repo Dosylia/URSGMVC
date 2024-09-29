@@ -26,6 +26,7 @@ use controllers\ChatMessageController;
 use controllers\BlockController;
 use controllers\MatchingScoreController;
 use controllers\ItemsController;
+use controllers\ValorantController;
 
 function loadClass($class)
 {
@@ -54,9 +55,13 @@ $actionMap = [
     'basicinfo' => [UserController::class, 'createUser'],
     'createUserPhone' => [UserController::class, 'createUserPhone'],
     'leagueuser' => [LeagueOfLegendsController::class, 'pageLeagueUser'],
+    'valorantuser' => [ValorantController::class, 'pageValorantUser'],
+    'createvalorantuser' => [ValorantController::class, 'createValorantUser'],
     'createleagueuser' => [LeagueOfLegendsController::class, 'createLeagueUser'],
+    'createValorantUserPhone' => [ValorantController::class, 'createValorantUserPhone'],
     'createLeagueUserPhone' => [LeagueOfLegendsController::class, 'createLeagueUserPhone'],
     'lookingforuserlol' => [UserLookingForController::class, 'pageLookingFor'],
+    'lookingforuservalorant' => [UserLookingForController::class, 'pageLookingForValorant'],
     'createLookingFor' => [UserLookingForController::class, 'createLookingFor'],
     'createLookingForUserPhone' => [UserLookingForController::class, 'createLookingForUserPhone'],
     'swiping' => [UserController::class, 'pageswiping'],

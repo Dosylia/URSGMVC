@@ -69,7 +69,7 @@ fileInput.addEventListener('change', (event) => {
 });
 
 function usePictureFrame(itemId, userId) {
-  console.log(`Buying item ID: ${itemId}, userId: ${userId}`);
+  console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {
       itemId,
@@ -106,7 +106,7 @@ function usePictureFrame(itemId, userId) {
 }
 
 function RemovePictureFrame(itemId, userId) {
-  console.log(`Buying item ID: ${itemId}, userId: ${userId}`);
+  console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {
       itemId,

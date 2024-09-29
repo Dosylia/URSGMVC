@@ -40,7 +40,19 @@ trait SecurityController
         }
     }
 
-    public function isConnectLeagueLf()
+    public function isConnectValorant()
+    {
+        if(isset($_SESSION['valorant_id']))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function isConnectLf()
     {
         if(isset($_SESSION['lf_id']))
         {

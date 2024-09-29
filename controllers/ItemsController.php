@@ -25,7 +25,12 @@ class ItemsController
     public function pageStore()
     {
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
 
             // Get important datas
@@ -210,6 +215,15 @@ class ItemsController
             if (isset($data->itemId) && isset($data->userId)) {
                 $itemId = $data->itemId;
                 $userId = $data->userId;
+                $ownedItems = $this->items->getOwnedItems($userId);
+
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($ownedItem['items_category'] == 'profile Picture') {
+                            $this->items->removeItems($ownedItem['userItems_id'], $userId);
+                        }
+                    }
+                } 
 
                 if ($itemId && $userId) {
                     $useItems = $this->items->useItems($itemId, $userId);

@@ -17,21 +17,37 @@
                 <nav>
                 <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
                                             
-                    <?php if($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLeagueLf()) :?>  <!-- Connected to all -->
+                    <?php if(
+                                $this->isConnectGoogle() && 
+                                $this->isConnectWebsite() && 
+                                (
+                                    ($this->isConnectLeague() && !$this->isConnectValorant()) || 
+                                    ($this->isConnectValorant() && !$this->isConnectLeague())
+                                ) && 
+                                $this->isConnectLf()
+                            )  :?>  <!-- Connected to all -->
                         <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in"> <!-- Log out button -->
                                 Log out
                         </a>
                         <a href="/userProfile?<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
                             <?= ucfirst($user['user_username']) ?>
                         </a>  
-                    <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session for looking for -->
+                    <?php elseif(
+                                    $this->isConnectGoogle() && 
+                                    $this->isConnectWebsite() && 
+                                    (
+                                        ($this->isConnectLeague() && !$this->isConnectValorant()) || 
+                                        ($this->isConnectValorant() && !$this->isConnectLeague())
+                                    ) && 
+                                    !$this->isConnectLf()
+                                ) : ?>  <!-- No session for looking for -->
                         <a href="/logout"  class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
                             Log out
                         </a>
                         <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
                             <?= ucfirst($user['user_username']) ?>
                         </a>   
-                    <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectLeagueLf()): ?>  <!-- No session for looking for and league -->
+                    <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectValorant() && !$this->isConnectLf()): ?>  <!-- No session for looking for and league -->
                         <a href="/logout" class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
                             Log out
                         </a>
