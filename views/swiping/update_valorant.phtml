@@ -6,7 +6,7 @@
     <?php endif; ?>
 
     <h2>Pick your 3 mains</h2>
-    <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($ValorantUser['valorant_main1']) ?>.png">)</label>
+    <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($valorantUser['valorant_main1']) ?>_icon.webp">)</label>
         <button type="button" id="btnMain1">Select main 1</button>
         <div id="popupMain1">
                 <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -17,7 +17,7 @@
 
         <input type="hidden" id="main1" name="main1" value="" class="notranslate">
 
-        <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($ValorantUser['valorant_main2']) ?>.png">)</label>
+        <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($valorantUser['valorant_main2']) ?>_icon.webp">)</label>
         <button type="button" id="btnMain2">Select main 2</button>
         <div id="popupMain2">
                 <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -28,7 +28,7 @@
 
         <input type="hidden" id="main2" name="main2" value="" class="notranslate">
 
-        <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($ValorantUser['valorant_main3']) ?>.png">)</label>
+        <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($valorantUser['valorant_main3']) ?>_icon.webp">)</label>
         <button type="button" id="btnMain3">Select main 3</button>
         <div id="popupMain3">
                 <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -45,9 +45,9 @@
 
         <label for="rank_valorant">Your rank</label>
         <select id="rank_valorant" name="rank_valorant">
-                <option value="<?= $ValorantUser['valorant_rank'] ?>" data-image="public/images/valorant_ranks/<?= $ValorantUser['valorant_rank'] ?>.png"><?= $ValorantUser['valorant_rank'] ?></option>
+                <option value="<?= $valorantUser['valorant_rank'] ?>" data-image="public/images/valorant_ranks/<?= $valorantUser['valorant_rank'] ?>.png"><?= $valorantUser['valorant_rank'] ?></option>
                 <?php foreach ($valorant_ranks as $rank) : ?>
-                    <?php if ($rank !== $ValorantUser['valorant_rank']) : ?>
+                    <?php if ($rank !== $valorantUser['valorant_rank']) : ?>
                         <option value="<?= $rank ?>" data-image="public/images/valorant_ranks/<?= $rank ?>.png"><?= $rank ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
@@ -55,14 +55,14 @@
 
         <div id="selected-ranks-valorant"></div>
 
-        <script src="public/js/ranks_valorant.js"></script>
+        <script src="public/js/ranks-valorant.js"></script>
 
         <label for="role_valorant">Your role</label>
         <select id="role_valorant" name="role_valorant">
-                <option value="<?= $ValorantUser['valorant_role'] ?>" data-image="public/images/valorant_roles/<?= strtolower(str_replace(' ', '', $ValorantUser['valorant_role'])) ?>.png"><?= $ValorantUser['valorant_role'] ?></option>
+                <option value="<?= $valorantUser['valorant_role'] ?>" data-image="public/images/valorant_roles/<?= $valorantUser['valorant_role']?>.webp"><?= $valorantUser['valorant_role'] ?></option>
                 <?php foreach ($valorant_roles as $role) : ?>
-                    <?php if ($role !== $ValorantUser['valorant_role']) : ?>
-                        <option value="<?= $role ?>" data-image="public/images/valorant_roles/<?= strtolower(str_replace(' ', '', $role)) ?>.png"><?= $role ?></option>
+                    <?php if ($role !== $valorantUser['valorant_role']) : ?>
+                        <option value="<?= $role ?>" data-image="public/images/valorant_roles/<?=  $role ?>.webp"><?= $role ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
@@ -73,9 +73,9 @@
 
         <label for="server">Select your server</label>
         <select id="server" name="server">
-                <option value="<?= $ValorantUser['valorant_server'] ?>" ><?= $ValorantUser['valorant_server'] ?></option>
+                <option value="<?= $valorantUser['valorant_server'] ?>" ><?= $valorantUser['valorant_server'] ?></option>
                 <?php foreach ($valorant_servers as $server_key => $server_name) : ?>
-                    <?php if ($server_name !== $ValorantUser['valorant_server']) : ?>
+                    <?php if ($server_name !== $valorantUser['valorant_server']) : ?>
                         <option value="<?= $server_name ?>"><?= $server_name ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>

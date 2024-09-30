@@ -132,7 +132,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForData($userId, $lfGender, $lfKindOfGamer, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    public function updateLookingForData($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -145,6 +145,10 @@ class UserLookingFor extends DataBase
         if (!empty($lfKindOfGamer)) {
             $updates[] = "`lf_kindofgamer` = ?";
             $params[] = $lfKindOfGamer;
+        }
+        if (!empty($lfGame)) {
+            $updates[] = "`lf_game` = ?";
+            $params[] = $lfGame;
         }
         if (!empty($lfMain1)) {
             $updates[] = "`lf_lolmain1` = ?";
@@ -184,7 +188,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForDataValorant($userId, $lfGender, $lfKindOfGamer, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    public function updateLookingForDataValorant($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -197,6 +201,10 @@ class UserLookingFor extends DataBase
         if (!empty($lfKindOfGamer)) {
             $updates[] = "`lf_kindofgamer` = ?";
             $params[] = $lfKindOfGamer;
+        }
+        if (!empty($lfGame)) {
+            $updates[] = "`lf_game` = ?";
+            $params[] = $lfGame;
         }
         if (!empty($lfMain1)) {
             $updates[] = "`lf_valmain1` = ?";

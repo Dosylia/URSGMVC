@@ -63,7 +63,7 @@
     <div class="user_page_main_content">
         <div class="user_box">
             <br><h2 class="title_generalbox">About them</h2><br>
-            <?php if ($anotherUser['user_game'] !== 'valorant'): ?> 
+            <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
@@ -85,7 +85,30 @@
                     </div>
                 <?php endif; ?>
                     <?php include 'views/swiping/lol_perso_champions.phtml' ?><br>
+            <?php else : ?>
+                <?php if (!empty($valorantUser['valorant_aUsername']) && $valorantUser['valorant_verified'] === 1): ?>
+                    <div class="box_league_account">
+                        <div class="box_league_account_main_row">
+                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $valorantUser['valorant_aProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                            <div class="box_league_account_main_row_column">
+                                <p id="lolUserText"><strong><?= $valorantUser['valorant_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                                <p class="small_text"><?= strtoupper($valorantUser['valorant_server']) ?></p>
+                                <p class="small_text"> <?= strtoupper($valorantUser['valorant_aRank']) ?></p>
+                                <p class="small_text">Level : <?= strtoupper($valorantUser['valorant_aLevel']) ?></p> 
+                            </div>
+                        </div>
+                    </div><br>
+                <?php endif; ?>
+                <?php if (!empty($valorantUser['valorant_account']) && empty($valorantUser['valorant_sUsername'])): ?>
+                    <div class="box_league_account">
+                        <div class="box_league_account_main_row">
+                            <p><?= strtoupper($valorantUser['valorant_server']) ?></p> 
+                        </div>
+                    </div>
+                <?php endif; ?>
+                    <?php include 'views/swiping/valorant_perso_champions.phtml' ?><br>
             <?php endif; ?>
+
 
             <div class="about_you_users"><br>
                 <p><strong>Gender</strong>: <?= ucfirst($anotherUser['user_gender']) ?></p><br>

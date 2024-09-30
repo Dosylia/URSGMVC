@@ -32,9 +32,15 @@
                         <?php endif; ?>  
                         <div class="user_page_update_row_buttons">
                             <a href="/updateProfilePage" class="btn_user_updates"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
-                            <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a> 
-                            <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a> 
-                            <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
+                            <?php if ($user['user_game'] !== 'Valorant'): ?> 
+                                <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a>
+                            <?php else : ?>
+                                <a href="/updateValorantPage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE VALORANT</a> 
+                            <?php endif; ?>
+                            <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a>
+                            <?php if ($user['user_game'] !== 'Valorant'): ?>
+                                <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
+                            <?php endif; ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE/ PROFILE DESIGN</button>   
                             <?php if(isset($user['user_discord']) || isset($user['user_instagram']) || isset($user['user_twitter']) || isset($user['user_twitch'])) : ?>
                                 <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>UPDATE SOCIAL LINKS</button>
@@ -98,12 +104,12 @@
 
     <div class="user_page_main_content">
         <div class="user_box">
-            <br><h2 class="title_generalbox">About you</h2><br>
-            <?php if ($user['user_game'] !== 'valorant'): ?> 
+            <br><h2 class="title_generalbox">About them</h2><br>
+            <?php if ($user['user_game'] == 'League of Legends'): ?> 
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
-                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league"  onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
                             <div class="box_league_account_main_row_column">
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                 <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
@@ -121,6 +127,28 @@
                     </div>
                 <?php endif; ?>
                     <?php include 'views/swiping/lol_perso_champions.phtml' ?><br>
+            <?php else : ?>
+                <?php if (!empty($valorantUser['valorant_aUsername']) && $valorantUser['valorant_verified'] === 1): ?>
+                    <div class="box_league_account">
+                        <div class="box_league_account_main_row">
+                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $valorantUser['valorant_aProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                            <div class="box_league_account_main_row_column">
+                                <p id="lolUserText"><strong><?= $valorantUser['valorant_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                                <p class="small_text"><?= strtoupper($valorantUser['valorant_server']) ?></p>
+                                <p class="small_text"> <?= strtoupper($valorantUser['valorant_aRank']) ?></p>
+                                <p class="small_text">Level : <?= strtoupper($valorantUser['valorant_aLevel']) ?></p> 
+                            </div>
+                        </div>
+                    </div><br>
+                <?php endif; ?>
+                <?php if (!empty($valorantUser['valorant_account']) && empty($valorantUser['valorant_sUsername'])): ?>
+                    <div class="box_league_account">
+                        <div class="box_league_account_main_row">
+                            <p><?= strtoupper($valorantUser['valorant_server']) ?></p> 
+                        </div>
+                    </div>
+                <?php endif; ?>
+                    <?php include 'views/swiping/valorant_perso_champions.phtml' ?><br>
             <?php endif; ?>
 
             <div class="about_you_users"><br>
@@ -132,8 +160,10 @@
 
         <div class="user_box">
             <br><h2 class="title_generalbox">Looking for</h2><br>
-                <?php if ($user['user_game'] !== 'valorant'): ?>
+                <?php if ($user['user_game'] !== 'Valorant'): ?>
                     <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
+                <?php else : ?>
+                    <?php include 'views/swiping/valorant_lf_champions.phtml' ?><br>
                 <?php endif; ?>    
                 <div class="about_you_users"><br>
                     <p><strong>Gender</strong>: <?= ($lfUser['lf_gender']) ?></p><br>

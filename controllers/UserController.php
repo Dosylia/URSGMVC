@@ -395,7 +395,8 @@ class UserController
     {
         if (isset($_POST['submit']))
         {
-            $this->setGoogleUserId($googleUserId);
+            $userId = $this->validateInput($_POST["userId"]);
+            $this->setUserId($userId);
             $gender = $this->validateInput($_POST["gender"]);
             $this->setGender($gender);
             $age = $this->validateInput($_POST["age"]);
@@ -407,7 +408,7 @@ class UserController
             $short_bio = $this->validateInput($_POST["short_bio"]);
             $this->setShortBio($short_bio);
 
-            if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
+            if ($this->emptyInputSignupUpdate($this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
                 exit();
             }
@@ -423,13 +424,71 @@ class UserController
                 exit();
             }
 
-            $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
+            if (!empty($userId))
+            {
+                $user = $this->user->getUserById($this->getUserId());
+            }
+
+            $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame(), $this->getUserId());
 
 
             if ($updateUser)
             {
-                header("location:/userProfile?message=Udpated successfully");
-                exit();  
+
+                if ($user['user_game'] !== $this->getGame())
+                {
+                    if ($user['user_game'] == "League of Legends")
+                    {
+                        unset($_SESSION['lol_id']);
+                        unset($_SESSION['lf_id']);
+                        if ($user['valorant_id']) {
+                            $_SESSION['valorant_id'] = $user['valorant_id'];
+
+                            if($user['lf_valmain1'] !== NULL)
+                            {
+                                $_SESSION['lf_id'] = $user['lf_id']; 
+                                header("location:/userProfile?message=Udpated successfully");
+                                exit();  
+                            } else {
+                                header("location:/updateLookingForGame?message=Udpated successfully");
+                                exit();  
+                            }
+                        } else {
+                            header("location:/valorantuser?user_id=".$user['user_id']);
+                            exit();  
+                        }
+                    }
+                    else 
+                    {
+                        unset($_SESSION['valorant_id']);
+                        unset($_SESSION['lf_id']);
+
+                        if ($user['lol_id']) {
+                            $_SESSION['lol_id'] = $user['lol_id'];
+
+                            if($user['lf_lolmain1'] !== NULL)
+                            {
+                                $_SESSION['lf_id'] = $user['lf_id']; 
+                                header("location:/userProfile?message=Udpated successfully");
+                                exit();  
+                            } else {
+                                header("location:/updateLookingForGamePage?message=Udpated successfully");
+                                exit();  
+                            }
+                        } else {
+                            header("location:/leagueuser?user_id=".$user['user_id']);
+                            exit();  
+                        }
+
+                        header("location:/updateLookingForGamePage?message=Udpated successfully");
+                        exit();  
+                    }
+                }
+                else 
+                {
+                    header("location:/userProfile?message=Udpated successfully");
+                    exit();  
+                }
             }
             else
             {
@@ -948,7 +1007,14 @@ class UserController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            if ($user['user_game'] == "League of Legends")
+            {
+                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            }
+            else 
+            {
+                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+            }
             $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
@@ -997,7 +1063,14 @@ class UserController
             }
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $anotherUser = $this-> user -> getUserByUsername($username);
-            $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            if ($anotherUser['user_game'] == "League of Legends")
+            {
+                $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            }
+            else 
+            {
+                $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+            }
             $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
@@ -1008,7 +1081,14 @@ class UserController
         {
             $username = $_GET['username'];
             $anotherUser = $this-> user -> getUserByUsername($username);
-            $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            if ($anotherUser['user_game'] == "League of Legends")
+            {
+                $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+            }
+            else 
+            {
+                $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+            }
             $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
@@ -1020,7 +1100,12 @@ class UserController
     public function pageUpdateProfile()
     {
 
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
 
             // Get important datas
@@ -1090,6 +1175,19 @@ class UserController
         }
         return $result;
     }
+
+    public function emptyInputSignupUpdate($age, $short_bio) 
+    {
+        $result;
+        if (empty($age) || empty($short_bio))
+        {
+            $result = true;
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
 
     public function invalidUid($username) 
     {

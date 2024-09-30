@@ -30,9 +30,13 @@
         </select>
 
         <label for="game">Game</label>
-            <p>More games will be available later</p>
         <select id="game" name="game" required>
             <option value="<?= $user['user_game']?>" ><?= $user['user_game']?></option>
+            <?php if ($user['user_game'] !== 'League of Legends') : ?>
+                <option value="League of Legends">League of Legends</option>
+            <?php else : ?>
+                <option value="Valorant">Valorant</option>
+            <?php endif; ?>
         </select>
 
         <label for="short_bio">Short bio about you</label>

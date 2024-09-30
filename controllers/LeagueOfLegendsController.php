@@ -605,6 +605,12 @@ class LeagueOfLegendsController
                 
                     $_SESSION['lol_id'] = $lolUser['lol_id'];
 
+                    if($testLeagueAccount['lf_id' !== NULL])
+                    {
+                        header("location:/updateLookingForGamePage");
+                        exit();
+                    }
+
                 header("location:/lookingforuserlol");
                 exit();
             }

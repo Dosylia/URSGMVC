@@ -107,7 +107,12 @@ class UserLookingForController
 
     public function pageUpdateLookingFor()
     {    
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf())
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
         {
 
             // Get important datas
@@ -127,6 +132,41 @@ class UserLookingForController
             $template = "views/swiping/update_lookingFor";
             $page_title = "URSG - Profile";
             require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function pageUpdateLookingForGame()
+    {    
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            !$this->isConnectLf()
+        )
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            $allUsers = $this-> user -> getAllUsers();
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $title = "What are you looking for?";
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
+            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
+            $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
+            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+
+            $current_url = "https://ur-sg.com/updateLookingForGamePage";
+            $template = "views/swiping/update_lookingForGame";
+            $page_title = "URSG - Profile";
+            require "views/layoutSignup.phtml";
         } 
         else
         {
@@ -170,8 +210,33 @@ class UserLookingForController
                 $testLeagueAccount = $this->user->getUserById($this->getUserId());
     
                 if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
-                    header("location:/signup?message=Looking for user already exists");
-                    exit();
+                    $updateLookingFor = $this->userlookingfor->updateLookingForData(
+                        $this->getLfGender(),
+                        $this->getLfKindOfGamer(),     
+                        $this->getLfGame(),        
+                        $this->getLoLMain1(), 
+                        $this->getLoLMain2(), 
+                        $this->getLoLMain3(), 
+                        $this->getLoLRank(), 
+                        $this->getLoLRole(),
+                        $this->getUserId());
+    
+    
+                    if ($updateLookingFor)
+                    {
+                        if (!isset($_SESSION['lf_id'])) 
+                        {
+                                $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
+                                $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
+                        }
+                        header("location:/userProfile?message=Udpated successfully");
+                        exit();  
+                    }
+                    else
+                    {
+                        header("location:/userProfile?message=Could not update");
+                        exit();  
+                    }
                 }
     
                 $createLookingFor = $this->userlookingfor->createLookingForUser(
@@ -234,8 +299,33 @@ class UserLookingForController
                 $testValorantAccount = $this->user->getUserById($this->getUserId());
     
                 if ($testValorantAccount && $testValorantAccount['lf_id'] !== null) {
-                    header("location:/signup?message=Looking for user already exists");
-                    exit();
+                    $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
+                        $this->getLfGender(),
+                        $this->getLfKindOfGamer(),
+                        $this->getLfGame(),               
+                        $this->getValorantMain1(), 
+                        $this->getValorantMain2(), 
+                        $this->getValorantMain3(), 
+                        $this->getValorantRank(), 
+                        $this->getValorantRole(),
+                        $this->getUserId());
+
+
+                    if ($updateLookingFor)
+                    {
+                        if (!isset($_SESSION['lf_id'])) 
+                        {
+                                $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
+                                $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
+                        }
+                        header("location:/userProfile?message=Udpated successfully");
+                        exit();  
+                    }
+                    else
+                    {
+                        header("location:/userProfile?message=Could not update");
+                        exit();  
+                    }
                 }
     
                 $createLookingFor = $this->userlookingfor->createLookingForUserValorant(
@@ -445,7 +535,7 @@ class UserLookingForController
     {
         if (isset($_POST['submit'])) 
         {
-            if (isset($_POST['game']) && $_POST['game'] == "leagueoflegends") {
+            if (isset($_POST['game']) && $_POST['game'] == "League of Legends") {
                 $userId = $this->validateInput($_POST["userId"]);
                 $this->setUserId($userId);
                 $lfGender = $this->validateInput($_POST["gender"]);
@@ -465,19 +555,31 @@ class UserLookingForController
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
 
+                if (empty($loLRank) || empty($loLRole) || empty($loLMain1) || empty($loLMain2) || empty($loLMain3))
+                {
+                    header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                    exit();
+                }
+
                 $updateLookingFor = $this->userlookingfor->updateLookingForData(
-                    $this->getUserId(), 
                     $this->getLfGender(),
-                    $this->getLfKindOfGamer(),             
+                    $this->getLfKindOfGamer(),     
+                    $this->getLfGame(),        
                     $this->getLoLMain1(), 
                     $this->getLoLMain2(), 
                     $this->getLoLMain3(), 
                     $this->getLoLRank(), 
-                    $this->getLoLRole());
+                    $this->getLoLRole(),
+                    $this->getUserId());
 
 
                 if ($updateLookingFor)
                 {
+                    if (!isset($_SESSION['lf_id'])) 
+                    {
+                            $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
+                            $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
+                    }
                     header("location:/userProfile?message=Udpated successfully");
                     exit();  
                 }
@@ -505,22 +607,34 @@ class UserLookingForController
                     $this->setValorantMain3($valorantMain3);
                     $valorantRank = $this->validateInput($_POST["rank_valorant"]);
                     $this->setValorantRank($valorantRank);
-                    $valorantRank = $this->validateInput($_POST["role_valorant"]);
-                    $this->setValorantRole($valorantRank);
+                    $valorantRole = $this->validateInput($_POST["role_valorant"]);
+                    $this->setValorantRole($valorantRole);
+
+                    if (empty($valorantRank) || empty($valorantRole) || empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3))
+                    {
+                        header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                        exit();
+                    }
 
                     $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
-                        $this->getUserId(), 
                         $this->getLfGender(),
-                        $this->getLfKindOfGamer(),             
+                        $this->getLfKindOfGamer(),
+                        $this->getLfGame(),               
                         $this->getValorantMain1(), 
                         $this->getValorantMain2(), 
                         $this->getValorantMain3(), 
                         $this->getValorantRank(), 
-                        $this->getValorantRole());
+                        $this->getValorantRole(),
+                        $this->getUserId());
 
 
                     if ($updateLookingFor)
                     {
+                        if (!isset($_SESSION['lf_id'])) 
+                        {
+                                $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
+                                $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
+                        }
                         header("location:/userProfile?message=Udpated successfully");
                         exit();  
                     }

@@ -232,7 +232,7 @@ class User extends DataBase
 
     }
 
-    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game) 
+    public function updateUser($gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
     {
         $sql = "UPDATE `user` SET ";
         $params = [];
@@ -259,8 +259,8 @@ class User extends DataBase
             $params[] = $game;
         }
     
-        $sql .= implode(", ", $updates) . " WHERE `user_username` = ?";
-        $params[] = $username;
+        $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
+        $params[] = $userId;
     
         if (!empty($updates)) {
             $query = $this->bdd->prepare($sql);

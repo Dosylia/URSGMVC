@@ -30,7 +30,7 @@
         <?php if($user['user_game'] == "League of Legends") :?>
 
         <h2>Pick 3 mains you would like to play with</h2>
-            <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain1']) ?>.png">)</label>
+            <label for="main1" class="label-container">Main 1</label>
             <button type="button" id="btnMain1">Select main 1</button>
             <div id="popupMain1">
                     <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -41,7 +41,7 @@
 
             <input type="hidden" id="main1" name="main1" value="" class="notranslate">
 
-            <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain2']) ?>.png">)</label>
+            <label for="main2" class="label-container">Main 2</label>
             <button type="button" id="btnMain2">Select main 2</button>
             <div id="popupMain2">
                     <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -52,7 +52,7 @@
 
             <input type="hidden" id="main2" name="main2" value="" class="notranslate">
 
-            <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain3']) ?>.png">)</label>
+            <label for="main3" class="label-container">Main 3</label>
             <button type="button" id="btnMain3">Select main 3</button>
             <div id="popupMain3">
                     <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -69,12 +69,19 @@
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">
-                <option value="<?= $lfUser['lf_lolrank'] ?>" data-image="public/images/ranks/<?= $lfUser['lf_lolrank'] ?>.png"><?= $lfUser['lf_lolrank'] ?></option>
-                <?php foreach ($lol_ranks as $rank) : ?>
-                    <?php if ($rank !== $lfUser['lf_lolrank']) : ?>
-                        <option value="<?= $rank ?>" data-image="public/images/ranks/<?= $rank ?>.png"><?= $rank ?></option>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <option value="" disabled selected>Select rank...</option>
+                <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
+                <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
+                <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
+                <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
+                <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
+                <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
+                <option value="Emerald" data-image="public/images/ranks/Emerald.png">Emerald</option>
+                <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
+                <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
+                <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
+                <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
+                <option value="Any">Any</option>
             </select>
 
             <div id="selected-ranks-lol"></div>
@@ -83,12 +90,13 @@
 
             <label for="role_lol">Role you are looking for</label>
             <select id="role_lol" name="role_lol">
-                <option value="<?= $lfUser['lf_lolrole'] ?>" data-image="public/images/roles/<?= strtolower(str_replace(' ', '', $lfUser['lf_lolrole'])) ?>.png"><?= $lfUser['lf_lolrole'] ?></option>
-                <?php foreach ($lol_roles as $role) : ?>
-                    <?php if ($role !== $lfUser['lf_lolrole']) : ?>
-                        <option value="<?= $role ?>" data-image="public/images/roles/<?= strtolower(str_replace(' ', '', $role)) ?>.png"><?= $role ?></option>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <option value="" disabled selected>Select role...</option>
+                <option value="Support" data-image="public/images/roles/support.png">Support</option>
+                <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
+                <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
+                <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
+                <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
+                <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
             </select>
 
             <div id="selected-roles"></div>
@@ -99,7 +107,7 @@
         <?php else : ?>
 
             <h2>Pick 3 mains you would like to play with</h2>
-            <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain1']) ?>_icon.webp">)</label>
+            <label for="main1" class="label-container">Main 1</label>
             <button type="button" id="btnMain1">Select main 1</button>
             <div id="popupMain1">
                     <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -110,7 +118,7 @@
 
             <input type="hidden" id="main1" name="main1" value="" class="notranslate">
 
-            <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain2']) ?>_icon.webp">)</label>
+            <label for="main2" class="label-container">Main 2</label>
             <button type="button" id="btnMain2">Select main 2</button>
             <div id="popupMain2">
                     <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -121,7 +129,7 @@
 
             <input type="hidden" id="main2" name="main2" value="" class="notranslate">
 
-            <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain3']) ?>_icon.webp">)</label>
+            <label for="main3" class="label-container">Main 3</label>
             <button type="button" id="btnMain3">Select main 3</button>
             <div id="popupMain3">
                     <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
@@ -138,12 +146,19 @@
 
             <label for="rank_valorant">Rank you are looking for</label>
             <select id="rank_valorant" name="rank_valorant">
-                <option value="<?= $lfUser['lf_valrank'] ?>" data-image="public/images/valorant_ranks/<?= $lfUser['lf_valrank'] ?>.png"><?= $lfUser['lf_valrank'] ?></option>
-                <?php foreach ($valorant_ranks as $rank) : ?>
-                    <?php if ($rank !== $lfUser['lf_valrank']) : ?>
-                        <option value="<?= $rank ?>" data-image="public/images/valorant_ranks/<?= $rank ?>.png"><?= $rank ?></option>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <option value="" disabled selected>Select rank...</option>
+                <option value="Unranked" data-image="public/images/valorant_ranks/Unranked.png">Unranked</option>
+                <option value="Iron" data-image="public/images/ranks/valorant_Iron.png">Iron</option>
+                <option value="Bronze" data-image="public/images/ranks/valorant_Bronze.png">Bronze</option>
+                <option value="Silver" data-image="public/images/ranks/valorant_Silver.png">Silver</option>
+                <option value="Gold" data-image="public/images/ranks/valorant_Gold.png">Gold</option>
+                <option value="Platinum" data-image="public/images/valorant_ranks/Platinum.png">Platinum</option>
+                <option value="Emerald" data-image="public/images/valorant_ranks/Emerald.png">Emerald</option>
+                <option value="Diamond" data-image="public/images/valorant_ranks/Diamond.png">Diamond</option>
+                <option value="Ascendant" data-image="public/images/valorant_ranks/Ascendant.png">Ascendant</option>
+                <option value="Immortal" data-image="public/images/valorant_ranks/Immortal.png">Immortal</option>
+                <option value="Radiant" data-image="public/images/valorant_ranks/Radiant.png">Radiant</option>
+                <option value="Any">Any</option>
             </select>
 
             <div id="selected-ranks-valorant"></div>
@@ -152,12 +167,11 @@
 
             <label for="role_valorant">Role you are looking for</label>
             <select id="role_valorant" name="role_valorant">
-                <option value="<?= $lfUser['lf_valrole'] ?>" data-image="public/images/valorant_roles/<?= strtolower(str_replace(' ', '', $lfUser['lf_valrole'])) ?>.png"><?= $lfUser['lf_valrole'] ?></option>
-                <?php foreach ($valorant_roles as $role) : ?>
-                    <?php if ($role !== $lfUser['lf_valrole']) : ?>
-                        <option value="<?= $role ?>" data-image="public/images/valorant_roles/<?= strtolower(str_replace(' ', '', $role)) ?>.png"><?= $role ?></option>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <option value="Controller" data-image="public/images/valorant_roles/Controller.webp">Controller</option>
+                <option value="Duelist" data-image="public/images/valorant_roles/Duelist.webp">Duelist</option>
+                <option value="Initiator" data-image="public/images/valorant_roles/Initiator.webp">Initiator</option>
+                <option value="Sentinel" data-image="public/images/valorant_roles/Sentinel.webp">Sentinel</option>
+                <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
             </select>
 
             <div id="selected-roles-valorant"></div>
