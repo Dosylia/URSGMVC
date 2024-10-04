@@ -204,4 +204,55 @@ class Valorant extends DataBase
             return false;
         }
     }
+
+    public function addPuuid($puuid, $userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `valorant`
+                                            SET
+                                                `valorant_aPuuid` = ?                                                                                              
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addPuuidTest  = $query -> execute([$puuid, $userId]);
+
+        if($addPuuidTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function updateValorantRiot($valorantProfile, $valorantRank, $valorantLevel, $profileIconId, $userId) 
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            UPDATE 
+                                                `valorant`
+                                            SET
+                                                `valorant_verified` = 1,
+                                                `valorant_aUsername` = ?,
+                                                `valorant_aRank` = ?,                                
+                                                `valorant_aLevel` = ?,
+                                                `valorant_aProfileIconId` = ?,
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updateValorantTest = $query -> execute([$valorantProfile, $valorantRank, $valorantLevel, $profileIconId, $userId]);
+
+        if($updateValorantTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

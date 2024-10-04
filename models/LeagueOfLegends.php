@@ -257,4 +257,27 @@ class LeagueOfLegends extends DataBase
             return false;
         }
     }
+
+    public function addPuuid($puuid, $userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `leagueoflegends`
+                                            SET
+                                                `lol_sPuuid` = ?                                                                                              
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addPuuidTest  = $query -> execute([$puuid, $userId]);
+
+        if($addPuuidTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

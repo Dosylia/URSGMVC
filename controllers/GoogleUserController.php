@@ -183,6 +183,7 @@ class GoogleUserController
                     $this->isConnectValorant() && 
                     !$this->isConnectLeague() && 
                     $finalUser['lf_valmain1'] == NULL
+                    && $finalUser['user_game'] == "Valorant"
                 )
             ) && 
             $this->isConnectLf()
@@ -202,7 +203,7 @@ class GoogleUserController
                 (
                     $this->isConnectLeague() && 
                     !$this->isConnectValorant() && 
-                    $finalUser['lf_lolmain1'] == NULL
+                    $finalUser['lf_lolmain1'] == NULL && $finalUser['user_game'] == "League of Legends"
                 )
             ) && 
             $this->isConnectLf()
@@ -237,29 +238,23 @@ class GoogleUserController
             $title = "More about you";
             $page_title = "URSG - Sign up";
             require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant() && $secondTierUser['user_game'] === "valorant") {
-                // Code block 6: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
-            $current_url = "https://ur-sg.com/valorantuser";
-                $template = "views/signup/valorant";
-                $title = "More about you";
-                $page_title = "URSG - Sign up";
-                require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !isset($googleUser['user_username']) && $secondTierUser['user_game'] === "both"){
-                // Code block 7: User is connected via Google and username is set , but game settings not done. Redirect for both games
-            $current_url = "https://ur-sg.com/bothgame";
-                $template = "views/signup/both";
-                $title = "More about you";
-                $page_title = "URSG - Sign up";
-                require "views/layoutSignup.phtml";
+        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant() && $secondTierUser['user_game'] === "Valorant") {
+            // Code block 6: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $current_url = "https://ur-sg.com/valorant";
+            $template = "views/signup/valorantuser";
+            $title = "More about you";
+            $page_title = "URSG - Sign up";
+            require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 1) {
-            // Code block 8: User is connected via Google but doesn't have a username
+            // Code block 7: User is connected via Google but doesn't have a username
             $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 0) {
-            // Code block 9: User is connected via Google but doesn't have a username
+            // Code block 8: User is connected via Google but doesn't have a username
             $current_url = "https://ur-sg.com/confirmMail";
             $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
@@ -267,8 +262,8 @@ class GoogleUserController
             require "views/layoutSignup.phtml";
         
         } else {
-            // Code block 7: Redirect to / if none of the above conditions are met
-            header("Location: /");
+            // Code block 9: Redirect to / if none of the above conditions are met
+            header("Location: /&message=test");
             exit();
         }
     }  
@@ -775,13 +770,13 @@ class GoogleUserController
                             if ($valorantUser)
                             {
                                 $valorantUserData = array(
-                                    'lolId' => $valorantUser['lol_id'],
-                                    'main1' => $valorantUser['lol_main1'],
-                                    'main2' => $valorantUser['lol_main2'],
-                                    'main3' => $valorantUser['lol_main3'],
-                                    'rank' => $valorantUser['lol_rank'],
-                                    'role' => $valorantUser['lol_role'],
-                                    'server' => $lolvalorantUserUser['lol_server']
+                                    'valorantId' => $valorantUser['valorant_id'],
+                                    'main1' => $valorantUser['valorant_main1'],
+                                    'main2' => $valorantUser['valorant_main2'],
+                                    'main3' => $valorantUser['valorant_main3'],
+                                    'rank' => $valorantUser['valorant_rank'],
+                                    'role' => $valorantUser['valorant_role'],
+                                    'server' => $valorantUser['valorant_server']
                                 );
                         
                                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
@@ -793,11 +788,11 @@ class GoogleUserController
                                         'lfGender' => $lfUser['lf_gender'],
                                         'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
                                         'lfGame' => $lfUser['lf_game'],
-                                        'main1Lf' => $lfUser['lf_lolmain1'],
-                                        'main2Lf' => $lfUser['lf_lolmain2'],
-                                        'main3Lf' => $lfUser['lf_lolmain3'],
-                                        'rankLf' => $lfUser['lf_lolrank'],
-                                        'roleLf' => $lfUser['lf_lolrole']
+                                        'valmain1Lf' => $lfUser['lf_valmain1'],
+                                        'valmain2Lf' => $lfUser['lf_valmain2'],
+                                        'valmain3Lf' => $lfUser['lf_valmain3'],
+                                        'valrankLf' => $lfUser['lf_valrank'],
+                                        'valroleLf' => $lfUser['lf_valrole']
                                     );
                         
                                     

@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
+                    //For chat filter: <span class="message-text" style="text-align: ${messagePosition};">${userId.user_hasChatFilter ? chatfilter(renderEmotes(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                     messageContent = `
                     <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${formattedTime}</span>

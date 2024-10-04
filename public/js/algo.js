@@ -96,12 +96,12 @@ const profile_list = window.usersAll.map(obj => new Profile(
     obj["lol_main3"],
     obj["lol_rank"],
     obj["lol_role"],
-    obj["usersServerValorant"],
-    obj["usersMainValorant1"],
-    obj["usersMainValorant2"],
-    obj["usersMainValorant3"],
-    obj["usersRankValorant"],
-    obj["usersRoleValorant"],
+    obj["valorant_server"],
+    obj["valorant_main1"],
+    obj["valorant_main2"],
+    obj["valorant_main3"],
+    obj["valorant_rank"],
+    obj["valorant_role"],
     obj["lf_gender"],
     obj["lf_kindofgamer"],
     obj["lf_game"],
@@ -110,13 +110,14 @@ const profile_list = window.usersAll.map(obj => new Profile(
     obj["lf_lolmain3"],
     obj["lf_lolrank"],
     obj["lf_lolrole"],
-    obj["usersMainValorant1Lf"],
-    obj["usersMainValorant2Lf"],
-    obj["usersMainValorant3Lf"],
-    obj["usersRankValorantLf"],
-    obj["usersRoleValorantLf"]
+    obj["lf_valmain1"],
+    obj["lf_valmain2"],
+    obj["lf_valmain3"],
+    obj["lf_valrank"],
+    obj["lf_valrole"]
 ));
 
+console.log("profile_list: ", profile_list);
 
 const user_profile = new Profile(
     window.user["user_id"],
@@ -130,12 +131,12 @@ const user_profile = new Profile(
     window.user["lol_main3"],
     window.user["lol_rank"],
     window.user["lol_role"],
-    window.user["usersServerValorant"],
-    window.user["usersMainValorant1"],
-    window.user["usersMainValorant2"],
-    window.user["usersMainValorant3"],
-    window.user["usersRankValorant"],
-    window.user["usersRoleValorant"],
+    window.user["valorant_server"],
+    window.user["valorant_main1"],
+    window.user["valorant_main2"],
+    window.user["valorant_main3"],
+    window.user["valorant_rank"],
+    window.user["valorant_role"],
     window.user["lf_gender"],
     window.user["lf_kindofgamer"],
     window.user["lf_game"],
@@ -144,13 +145,13 @@ const user_profile = new Profile(
     window.user["lf_lolmain3"],
     window.user["lf_lolrank"],
     window.user["lf_lolrole"],
-    window.user["usersMainValorant1Lf"],
-    window.user["usersMainValorant2Lf"],
-    window.user["usersMainValorant3Lf"],
-    window.user["usersRankValorantLf"],
-    window.user["usersRoleValorantLf"]
+    window.user["lf_valmain1"],
+    window.user["lf_valmain2"],
+    window.user["lf_valmain3"],
+    window.user["lf_valrank"],
+    window.user["lf_valrole"]
 );
-
+console.log("user_profile: ", user_profile);
 //Here we load the txt files
 const baseUrl = window.location.href.replace(/\/[^/]+$/, '/');
 let champion_list = [];
@@ -764,19 +765,28 @@ function matchAge(match_age, user_age) {
     return score;
 }
 
-function matchGame(profile_game, profile_looking, user_game, user_lookingFor) {
+function matchGame(profile_game, user_game) {
+    console.log("profile_game:", profile_game)
+    console.log("user_game:", user_game)
 
-    if (
-        (profile_game === "both" || user_game === "both") && profile_looking === user_lookingFor
-    ) {
-        return user_lookingFor;
+    if (profile_game === user_game) {
+        return profile_game
     }
 
-    if (profile_game === user_game && profile_looking === user_lookingFor) {
-        return user_game;
-    }
+    return ""
 
-    return "No match";
+
+    // if (
+    //     (profile_game === "both" || user_game === "both") && profile_looking === user_lookingFor
+    // ) {
+    //     return user_lookingFor;
+    // }
+
+    // if (profile_game === user_game && profile_looking === user_lookingFor) {
+    //     return user_game;
+    // }
+
+    // return "No match";
 
     // Find the intersection of the two sets to get the common games
     // const commonGames = new Set([...userGamesSet].filter(game => profileGamesSet.has(game)));
@@ -969,6 +979,73 @@ function championValorant(
     return score
 }
 
+//General Matching functions
+const matchServer = (profile_server, user_profile_server) => {
+    var score = 0
+    //Match Server
+    if (profile_server !== user_profile_server) {
+        score -= 500
+    }
+    return score
+}
+
+const matchKindOfGamer = (user_profile_gamerkind, user_profile_lookingGamerkind, profile_gamerkind, profile_lookingGamerkind) => {
+    //Match kind of gamer
+    var score = 0
+    if (user_profile_lookingGamerkind === "Competition and Chill") {
+        score += 40
+    } else if (user_profile_lookingGamerkind === profile_gamerkind) {
+        score += 40
+    } else if (profile_gamerkind === "Competition and Chill") {
+        score += 40
+    }
+
+    if (profile_lookingGamerkind === "Competition and Chill") {
+        score += 40
+    } else if (user_profile_lookingGamerkind === profile_gamerkind) {
+        score += 40
+    } else if (user_profile_gamerkind === "Competition and Chill") {
+        score += 40
+    }
+    return score
+}
+
+
+const matchRole = (profile_role, profile_lookingRole, user_profile_role, user_profile_lookingRole) => {
+    //Same role gives negative points and if role fits the looking for role it gives points
+    var score = 0
+    if (profile_role === user_profile_role) {
+        score += -70
+    }
+    if (profile_role === user_profile_lookingRole || profile_role === "Fill") {
+        score += 70
+    }
+    if (profile_lookingRole === user_profile_role || user_profile_role === "Fill") {
+        score += 70
+    }
+    return score
+}
+
+const matchGender = (profile_gender, profile_lookingGender, user_profile_gender, user_profile_lookingGender) => {
+    //Sort by the gender they selected
+    var score = 0
+    if (profile_gender === user_profile_lookingGender) {
+        score += 60
+    } else if (user_profile_lookingGender === "All") {
+        score += 40
+    } else {
+        score -= 40
+    }
+    if (profile_lookingGender === user_profile_gender) {
+        score += 60
+    } else if (profile_lookingGender === "All") {
+        score += 40
+    } else {
+        score -= 40
+    }
+    return score
+}
+
 
 //All Matching
 function match_profiles(profile_list, user_profile) {
@@ -976,8 +1053,8 @@ function match_profiles(profile_list, user_profile) {
         const profile = profile_list[i];
         var finalScore = 0
         // Match games
-        // const game = matchGame(profile.game, profile.lookingGame, user_profile.game, user_profile.lookingGame)
-        const game = "League of Legends"
+        const game = matchGame(profile.game, user_profile.game)
+        console.log("game:", game)
         switch (game) {
             case "League of Legends":
                 finalScore += champion_match_new(
@@ -993,14 +1070,23 @@ function match_profiles(profile_list, user_profile) {
                     profile.lookingMainLol1,
                     profile.lookingMainLol2,
                     profile.lookingMainLol3,
-
                 );
 
                 //Matching for rank
                 finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
+
+                //----------------------------------------------
+                // General Matching functions now
+                //----------------------------------------------
+                finalScore += matchServer(profile.server, user_profile.server)
+                finalScore += matchKindOfGamer(user_profile.gamerkind, user_profile.lookingGamerkind, profile.gamerkind, profile.lookingGamerkind)
+                finalScore += matchRole(profile.roleLol, profile.lookingRoleLol, user_profile.roleLol, user_profile.lookingRoleLol)
+                finalScore += matchGender(profile.gender, profile.lookingGender, user_profile.gender, user_profile.lookingGender)
+                finalScore += matchAge(profile.age, user_profile.age)
                 break;
+
             case "Valorant":
-                finalScore += championValorant(
+                finalScore += champion_match_new(
                     user_profile.mainValo1,
                     user_profile.mainValo2,
                     user_profile.mainValo3,
@@ -1017,107 +1103,32 @@ function match_profiles(profile_list, user_profile) {
                 );
                 //Matching for rank
                 finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
+
+                //----------------------------------------------
+                // General Matching functions now
+                //----------------------------------------------
+                finalScore += matchServer(profile.server, user_profile.server)
+                finalScore += matchKindOfGamer(user_profile.gamerkind, user_profile.lookingGamerkind, profile.gamerkind, profile.lookingGamerkind)
+                finalScore += matchRole(profile.roleValo, profile.lookingRoleValo, user_profile.roleValo, user_profile.lookingRoleValo)
+                finalScore += matchGender(profile.gender, profile.lookingGender, user_profile.gender, user_profile.lookingGender)
+                finalScore += matchAge(profile.age, user_profile.age)
+
                 break
-            case "both":
-
-                finalScore += champion_match(
-                    user_profile.mainLol1,
-                    user_profile.mainLol2,
-                    user_profile.mainLol3,
-                    user_profile.lookingMainLol1,
-                    user_profile.lookingMainLol2,
-                    user_profile.lookingMainLol3,
-                    profile.mainLol1,
-                    profile.mainLol2,
-                    profile.mainLol3,
-                    profile.lookingMainLol1,
-                    profile.lookingMainLol2,
-                    profile.lookingMainLol3,
-
-                );
-
-                finalScore += championValorant(
-                    user_profile.mainValo1,
-                    user_profile.mainValo2,
-                    user_profile.mainValo3,
-                    user_profile.lookingMainValo1,
-                    user_profile.lookingMainValo2,
-                    user_profile.lookingMainValo3,
-                    profile.mainValo1,
-                    profile.mainValo2,
-                    profile.mainValo3,
-                    profile.lookingMainValo1,
-                    profile.lookingMainValo2,
-                    profile.lookingMainValo3,
-
-                );
-                //Matching for rank
-                finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
-                finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
-                finalScore = finalScore / 2
-                break
-
+            case "":
+                profile.score = -5000
+                continue
         }
 
-        //Match Server
-        if (profile.server !== user_profile.server) {
-            finalScore -= 500
-        }
-        //Match kind of gamer
-        if (user_profile.lookingGamerkind === "Competition and Chill") {
-            finalScore += 40
-        } else if (user_profile.lookingGamerkind === profile.gamerkind) {
-            finalScore += 40
-        } else if (profile.gamerkind === "Competition and Chill") {
-            finalScore += 40
-        }
-
-        if (profile.lookingGamerkind === "Competition and Chill") {
-            finalScore += 40
-        } else if (user_profile.lookingGamerkind === profile.gamerkind) {
-            finalScore += 40
-        } else if (user_profile.gamerkind === "Competition and Chill") {
-            finalScore += 40
-        }
-
-        //Same role gives negative points and if role fits the looking for role it gives points
-        if (profile.roleLol === user_profile.roleLol) {
-            finalScore += -70
-        }
-        if (profile.roleLol === user_profile.lookingRoleLol || profile.roleLol === "Fill") {
-            finalScore += 70
-        }
-        if (profile.lookingRoleLol === user_profile.roleLol || user_profile.roleLol === "Fill") {
-            finalScore += 70
-        }
-
-        //Sort by the gender they selected
-        if (profile.gender === user_profile.lookingGender) {
-            finalScore += 60
-        } else if (user_profile.lookingGender === "All") {
-            finalScore += 40
-        } else {
-            finalScore -= 40
-        }
-        if (profile.lookingGender === user_profile.gender) {
-            finalScore += 60
-        } else if (profile.lookingGender === "All") {
-            finalScore += 40
-        } else {
-            finalScore -= 40
-        }
-
-        //Matching for age
-        finalScore += matchAge(profile.age, user_profile.age)
+        //Put score in List
         profile.score = finalScore
 
     }
 
-    return profile_list.sort((a, b) => b.score - a.score);
+    console.log("profile_list: ", profile_list);
+    return profile_list.filter(profile => profile.score >= -4700).sort((a, b) => b.score - a.score);
 }
 
 //function to send data to php
-
 function sendDataToPHP(dataToSend) {
     // Stringify the array of objects
     const jsonData = JSON.stringify(dataToSend);
@@ -1151,7 +1162,7 @@ if (champion_list && champion_valo) {
         return user_profile.userid !== obj.userid;
     });
 
-    console.log(matched_profiles);
+    console.log("matched_profiles:", matched_profiles);
     sendDataToPHP(matched_profiles.map((obj) => {
         const dataToSend = ({
             user_id: user_profile.userid,
@@ -1162,8 +1173,3 @@ if (champion_list && champion_valo) {
     }))
 
 }
-
-
-
-
-

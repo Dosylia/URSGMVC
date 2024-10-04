@@ -27,6 +27,7 @@ use controllers\BlockController;
 use controllers\MatchingScoreController;
 use controllers\ItemsController;
 use controllers\ValorantController;
+use controllers\RiotController;
 
 function loadClass($class)
 {
@@ -40,6 +41,9 @@ spl_autoload_register('loadClass');
 $actionMap = [
     'home' => [GoogleUserController::class, 'homePage'],
     'getAllUsers' => [UserController::class, 'getAllUsers'],
+    'riotAccount' => [RiotController::class, 'riotAccount'],
+    'riotAccountPhone' => [RiotController::class, 'riotAccountPhone'],
+    'RiotCodePhone' => [RiotController::class, 'RiotCodePhone'],
     'legalNotice' => [GoogleUserController::class, 'legalNoticePage'],
     'termsOfService' => [GoogleUserController::class, 'termsOfServicePage'],
     'siteMap' => [GoogleUserController::class, 'siteMapPage'],

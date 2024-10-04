@@ -555,6 +555,10 @@ class UserController
         {
             $data = json_decode($_POST['userData']);
 
+            if ($data->userId) {
+                $user = $this->user->getUserById($data->userId);
+            }
+
             if ($data->game == "League of Legends") 
             {
             // Validate and set user data
@@ -607,33 +611,49 @@ class UserController
                 exit;
             }
 
-            $updateUser = $this->user->updateUser($this->getUsername(),
+            $updateLeague = false;
+            $createLoLUser = false;
+
+            $updateUser = $this->user->updateUser(
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),
                 $this->getShortBio(),
-                $this->getGame());
+                $this->getGame(),
+                $this->getUserId());
 
-            $updateLeague = $this->leagueoflegends->updateLeagueData(
-                $this->getUserId(), 
-                $this->getLoLMain1(), 
-                $this->getLoLMain2(), 
-                $this->getLoLMain3(), 
-                $this->getLoLRank(), 
-                $this->getLoLRole(), 
-                $this->getLoLServer());
+            if (!empty($user['lol_id'])) {
+                $updateLeague = $this->leagueoflegends->updateLeagueData(
+                    $this->getUserId(), 
+                    $this->getLoLMain1(), 
+                    $this->getLoLMain2(), 
+                    $this->getLoLMain3(), 
+                    $this->getLoLRank(), 
+                    $this->getLoLRole(), 
+                    $this->getLoLServer());
+            } else {
+                $createLoLUser = $this->leagueoflegends->createLoLUser(
+                    $this->getUserId(), 
+                    $this->getLoLMain1(), 
+                    $this->getLoLMain2(), 
+                    $this->getLoLMain3(), 
+                    $this->getLoLRank(), 
+                    $this->getLoLRole(), 
+                    $this->getLoLServer());
+            }
 
             $updateLookingFor = $this->userlookingfor->updateLookingForData(
-                $this->getUserId(), 
                 $this->getLfGender(),
-                $this->getLfKindOfGamer(),             
+                $this->getLfKindOfGamer(), 
+                $this->getGame(),            
                 $this->getLoLMain1Lf(), 
                 $this->getLoLMain2Lf(), 
                 $this->getLoLMain3Lf(), 
                 $this->getLoLRankLf(), 
-                $this->getLoLRoleLf());
+                $this->getLoLRoleLf(),
+                $this->getUserId());
 
-                if($updateUser && $updateLeague && $updateLookingFor)
+                if(($updateLeague || $createLoLUser) && $updateUser && $updateLookingFor)
                 {
                     $response = array('message' => 'Success');
                 }
@@ -694,33 +714,50 @@ class UserController
                 exit;
             }
 
-            $updateUser = $this->user->updateUser($this->getUsername(),
+            $updateValorant = false;
+            $createValorantUser = false;
+
+
+            $updateUser = $this->user->updateUser(
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),
                 $this->getShortBio(),
-                $this->getGame());
+                $this->getGame(),
+                $this->getUserId());
 
-            $updateValorant = $this->valorant->updateValorantData(
-                $this->getUserId(), 
-                $this->getValorantMain1(), 
-                $this->getValorantMain2(), 
-                $this->getValorantMain3(), 
-                $this->getValorantRank(), 
-                $this->getValorantRole(), 
-                $this->getValorantServer());
+                if (!empty($user['valorant_id'])) {
+                    $updateValorant = $this->valorant->updateValorantData(
+                        $this->getUserId(), 
+                        $this->getValorantMain1(), 
+                        $this->getValorantMain2(), 
+                        $this->getValorantMain3(), 
+                        $this->getValorantRank(), 
+                        $this->getValorantRole(), 
+                        $this->getValorantServer());
+                } else {
+                    $createValorantUser = $this->valorant->createValorantUser(
+                        $this->getUserId(), 
+                        $this->getValorantMain1(), 
+                        $this->getValorantMain2(), 
+                        $this->getValorantMain3(), 
+                        $this->getValorantRank(), 
+                        $this->getValorantRole(), 
+                        $this->getValorantServer()); 
+                }
 
             $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
-                $this->getUserId(), 
                 $this->getLfGender(),
-                $this->getLfKindOfGamer(),             
+                $this->getLfKindOfGamer(),
+                $this->getGame(),             
                 $this->getValorantMain1Lf(), 
                 $this->getValorantMain2Lf(), 
                 $this->getValorantMain3Lf(), 
                 $this->getValorantRankLf(), 
-                $this->getValorantRoleLf());
+                $this->getValorantRoleLf(),
+                $this->getUserId());
 
-                if($updateUser && $updateValorant && $updateLookingFor)
+                if(($updateValorant || $createValorantUser) && $updateUser && $updateLookingFor)
                 {
                     $response = array('message' => 'Success');
                 }
@@ -1004,6 +1041,7 @@ class UserController
         )
         {
             // Get important datas
+            require_once 'keys.php';
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsers();
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);

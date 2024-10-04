@@ -485,7 +485,7 @@ class UserLookingForController
                 exit();  
             }
 
-            $createLookingFor = $this->userlookingfor->createLookingForUser(
+            $createLookingFor = $this->userlookingfor->createLookingForUserValorant(
                 $this->getUserId(), 
                 $this->getLfGender(),
                 $this->getLfKindOfGamer(),
@@ -506,11 +506,11 @@ class UserLookingForController
                         'lfGender' => $valorantLookingFor['lf_gender'],
                         'lfKingOfGamer' => $valorantLookingFor['lf_kindofgamer'],
                         'lfGame' => $valorantLookingFor['lf_game'],
-                        'main1Lf' => $valorantLookingFor['lf_valorantmain1'],
-                        'main2Lf' => $valorantLookingFor['lf_valorantmain2'],
-                        'main3Lf' => $valorantLookingFor['lf_valorantmain3'],
-                        'rankLf' => $valorantLookingFor['lf_valorantrank'],
-                        'roleLf' => $valorantLookingFor['lf_valorantrole']
+                        'valmain1Lf' => $valorantLookingFor['lf_valmain1'],
+                        'valmain2Lf' => $valorantLookingFor['lf_valmain2'],
+                        'valmain3Lf' => $valorantLookingFor['lf_valmain3'],
+                        'valrankLf' => $valorantLookingFor['lf_valrank'],
+                        'valroleLf' => $valorantLookingFor['lf_valrole']
                     );
     
                     $response = array(

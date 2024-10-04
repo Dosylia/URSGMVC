@@ -39,7 +39,8 @@
                             <?php endif; ?>
                             <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a>
                             <?php if ($user['user_game'] !== 'Valorant'): ?>
-                                <a href="/updateLeagueAccount" class="btn_user_updates"><i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
+                                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates">
+                                <i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
                             <?php endif; ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE/ PROFILE DESIGN</button>   
                             <?php if(isset($user['user_discord']) || isset($user['user_instagram']) || isset($user['user_twitter']) || isset($user['user_twitch'])) : ?>

@@ -89,15 +89,15 @@ document.addEventListener("DOMContentLoaded", function() {
         lolMain3P.innerText = data.valorant_main3;
         lolRankP.innerText = data.valorant_rank;
         lolRoleP.innerText = data.valorant_role;
-        lolMain1Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main1)}.png`;
+        lolMain1Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp`;
         lolMain1Pic.alt = data.valorant_main1;
-        lolMain2Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main2)}.png`;
+        lolMain2Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp`;
         lolMain2Pic.alt = data.valorant_main2;
-        lolMain3Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main3)}.png`;
+        lolMain3Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp`;
         lolMain3Pic.alt = data.valorant_main3;
         lolRankPic.src = `public/images/valorant_ranks/${sanitize(data.valorant_rank)}.png`;
         lolRankPic.alt = data.valorant_rank;
-        lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.png`;
+        lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.webp`;
         lolRolePic.alt = data.valorant_role;
     }
 
