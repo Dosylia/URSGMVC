@@ -2446,6 +2446,15 @@ justify-content: center;
     height: 80px;
 }
 
+.nav_swiping a {
+    color: unset;
+}
+
+.nav_swiping i {
+  font-size: 70px;
+  color: white;
+}
+
 .nav-swiping-row {
   display: flex;
   justify-content: center;
@@ -2870,8 +2879,48 @@ justify-content: center;
   color: white;
 }
 
+/* SETTING PAGE */
+
+.setting-page h2 {
+  margin-bottom: 20px;
+}
+
+.setting-option {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.setting-option i {
+  font-size: 2em;
+  width: 70px;
+  color : rgb(24, 23, 23);
+}
+
+.setting-option span {
+  font-size: 1.5em;
+  flex-grow: 1;
+  font-weight: 600;
+  color : rgb(24, 23, 23);
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+#placeholderMessage {
+  margin-top: 10px;
+  color: green; /* You can style it as needed */
+}
 
 /* DARK MODE */
+
+.dark-mode .setting-option i, .dark-mode .setting-option span {
+  color: white;
+}
 
 .dark-mode .old-price {
   color: gray;
@@ -2924,7 +2973,7 @@ justify-content: center;
   color: white;
 }
 
-.toggle-container {
+.toggle-container, .toggle-container-filter {
     width: 80px;
     height: 40px;
     background-color: #ccc;
@@ -2947,7 +2996,26 @@ justify-content: center;
     transition: transform 0.3s;
   }
 
-  .dark-mode .toggle-container {
+  .filter-button {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: background-color 0.3s;
+}
+
+.filter-button.active {
+  transform: translateX(40px);
+}
+
+  .toggle-container-filter.active, .toggle-container.active {
+    background-color: rgb(128, 211, 128) !important;
+  }
+
+  .dark-mode .toggle-container, .dark-mode .toggle-container-filter {
     background-color: var(--ligher--grey);
   }
 
@@ -2957,10 +3025,14 @@ justify-content: center;
   
   .dark-mode .toggle-button {
     transform: translateX(40px);
-    background-color: #ddd; /* Ajout de la couleur de fond pour le mode sombre */
+    background-color: #ddd;
+  }
+
+  .dark-mode .filter-button {
+    background-color: #ddd;
   }
   
-  .light-mode .toggle-container {
+  .light-mode .toggle-container, .light-mode .toggle-container-filter {
     background-color: #ccc; /* Couleur de fond pour le mode clair */
   }
 
@@ -3064,6 +3136,14 @@ justify-content: center;
 
 .dark-mode .currency:hover {
   background-color: var(--main--red);
+}
+
+.dark-mode .nav_swiping i {
+  color: white;
+}
+
+.dark-mode .setting-option {
+  background-color: var(--dark-ligher-grey);
 }
 
 @media only screen and (max-width: 1420px) {
@@ -3227,6 +3307,11 @@ justify-content: center;
   .nav_swiping img {
     width: 40px;
     height: 40px;
+}
+
+.nav_swiping i {
+  font-size: 35px;
+  color: white;
 }
 
   .main_section {
@@ -3453,7 +3538,7 @@ justify-content: center;
   gap: 10px;
   }
 
-  .toggle-container {
+  .toggle-container, .toggle-container-filter {
   background-color: #ccc;
   border-radius: 25px; 
   width: 40px;
@@ -3465,16 +3550,31 @@ justify-content: center;
   align-items: center;
   }
 
-  .toggle-button {
+  .toggle-button, .filter-button {
   width: 20px; 
   height: 15px; 
   background-color: #fff;
   border-radius: 50%;
   transition: transform 0.3s;
   }
+  
+  .filter-button {
+    width: 20px; 
+    height: 15px; 
+    background-color: #fff;
+    border-radius: 50%;
+  }
 
   .dark-mode .toggle-button {
   transform: translateX(20px);
+  }
+
+  .toggle-container-filter.active .filter-button {
+    transform: translateX(20px);
+  }
+
+  .toggle-container-filter .filter-button {
+    transform: translateX(unset);
   }
 
   #open_menu_profile {
@@ -3569,6 +3669,11 @@ justify-content: center;
     .nav_swiping img {
       width: 30px;
       height: 30px;
+  }
+
+  .nav_swiping i {
+    font-size: 25px;
+    color: white;
   }
 
     .kofi {

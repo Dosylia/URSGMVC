@@ -121,7 +121,8 @@ class ChatMessageController
                     'user' => [
                         'user_id' => $user['user_id'],
                         'user_username' => $user['user_username'],
-                        'user_picture' => $user['user_picture']
+                        'user_picture' => $user['user_picture'],
+                        'user_hasChatFilter' => $user['user_hasChatFilter']
                     ],
                     'messages' => $messages
                 ];

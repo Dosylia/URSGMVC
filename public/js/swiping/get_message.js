@@ -7,8 +7,7 @@ let isFirstFetch = true; // Flag to track the first fetch
 let friendData = document.getElementById('friendInfo');
 export const chatInterface = document.querySelector('.chat-interface');
 export const messageContainer = document.querySelector('.messages-container');
-
-
+import { badWordsList } from './chatFilter.js';
 
 document.addEventListener("DOMContentLoaded", function() {
         
@@ -136,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     messageContent = `
                     <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                     </p>
                     `;
                 } else {
@@ -149,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition};">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
+                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                         </p>
                     `;
                 }
@@ -163,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </p>
                     <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                     </p>
                 `;
             }
@@ -247,6 +246,22 @@ document.addEventListener("DOMContentLoaded", function() {
     function scrollToBottom() {
         let messagesContainer = document.getElementById("messages");
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    const chatfilter = (textToFilter) => {
+        console.log('Filtering chat message:', textToFilter);   
+        // Combine all bad words from all languages into a single array
+        const allBadWords = badWordsList.flatMap(([, badWords]) => badWords);
+    
+        // Create a regular expression from all the bad words
+        const badWordsRegex = new RegExp(allBadWords.join('|'), 'gi');
+    
+        // Replace bad words with '***'
+        const filteredText = textToFilter.replace(badWordsRegex, (match) => {
+            return '*'.repeat(match.length);
+        });
+    
+        return filteredText;
     }
 
     // Function to set the --vh variable

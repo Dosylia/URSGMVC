@@ -220,7 +220,8 @@ class UserController
                     'game' => $user['user_game'],
                     'shortBio' => $user['user_shortBio'],
                     'currency' => $user['user_currency'],
-                    'isVip' => $user['user_isVip']
+                    'isVip' => $user['user_isVip'],
+                    'hasChatFilter' => ['user_hasChatFilter'] ?? null
                 );
 
                 $response = array(
@@ -1162,6 +1163,56 @@ class UserController
         {
             header("Location: /");
             exit();
+        }
+    }
+
+    public function pageSettings()
+    {
+
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $allUsers = $this-> user -> getAllUsers();
+
+            $current_url = "https://ur-sg.com/settings";
+            $template = "views/swiping/settings";
+            $page_title = "URSG - Settings";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function chatFilterSwitch()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            
+            $userId = $data->userId;
+            $status = $data->status;
+
+
+                $updateFilter = $this->user->updateFilter($status, $userId);
+
+                if ($updateFilter) {
+                    $response = array('message' => 'Success');
+                    echo json_encode($response);
+                    exit;
+                } else {
+                    $response = array('message' => 'Couldnt update status');
+                    echo json_encode($response);
+                    exit;
+                }
         }
     }
 

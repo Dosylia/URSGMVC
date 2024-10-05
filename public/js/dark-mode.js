@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
       body.classList.add(savedMode);
       if (savedMode === 'dark-mode') {
           toggleButton.classList.add('dark-mode');
+          container.classList.add('active');
       }
   }
 
@@ -18,12 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
           body.classList.remove('dark-mode');
           body.classList.add('light-mode'); // Ajout de la classe "light-mode"
           toggleButton.classList.remove('dark-mode');
+          container.classList.remove('active');
           saveModePreference('light-mode');
       } else {
           // Mode actuel : clair, on passe au mode sombre
           body.classList.remove('light-mode'); // Suppression de la classe "light-mode"
           body.classList.add('dark-mode');
           toggleButton.classList.add('dark-mode');
+          container.classList.add('active');
           saveModePreference('dark-mode');
       }
   });

@@ -365,6 +365,30 @@ class User extends DataBase
         }
     }
 
+    public function updateFilter($status, $userId) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_hasChatFilter` = ?
+                                        WHERE
+                                            `user_id` = ?
+
+                                        ");
+
+        $updateFilterTest = $query->execute([$status, $userId]);
+
+        if($updateFilterTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     public function getUserDataByGoogleUserId($googleUserId)
     {

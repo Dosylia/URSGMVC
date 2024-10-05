@@ -1,0 +1,31 @@
+<section id="setting-page">
+<div class="page-header">
+    <a href="/store">Settings</a>
+</div>
+
+    <div id="userInfo" data-user-id="<?= $user['user_id']; ?>" data-chat-filter="<?= $user['user_hasChatFilter']; ?>"></div>
+
+    <div class="setting-option">
+        <span>
+            <i class="fas fa-comment-slash"></i> 
+            <span>Chat Filter</span>
+        </span>
+        <div class="toggle-container-filter">
+            <div id="toggleChatFilter" class="filter-button"></div>
+        </div>
+    </div>
+
+    <div class="setting-option">
+        <span>
+            <i class="fas fa-moon"></i> 
+            <span>Dark Mode</span>
+        </span>
+        <div class="toggle-container">
+            <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+        </div>
+    </div>
+
+    <!-- <span id="placeholderMessage"></span> -->
+</section>
+
+<script src="public/js/swiping/switchChatFilter.js"></script>
