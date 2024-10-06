@@ -966,7 +966,7 @@ class UserController
                     $matchedUserId = $match['match_userMatched'];
                     // if (!in_array($matchedUserId, $userFriendRequest)) {
                         $userMatched = $this->user->getUserById($matchedUserId);               
-                        if ($userMatched) {
+                        if ($userMatched && $userMatched['user_game'] === $user['user_game']) {
                             if ($userMatched['user_game'] == "League of Legends") {
                                 $data = [
                                     'success' => true,

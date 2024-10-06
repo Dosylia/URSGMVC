@@ -1190,6 +1190,7 @@ section.siteMap tr:nth-child(even) {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
     }
   
     span.chat-name span.friendlist-name{
@@ -1265,6 +1266,10 @@ section.siteMap tr:nth-child(even) {
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg,#e0e0e0, white);
+    }
+
+    .frame-swiping {
+      opacity: 0;
     }
   
     .box_league_account {
@@ -1384,7 +1389,7 @@ section.siteMap tr:nth-child(even) {
   
     .chat-interface {
       margin: 0 30px 0 50px;
-      width: 15%;
+      width: 20%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1422,6 +1427,19 @@ section.siteMap tr:nth-child(even) {
       height: 40px;
       border-radius: 50%;
       margin-right: 10px;
+    }
+
+    .friend-details img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .friend-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     
     .friend-name {
@@ -3004,7 +3022,7 @@ justify-content: center;
     position: absolute;
     top: 0;
     left: 0;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .filter-button.active {
@@ -3270,6 +3288,11 @@ justify-content: center;
 
 @media only screen and (max-width: 900px) {
 
+  #league_champions_user, .league_champions_user
+  {
+    width: 4vh;
+  }
+
   .vip-badge, .regular-badge {
     justify-content: center;
   }
@@ -3283,6 +3306,8 @@ justify-content: center;
 
   .profile-picture-container {
     margin: 60px 0px;
+    width: unset;
+    height: unset; 
 }
 
 
@@ -3424,7 +3449,6 @@ justify-content: center;
   .user_page_update_name {
     display: flex;
     flex-direction: column;
-    padding-left: 5%;
     padding-top: 20px;
     text-align: center;
     width: 100%;
@@ -3636,9 +3660,35 @@ justify-content: center;
   .item-card {
     width: 100%;
 }
+
+.setting-option i {
+  font-size: 1.5em;
+  width: 30px;
+}
+
+.setting-option .fa-comment-slash {
+  font-size: 1.5em;
+  width: 30px;
+}
+
+.setting-option .fa-moon{
+  font-size: 1.5em;
+  width: 25px;
+  padding-left: 5px;
+}
+
+.setting-option span {
+  font-size: 1em;
+}
+
 }
 
   @media only screen and (max-width: 600px) {
+
+    #league_champions_user, .league_champions_user
+    {
+      width: 3vh;
+    }
 
     .page-header a {
       font-size: 1rem;
@@ -3716,7 +3766,6 @@ justify-content: center;
     }
 
     .box_league_account_main_row {
-      flex-direction: column;
       gap: 20px;
     }
 

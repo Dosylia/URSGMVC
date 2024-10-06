@@ -3,6 +3,9 @@
             <section class="google_needed"><br><br>
                 <img src="public/images/sadbee.webp" alt="jhinshrug">
                 <h2>You have no friends yet, wait until they accept your request or swipe more!<h2>
+                <a class="btn_user_updates" href="/swiping">
+                    Swipe more
+                </a>
             </section>
     <?php else : ?>
         <div class="chat-interface"> <br>
@@ -15,10 +18,12 @@
                                     $friendId = $friend['receiver_id'];
                                     $friendUsername = $friend['receiver_username'];
                                     $friendPicture = $friend['receiver_picture'];
+                                    $friendGame = $friend['receiver_game'];
                                 } else {
                                     $friendId = $friend['sender_id'];
                                     $friendUsername = $friend['sender_username'];
                                     $friendPicture = $friend['sender_picture'];
+                                    $friendGame = $friend['sender_game'];
                                 }
                             ?>
                         
@@ -37,6 +42,13 @@
                                     <span class="chat-name">
                                         <?= $friendUsername ?>
                                         <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span>      
+                                    </span>
+                                    <span>
+                                        <?php if ($friendGame === "League of Legends") : ?>
+                                            <img src="public/images/lol-logo.png" alt="League of Legends">
+                                        <?php else : ?>
+                                            <img src="public/images/Valorant.png" alt="Valorant">
+                                        <?php endif; ?>
                                     </span>
                                 </div>
                             </div>

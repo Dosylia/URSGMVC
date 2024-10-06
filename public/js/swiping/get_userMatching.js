@@ -25,10 +25,48 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnSwipeYes = document.getElementById('swipe_yes');
     const btnSwipeNo = document.getElementById('swipe_no');
     const swipeArea = document.getElementById('swipe-area');
+    const frameSwiping = document.querySelector('.frame-swiping')
+    let profileFrames = null;
+
+    function getOwnedItems(userId) {
+        fetch('/getOwnedItems', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `userId=${encodeURIComponent(userId)}`
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Fetch error:', response.status, text);
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message === "Success") {
+                const items = data.items;
+                profileFrames = items.filter(item => item.items_category === 'profile Picture' && item.userItems_isUsed === 1);
+                console.log('Profile frames:', profileFrames);
+                if (profileFrames.length > 0) {
+                    const frame = profileFrames[0];
+                    frameSwiping.style.opacity = '1';
+                    frameSwiping.src = `public/images/store/${frame.items_picture.replace('.jpg', '.png')}`;
+                }
+            } else {
+                console.log(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
 
     // Function to fetch matching user data
     function fetchMatchingUser(userId) {
-        fetch('index.php?action=getUserMatching', {
+        fetch('/getUserMatching', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -46,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(data => {
             if (data.success && data.user) {
+                getOwnedItems(data.user.user_id);
                 fillData(data.user);
             } else {
                 showNoMoreProfiles();
@@ -79,26 +118,44 @@ document.addEventListener("DOMContentLoaded", function() {
         btnSwipeNo.disabled = false;
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
-        lolAccount.innerText = data.lol_account;
+        lolAccount.innerText = data.valorant_account;
         gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
         kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
         shortBio.innerHTML += ` ${sanitizeHtlm(decodeHtmlEntities(data.user_shortBio))}`;
         receiverId.value = data.user_id;
-        lolMain1P.innerText = data.lol_main1;
-        lolMain2P.innerText = data.lol_main2;
-        lolMain3P.innerText = data.lol_main3;
-        lolRankP.innerText = data.lol_rank;
-        lolRoleP.innerText = data.lol_role;
-        lolMain1Pic.src = `public/images/champions/${sanitize(data.lol_main1)}.png`;
-        lolMain1Pic.alt = data.lol_main1;
-        lolMain2Pic.src = `public/images/champions/${sanitize(data.lol_main2)}.png`;
-        lolMain2Pic.alt = data.lol_main2;
-        lolMain3Pic.src = `public/images/champions/${sanitize(data.lol_main3)}.png`;
-        lolMain3Pic.alt = data.lol_main3;
-        lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank)}.png`;
-        lolRankPic.alt = data.lol_rank;
-        lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
-        lolRolePic.alt = data.lol_role;
+            if (data.user_game === "League of Legends") {
+                lolMain1P.innerText = data.lol_main1;
+                lolMain2P.innerText = data.lol_main2;
+                lolMain3P.innerText = data.lol_main3;
+                lolRankP.innerText = data.lol_rank;
+                lolRoleP.innerText = data.lol_role;
+                lolMain1Pic.src = `public/images/champions/${sanitize(data.lol_main1)}.png`;
+                lolMain1Pic.alt = data.lol_main1;
+                lolMain2Pic.src = `public/images/champions/${sanitize(data.lol_main2)}.png`;
+                lolMain2Pic.alt = data.lol_main2;
+                lolMain3Pic.src = `public/images/champions/${sanitize(data.lol_main3)}.png`;
+                lolMain3Pic.alt = data.lol_main3;
+                lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank)}.png`;
+                lolRankPic.alt = data.lol_rank;
+                lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
+                lolRolePic.alt = data.lol_role;
+            } else {
+                lolMain1P.innerText = data.valorant_main1;
+                lolMain2P.innerText = data.valorant_main2;
+                lolMain3P.innerText = data.valorant_main3;
+                lolRankP.innerText = data.valorant_rank;
+                lolRoleP.innerText = data.valorant_role;
+                lolMain1Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp`;
+                lolMain1Pic.alt = data.valorant_main1;
+                lolMain2Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp`;
+                lolMain2Pic.alt = data.valorant_main2;
+                lolMain3Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp`;
+                lolMain3Pic.alt = data.valorant_main3;
+                lolRankPic.src = `public/images/valorant_ranks/${sanitize(data.valorant_rank)}.png`;
+                lolRankPic.alt = data.valorant_rank;
+                lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.webp`;
+                lolRolePic.alt = data.valorant_role;
+            }
     }
 
     function clearData() {
@@ -110,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
         imageUser.alt = "Default profile picture";
         sProfileIcon.src = "";
         sProfileIcon.alt = "";
+        frameSwiping.src = "";
         
         // Clear text content
         sUsername.innerText = "";

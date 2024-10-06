@@ -77,9 +77,10 @@ document.addEventListener("DOMContentLoaded", function() {
         // Fill other user data
         btnSwipeYes.disabled = false;
         btnSwipeNo.disabled = false;
+
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
-        lolAccount.innerText = data.lol_account;
+        lolAccount.innerText = data.valorant_account;
         gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
         kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
         shortBio.innerHTML += ` ${sanitizeHtlm(decodeHtmlEntities(data.user_shortBio))}`;

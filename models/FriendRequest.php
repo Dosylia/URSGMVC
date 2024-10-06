@@ -119,9 +119,11 @@ class FriendRequest extends DataBase
                                             us.user_id AS sender_id,
                                             us.user_username AS sender_username,
                                             us.user_picture AS sender_picture,
+                                            us.user_game AS sender_game,
                                             ur.user_id AS receiver_id,
                                             ur.user_username AS receiver_username,
                                             ur.user_picture AS receiver_picture,
+                                            ur.user_game AS receiver_game,
                                             c.latest_message_date
                                         FROM
                                             `friendrequest` AS fr

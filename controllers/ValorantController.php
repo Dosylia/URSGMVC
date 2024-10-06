@@ -171,7 +171,7 @@ class ValorantController
                 
                     $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
 
-                    if($testValorantAccount['lf_id' !== NULL])
+                    if($testValorantAccount['lf_id'] !== NULL)
                     {
                         header("location:/updateLookingForGamePage");
                         exit();

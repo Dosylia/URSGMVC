@@ -274,13 +274,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
 
         if (isMax1018px) {
-            if (chatInterface !== null) {
+            if (chatInterface !== null && window.getComputedStyle(messageContainer).display !== 'none') {
                 chatInterface.style.display = 'none';
             }
         } else {
-            if(chatInterface !== null && chatInterface !== undefined) {
+            if (chatInterface !== null && chatInterface !== undefined) {
                 chatInterface.style.display = 'block';
             }
+            messageContainer.style.display = 'block';
         }
     }
 

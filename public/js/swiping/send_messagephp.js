@@ -7,6 +7,7 @@ let receiverId;
 let messageInput;
 let btnSubmit;
 let btnDesign;
+let isActionAllowed = true;
 
 function sendMessageToPhp(senderId, receiverId, message) {
     // If wanna convert time directly before sending it
@@ -66,6 +67,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function handleSendMessage(event) {
         event.preventDefault();
 
+        if (!isActionAllowed) {
+            return;
+        }
+
+        isActionAllowed = false;
+
         const message = messageInput.value.trim();
 
         if (message === "") {
@@ -74,6 +81,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         sendMessageToPhp(senderId, receiverId, message);
+
+        setTimeout(() => {
+            isActionAllowed = true;
+        }, 750);
+
     }
 
     if (!senderIdElement || !receiverIdElement || !messageInput || !btnSubmit || !btnDesign) {

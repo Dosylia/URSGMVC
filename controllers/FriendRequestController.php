@@ -89,10 +89,12 @@ class FriendRequestController
                         $friendId = $friend['receiver_id'];
                         $friendUsername = $friend['receiver_username'];
                         $friendPicture = $friend['receiver_picture'];
+                        $friendGame = $friend['receiver_game'];
                     } else {
                         $friendId = $friend['sender_id'];
                         $friendUsername = $friend['sender_username'];
                         $friendPicture = $friend['sender_picture'];
+                        $friendGame = $friend['sender_game'];
                     }
     
                     // Add friend to the list, excluding the user themselves
@@ -102,6 +104,7 @@ class FriendRequestController
                             'friend_id' => $friendId,
                             'friend_username' => $friendUsername,
                             'friend_picture' => $friendPicture,
+                            'friend_game' => $friendGame,
                             'latest_message_date' => $friend['latest_message_date']
                         ];
                     }
@@ -132,7 +135,7 @@ class FriendRequestController
             $status = 'pending';
             $amount = 10;
 
-            $user = $this->user->getUserById($userId);
+            $user = $this->user->getUserById($_POST["senderId"]);
 
             if ($user['user_isVip'] == 1) {
                 $amount = 12;
@@ -160,7 +163,7 @@ class FriendRequestController
             $status = 'rejected';
             $amount = 10;
 
-            $user = $this->user->getUserById($userId);
+            $user = $this->user->getUserById($_POST["senderId"]);
 
             if ($user['user_isVip'] == 1) {
                 $amount = 12;

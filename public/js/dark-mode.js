@@ -7,29 +7,31 @@ document.addEventListener('DOMContentLoaded', function() {
   const savedMode = localStorage.getItem('mode');
   if (savedMode) {
       body.classList.add(savedMode);
-      if (savedMode === 'dark-mode') {
+      if (savedMode === 'dark-mode' && container !== null) {
           toggleButton.classList.add('dark-mode');
           container.classList.add('active');
       }
   }
+    if (container !== null) {
+        container.addEventListener('click', function() {
+            if (body.classList.contains('dark-mode')) {
+                // Mode actuel : sombre, on passe au mode clair
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode'); // Ajout de la classe "light-mode"
+                toggleButton.classList.remove('dark-mode');
+                container.classList.remove('active');
+                saveModePreference('light-mode');
+            } else {
+                // Mode actuel : clair, on passe au mode sombre
+                body.classList.remove('light-mode'); // Suppression de la classe "light-mode"
+                body.classList.add('dark-mode');
+                toggleButton.classList.add('dark-mode');
+                container.classList.add('active');
+                saveModePreference('dark-mode');
+            }
+        });
+    }
 
-  container.addEventListener('click', function() {
-      if (body.classList.contains('dark-mode')) {
-          // Mode actuel : sombre, on passe au mode clair
-          body.classList.remove('dark-mode');
-          body.classList.add('light-mode'); // Ajout de la classe "light-mode"
-          toggleButton.classList.remove('dark-mode');
-          container.classList.remove('active');
-          saveModePreference('light-mode');
-      } else {
-          // Mode actuel : clair, on passe au mode sombre
-          body.classList.remove('light-mode'); // Suppression de la classe "light-mode"
-          body.classList.add('dark-mode');
-          toggleButton.classList.add('dark-mode');
-          container.classList.add('active');
-          saveModePreference('dark-mode');
-      }
-  });
 
   // Fonction pour enregistrer le choix du mode dans le localStorage
   function saveModePreference(mode) {

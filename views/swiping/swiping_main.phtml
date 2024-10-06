@@ -5,17 +5,17 @@
         </script>
 
     <script type="module" src="public/js/algo.js"></script>
-    <?php if ($user['user_game'] === 'League of Legends'): ?>
+
         <script type="module" src="public/js/swiping/get_userMatching.js"></script>
-    <?php else : ?>
-        <script type="module" src="public/js/swiping/get_userMatchingValorant.js"></script>
-    <?php endif; ?>
 
     <section class="user_page" id="swipe-area" style="display: none;">
         <div class="user_page_main_content_row swiping_row">
             <div class="main_box-swiping-main">
                 <div class="user_page_picture">
-                    <img id="image_users" alt="" />
+                    <div class="profile-picture-container">
+                    <img class="frame_around_picture frame-swiping" src="">
+                        <img id="image_users" alt="" />
+                    </div>
                 </div>
 
                 <div class="user_page_update_name">
@@ -67,6 +67,9 @@
     <section class="noUserToSee" style="display: none;">
         <img src="public/images/vayne_emote.png" alt="jhinshrug">
         <h2>You have seen all available profiles.</h2>
+        <a class="btn_user_updates" href="/updateProfilePage">
+            Switch game for more profiles
+        </a>
     </section>
 
 <?php endif; ?>
