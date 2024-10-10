@@ -12,6 +12,9 @@
             <div class="chat_box"><br>
                 <h1 class="title_generalbox">Chat</h1>    <br>
 
+                    <input type="text" id="friendSearch" placeholder="Search for friends..." class="search-bar">
+
+                    <div class="friend-list" id="friendList">
                         <?php foreach($getFriendlist as $friend) : ?>
                             <?php
                                 if ($user['user_id'] == $friend['sender_id']) {
@@ -55,6 +58,7 @@
                         </a>
 
                         <?php endforeach; ?>
+                    </div>
                 </div>   
             </div>
                 

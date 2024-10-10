@@ -439,4 +439,35 @@ class User extends DataBase
     
         $query->execute([$userId]);
     }
+
+    public function getLastRequestTime($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            `user_lastRequestTime` 
+                                        FROM 
+                                            `user` 
+                                        WHERE 
+                                            `user_id` = ?
+        ");
+        
+        $query->execute([$userId]);
+        $result = $query->fetch();
+    
+        return $result ? strtotime($result['user_lastRequestTime']) : 0; 
+    }
+
+    public function updateLastRequestTime($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user` 
+                                        SET 
+                                            `user_lastRequestTime` = NOW() 
+                                        WHERE 
+                                            `user_id` = ?
+        ");
+        
+        return $query->execute([$userId]);
+    }
 }

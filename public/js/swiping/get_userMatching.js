@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnSwipeNo = document.getElementById('swipe_no');
     const swipeArea = document.getElementById('swipe-area');
     const frameSwiping = document.querySelector('.frame-swiping')
+    const isVip = document.querySelector('.vip-badge');
     let profileFrames = null;
 
     function getOwnedItems(userId) {
@@ -155,6 +156,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 lolRankPic.alt = data.valorant_rank;
                 lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.webp`;
                 lolRolePic.alt = data.valorant_role;
+            }
+
+            if (data.user_isVip === 1) {
+                const vipBadge = document.createElement('img');
+                vipBadge.src = '/public/images/premium-badge.png';   
+                vipBadge.alt = 'Premium Badge';
+                isVip.appendChild(vipBadge);
             }
     }
 

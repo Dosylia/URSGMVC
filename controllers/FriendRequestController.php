@@ -58,6 +58,14 @@ class FriendRequestController
 
             $friendRequest = $this->friendrequest->getFriendRequest($this->getUserId());
 
+            $amount = 1;
+            $user = $this->user->getUserById($userId);
+
+            if ($user['user_isVip'] == 1) {
+                $amount = 2;
+            }
+            $addCurrency = $this->user->addCurrency($userId, $amount);
+
             if ($friendRequest) {
                 $data = [
                     'message' => 'Success',
@@ -278,6 +286,24 @@ class FriendRequestController
             $this->setUserId((int)$userId);
 
             $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
+
+            $lastRequestTime = $this->user->getLastRequestTime($userId);
+            $currentTime = time();
+
+            if ($currentTime - $lastRequestTime > 20) {
+                $amount = 2;
+                $user = $this->user->getUserById($userId);
+    
+                if ($user['user_isVip'] == 1) {
+                    $amount = 3;
+                }
+                $addCurrency = $this->user->addCurrency($userId, $amount);
+
+                if ($addCurrency) {
+                    $this->user->updateLastRequestTime($userId);
+                }
+            }
+    
 
             if ($pendingCount !== false) {
                 $data = [

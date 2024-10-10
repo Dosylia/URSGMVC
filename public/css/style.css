@@ -693,6 +693,22 @@ section.siteMap tr:nth-child(even) {
     .friendlist-page .chat-interface {
       width: 30%;
     }
+
+
+    #friendSearch {
+      display: flex;
+      justify-content: center;
+      width: 90%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid var(--main--red);
+      margin-bottom: 10px;
+    }
+
+    .dark-mode #friendSearch {
+      background-color: var(--dark-ligher-grey);
+      color: white;
+    }
   
     #lol-fields,
     #valorant-fields {
@@ -1411,7 +1427,6 @@ section.siteMap tr:nth-child(even) {
     
     .friend-list {
       width: 100%;
-      background-color: #f2f2f2;
       padding: 10px;
     }
     
@@ -2855,6 +2870,10 @@ justify-content: center;
   color: black;
 }
 
+.vip-badge img {
+  width: 30px;
+}
+
 .regular-badge {
   background-color: var(--light-grey);
   color: black;
@@ -3553,9 +3572,9 @@ justify-content: center;
   }
 
   .nav_swiping {
-  justify-content: center;
   align-items: center;
   gap: 10px;
+  padding: 0 10px;
   }
 
   .top_right_main_section {
@@ -3647,6 +3666,10 @@ justify-content: center;
 
   .form_signup p, .form_signup_mail p {
     font-size: 2vh;
+  }
+
+  #currency {
+    font-size: 20px;
   }
 
 }
