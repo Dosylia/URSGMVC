@@ -125,7 +125,7 @@ class LeagueOfLegends extends DataBase
         }
     }
 
-    public function updateSummonerData($summonerName, $summonerId, $puudId, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId) 
+    public function updateSummonerData($summonerName, $summonerId, $puudId, $summonerLevel, $summonerRank, $summonerProfileIconId, $lolAccount, $userId) 
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE
@@ -137,12 +137,13 @@ class LeagueOfLegends extends DataBase
                                                 `lol_sPuuid` = ?,                                                
                                                 `lol_sLevel` = ?,
                                                 `lol_sRank` = ?,
-                                                `lol_sProfileIcon`= ?                                                                                              
+                                                `lol_sProfileIcon`= ?,    
+                                                `lol_account` = ?                                                                                     
                                             WHERE
                                                 `user_id` = ?
         ");
 
-        $addAccountTest  = $query -> execute([$summonerName, $summonerId, $puudId, $summonerLevel, $summonerRank, $summonerProfileIconId, $userId]);
+        $addAccountTest  = $query -> execute([$summonerName, $summonerId, $puudId, $summonerLevel, $summonerRank, $summonerProfileIconId, $lolAccount, $userId]);
 
         if($addAccountTest)
         {

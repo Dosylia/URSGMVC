@@ -110,6 +110,8 @@ class RiotController
                                     $rankAndTier = $flexQueueRankAndTier;
                                 }
 
+                                $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
+
                                 // Save updated summoner data to the database
                                 $this->leagueOfLegends->updateSummonerData(
                                     $userData['gameName'], 
@@ -118,7 +120,8 @@ class RiotController
                                     $summonerProfile['summonerLevel'], 
                                     $rankAndTier,
                                     $profileIconId,
-                                    $user['user_id']
+                                    $fullAccountName,
+                                    $user['user_id'],
                                 );
                             }
                         }

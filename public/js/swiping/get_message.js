@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}`
+            body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(friendId)}`
         })
         .then(response => response.json())
         .then(data => {
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         } else {
             if (chatInterface !== null && chatInterface !== undefined) {
-                chatInterface.style.display = 'block';
+                chatInterface.style.display = 'flex';
             }
             messageContainer.style.display = 'block';
         }

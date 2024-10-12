@@ -991,7 +991,8 @@ class UserController
                                         'lol_sLevel' => $userMatched['lol_sLevel'],
                                         'lol_sRank' => $userMatched['lol_sRank'],
                                         'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
-                                        'lol_sUsername' => $userMatched['lol_sUsername']
+                                        'lol_sUsername' => $userMatched['lol_sUsername'],
+                                        'lol_server' => $userMatched['lol_server'],
                                     ]
                                 ];
                                 break;

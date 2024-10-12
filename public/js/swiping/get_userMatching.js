@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let sProfileIcon = document.getElementById('profilepicture_lol');
     let sUsername = document.getElementById('lolsUsername');
     let sRank = document.getElementById('lolsRank');
+    let sLevel = document.getElementById('lolsLevel');
+    let sServer = document.getElementById('lolsServer');
     let lolAccount = document.getElementById('lolAccount');
     let gender = document.getElementById('gender');
     let kindOfGamer = document.getElementById('kindOfGamer');
@@ -107,9 +109,12 @@ document.addEventListener("DOMContentLoaded", function() {
         // Fill the league of legends data if available
         console.log(data.lol_sUsername)
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
-            sProfileIcon.src = `public/images/profileicon/${data.lol_sProfileIcon}`;
-            sUsername.innerText = data.lol_sUsername;
+            document.querySelector('.box_league_account').style.display = 'flex';
+            sProfileIcon.src = `public/images/profileicon/${data.lol_sProfileIcon}.png`;
+            sUsername.innerText = data.lol_account;
             sRank.innerText = data.lol_sRank;
+            sLevel.innerText += `Level: ${sanitizeHtlm(data.lol_sLevel)}`;
+            sServer.innerText = data.lol_server;
         } else {
             document.querySelector('.box_league_account').style.display = 'none';
         }
