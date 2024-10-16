@@ -46,7 +46,26 @@ class ChatMessageController
 
                 if (isset($_GET['friend_id'])) {
                     $friendId = $_GET['friend_id'];
-                    $friendChat = $this->user->getUserById($friendId);
+
+                    $isFriend = false;
+                    foreach ($getFriendlist as $friend) {
+                        if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
+                            if ($friendId == $user['user_id']) {
+                                $isFriend = false;
+                                break;
+                            }
+                            $isFriend = true;
+                            break;
+                        }
+                    }
+
+                    if ($isFriend) {
+                        $friendChat = $this->user->getUserById($friendId);
+                    } else {
+                        header("Location: /persoChat?msg=You are not friends with this user.");
+                        exit();
+                    }
+
                 } else {
                     if (isset($firstFriend)) {
                         $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];

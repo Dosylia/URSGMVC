@@ -3505,20 +3505,20 @@ justify-content: center;
   }
 
   .mid_main_section_button {
-    padding : 20px 10px;
-    width: 60%;
-    font-size: 4vh;
+    padding : 5px 0px;
+    width: 40%;
+    font-size: 3vh;
   }
 
 
   .mid_main_section_button2 {
-  padding: 15px 30px;
-  font-size: 4vh;
+  padding: 10px 25px;
+  font-size: 3vh;
   }
 
 
   .mid_main_section p {
-  font-size: 3em;
+  font-size: 2em;
   }
 
   .mid_main_section_signup {
@@ -3675,9 +3675,17 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
-  .signup_button {
-    padding: 10px;  
-    font-size: 15px !important;
+  .signup_button, #signup_button {
+    padding: 5px 5px;  
+    font-size: 10px !important;
+  }
+
+  #signup_button {
+    height: 25px;
+  }
+
+  .footer_black, .footer_grey {
+    flex-direction: column;
   }
 
   .item-card {
@@ -3721,6 +3729,13 @@ justify-content: center;
       padding: 5px;
       font-size: 1rem;
     }
+
+    .mid_main_section_button {
+      padding : 5px 0px;
+      width: 60%;
+      font-size: 3vh;
+    }
+  
 
     .leaderboard-wrapper {
       padding: 10px;
@@ -3901,8 +3916,8 @@ justify-content: center;
     }
 
     .top_main_section img {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       }
 
       .footer_black .top_footer {
