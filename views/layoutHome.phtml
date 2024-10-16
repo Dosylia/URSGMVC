@@ -86,27 +86,41 @@
             <h2>Sign up/Log in</h2><br><br>
                 <p>When clicking on sign in,<br> you agree to <a href="/legalNotice">our terms of use</a>.</p><br>
                 <script  src="public/js/ajaxGoogle.js"></script>
-            <div class="social_buttons2">
-                <div id="g_id_onload"
-                    data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
-                    data-context="signin"
-                    data-ux_mode="popup"
-                    data-callback="handleCredentialResponse"
-                    data-auto_prompt="false"
-                    data-use_fedcm_for_prompt="true">
-                </div>
+                <div class="social_buttons2">
+            <div id="g_id_onload"
+                data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false"
+                data-use_fedcm_for_prompt="true">
+            </div>
+            
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="outline"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left"
+                allow="identity-credentials-get">
+            </div>
 
-                
-                <div class="g_id_signin"
-                    data-type="standard"
-                    data-shape="rectangular"
-                    data-theme="outline"
-                    data-text="signin_with"
-                    data-size="large"
-                    data-logo_alignment="left">
-                </div>
-                <script src="https://accounts.google.com/gsi/client" defer async></script>
-            </div><br>
+            <script>
+                   window.onload = function() {
+                        window.google.accounts.id.initialize({
+                            client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+                            callback: handleCredentialResponse
+                        });
+
+                        window.google.accounts.id.prompt();
+                    };
+            </script>
+
+            <div id="g_id_one_tap" style="display:none;"></div> <!-- Placeholder for One Tap -->
+            
+            <script src="https://accounts.google.com/gsi/client" defer async></script>
+        </div><br>
             <!-- Get out of pop up -->
             <button id="cancelBtn">Cancel</button>
             <br><br>

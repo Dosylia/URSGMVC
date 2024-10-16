@@ -127,6 +127,7 @@ $actionMap = [
     'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
+    'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],
     'notFound' => [GoogleUserController::class, 'notFoundPage']
 ];
 

@@ -43,6 +43,25 @@ class GoogleUserController
         $this -> matchingscore = new MatchingScore();
     }
 
+    public function signUpBypass() {
+        $_SESSION['google_userId'] = 67;
+        $_SESSION['full_name'] = 'Emma Montbarbon Dosylia';
+        $_SESSION['google_id'] = 100980850167766474664;
+        $_SESSION['email'] = "n7xemma@gmail.com";
+        $_SESSION['google_firstName'] = "Emma Montbarbon";
+        $_SESSION['userId'] = 57;
+        $_SESSION['username'] = "GirlLFeDaddy";
+        $_SESSION['gender'] = "Female";
+        $_SESSION['age'] = 26;
+        $_SESSION['kindOfGamer'] = "Chill";
+        $_SESSION['game'] = "League of Legends";
+        $_SESSION['lol_id'] = 15;
+        $_SESSION['lf_id'] = 8;
+
+        header("Location: /swiping");
+        exit();
+    }
+
     public function homePage() 
     {
         if($this->isConnectGoogle())
@@ -311,6 +330,28 @@ class GoogleUserController
         return $payload;
     }
 
+    // public function getGoogleData() 
+    // {
+    //     $_SESSION['google_userId'] = 67;
+    //     $_SESSION['full_name'] = 'Emma Montbarbon Dosylia';
+    //     $_SESSION['google_id'] = 100980850167766474664;
+    //     $_SESSION['email'] = "n7xemma@gmail.com";
+    //     $_SESSION['google_firstName'] = "Emma Montbarbon";
+    //     $_SESSION['userId'] = 57;
+    //     $_SESSION['username'] = "GirlLFeDaddy";
+    //     $_SESSION['gender'] = "Female";
+    //     $_SESSION['age'] = 26;
+    //     $_SESSION['kindOfGamer'] = "Chill";
+    //     $_SESSION['game'] = "League of Legends";
+    //     $_SESSION['lol_id'] = 15;
+    //     $_SESSION['lf_id'] = 8;
+
+    //     $response = array('message' => 'Success');
+    //     header('Content-Type: application/json');
+    //     echo json_encode($response);
+    //     exit;   
+    // }
+
     public function getGoogleData() 
     {
         $response = array('message' => 'Error');
@@ -345,24 +386,6 @@ class GoogleUserController
             {
                 if (!$this->isConnectGoogle()) 
                 {
-
-                    $lifetime = 7 * 24 * 60 * 60;
-    
-                    session_destroy();
-    
-                    $cookieParams = session_get_cookie_params();
-                    session_set_cookie_params([
-                        'lifetime' => $lifetime,
-                        'path' => $cookieParams['path'],
-                        'domain' => $cookieParams['domain'],
-                        'secure' => $cookieParams['secure'],
-                        'httponly' => $cookieParams['httponly'],
-                        'domain' => 'ur-sg.com'
-                    ]);
-    
-                    if (session_status() == PHP_SESSION_NONE) {
-                        session_start();
-                    }
                     
                     if (!isset($_SESSION['googleId'])) 
                     {
