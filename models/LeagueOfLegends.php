@@ -13,20 +13,22 @@ class LeagueOfLegends extends DataBase
     }  
     
     
-    public function createLoLUser($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer) 
+    public function createLoLUser($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $statusChampion) 
     {
 
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `leagueoflegends`(
                                                 `user_id`,
                                                 `lol_main1`,
-                                                `lol_main2`,                                                
+                                                `lol_main2`,                                       
                                                 `lol_main3`,
                                                 `lol_rank`,
                                                 `lol_role`,
-                                                `lol_server`
+                                                `lol_server`,
+                                                `lol_noChamp`
                                             )
                                             VALUES (
+                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -37,7 +39,7 @@ class LeagueOfLegends extends DataBase
                                             )
                                         ");
 
-        $createLeagueUser = $query -> execute([$userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer]);
+        $createLeagueUser = $query -> execute([$userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $statusChampion]);
 
 
         if($createLeagueUser)

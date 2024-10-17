@@ -22,45 +22,50 @@
             <option value="Competition">Competition / Ranked</option>
             <option value="Competition and Chill">Competition/Ranked and chill</option>
         </select>
+
+        <div class="checkbox-container">
+            <label for="skipSelection">Skip agent selection</label>
+            <input type="checkbox" id="skipSelection" name="skipSelection" value="1">
+        </div>
         
-        
-        <h2>Pick 3 mains you would like to play with</h2>
-            <label for="main1">Main 1</label>
-            <button type="button" id="btnMain1">Select main 1</button>
-            <div id="popupMain1">
-                    <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                    <ul class="main1Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
-                    <ul>
-            </div>
+        <div id="championSelection">
+            <h2>Pick 3 mains you would like to play with</h2>
+                <label for="main1">Main 1</label>
+                <button type="button" id="btnMain1">Select main 1</button>
+                <div id="popupMain1">
+                        <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                        <ul class="main1Ul">
+                            <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <ul>
+                </div>
 
-            <input type="hidden" id="main1" name="main1" value="" class="notranslate">
+                <input type="hidden" id="main1" name="main1" value="" class="notranslate">
 
-            <label for="main2">Main 2</label>
-            <button type="button" id="btnMain2">Select main 2</button>
-            <div id="popupMain2">
-                    <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                    <ul class="main2Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
-                    <ul>
-            </div>
+                <label for="main2">Main 2</label>
+                <button type="button" id="btnMain2">Select main 2</button>
+                <div id="popupMain2">
+                        <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                        <ul class="main2Ul">
+                            <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <ul>
+                </div>
 
-            <input type="hidden" id="main2" name="main2" value="" class="notranslate">
+                <input type="hidden" id="main2" name="main2" value="" class="notranslate">
 
-            <label for="main3">Main 3</label>
-            <button type="button" id="btnMain3">Select main 3</button>
-            <div id="popupMain3">
-                    <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                    <ul class="main3Ul">
-                        <?php include 'views/signup/options_champion_league.phtml' ?>
-                    <ul>
-            </div>
+                <label for="main3">Main 3</label>
+                <button type="button" id="btnMain3">Select main 3</button>
+                <div id="popupMain3">
+                        <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                        <ul class="main3Ul">
+                            <?php include 'views/signup/options_champion_league.phtml' ?>
+                        <ul>
+                </div>
 
-            <input type="hidden" id="main3" name="main3" value="" class="notranslate">
+                <input type="hidden" id="main3" name="main3" value="" class="notranslate">
 
 
-                <script src="public/js/champions.js"></script>
-
+                    <script src="public/js/champions.js"></script>
+        </div>
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">

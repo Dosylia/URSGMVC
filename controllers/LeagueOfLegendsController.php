@@ -568,11 +568,20 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
-            if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
-            {
-                header("location:/signup?message=Inputs cannot be empty");
-                exit();
+            if ($statusChampion == "1") {
+                if ($this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+                {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    exit();
+                }
+            } else {
+                if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+                {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    exit();
+                }
             }
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
@@ -589,7 +598,9 @@ class LeagueOfLegendsController
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
                 $this->getLoLRole(), 
-                $this->getLoLServer()); // This also get the ID 
+                $this->getLoLServer(),
+                $statusChampion);
+                
 
             if ($createLoLUser)
             {
@@ -714,6 +725,7 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
             $updateLeague = $this->leagueOfLegends->updateLeagueData(
                 $this->getUserId(), 
@@ -722,7 +734,8 @@ class LeagueOfLegendsController
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
                 $this->getLoLRole(), 
-                $this->getLoLServer());
+                $this->getLoLServer(),
+                $statusChampion);
 
             if ($updateLeague)
             {

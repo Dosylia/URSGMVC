@@ -11,7 +11,7 @@ class UserLookingFor extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-    public function createLookingForUser($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    public function createLookingForUser($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -24,9 +24,11 @@ class UserLookingFor extends DataBase
                                                 `lf_lolmain2`,      
                                                 `lf_lolmain3`,
                                                 `lf_lolrank`,
-                                                `lf_lolrole`
+                                                `lf_lolrole`,
+                                                `lf_lolNoChamp`
                                             )
                                             VALUES (
+                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -39,7 +41,7 @@ class UserLookingFor extends DataBase
                                             )
                                         ");
 
-        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole]);
+        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion]);
 
         if($createLookingForUser)
         {
@@ -52,7 +54,7 @@ class UserLookingFor extends DataBase
 
     }
 
-    public function createLookingForUserValorant($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole) 
+    public function createLookingForUserValorant($userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion) 
     {
 
         $query = $this -> bdd -> prepare("
@@ -65,9 +67,11 @@ class UserLookingFor extends DataBase
                                                 `lf_valmain2`,      
                                                 `lf_valmain3`,
                                                 `lf_valrank`,
-                                                `lf_valrole`
+                                                `lf_valrole`,
+                                                `lf_valNoChamp`
                                             )
                                             VALUES (
+                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -80,7 +84,7 @@ class UserLookingFor extends DataBase
                                             )
                                         ");
 
-        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole]);
+        $createLookingForUser = $query -> execute([$userId, $lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion]);
 
         if($createLookingForUser)
         {
@@ -102,11 +106,13 @@ class UserLookingFor extends DataBase
                                                 `lf_gender`,
                                                 `lf_kindofgamer`,
                                                 `lf_game`,
+                                                `lf_lolNoChamp`,
                                                 `lf_lolmain1`,
                                                 `lf_lolmain2`,      
                                                 `lf_lolmain3`,
                                                 `lf_lolrank`,
                                                 `lf_lolrole`,
+                                                `lf_valNoChamp`,
                                                 `lf_valmain1`,
                                                 `lf_valmain2`,      
                                                 `lf_valmain3`,
@@ -132,7 +138,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForData($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $userId) 
+    public function updateLookingForData($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -170,6 +176,11 @@ class UserLookingFor extends DataBase
             $updates[] = "`lf_lolrole` = ?";
             $params[] = $lfRole;
         }
+
+        if (!empty($statusChampion)) {
+            $updates[] = "`lf_lolNoChamp` = ?";
+            $params[] = $statusChampion;
+        }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;
@@ -188,7 +199,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForDataValorant($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $userId) 
+    public function updateLookingForDataValorant($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -225,6 +236,11 @@ class UserLookingFor extends DataBase
         if (!empty($lfRole)) {
             $updates[] = "`lf_valrole` = ?";
             $params[] = $lfRole;
+        }
+
+        if (!empty($statusChampion)) {
+            $updates[] = "`lf_valNoChamp` = ?";
+            $params[] = $statusChampion;
         }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";

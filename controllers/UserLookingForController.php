@@ -199,13 +199,21 @@ class UserLookingForController
                 $this->setLoLRank($loLRank);
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
-    
-                if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
-                {
-                    header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+                if ($statusChampion == "1") {
+                    if (empty($loLRank) || empty($loLRole))
+                    {
+                        header("location:/signup?message=Inputs cannot be empty");
+                        exit();
+                    }
+                } else {
+                    if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
+                    {
+                        header("location:/signup?message=Inputs cannot be empty");
+                        exit();
+                    }
                 }
-    
                 
                 $testLeagueAccount = $this->user->getUserById($this->getUserId());
     
@@ -219,6 +227,7 @@ class UserLookingForController
                         $this->getLoLMain3(), 
                         $this->getLoLRank(), 
                         $this->getLoLRole(),
+                        $statusChampion,
                         $this->getUserId());
     
     
@@ -248,7 +257,8 @@ class UserLookingForController
                     $this->getLoLMain2(), 
                     $this->getLoLMain3(), 
                     $this->getLoLRank(), 
-                    $this->getLoLRole());
+                    $this->getLoLRole(),
+                    $statusChampion);
 
                     if ($createLookingFor)
                     {
@@ -288,11 +298,20 @@ class UserLookingForController
                 $this->setValorantRank($valorantRank);
                 $valotantRole = $this->validateInput($_POST["role_valorant"]);
                 $this->setValorantRole($valotantRole);
-    
-                if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
-                {
-                    header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+                if ($statusChampion == "1") {
+                    if (empty($valorantRank) || empty($valotantRole))
+                    {
+                        header("location:/signup?message=Inputs cannot be empty");
+                        exit();
+                    }
+                } else {
+                    if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
+                    {
+                        header("location:/signup?message=Inputs cannot be empty");
+                        exit();
+                    }
                 }
     
                 
@@ -308,6 +327,7 @@ class UserLookingForController
                         $this->getValorantMain3(), 
                         $this->getValorantRank(), 
                         $this->getValorantRole(),
+                        $statusChampion,
                         $this->getUserId());
 
 
@@ -337,7 +357,8 @@ class UserLookingForController
                     $this->getValorantMain2(), 
                     $this->getValorantMain3(), 
                     $this->getValorantRank(), 
-                    $this->getValorantRole());
+                    $this->getValorantRole(),
+                    $statusChampion);
 
                     if ($createLookingFor)
                     {
@@ -554,11 +575,32 @@ class UserLookingForController
                 $this->setLoLRank($loLRank);
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
+                $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
-                if (empty($loLRank) || empty($loLRole) || empty($loLMain1) || empty($loLMain2) || empty($loLMain3))
-                {
-                    header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                    exit();
+                $user = $this->user->getUserById($this->getUserId());
+
+                if ($statusChampion == "1") {
+                    if (empty($loLRank) || empty($loLRole))
+                    {
+                        if ($user['lf_lolrole']) {
+                            header("location:/signup?message=Inputs cannot be empty");
+                            exit();
+                        } else {
+                            header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                            exit();
+                        }
+                    }
+                } else {
+                    if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
+                    {
+                        if ($user['lf_lolrole']) {
+                            header("location:/signup?message=Inputs cannot be empty");
+                            exit();
+                        } else {
+                            header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                            exit();
+                        }
+                    }
                 }
 
                 $updateLookingFor = $this->userlookingfor->updateLookingForData(
@@ -570,6 +612,7 @@ class UserLookingForController
                     $this->getLoLMain3(), 
                     $this->getLoLRank(), 
                     $this->getLoLRole(),
+                    $statusChampion,
                     $this->getUserId());
 
 
@@ -609,11 +652,30 @@ class UserLookingForController
                     $this->setValorantRank($valorantRank);
                     $valorantRole = $this->validateInput($_POST["role_valorant"]);
                     $this->setValorantRole($valorantRole);
+                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
-                    if (empty($valorantRank) || empty($valorantRole) || empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3))
-                    {
-                        header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                        exit();
+                    if ($statusChampion == "1") {
+                        if (empty($valorantRank) || empty($valorantRole))
+                        {
+                            if ($user['lf_valrole']) {
+                                header("location:/signup?message=Inputs cannot be empty");
+                                exit();
+                            } else {
+                                header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                                exit();
+                            }
+                        }
+                    } else {
+                        if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
+                        {
+                            if ($user['lf_valrole']) {
+                                header("location:/signup?message=Inputs cannot be empty");
+                                exit();
+                            } else {
+                                header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                                exit();
+                            }
+                        }
                     }
 
                     $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
@@ -625,6 +687,7 @@ class UserLookingForController
                         $this->getValorantMain3(), 
                         $this->getValorantRank(), 
                         $this->getValorantRole(),
+                        $statusChampion,
                         $this->getUserId());
 
 

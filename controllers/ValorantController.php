@@ -134,11 +134,22 @@ class ValorantController
             $this->setValorantRole($valorantRole);
             $valorantServer = $this->validateInput($_POST["server"]);
             $this->setValorantServer($valorantServer);
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
-            if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
-            {
-                header("location:/signup?message=Inputs cannot be empty");
-                exit();
+            if ($statusChampion == "1") {
+                if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
+                {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    exit();
+                }
+    
+            } else {
+                if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
+                {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    exit();
+                }
+    
             }
 
             $testValorantAccount = $this->user->getUserById($this->getUserId());
@@ -155,7 +166,8 @@ class ValorantController
                 $this->getValorantMain3(), 
                 $this->getValorantRank(), 
                 $this->getValorantRole(), 
-                $this->getValorantServer()); // This also get the ID 
+                $this->getValorantServer(),
+                $statusChampion);
 
             if ($createValorantUser)
             {
@@ -283,6 +295,7 @@ class ValorantController
             $this->setValorantRole($valorantRole);
             $valorantServer = $this->validateInput($_POST["server"]);
             $this->setValorantServer($valorantServer);
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
             $updateValorant = $this->valorant->updateValorantData(
                 $this->getUserId(), 
@@ -291,7 +304,8 @@ class ValorantController
                 $this->getValorantMain3(), 
                 $this->getValorantRank(), 
                 $this->getValorantRole(), 
-                $this->getValorantServer());
+                $this->getValorantServer(),
+                $statusChampion);
 
             if ($updateValorant)
             {

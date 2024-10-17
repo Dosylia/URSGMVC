@@ -326,6 +326,18 @@ section.siteMap tr:nth-child(even) {
     background-color: rgb(248, 244, 244);
   }
 
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+    flex-direction: column; 
+}
+
+  .checkbox-container input {
+    margin: 5px 0 20px 0!important;
+  }
+
+
   .picture_with_form {
     width: 500px;
     height: auto;

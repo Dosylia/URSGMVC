@@ -51,7 +51,7 @@ class LeagueOfLegends extends DataBase
 
     }
 
-    public function updateLeagueData($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer) 
+    public function updateLeagueData($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $statusChampion) 
     {
         $sql = "UPDATE `leagueoflegends` SET ";
         $params = [];
@@ -80,6 +80,11 @@ class LeagueOfLegends extends DataBase
         if (!empty($loLServer)) {
             $updates[] = "`lol_server` = ?";
             $params[] = $loLServer;
+        }
+
+        if (!empty($statusChampion)) {
+            $updates[] = "`lol_noChamp` = ?";
+            $params[] = $statusChampion;
         }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";

@@ -445,7 +445,7 @@ class UserController
                         if ($user['valorant_id']) {
                             $_SESSION['valorant_id'] = $user['valorant_id'];
 
-                            if($user['lf_valmain1'] !== NULL)
+                            if($user['lf_valrole'] !== NULL)
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
                                 header("location:/userProfile?message=Udpated successfully");
@@ -467,7 +467,7 @@ class UserController
                         if ($user['lol_id']) {
                             $_SESSION['lol_id'] = $user['lol_id'];
 
-                            if($user['lf_lolmain1'] !== NULL)
+                            if($user['lf_lolrole'] !== NULL)
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
                                 header("location:/userProfile?message=Udpated successfully");

@@ -13,20 +13,22 @@ class Valorant extends DataBase
     }  
     
     
-    public function createValorantUser($userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer) 
+    public function createValorantUser($userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer, $statusChampion) 
     {
 
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `valorant`(
                                                 `user_id`,
                                                 `valorant_main1`,
-                                                `valorant_main2`,                                                
+                                                `valorant_main2`,                             
                                                 `valorant_main3`,
                                                 `valorant_rank`,
                                                 `valorant_role`,
-                                                `valorant_server`
+                                                `valorant_server`,
+                                                `valorant_noChamp`
                                             )
                                             VALUES (
+                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -37,7 +39,7 @@ class Valorant extends DataBase
                                             )
                                         ");
 
-        $createValorantUser = $query -> execute([$userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer]);
+        $createValorantUser = $query -> execute([$userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer, $statusChampion]);
 
 
         if($createValorantUser)
@@ -51,7 +53,7 @@ class Valorant extends DataBase
 
     }
 
-    public function updateValorantData($userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer) 
+    public function updateValorantData($userId, $valorantMain1, $valorantMain2, $valorantMain3, $valorantRank, $valorantRole, $valorantServer, $statusChampion) 
     {
         $sql = "UPDATE `valorant` SET ";
         $params = [];
@@ -80,6 +82,10 @@ class Valorant extends DataBase
         if (!empty($valorantServer)) {
             $updates[] = "`valorant_server` = ?";
             $params[] = $valorantServer;
+        }
+        if (!empty($statusChampion)) {
+            $updates[] = "`valorant_noChamp` = ?";
+            $params[] = $statusChampion;
         }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
