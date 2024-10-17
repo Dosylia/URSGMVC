@@ -5,6 +5,7 @@ let popupMain1 = document.getElementById('popupMain1');
 let inputMain1 = document.getElementById('main1');
 const searchInput1 = document.getElementById("search1");
 const options1 = document.querySelectorAll(".main1Ul li");
+const main1Pic = document.getElementById("main1Pic");
 
 const selectedChampionsContainer2 = document.getElementById('selected-champions2');
 let btnPopUp2 = document.getElementById('btnMain2');
@@ -12,6 +13,7 @@ let popupMain2 = document.getElementById('popupMain2');
 let inputMain2 = document.getElementById('main2');
 const searchInput2 = document.getElementById("search2");
 const options2 = document.querySelectorAll(".main2Ul li");
+const main2Pic = document.getElementById("main2Pic");
 
 const selectedChampionsContainer3 = document.getElementById('selected-champions3');
 let btnPopUp3 = document.getElementById('btnMain3');
@@ -19,6 +21,7 @@ let popupMain3 = document.getElementById('popupMain3');
 let inputMain3 = document.getElementById('main3');
 const searchInput3 = document.getElementById("search3");
 const options3 = document.querySelectorAll(".main3Ul li");
+const main3Pic = document.getElementById("main3Pic");
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -40,6 +43,9 @@ popupMain1.addEventListener("click", (e) => {
         }
         else 
         {
+          if (main1Pic) {
+            main1Pic.remove();
+          }
           btnPopUp1.textContent = "";
           const imageElement = document.createElement("img");
           imageElement.src=liElement.getAttribute("data-image");
@@ -90,6 +96,9 @@ popupMain2.addEventListener("click", (e) => {
       }
       else 
       {
+        if (main2Pic) {
+          main2Pic.remove();
+        }
         btnPopUp2.textContent = "";
         const imageElement = document.createElement("img");
         imageElement.src=liElement.getAttribute("data-image");
@@ -137,6 +146,9 @@ popupMain3.addEventListener("click", (e) => {
       }
       else 
       {
+        if (main3Pic) {
+          main3Pic.remove();
+        }
         btnPopUp3.textContent = "";
         const imageElement = document.createElement("img");
         imageElement.src=liElement.getAttribute("data-image");

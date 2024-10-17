@@ -57,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     const frame = profileFrames[0];
                     frameSwiping.style.opacity = '1';
                     frameSwiping.src = `public/images/store/${frame.items_picture.replace('.jpg', '.png')}`;
+                } else {
+                    frameSwiping.style.opacity = '0';
                 }
             } else {
                 console.log(data.message);

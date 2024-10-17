@@ -240,6 +240,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let messagesContainer = document.getElementById("messages");
         messagesContainer.innerHTML = '';
+        messagesContainer.style.minHeight = 'calc(var(--vh, 1vh) * 60)';
     };
 
     // Function to scroll to the bottom of the messages container

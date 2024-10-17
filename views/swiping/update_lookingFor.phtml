@@ -30,38 +30,41 @@
         <?php if($user['user_game'] == "League of Legends") :?>
 
         <h2>Pick 3 mains you would like to play with</h2>
-            <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain1']) ?>.png">)</label>
+            <label for="main1" class="label-container">Main 1</label>
             <button type="button" id="btnMain1">Select main 1</button>
+            <img id="main1Pic" src="public/images/champions/<?= trim($lfUser['lf_lolmain1']) ?>.png" alt="<?= trim($lfUser['lf_lolmain1']) ?>">
             <div id="popupMain1">
-                    <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search1" autocomplete="no-autofill" value="<?= $lfUser['lf_lolmain1'] ?>" class="notranslate">
                     <ul class="main1Ul">
                         <?php include 'views/signup/options_champion_league.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main1" name="main1" value="" class="notranslate">
+            <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_lolmain1'] ?>" class="notranslate">
 
-            <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain2']) ?>.png">)</label>
+            <label for="main2" class="label-container">Main 2</label>
             <button type="button" id="btnMain2">Select main 2</button>
+            <img id="main2Pic" src="public/images/champions/<?= trim($lfUser['lf_lolmain2']) ?>.png" alt="<?= trim($lfUser['lf_lolmain2']) ?>">
             <div id="popupMain2">
-                    <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search2" autocomplete="no-autofill" value="<?= $lfUser['lf_lolmain2'] ?>" class="notranslate">
                     <ul class="main2Ul">
                         <?php include 'views/signup/options_champion_league.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main2" name="main2" value="" class="notranslate">
+            <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_lolmain2'] ?>" class="notranslate">
 
-            <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/champions/<?= trim($lfUser['lf_lolmain3']) ?>.png">)</label>
+            <label for="main3" class="label-container">Main 3</label>
             <button type="button" id="btnMain3">Select main 3</button>
+            <img id="main3Pic" src="public/images/champions/<?= trim($lfUser['lf_lolmain3']) ?>.png" alt="<?= trim($lfUser['lf_lolmain3']) ?>">
             <div id="popupMain3">
-                    <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search3" autocomplete="no-autofill" value="<?= $lfUser['lf_lolmain3'] ?>" class="notranslate">
                     <ul class="main3Ul">
                         <?php include 'views/signup/options_champion_league.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main3" name="main3" value="" class="notranslate">
+            <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_lolmain3'] ?>" class="notranslate">
 
 
                 <script src="public/js/champions.js"></script>
@@ -99,38 +102,41 @@
         <?php else : ?>
 
             <h2>Pick 3 mains you would like to play with</h2>
-            <label for="main1" class="label-container">Main 1 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain1']) ?>_icon.webp">)</label>
+            <label for="main1" class="label-container">Main 1</label>
             <button type="button" id="btnMain1">Select main 1</button>
+            <img id="main1Pic" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain1']) ?>_icon.webp" alt="<?= $lfUser['lf_valmain1'] ?>">
             <div id="popupMain1">
-                    <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search1" autocomplete="no-autofill" value="<?= $lfUser['lf_valmain1'] ?>" class="notranslate">
                     <ul class="main1Ul">
                         <?php include 'views/signup/options_champion_valorant.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main1" name="main1" value="" class="notranslate">
+            <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_valmain1'] ?>" class="notranslate">
 
-            <label for="main2" class="label-container">Main 2 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain2']) ?>_icon.webp">)</label>
+            <label for="main2" class="label-container">Main 2</label>
             <button type="button" id="btnMain2">Select main 2</button>
+            <img id="main2Pic" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain2']) ?>_icon.webp" alt="<?= $lfUser['lf_valmain2'] ?>">
             <div id="popupMain2">
-                    <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search2" autocomplete="no-autofill" value="<?= $lfUser['lf_valmain2'] ?>" class="notranslate">
                     <ul class="main2Ul">
                         <?php include 'views/signup/options_champion_league.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main2" name="main2" value="" class="notranslate">
+            <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_valmain2'] ?>" class="notranslate">
 
-            <label for="main3" class="label-container">Main 3 (Actual: <img class="images_update" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain3']) ?>_icon.webp">)</label>
+            <label for="main3" class="label-container">Main 3</label>
             <button type="button" id="btnMain3">Select main 3</button>
+            <img id="main3Pic" src="public/images/valorant_champions/<?= trim($lfUser['lf_valmain3']) ?>_icon.webp" alt="<?= $lfUser['lf_valmain3'] ?>">
             <div id="popupMain3">
-                    <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
+                    <input type="text" id="search3" autocomplete="no-autofill" value="<?= $lfUser['lf_valmain3'] ?>" class="notranslate">
                     <ul class="main3Ul">
                         <?php include 'views/signup/options_champion_league.phtml' ?>
                     <ul>
             </div>
 
-            <input type="hidden" id="main3" name="main3" value="" class="notranslate">
+            <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_valmain3'] ?>" class="notranslate">
 
 
                 <script src="public/js/champions.js"></script>

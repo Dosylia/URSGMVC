@@ -166,6 +166,7 @@ class FriendRequestController
                 echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
 
+
         } elseif (isset($_POST['swipe_no'])) {
             $requestDate = date('Y-m-d H:i:s');
             $status = 'rejected';
@@ -199,16 +200,59 @@ class FriendRequestController
         }
     }
 
+    public function sendNotificationsPhone($userId, $message, $friendId) {
+        $deviceToken = $this->user->getToken($userId);
+    
+        if ($deviceToken) {
+            $friendData = $this->user->getUserById($friendId);
+            $title = "URSG - Match with " . $friendData['user_username'];
+            $body = $message;
+    
+            $expoPushUrl = 'https://exp.host/--/api/v2/push/send';
+    
+            $notificationPayload = [
+                'to' => $deviceToken['user_token'],
+                'sound' => 'default',
+                'title' => $title,
+                'body' => $body,
+            ];
+    
+            $headers = [
+                'Content-Type: application/json',
+            ];
+    
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $expoPushUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($notificationPayload));
+    
+            $result = curl_exec($ch);
+    
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }
+    
+            curl_close($ch);
+
+            return $result;
+        }
+    }
+
     public function acceptFriendRequest(): void
     {
         $frId = $this->validateInput($_GET["fr_id"]);
         $friendId = $this->validateInput($_GET["friend_id"]);
         $this->setFrId((int)$frId);
         $this->setFriendId((int)$friendId);
+        $user = $this->user->getUserById($_SESSION['userId']);
 
         $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
 
         if ($updateStatus) {
+            $sendNotifications = $this->sendNotificationsPhone($friendId, "You have matched with ". $user['user_username'], $_SESSION['userId']);
             header("Location: /persoChat?friend_id=" . $this->getFriendId() . "&mark_as_read=true");
             exit();
         } else {
@@ -225,9 +269,13 @@ class FriendRequestController
         $this->setFrId((int)$frId);
         $this->setFriendId((int)$friendId);
 
+        $userId = $this -> friendrequest -> getUserIdByFrId($this->getFrId());
+        $user = $this->user->getUserById($userId);
+
         $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
 
         if ($updateStatus) {
+            $sendNotifications = $this->sendNotificationsPhone($friendId, "You have matched with ". $user['user_username'], $userId);
             echo json_encode(['success' => false, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
             exit();
         } else {

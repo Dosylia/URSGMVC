@@ -39,6 +39,23 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function getUserIdByFrId($frId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            `fr_receiverId`
+                                        FROM 
+                                            `friendrequest`
+                                        WHERE 
+                                            `fr_id` = ?
+        ");
+    
+        $query->execute([$frId]);
+        $userId = $query->fetch();
+    
+        return $userId['fr_receiverId'];
+    }
+
     public function skipUserSwipping($userId)
     {
         $query = $this->bdd->prepare("

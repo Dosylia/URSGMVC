@@ -119,7 +119,7 @@ class ChatMessageController
     {
         if (isset($_POST['userId']) && isset($_POST['friendId'])) {
             $this->setUserId($_POST['userId']);
-            $this->setFriendId($_POST['friendId']);
+            $this->setFriendId((int) $_POST['friendId']);
 
             $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
             $friend = $this->user->getUserById($this->getFriendId());
