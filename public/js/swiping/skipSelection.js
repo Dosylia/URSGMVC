@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
         championSelection.style.display = 'none';
     } else {
         skipSelectionCheckbox.checked = false;
-        championSelection.style.display = 'block';
+        championSelection.style.display = 'flex';
     }
 
     // Handle checkbox state change
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
             championSelection.style.display = 'none';
         } else {
             e.target.value = 0; 
-            championSelection.style.display = 'block';
+            championSelection.style.display = 'flex';
         }
     });
 });

@@ -583,6 +583,8 @@ class UserController
             $main3Lf = $this->validateInput($data->main3Lf);
             $rankLf = $this->validateInput($data->rankLf);
             $roleLf = $this->validateInput($data->roleLf);
+            $statusChampion = $this->validateInput($data->skipSelection);
+            $statusChampionLf = $this->validateInput($data->skipSelectionLf);
     
             $this->setUserId($userId);
             $this->setUsername($username);
@@ -631,7 +633,8 @@ class UserController
                     $this->getLoLMain3(), 
                     $this->getLoLRank(), 
                     $this->getLoLRole(), 
-                    $this->getLoLServer());
+                    $this->getLoLServer(),
+                    $statusChampion);
             } else {
                 $createLoLUser = $this->leagueoflegends->createLoLUser(
                     $this->getUserId(), 
@@ -640,7 +643,8 @@ class UserController
                     $this->getLoLMain3(), 
                     $this->getLoLRank(), 
                     $this->getLoLRole(), 
-                    $this->getLoLServer());
+                    $this->getLoLServer(),
+                    $statusChampion);
             }
 
             $updateLookingFor = $this->userlookingfor->updateLookingForData(
@@ -652,6 +656,7 @@ class UserController
                 $this->getLoLMain3Lf(), 
                 $this->getLoLRankLf(), 
                 $this->getLoLRoleLf(),
+                $statusChampionLf,
                 $this->getUserId());
 
                 if(($updateLeague || $createLoLUser) && $updateUser && $updateLookingFor)
@@ -665,7 +670,6 @@ class UserController
             } 
             else
             {
-                            // Validate and set user data
             $userId = $this->validateInput($data->userId);
             $username = $this->validateInput($data->username);
             $gender = $this->validateInput($data->gender);
@@ -686,6 +690,8 @@ class UserController
             $main3Lf = $this->validateInput($data->main3Lf);
             $rankLf = $this->validateInput($data->rankLf);
             $roleLf = $this->validateInput($data->roleLf);
+            $statusChampion = $this->validateInput($data->skipSelection);
+            $statusChampionLf = $this->validateInput($data->skipSelectionLf);
     
             $this->setUserId($userId);
             $this->setUsername($username);
@@ -735,7 +741,8 @@ class UserController
                         $this->getValorantMain3(), 
                         $this->getValorantRank(), 
                         $this->getValorantRole(), 
-                        $this->getValorantServer());
+                        $this->getValorantServer(),
+                        $statusChampion);
                 } else {
                     $createValorantUser = $this->valorant->createValorantUser(
                         $this->getUserId(), 
@@ -744,7 +751,8 @@ class UserController
                         $this->getValorantMain3(), 
                         $this->getValorantRank(), 
                         $this->getValorantRole(), 
-                        $this->getValorantServer()); 
+                        $this->getValorantServer(),
+                        $statusChampion); 
                 }
 
             $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
@@ -756,6 +764,7 @@ class UserController
                 $this->getValorantMain3Lf(), 
                 $this->getValorantRankLf(), 
                 $this->getValorantRoleLf(),
+                $statusChampionLf,
                 $this->getUserId());
 
                 if(($updateValorant || $createValorantUser) && $updateUser && $updateLookingFor)

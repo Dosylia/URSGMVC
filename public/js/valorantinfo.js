@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded",function(){
                 championSelection.style.display = 'none';
             } else {
                 e.target.value = 0;
-                championSelection.style.display = 'block';
+                championSelection.style.display = 'flex';
             }
         });
 

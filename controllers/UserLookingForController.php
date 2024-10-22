@@ -412,16 +412,26 @@ class UserLookingForController
             $this->setLoLRank($loLRank);
             $loLRole = $this->validateInput($data->role);
             $this->setLoLRole($loLRole);
+            $statusChampion = $this->validateInput($data->skipSelection);
 
-            if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
-            {
-                $response = array('message' => 'Fill all fields');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit();  
+            if ($statusChampion == 1) {
+                if (empty($loLRank) || empty($loLRole))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();  
+                }
+            } else {
+                if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();  
+                }
             }
-
-            
+      
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
@@ -440,7 +450,8 @@ class UserLookingForController
                 $this->getLoLMain2(), 
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
-                $this->getLoLRole());
+                $this->getLoLRole(),
+                $statusChampion);
 
                 if ($createLookingFor)
                 {
@@ -487,13 +498,24 @@ class UserLookingForController
             $this->setValorantRank($valorantRank);
             $valotantRole = $this->validateInput($data->role);
             $this->setValorantRole($valotantRole);
+            $statusChampion = $this->validateInput($data->skipSelection);
 
-            if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
-            {
-                $response = array('message' => 'Fill all fields');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit();  
+            if ($statusChampion == 1) {
+                if (empty($valorantRank) || empty($valotantRole))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();  
+                }
+            } else {
+                if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit();  
+                }
             }
 
             
@@ -515,7 +537,8 @@ class UserLookingForController
                 $this->getValorantMain2(), 
                 $this->getValorantMain1(), 
                 $this->getValorantRank(), 
-                $this->getValorantRole());
+                $this->getValorantRole(),
+                $statusChampion);
 
                 if ($createLookingFor)
                 {

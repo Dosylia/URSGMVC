@@ -53,24 +53,21 @@ class LeagueOfLegends extends DataBase
 
     }
 
-    public function updateLeagueData($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer) 
+    public function updateLeagueData($userId, $loLMain1, $loLMain2, $loLMain3, $loLRank, $loLRole, $loLServer, $statusChampion) 
     {
         $sql = "UPDATE `leagueoflegends` SET ";
         $params = [];
         $updates = [];
     
-        if (!empty($loLMain1)) {
-            $updates[] = "`lol_main1` = ?";
-            $params[] = $loLMain1;
-        }
-        if (!empty($loLMain2)) {
-            $updates[] = "`lol_main2` = ?";
-            $params[] = $loLMain2;
-        }
-        if (!empty($loLMain3)) {
-            $updates[] = "`lol_main3` = ?";
-            $params[] = $loLMain3;
-        }
+        $updates[] = "`lol_main1` = ?";
+        $params[] = $loLMain1;
+
+        $updates[] = "`lol_main2` = ?";
+        $params[] = $loLMain2;
+
+        $updates[] = "`lol_main3` = ?";
+        $params[] = $loLMain3;
+
         if (!empty($loLRank)) {
             $updates[] = "`lol_rank` = ?";
             $params[] = $loLRank;
@@ -83,6 +80,10 @@ class LeagueOfLegends extends DataBase
             $updates[] = "`lol_server` = ?";
             $params[] = $loLServer;
         }
+
+        $updates[] = "`lol_noChamp` = ?";
+        $params[] = $statusChampion;
+
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;

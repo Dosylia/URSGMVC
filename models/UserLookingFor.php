@@ -156,18 +156,17 @@ class UserLookingFor extends DataBase
             $updates[] = "`lf_game` = ?";
             $params[] = $lfGame;
         }
-        if (!empty($lfMain1)) {
             $updates[] = "`lf_lolmain1` = ?";
             $params[] = $lfMain1;
-        }
-        if (!empty($lfMain2)) {
+
+
             $updates[] = "`lf_lolmain2` = ?";
             $params[] = $lfMain2;
-        }
-        if (!empty($lfMain3)) {
+
+
             $updates[] = "`lf_lolmain3` = ?";
             $params[] = $lfMain3;
-        }
+
         if (!empty($lfRank)) {
             $updates[] = "`lf_lolrank` = ?";
             $params[] = $lfRank;
@@ -177,10 +176,9 @@ class UserLookingFor extends DataBase
             $params[] = $lfRole;
         }
 
-        if (!empty($statusChampion)) {
-            $updates[] = "`lf_lolNoChamp` = ?";
-            $params[] = $statusChampion;
-        }
+        $updates[] = "`lf_lolNoChamp` = ?";
+        $params[] = $statusChampion;
+
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;
@@ -217,18 +215,17 @@ class UserLookingFor extends DataBase
             $updates[] = "`lf_game` = ?";
             $params[] = $lfGame;
         }
-        if (!empty($lfMain1)) {
+
             $updates[] = "`lf_valmain1` = ?";
             $params[] = $lfMain1;
-        }
-        if (!empty($lfMain2)) {
+
+
             $updates[] = "`lf_valmain2` = ?";
             $params[] = $lfMain2;
-        }
-        if (!empty($lfMain3)) {
+
             $updates[] = "`lf_valmain3` = ?";
             $params[] = $lfMain3;
-        }
+
         if (!empty($lfRank)) {
             $updates[] = "`lf_valrank` = ?";
             $params[] = $lfRank;
@@ -238,10 +235,8 @@ class UserLookingFor extends DataBase
             $params[] = $lfRole;
         }
 
-        if (!empty($statusChampion)) {
-            $updates[] = "`lf_valNoChamp` = ?";
-            $params[] = $statusChampion;
-        }
+        $updates[] = "`lf_valNoChamp` = ?";
+        $params[] = $statusChampion;
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;

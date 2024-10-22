@@ -343,7 +343,7 @@ section.siteMap tr:nth-child(even) {
     height: auto;
   }
   
-  .form_signup {
+  .form_signup, #championSelection {
       background-color: rgb(248, 244, 244);
       display: flex;
       flex-direction: column;
@@ -368,12 +368,12 @@ section.siteMap tr:nth-child(even) {
     margin: auto;    
   }
   
-  .form_signup img, .form_signup_mail img {
+  .form_signup img, .form_signup_mail img, #championSelection img {
       width: 100px;
       height: 100px;
   }
 
-  .form_signup label.label-container, .form_signup_mail label.label-container
+  .form_signup label.label-container, .form_signup_mail label.label-container, #championSelection label.label-container
   {
     display: flex;
     align-items: center;
@@ -1021,7 +1021,7 @@ section.siteMap tr:nth-child(even) {
   
   }
 
-  .form_signup img.images_update, .form_signup_mail img.images_update  {
+  .form_signup img.images_update, .form_signup_mail img.images_update, #championSelection img.images_update {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -1795,31 +1795,31 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark-grey);
   }
   
-  .dark-mode .form_signup, .dark-mode .form_signup_mail {
+  .dark-mode .form_signup, .dark-mode .form_signup_mail, .dark-mode #championSelection {
     background-color: var(--dark-ligher-grey);
   }
   
-  .dark-mode .form_signup input, .dark-mode .form_signup_mail input {
+  .dark-mode .form_signup input, .dark-mode .form_signup_mail input, .dark-mode #championSelection input {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup textarea, .dark-mode .form_signup_mail textarea {
+  .dark-mode .form_signup textarea, .dark-mode .form_signup_mail textarea, .dark-mode #championSelection textarea {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup select, .dark-mode .form_signup_mail select {
+  .dark-mode .form_signup select, .dark-mode .form_signup_mail select, .dark-mode #championSelection select {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup option, .dark-mode .form_signup_mail option {
+  .dark-mode .form_signup option, .dark-mode .form_signup_mail option, .dark-mode #championSelection option {
     background-color: var(--ligher--grey);
     color: white;
   }
   
-  .dark-mode .form_signup label, .dark-mode .form_signup_mail label {
+  .dark-mode .form_signup label, .dark-mode .form_signup_mail label, .dark-mode #championSelection label {
     color: white;
   }
   
@@ -1827,7 +1827,7 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark-grey);
   }
   
-  .dark-mode .form_signup input, .dark-mode .form_signup textarea, .dark-mode .form_signup select {
+  .dark-mode .form_signup input, .dark-mode .form_signup textarea, .dark-mode .form_signup select, .dark-mode #championSelection option {
     border: 0.5px solid white;
   }
   
@@ -3672,11 +3672,11 @@ justify-content: center;
     min-width: 80%;
   }
 
-  .form_signup h2, .form_signup_mail h2 {
+  .form_signup h2, .form_signup_mail h2, #championSelection h2 {
     font-size: 3vh;
   }
 
-  .form_signup p, .form_signup_mail p {
+  .form_signup p, .form_signup_mail p, #championSelection p {
     font-size: 2vh;
   }
 

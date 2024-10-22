@@ -735,7 +735,8 @@ class GoogleUserController
                                     'sUsername' => $lolUser['lol_sUsername'],
                                     'sLevel' => $lolUser['lol_sLevel'],
                                     'sRank' => $lolUser['lol_sRank'],
-                                    'sProfileIcon' => $lolUser['lol_sProfileIcon']
+                                    'sProfileIcon' => $lolUser['lol_sProfileIcon'],
+                                    'skipSelectionLol' => $lolUser['lol_noChamp']
                                 );
                         
                                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
@@ -751,7 +752,8 @@ class GoogleUserController
                                         'main2Lf' => $lfUser['lf_lolmain2'],
                                         'main3Lf' => $lfUser['lf_lolmain3'],
                                         'rankLf' => $lfUser['lf_lolrank'],
-                                        'roleLf' => $lfUser['lf_lolrole']
+                                        'roleLf' => $lfUser['lf_lolrole'],
+                                        'skipSelectionLf' => $lfUser['lf_lolNoChamp']
                                     );
                         
                                     
@@ -800,7 +802,8 @@ class GoogleUserController
                                     'main3' => $valorantUser['valorant_main3'],
                                     'rank' => $valorantUser['valorant_rank'],
                                     'role' => $valorantUser['valorant_role'],
-                                    'server' => $valorantUser['valorant_server']
+                                    'server' => $valorantUser['valorant_server'],
+                                    'skipSelectionVal' => $valorantUser['valorant_noChamp']
                                 );
                         
                                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
@@ -816,7 +819,8 @@ class GoogleUserController
                                         'valmain2Lf' => $lfUser['lf_valmain2'],
                                         'valmain3Lf' => $lfUser['lf_valmain3'],
                                         'valrankLf' => $lfUser['lf_valrank'],
-                                        'valroleLf' => $lfUser['lf_valrole']
+                                        'valroleLf' => $lfUser['lf_valrole'],
+                                        'skipSelectionLf' => $lfUser['lf_valNoChamp']
                                     );
                         
                                     

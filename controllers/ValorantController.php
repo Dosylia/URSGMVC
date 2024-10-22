@@ -220,13 +220,24 @@ class ValorantController
             $this->setValorantRole($valorantRole);
             $valorantServer = $this->validateInput($data->server);
             $this->setValorantServer($valorantServer);
+            $statusChampion = $this->validateInput($data->skipSelection);
 
-            if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
-            {
-                $response = array('message' => 'Fill all fields');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+            if ($statusChampion == 1) {
+                if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;  
+                }
+            } else {
+                if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;  
+                }
             }
 
             $testValorantAccount = $this->user->getUserById($this->getUserId());
@@ -245,7 +256,8 @@ class ValorantController
                 $this->getValorantMain3(), 
                 $this->getValorantRank(), 
                 $this->getValorantRole(), 
-                $this->getValorantServer()); // This also get the ID 
+                $this->getValorantServer(),
+                $statusChampion);
 
             if ($createValorantUser)
             {

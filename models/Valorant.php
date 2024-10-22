@@ -59,18 +59,16 @@ class Valorant extends DataBase
         $params = [];
         $updates = [];
     
-        if (!empty($valorantMain1)) {
             $updates[] = "`valorant_main1` = ?";
             $params[] = $valorantMain1;
-        }
-        if (!empty($valorantMain2)) {
+
             $updates[] = "`valorant_main2` = ?";
             $params[] = $valorantMain2;
-        }
-        if (!empty($valorantMain3)) {
+
+
             $updates[] = "`valorant_main3` = ?";
             $params[] = $valorantMain3;
-        }
+
         if (!empty($valorantRank)) {
             $updates[] = "`valorant_rank` = ?";
             $params[] = $valorantRank;
@@ -83,10 +81,9 @@ class Valorant extends DataBase
             $updates[] = "`valorant_server` = ?";
             $params[] = $valorantServer;
         }
-        if (!empty($statusChampion)) {
-            $updates[] = "`valorant_noChamp` = ?";
-            $params[] = $statusChampion;
-        }
+
+        $updates[] = "`valorant_noChamp` = ?";
+        $params[] = $statusChampion;
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;

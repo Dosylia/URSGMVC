@@ -650,14 +650,26 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($data->server);
             $this->setLoLServer($loLServer);
+            $statusChampion = $this->validateInput($data->skipSelection);
 
-            if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
-            {
-                $response = array('message' => 'Fill all fields');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+            if ($statusChampion == 1) {
+                if ($this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;  
+                }
+            } else {
+                if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
+                {
+                    $response = array('message' => 'Fill all fields');
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;  
+                }
             }
+
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
@@ -675,7 +687,8 @@ class LeagueOfLegendsController
                 $this->getLoLMain3(), 
                 $this->getLoLRank(), 
                 $this->getLoLRole(), 
-                $this->getLoLServer()); // This also get the ID 
+                $this->getLoLServer(),
+                $statusChampion);
 
             if ($createLoLUser)
             {
@@ -713,11 +726,11 @@ class LeagueOfLegendsController
 
             $userId = $this->validateInput($_POST["userId"]);
             $this->setUserId($userId);
-            $loLMain1 = $this->validateInput($_POST["main1"]);
+            $loLMain1 = $this->validateInput($_POST["main1"]  ?? "");
             $this->setLoLMain1($loLMain1);
-            $loLMain2 = $this->validateInput($_POST["main2"]);
+            $loLMain2 = $this->validateInput($_POST["main2"]  ?? "");
             $this->setLoLMain2($loLMain2);
-            $loLMain3 = $this->validateInput($_POST["main3"]);
+            $loLMain3 = $this->validateInput($_POST["main3"]  ?? "");
             $this->setLoLMain3($loLMain3);
             $loLRank = $this->validateInput($_POST["rank_lol"]);
             $this->setLoLRank($loLRank);

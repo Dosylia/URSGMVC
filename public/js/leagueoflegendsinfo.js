@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded",function(){
                 e.target.value = 0;
                 skipSelectionCheckbox.value = 0;
                 console.log("Changing champion selection", skipSelectionCheckbox.value);
-                championSelection.style.display = 'block';
+                championSelection.style.display = 'flex';
             }
         });
 
