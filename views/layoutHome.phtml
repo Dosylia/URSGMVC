@@ -117,7 +117,9 @@
                     };
             </script>
 
-            <div id="g_id_one_tap" style="display:none;"></div> <!-- Placeholder for One Tap -->
+            <?php if ($this->isConnectGoogle()) : ?>
+                <div id="g_id_one_tap" style="display:none;"></div>
+            <?php endif; ?>
             
             <script src="https://accounts.google.com/gsi/client" defer async></script>
         </div><br>
@@ -127,13 +129,12 @@
         </section>
 
         <!-- Display of buttons to download app on App store/Google Store -->
-        <!-- <section class="download_app_dialog">  
+        <section class="download_app_dialog">  
             <p>Download the app</p>
             <div class="download_app_dialog_logos">
-                <a href=""><img id="apple_logo" src="public/images/appstore.png" alt="appstore"></a>
-                <a href=""><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+                <a target="_blank" href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
             </div>  
-        </section> -->
+        </section>
     </dialog>
 </header>
 

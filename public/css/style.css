@@ -1080,7 +1080,7 @@ section.siteMap tr:nth-child(even) {
       color: #504e4e;
     }
   
-    .chat_box .title_generalbox,  .user_box .title_generalbox, dialog .title_generalbox{
+    .chat_box .title_generalbox,  .user_box .title_generalbox, dialog .title_generalbox, .friendrequest_box .title_generalbox {
       font-size: 3vh;
       font-family: 'Geologica', sans-serif;
       color: #cb5242;
@@ -1099,11 +1099,12 @@ section.siteMap tr:nth-child(even) {
   
     .friend_request_ctn {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
     }
+
 
     .friend_request_ctn p {
       display: flex;
@@ -1275,7 +1276,7 @@ section.siteMap tr:nth-child(even) {
       padding: 10px 20px;
       background: linear-gradient(135deg,  #ede9e9, white);
       margin-top: 20px;
-      width: 95%;
+      width: 85%;
       border-radius: 20px;
       box-sizing: border-box;
     }
@@ -3205,6 +3206,10 @@ justify-content: center;
     width: 60%;
   }
 
+  .friendrequest_box {
+    width: 95%;
+  }
+
   .swiping_row {
     width: 80%;
   }
@@ -3270,6 +3275,10 @@ justify-content: center;
   .chat_box {
     width: 80%;
 
+  }
+
+  .friendrequest_box {
+    width: 80%;
   }
 
   .chat_page {
