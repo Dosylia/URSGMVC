@@ -75,4 +75,21 @@
         </a>
     </section>
 
+    <?php if ($user['user_arcane'] === NULL && $user['user_game'] === 'League of Legends' &&  $user['user_ignore'] === 0): ?>
+        <section id="arcane_picker">
+            <h2>Pick a side now!</h2>
+            <p>Team winning will get an extra reward!</p>
+            <div class="side_ctn">
+                <div class="side_piltover">
+                    <button id="join_piltover" class="button_arcane" name="join_piltover">Join Piltover</button>
+                </div>
+                <div class="side_zaun">
+                    <button id="join_zaun" class="button_arcane" name="join_zaun">Join Zaun</button>
+                </div>
+            </div>
+            <button id="ignore_arcane" class="button_arcanes" name="ignore_arcane">Ignore</button>
+        </section>
+    <?php endif; ?>
+
+
 <?php endif; ?>

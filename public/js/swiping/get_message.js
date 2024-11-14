@@ -143,10 +143,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
                             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
-                            <a class="username_chat_friend" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                            <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${formattedTime}</span>
                         </p>
-                        <p class="last-message" style="text-align: ${messagePosition};">
+                        <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
                             <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                         </p>
@@ -157,10 +157,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 messageContent = `
                     <p id="username_message" style="text-align: ${userPosition};">
                         <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
-                        <a class="username_chat_friend" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                        <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${formattedTime}</span>
                     </p>
-                    <p class="last-message" style="text-align: ${messagePosition};">
+                    <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                         <span class="timestamp-hover">${formattedTime}</span>
                         <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                     </p>

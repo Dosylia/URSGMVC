@@ -54,16 +54,32 @@
   }
   
   .main_section {
-      background: url('../images/pc_background.webp');
-      height: 100vh;
-      background-size: 100% 100%;
-      color: white;
+    background: url('../images/ursg-background-temporary.jpg');
+    height: 100vh;
+    background-size: 100% 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .main_section_small {
-    background: url('../images/pc_backgroundSignup.webp');
+    background: url('../images/ursg-background-temporary');
     background-size: 100% 100%;
     color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .clickable {
+    padding-bottom: 2px;
+    cursor: pointer;
+    border-bottom: 2px solid var(--main--red);
+  }
+
+  .clickable:hover {
+    color: var(--main--red);
   }
 
 /* SCROLL BAR */
@@ -223,6 +239,23 @@ section.siteMap tr:nth-child(even) {
       gap: 20px;
       padding: 20px 0px;
       background-color: var(--white);
+  }
+
+  .bottom_section {
+    padding: 0 0 20px 20px;
+  }
+
+  .bottom_section_ctn {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bottom_section p {
+    font-size: 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
   }
   
   .download_app p {
@@ -1205,6 +1238,7 @@ section.siteMap tr:nth-child(even) {
     span.chat-name, span.friendlist-name a {
       text-decoration: none;
       color: black;
+      width: fit-content;
     }
 
     .chat-name {
@@ -1219,7 +1253,7 @@ section.siteMap tr:nth-child(even) {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: fit-content;
     }
   
     span.chat-name span.friendlist-name{
@@ -1616,10 +1650,6 @@ section.siteMap tr:nth-child(even) {
     .username_chat_friend {
       text-decoration: none;
       color: black;
-    }
-  
-    .username_chat_friend:hover {
-      color: red;
     }
   
     .popup-content {
@@ -2964,6 +2994,103 @@ justify-content: center;
 #placeholderMessage {
   margin-top: 10px;
   color: green; /* You can style it as needed */
+}
+
+/* ARCANE */
+#arcane_picker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: rgba(255, 255, 255);
+  border-radius: 30px;
+  padding: 20px;
+  color: black;
+}
+
+#arcane_picker h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: var(--main--red);
+}
+
+.side_ctn {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: url('../images/ursg-background-temporary.jpg') no-repeat center center;
+  background-size: 100% 100%; 
+  background-position: center; 
+  background-color: #000; 
+  border-radius: 20px;
+  margin: 20px 0;
+}
+
+.side_ctn > div {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+#join_piltover, #join_zaun {
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 30px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#join_piltover {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+#join_piltover:hover {
+  background: linear-gradient(135deg, #0056b3, #007bff);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+#join_zaun {
+  background: linear-gradient(135deg, #09f056, #13683c);
+}
+
+#join_zaun:hover {
+  background: linear-gradient(135deg, #13683c, #09f056);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+#join_piltover, #join_zaun {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#ignore_arcane {
+  margin-top: 20px;
+  background-color: var(--main--red);
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 1.1em;
+  border-radius: 50px;
+  border: 1px solid white;
+}
+
+#ignore_arcane:hover {
+  background-color: var(--ligher--grey);
 }
 
 /* DARK MODE */
