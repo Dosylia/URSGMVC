@@ -80,6 +80,46 @@ class User extends DataBase
         }
     }
 
+    public function updateSide($side, $userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_arcane` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $pickSideTest = $query -> execute([$side, $userId]);
+
+        if ($pickSideTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function ignoreSide($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_ignore` = 1
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $ignoreSideTest = $query -> execute([$userId]);
+
+        if ($ignoreSideTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function UpdateCurrency($userId, $currency)
     {
         $query = $this -> bdd -> prepare("

@@ -120,6 +120,23 @@ class UserController
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
+
+            // ARCANE EVENT
+            $totalPiltoverCurrency = 0;
+            $totalZaunCurrency = 0;
+
+            foreach ($allUsers as $userArcane) {
+                if ($userArcane['user_arcane'] === 'Piltover') {
+                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                } elseif ($userArcane['user_arcane'] === 'Zaun') {
+                    $totalZaunCurrency += $userArcane['user_currency'];
+                }
+            }
+
+            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
+            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
+            $zaunPercentage = 100 - $piltoverPercentage; 
+
             $usersPerPage = 50;
             $totalUsers = count($allUsers);
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -943,10 +960,29 @@ class UserController
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
+            $allUsersArcane = $this-> user -> getAllUsers();
             if ($user && $usersAll) {
                 $userData = json_encode($user);
                 $usersAllData = json_encode($usersAll);
             }
+
+            // ARCANE EVENT
+            $totalPiltoverCurrency = 0;
+            $totalZaunCurrency = 0;
+
+            foreach ($allUsersArcane as $userArcane) {
+                if ($userArcane['user_arcane'] === 'Piltover') {
+                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                } elseif ($userArcane['user_arcane'] === 'Zaun') {
+                    $totalZaunCurrency += $userArcane['user_currency'];
+                }
+            }
+
+            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
+            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
+            $zaunPercentage = 100 - $piltoverPercentage; 
+
+
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $current_url = "https://ur-sg.com/swiping";
@@ -1070,6 +1106,22 @@ class UserController
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+
+            // ARCANE EVENT
+            $totalPiltoverCurrency = 0;
+            $totalZaunCurrency = 0;
+
+            foreach ($usersAll as $userArcane) {
+                if ($userArcane['user_arcane'] === 'Piltover') {
+                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                } elseif ($userArcane['user_arcane'] === 'Zaun') {
+                    $totalZaunCurrency += $userArcane['user_currency'];
+                }
+            }
+
+            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
+            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
+            $zaunPercentage = 100 - $piltoverPercentage; 
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
@@ -1123,6 +1175,23 @@ class UserController
                 $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
             }
             $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+            
+            // ARCANE EVENT
+            $totalPiltoverCurrency = 0;
+            $totalZaunCurrency = 0;
+
+            foreach ($usersAll as $userArcane) {
+                if ($userArcane['user_arcane'] === 'Piltover') {
+                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                } elseif ($userArcane['user_arcane'] === 'Zaun') {
+                    $totalZaunCurrency += $userArcane['user_currency'];
+                }
+            }
+
+            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
+            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
+            $zaunPercentage = 100 - $piltoverPercentage; 
+
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
@@ -1192,7 +1261,6 @@ class UserController
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
-
             $current_url = "https://ur-sg.com/settings";
             $template = "views/swiping/settings";
             $page_title = "URSG - Settings";
@@ -1225,6 +1293,55 @@ class UserController
                     echo json_encode($response);
                     exit;
                 }
+        }
+    }
+
+    public function arcaneSide()
+    {
+        if (isset($_POST['pick'])) {
+            $side = $_POST['side'];
+            $userId = $_POST['userId'];
+            if (in_array($side, ["Piltover", "Zaun", "none"])) 
+            {
+                // if they pick Piltover
+                if ($side === "Piltover") {
+                    $updateSide = $this->user->updateSide($side, $userId);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Piltover');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+
+                // if they pick Zaun
+                if ($side === "Zaun") {
+                    $updateSide = $this->user->updateSide($side, $userId);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Zaun');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+
+                //if they wanna ignore
+                if ($side === "none") {
+                    $updateSide = $this->user->ignoreSide($userId);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Ignored');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+            }
         }
     }
 

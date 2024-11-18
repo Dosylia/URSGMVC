@@ -1,4 +1,40 @@
 <section class="user_page">
+    <?php if ($user['user_ignore'] === 0): ?>
+        <div id="progress-bar-container">
+            <h2>Arcane Event</h2>
+            <div id="progress-bar">
+                <div id="piltover-bar"></div>
+                <div id="zaun-bar"></div>
+            </div>
+            <div class="arcane-ign-comment">
+                <p id="progressbar-comment"><?= $user['user_arcane'] ?></p>
+                <button id="ignore_arcane" class="button_arcanes" name="ignore_arcane">Ignore</button>
+            </div>
+        </div>
+
+        <script>
+            const piltoverPercentage = <?php echo json_encode($piltoverPercentage); ?>;
+            const zaunPercentage = <?php echo json_encode($zaunPercentage); ?>;
+            const leadingSide = <?php echo json_encode($totalPiltoverCurrency > $totalZaunCurrency ? 'Piltover' : 'Zaun'); ?>;
+            const comment = document.getElementById('progressbar-comment');
+
+            if (leadingSide === 'Piltover') {
+                comment.innerHTML = "Piltover is winning! Keep going.";
+                comment.style.color = "#007bff";
+            } else {
+                comment.innerHTML = "Zaun is winning! Keep going.";
+                comment.style.color = "#13683c";
+            }
+
+            const piltoverBar = document.getElementById('piltover-bar');
+            const zaunBar = document.getElementById('zaun-bar');
+
+            piltoverBar.style.width = piltoverPercentage + "%";
+
+            zaunBar.style.width = zaunPercentage + "%";
+        </script>
+
+    <?php endif; ?>
     <div class="user_page_update">
         <div class="user_page_main_content_row">
             <div class="main_box">
@@ -261,3 +297,4 @@
 </section>
 
 <script src="public/js/swiping/dialog_picture_social.js"></script>
+<script type="module" src="public/js/swiping/arcane_pick.js"></script>

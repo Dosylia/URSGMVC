@@ -103,6 +103,7 @@ class ValorantController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
             $valorant_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
+
             $current_url = "https://ur-sg.com/updateValorantAccount";
             $template = "views/swiping/update_valorantAccount";
             $page_title = "URSG - Bind league account";

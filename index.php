@@ -120,6 +120,7 @@ $actionMap = [
     'getUnreadMessage' => [ChatMessageController::class, 'getUnreadMessage'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
     'registerToken' => [UserController::class, 'registerToken'],
+    'arcaneSide' => [UserController::class, 'arcaneSide'],
     'chatFilterSwitch' => [UserController::class, 'chatFilterSwitch'],
     'deleteAccount' => [GoogleUserController::class, 'deleteAccountPage'],
     'deleteAccountRequest' => [GoogleUserController::class, 'deleteAccountRequest'],

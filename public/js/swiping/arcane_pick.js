@@ -3,6 +3,7 @@ let joinZaun = document.getElementById('join_zaun');
 let joinPiltover = document.getElementById('join_piltover');
 let ignoreArcane = document.getElementById('ignore_arcane');
 let arcanePicker = document.getElementById('arcane_picker');
+let arcaneBar = document.getElementById('progress-bar-container');
 
 function joinSide(userId, side) {
     fetch('index.php?action=arcaneSide', {
@@ -32,19 +33,42 @@ function joinSide(userId, side) {
     });
 }
 
+function showModal() {
+    arcanePicker.style.display = 'flex';
+    overlay.style.display = 'block'; 
+}
+
+function hideModal() {
+    arcanePicker.style.display = 'none'; 
+    overlay.style.display = 'none'; 
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
-ignoreArcane.addEventListener('click', function() {
-    joinSide(userId, 'none');
-});
+if (arcanePicker) {
 
-joinPiltover.addEventListener('click', function() {
-    joinSide(userId, 'Piltover');
-});
+    showModal();
+    ignoreArcane.addEventListener('click', function() {
+        joinSide(userId, 'none');
+        hideModal();
+    });
+    
+    joinPiltover.addEventListener('click', function() {
+        joinSide(userId, 'Piltover');
+        hideModal();
+    });
+    
+    joinZaun.addEventListener('click', function() {
+        joinSide(userId, 'Zaun');
+        hideModal();
+    });
+}
 
-joinZaun.addEventListener('click', function() {
-    joinSide(userId, 'Zaun');
-    arcanePicker.style.display = 'none';
-});
+if (arcaneBar) {
+    ignoreArcane.addEventListener('click', function() {
+        joinSide(userId, 'none');
+        arcaneBar.style.display = 'none';
+    });
+}
 
 });

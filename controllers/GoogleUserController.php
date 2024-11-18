@@ -185,10 +185,29 @@ class GoogleUserController
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
+            $allUsersArcane = $this-> user -> getAllUsers();
             if ($user && $usersAll) {
                 $userData = json_encode($user);
                 $usersAllData = json_encode($usersAll);
             }
+
+            
+            // ARCANE EVENT
+            $totalPiltoverCurrency = 0;
+            $totalZaunCurrency = 0;
+
+            foreach ($allUsersArcane as $userArcane) {
+                if ($userArcane['user_arcane'] === 'Piltover') {
+                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                } elseif ($userArcane['user_arcane'] === 'Zaun') {
+                    $totalZaunCurrency += $userArcane['user_currency'];
+                }
+            }
+
+            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
+            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
+            $zaunPercentage = 100 - $piltoverPercentage; 
+
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";

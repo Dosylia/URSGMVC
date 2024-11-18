@@ -103,6 +103,7 @@ class LeagueOfLegendsController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
+
             $current_url = "https://ur-sg.com/updateLeagueAccount";
             $template = "views/swiping/update_leagueAccount";
             $page_title = "URSG - Bind league account";
