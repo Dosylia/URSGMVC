@@ -73,23 +73,6 @@ class ChatMessageController
                     }
                 }
             }
-            
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($usersAll as $user) {
-                if ($user['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $user['user_currency'];
-                } elseif ($user['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $user['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
-
 
             $current_url = "https://ur-sg.com/persoChat";
             $template = "views/swiping/swiping_persomessage";

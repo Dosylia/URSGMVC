@@ -734,7 +734,9 @@ class GoogleUserController
                             'twitter' => $user['user_twitter'] ?? null,
                             'currency' => $user['user_currency'] ?? null,
                             'isVip' => $user['user_isVip'] ?? null,
-                            'hasChatFilter' => ['user_hasChatFilter'] ?? null
+                            'hasChatFilter' => ['user_hasChatFilter'] ?? null,
+                            'arcane' => $user['user_arcane'] ?? null,
+                            'arcaneIgnore' => $user['user_ignore'] ?? null
                         );
 
                         if ($user['user_game'] == 'League of Legends') {

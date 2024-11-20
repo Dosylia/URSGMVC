@@ -3028,6 +3028,11 @@ justify-content: center;
   z-index: 1000;
 }
 
+.dark-mode #arcane_picker {
+  background-color: var(--dark-grey);
+  color: white;
+}
+
 #arcane_picker h2 {
   font-size: 2.5em;
   margin-bottom: 20px;
@@ -3171,7 +3176,6 @@ justify-content: center;
   background: linear-gradient(135deg, #007bff, #158eaa); 
   transition: width 0.5s ease-in-out;
   box-shadow: inset 0 0 15px rgba(0, 123, 255, 0.8), 0 0 20px rgba(0, 123, 255, 0.6); 
-  border-radius: 25px 0 0 25px; 
 }
 
 /* Zaun Bar (Green) */
@@ -3180,8 +3184,24 @@ justify-content: center;
   background: linear-gradient(135deg, #13683c, #0cf16b); 
   transition: width 0.5s ease-in-out;
   box-shadow: inset 0 0 15px rgba(39, 174, 96, 0.8), 0 0 20px rgba(39, 174, 96, 0.6); 
-  border-radius: 0 25px 25px 0; 
 }
+
+#piltover-currency {
+  color: #007bff;
+}
+
+#zaun-currency {
+  color: #09f056;
+}
+
+.currency-sumup {
+  padding-top: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
 
 #progress-bar {
@@ -3196,10 +3216,16 @@ justify-content: center;
 .arcane-ign-comment {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px;
   width: 100%;
+  font-size: 1.3em;
+  color: black;
+}
+
+.dark-mode .arcane-ign-comment {
+  color: white;
 }
 
 /* DARK MODE */
@@ -4156,6 +4182,14 @@ justify-content: center;
     width: 310px; 
     height: 220px;
   }
+
+  #join_piltover, #join_zaun {
+    padding: 4px 8px;
+    margin: 10px;
+    font-size: 0.7em;
+    font-weight: bold;
+    border-radius: 30px;
+  }
     
 }
 
@@ -4189,6 +4223,9 @@ justify-content: center;
         padding-left: 5px;
       }
     
+      #arcane_picker {
+        padding: 10px;
+      }
 
 }
 

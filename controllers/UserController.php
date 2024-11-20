@@ -1113,9 +1113,9 @@ class UserController
 
             foreach ($usersAll as $userArcane) {
                 if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
+                    $totalPiltoverCurrency += $userArcane['arcane_snapshot'];
                 } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
+                    $totalZaunCurrency += $userArcane['arcane_snapshot'];
                 }
             }
 
@@ -1301,11 +1301,12 @@ class UserController
         if (isset($_POST['pick'])) {
             $side = $_POST['side'];
             $userId = $_POST['userId'];
+            $user = $this->user->getUserById($userId);
             if (in_array($side, ["Piltover", "Zaun", "none"])) 
             {
                 // if they pick Piltover
                 if ($side === "Piltover") {
-                    $updateSide = $this->user->updateSide($side, $userId);
+                    $updateSide = $this->user->updateSide($side, $userId, $user['user_currency']);
 
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Piltover');
@@ -1318,7 +1319,7 @@ class UserController
 
                 // if they pick Zaun
                 if ($side === "Zaun") {
-                    $updateSide = $this->user->updateSide($side, $userId);
+                    $updateSide = $this->user->updateSide($side, $userId, $user['user_currency']);
 
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Zaun');

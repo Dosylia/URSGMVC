@@ -80,18 +80,19 @@ class User extends DataBase
         }
     }
 
-    public function updateSide($side, $userId)
+    public function updateSide($side, $userId, $currency)
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE
                                                 `user`
                                             SET
-                                                `user_arcane` = ?
+                                                `user_arcane` = ?,
+                                                `arcane_snapshot` = ?
                                             WHERE
                                                 `user_id` = ?
         ");
 
-        $pickSideTest = $query -> execute([$side, $userId]);
+        $pickSideTest = $query -> execute([$side, $currency, $userId]);
 
         if ($pickSideTest) {
             return true;

@@ -115,19 +115,21 @@
             </div>
 
             <script>
-                   window.onload = function() {
-                        window.google.accounts.id.initialize({
-                            client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
-                            callback: handleCredentialResponse
-                        });
+                window.onload = function() {
+                    window.google.accounts.id.initialize({
+                        client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+                        callback: handleCredentialResponse,
+                    });
 
+                    <?php if (!$this->isConnectGoogle()): ?>
                         window.google.accounts.id.prompt();
-                    };
+                    <?php endif; ?>
+                };
             </script>
 
-            <?php if ($this->isConnectGoogle()) : ?>
-                <div id="g_id_one_tap" style="display:none;"></div>
-            <?php endif; ?>
+        <?php if ($this->isConnectGoogle()): ?>
+            <div id="g_id_one_tap" style="display:none;"></div>
+        <?php endif; ?>
             
             <script src="https://accounts.google.com/gsi/client" defer async></script>
         </div><br>

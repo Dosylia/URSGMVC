@@ -64,11 +64,4 @@ if (arcanePicker) {
     });
 }
 
-if (arcaneBar) {
-    ignoreArcane.addEventListener('click', function() {
-        joinSide(userId, 'none');
-        arcaneBar.style.display = 'none';
-    });
-}
-
 });
