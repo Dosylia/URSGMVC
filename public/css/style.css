@@ -3228,6 +3228,159 @@ justify-content: center;
   color: white;
 }
 
+/* PARTNER SECTION */
+#partners {
+  padding: 40px 20px;
+  background: linear-gradient(135deg, var(--main--red), #bd3d48); 
+  text-align: center;
+}
+
+#partners h2 {
+  text-align: center;
+  font-size: 5vh;
+  margin-bottom: 30px;
+  color: var(--main--red);
+  font-weight: bold;
+  background-color: white; 
+  padding: 10px 20px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode #partners h2 {
+  background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+  color: white;
+}
+
+/* Main container for the partners */
+.partners-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Partner card styles */
+.partner {
+  flex: 1 1 calc(33.333% - 20px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  padding: 20px;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 8px; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partner:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.partner img.partner-img {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.partner h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.social-links {
+  margin-top: 10px;
+}
+
+.social-links a.social-link {
+  margin: 0 10px;
+  transition: transform 0.2s ease;
+}
+
+.social-links a.social-link:hover {
+  transform: scale(1.1);
+}
+
+.social-logo {
+  width: 30px;
+  height: 30px;
+  transition: filter 0.2s ease;
+}
+
+.social-logo:hover {
+  filter: brightness(0.7);
+}
+
+.call-to-action {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.call-to-action p {
+  color: white;
+}
+
+.call-to-action a {
+  color: var(--main--red);
+  font-weight: bold;
+  background-color: white; 
+  padding: 2px 10px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  margin: 0 5px;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark-mode .call-to-action a {
+  color: white;
+  background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease; 
+}
+
+.call-to-action a:hover {
+  transform: scale(1.2);
+  background: linear-gradient(135deg, var(--main--red), #e85d69); 
+  color: white; 
+}
+
+.dark-mode .call-to-action a:hover {
+  transform: scale(1.2);
+  background: linear-gradient(135deg, var(--dark-ligher-grey), #5e5c5c);
+  color: white; 
+}
+
+
+/* DARK MODE */
+
+.dark-mode .partner {
+  background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1); 
+}
+
+.dark-mode .partner h3 {
+  color: white;
+}
+
+.dark-mode .social-logo {
+  filter: brightness(0.8); 
+}
+
+.dark-mode .call-to-action {
+  color: white; 
+}
+
+.dark-mode .social-logo:hover {
+  filter: brightness(0.6); 
+}
+
 /* DARK MODE */
 
 .dark-mode .setting-option i, .dark-mode .setting-option span {
@@ -3593,6 +3746,11 @@ justify-content: center;
   #league_champions_user, .league_champions_user
   {
     width: 4vh;
+  }
+
+  #partners h2 {
+    margin-bottom: 50px; 
+    padding: 15px 30px; 
   }
 
   .vip-badge, .regular-badge {
@@ -3966,6 +4124,16 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+  .partner {
+    flex: 1 1 100%;
+  }
+
+  #partners h2 {
+    font-size: 4vh;
+    margin-bottom: 40px;
+  }
+
   .signup_button, #signup_button {
     padding: 5px 5px;  
     font-size: 10px !important;

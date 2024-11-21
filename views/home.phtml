@@ -8,12 +8,32 @@
     </section>
 </a>
 
-<section class="download_app">
-    <p>Download the app</p>
-    <a target="_blank" href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
-</section>
-
 <!-- <div class="separator"></div><br> -->
+<section id="partners">
+    <h2>Our Partners</h2>
+    <div class="partners-container">
+        <?php foreach ($partners as $partner): ?>
+            <div class="partner">
+                <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
+                <h3><?= htmlspecialchars($partner['username']) ?></h3>
+                <div class="social-links">
+                    <?php 
+                    $socialLinks = json_decode($partner['social_links'], true);
+                    foreach ($socialLinks as $social => $link): 
+                        $logoPath = $this->getSocialNetworkLogo($social);
+                    ?>
+                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link">
+                            <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="call-to-action">
+        <p>Interested in becoming a partner? <a target="_blank" href="https://twitter.com/Dosylia">Contact us</a> for more information.</p>
+    </div>
+</section>
 
 <section class="frequently_asked_question">
     <h2>Frequently Asked questions</h2>

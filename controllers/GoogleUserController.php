@@ -8,6 +8,7 @@ use models\LeagueOfLegends;
 use models\Valorant;
 use models\UserLookingFor;
 use models\MatchingScore;
+use models\Partners;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -24,6 +25,7 @@ class GoogleUserController
     private Valorant $valorant;
     private UserLookingFor $userlookingfor;
     private MatchingScore $matchingscore;
+    private Partners $partners;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -41,6 +43,7 @@ class GoogleUserController
         $this -> valorant = new Valorant();
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
+        $this -> partners = new Partners();
     }
 
     public function signUpBypass() {
@@ -73,11 +76,25 @@ class GoogleUserController
         {
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
         }
+        $partners = $this -> partners -> getPartners();
         $current_url = "https://ur-sg.com/";
         $template = "views/home";
         $title = "JOIN NOW";
         $page_title = "URSG - Home";
         require "views/layoutHome.phtml";
+    }
+
+    private function getSocialNetworkLogo($social)
+    {
+        $logos = [
+            'facebook' => 'path/to/facebook-logo.png',
+            'x' => 'public/images/twitter_user.png',
+            'instagram' => 'path/to/instagram-logo.png',
+            'twitch' => 'public/images/twitch_user.png',
+            'youtube' => 'path/to/youtube-logo.png',
+        ];
+
+        return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
     }
 
     public function confirmMailPage() 
