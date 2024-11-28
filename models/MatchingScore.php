@@ -92,37 +92,51 @@ class MatchingScore extends DataBase
 
     }
 
+    public function upsertMatching($userMatching, $userMatched, $score) 
+    {
+        $query = $this->bdd->prepare("
+            INSERT INTO `matchingscore` (
+                `match_userMatching`, 
+                `match_userMatched`, 
+                `match_score`
+            )
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+                `match_score` = VALUES(`match_score`)
+        ");
+
+        return $query->execute([$userMatching, $userMatched, $score]);
+    }
+
     public function getMatchingScore($userId) 
     {
         $query = $this->bdd->prepare("
-                                        SELECT
-                                            m.*
-                                        FROM
-                                            `matchingscore` AS m
-                                        LEFT JOIN
-                                            `friendrequest` AS fr
-                                        ON
-                                            (fr.fr_senderId = m.match_userMatching AND fr.fr_receiverId = m.match_userMatched)
-                                            OR
-                                            (fr.fr_receiverId = m.match_userMatching AND fr.fr_senderId = m.match_userMatched)
-                                        WHERE
-                                            m.match_userMatching = ?
-                                            AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
-                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = m.match_userMatching)
-                                            AND EXISTS (SELECT 1 FROM `user` WHERE `user_id` = m.match_userMatched)
-                                        ORDER BY
-                                            m.match_score DESC
-                                        LIMIT
-                                            5
+                                            SELECT
+                                                m.*
+                                            FROM
+                                                `matchingscore` AS m
+                                            LEFT JOIN
+                                                `friendrequest` AS fr
+                                            ON
+                                                (fr.fr_senderId = m.match_userMatching AND fr.fr_receiverId = m.match_userMatched)
+                                                OR
+                                                (fr.fr_receiverId = m.match_userMatching AND fr.fr_senderId = m.match_userMatched)
+                                            WHERE
+                                                m.match_userMatching = ?
+                                                AND (fr.fr_status IS NULL OR fr.fr_status NOT IN ('pending', 'rejected', 'accepted'))
+                                                AND EXISTS (
+                                                    SELECT 1
+                                                    FROM `user`
+                                                    WHERE `user_id` = m.match_userMatched
+                                                )
+                                            ORDER BY
+                                                m.match_score DESC
+                                            LIMIT 5;
         ");
     
         $query->execute([$userId]);
         $getMatchingTest = $query->fetchAll();
-    
-        if ($getMatchingTest) {
-            return $getMatchingTest;
-        } else {
-            return false;
-        }
+        
+        return $getMatchingTest ?: false;
     }
 }

@@ -5,7 +5,7 @@ let originalTitle = document.title;
 
 // Fonction pour récupérer les demandes d'ami en attente
 function fetchFriendRequest(userId) {
-    fetch('index.php?action=getFriendRequest', {
+    fetch('index.php?action=getFriendRequestWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -29,7 +29,7 @@ function fetchFriendRequest(userId) {
 // Fonction pour récupérer les messages non lus pour l'utilisateur principal
 function fetchUnreadMessage(userId) {
     
-    fetch('index.php?action=getUnreadMessage', {
+    fetch('index.php?action=getUnreadMessageWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

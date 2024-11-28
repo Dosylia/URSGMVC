@@ -133,6 +133,7 @@ class FriendRequest extends DataBase
                                             fr.fr_receiverId,
                                             fr.fr_date,
                                             fr.fr_status,
+                                            fr.fr_acceptedAt,
                                             us.user_id AS sender_id,
                                             us.user_username AS sender_username,
                                             us.user_picture AS sender_picture,
@@ -171,7 +172,7 @@ class FriendRequest extends DataBase
                                         AND
                                             fr.fr_status = 'accepted'
                                         ORDER BY
-                                            COALESCE(c.latest_message_date, fr.fr_date) DESC
+                                            COALESCE(c.latest_message_date, fr.fr_acceptedAt) DESC
     ");
     
     $query->execute([

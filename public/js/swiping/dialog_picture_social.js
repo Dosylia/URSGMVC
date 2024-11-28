@@ -68,7 +68,7 @@ fileInput.addEventListener('change', (event) => {
   }
 });
 
-function usePictureFrame(itemId, userId) {
+function usePictureFrameWebsite(itemId, userId) {
   console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {
@@ -105,7 +105,7 @@ function usePictureFrame(itemId, userId) {
   });
 }
 
-function RemovePictureFrame(itemId, userId) {
+function RemovePictureFrameWebsite(itemId, userId) {
   console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {

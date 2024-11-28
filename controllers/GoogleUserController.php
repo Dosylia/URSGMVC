@@ -91,7 +91,7 @@ class GoogleUserController
             'x' => 'public/images/twitter_user.png',
             'instagram' => 'path/to/instagram-logo.png',
             'twitch' => 'public/images/twitch_user.png',
-            'youtube' => 'path/to/youtube-logo.png',
+            'youtube' => 'public/images/youtube_user.png',
         ];
 
         return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
@@ -425,6 +425,14 @@ class GoogleUserController
                     
                     if (!isset($_SESSION['googleId'])) 
                     {
+                        // MASTER TOKEN SYSTEM
+                        // $token = bin2hex(random_bytes(32));
+                        // $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+
+                        // if ($createToken) {
+                        //     $_SESSION['masterToken'] = $token;
+                        // }
+
                         $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                         $_SESSION['full_name'] = $this->getGoogleFullName();
                         $_SESSION['google_id'] = $this->getGoogleId();
@@ -584,6 +592,14 @@ class GoogleUserController
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
                     }
+
+                    // MASTER TOKEN SYSTEM
+                    // $token = bin2hex(random_bytes(32));
+                    // $createToken = $this->googleUser->storeMasterToken($this->getGoogleUserId(), $token);
+
+                    // if ($createToken) {
+                    //     $_SESSION['masterToken'] = $token;
+                    // }
                     
                     if (!isset($_SESSION['googleId'])) {
                         $_SESSION['google_userId'] = $this->getGoogleUserId();
@@ -720,6 +736,11 @@ class GoogleUserController
 
             if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
             {
+
+     
+                $token = bin2hex(random_bytes(32));
+                $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+
             
                 $googleUserData = array(
                     'googleId' => $testGoogleUser['google_id'],
@@ -727,7 +748,8 @@ class GoogleUserController
                     'firstName' => $testGoogleUser['google_firstName'],
                     'lastName' => $testGoogleUser['google_lastName'],
                     'email' => $testGoogleUser['google_email'],
-                    'googleUserId' => $testGoogleUser['google_userId']
+                    'googleUserId' => $testGoogleUser['google_userId'],
+                    'token' => $token
                 );
 
                 $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
@@ -929,13 +951,17 @@ class GoogleUserController
     
                 if($createGoogleUser) 
                 {
+                    $token = bin2hex(random_bytes(32));
+                    $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+
                     $googleData = array(
                         'googleId' => $this->getGoogleId(),
                         'fullName' => $this->getGoogleFullName(),
                         'firstName' => $this->getGoogleFirstName(),
                         'lastName' => $this->getGoogleFamilyName(),
                         'email' => $this->getGoogleEmail(),
-                        'googleUserId' => $createGoogleUser
+                        'googleUserId' => $createGoogleUser,
+                        'token' => $token
                     );
     
                     $response = array(
@@ -1200,7 +1226,22 @@ class GoogleUserController
         if (isset($_POST['submit']))
         {
             $email = $this->validateInput($_POST["email"]);
+            $user = $this->googleUser->getUserByEmail($email);
     
+            if (!$user) {
+                header("location:/?message=Invalid email address");
+                exit();
+            }
+    
+            // Generate a secure random token
+            $token = bin2hex(random_bytes(32));
+            $expiryDate = date('Y-m-d H:i:s', time() + 1800); 
+            $currentDate = date('Y-m-d H:i:s');
+    
+            // Save the token and expiry in the database
+            $this->user->storeDeletionToken($user['user_id'], $token, $expiry, $currentDate);
+    
+            // Send the email
             require 'keys.php';
     
             $mail = new PHPMailer;
@@ -1211,105 +1252,73 @@ class GoogleUserController
             $mail->Password = $password_gmail;
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
-        
+    
             $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
             $mail->addAddress($email);
-            $mail->Subject = 'Confirm deleting your URSG account';
+            $mail->Subject = 'Confirm Deleting Your URSG Account';
             $mail->isHTML(true);
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->Encoding = 'quoted-printable';
-        
-            // Set up the HTML content
+    
+            $confirmationUrl = "https://ur-sg.com/deleteAccountConfirm?token={$token}";
             $mail->Body = "
             <html>
-            <head>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f4f4f4;
-                        padding: 20px;
-                    }
-                    .container {
-                        background-color: #ffffff;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                    }
-                    .header {
-                        color: #333;
-                        font-size: 24px;
-                        margin-bottom: 20px;
-                    }
-                    .button {
-                        display: inline-block;
-                        padding: 10px 20px;
-                        color: #fff !important;
-                        background-color: #e74057;
-                        text-decoration: none;
-                        border-radius: 5px;
-                    }
-                    .footer {
-                        margin-top: 20px;
-                        font-size: 12px;
-                        color: #999;
-                    }
-                </style>
-            </head>
+            <head>...</head>
             <body>
-                <div class='container'>
-                    <div class='header'>Confirm Deleting Your URSG Account</div>
-                    <p>We are sad to lose you!</p>
-                    <p>Your email: {$email}</p>
-                    <p>Confirm deleting your account by clicking the link below:</p>
-                    <a href='https://ur-sg.com/deleteAccountConfirm?mail={$email}' class='button'>Confirm Deletion</a>
-                </div>
-                <div class='footer'>If you didn't request this, please ignore this email.</div>
+                <p>We are sad to lose you!</p>
+                <p>Confirm deleting your account by clicking the link below:</p>
+                <a href='{$confirmationUrl}' class='button'>Confirm Deletion</a>
             </body>
             </html>";
-        
+    
             if (!$mail->send()) {
                 header("location:/?message=Could not send mail");
-            } else {
-                header("location:/?message=You received a mail to confirm your choice");
+                exit();
             }
+    
+            header("location:/?message=You received a mail to confirm your choice");
+            exit();
         }
     }
-    
+
 
     public function deleteAccountConfirm()
     {
-        if (isset($_GET['mail']))
-        {
-            $email = $_GET['mail'];
-            $deleteAccount = $this-> googleUser -> deleteAccount($email);
-            if ($deleteAccount)
-            {
-                if($this->isConnectGoogle() || $this->isConnectWebsite()) {
-                    if (isset($_COOKIE['googleId'])) {
-                        setcookie('googleId', "", time() - 42000, COOKIEPATH);
-                    }
-                    unset($_COOKIE['googleId']);
-                    session_unset();
-                    session_destroy();
-                    header("location:/?message=Account deleted");
-                    exit();
-                }
-                header("location:/?message=Account deleted");
+        if (isset($_GET['token'])) {
+            $token = $_GET['token'];
+    
+            // Validate the token
+            $deletionData = $this->user->getDeletionToken($token);
+
+            if (!$deletionData || strtotime($deletionData['user_deletionTokenExpiry']) > strtotime('+30 minutes')) {
+                header("location:/?message=Invalid or expired token");
                 exit();
             }
-            else
-            {
+    
+            $email = $deletionData['google_email'];
+    
+            // Delete the user's account
+            $deleteAccount = $this->googleUser->deleteAccount($deletionData['google_email']);
+            if ($deleteAccount) {
+                // Invalidate the token after successful deletion
+                $this->user->invalidateDeletionToken($token);
+    
+                // Log out and clear cookies
+                session_unset();
+                session_destroy();
+                if (isset($_COOKIE['googleId'])) {
+                    setcookie('googleId', "", time() - 42000, COOKIEPATH);
+                    unset($_COOKIE['googleId']);
+                }
+    
+                header("location:/?message=Account deleted, Email: ".$deletionData['google_email']);
+                exit();
+            } else {
                 header("location:/?message=Account not found");
                 exit();
             }
-        }
-        else
-        {
+        } else {
             header("location:/?message=Invalid request");
             exit();
         }
-
     }
 
     public function validateInput($input) 

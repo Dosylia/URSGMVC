@@ -1,10 +1,10 @@
 <?php if ($user): ?>
-        <script>
-            window.user = <?= $userData ?>;
-            window.usersAll = <?= $usersAllData ?>;
+        <!-- <script>
+            window.user = ; // $userData -> Add that back as Php variable
+            window.usersAll = ; // $usersAllData -> Add that back as Php variable
         </script>
 
-    <script type="module" src="public/js/algo.js"></script>
+    <script type="module" src="public/js/algo.js"></script> -->
 
         <script type="module" src="public/js/swiping/get_userMatching.js"></script>
 
@@ -28,7 +28,7 @@
 
         <div class="user_page_main_content">
             <div class="user_box">
-                <br><h2 id="title_generalbox">About them</h2><br>
+                <br><h2 class="title_generalbox">About them</h2><br>
                 <div class="box_league_account" style="display: none;">
                     <div class="box_league_account_main_row">
                         <img id="profilepicture_lol" alt="icon_league">
@@ -40,10 +40,11 @@
                         </div>
                     </div>
                 </div><br>
-                <div class="box_league_account" style="display: none;">
-                    <div class="box_league_account_main_row">
+                <div class="box_league_account_main_row">
                         <p id="lolAccount"></p>
-                    </div>
+                        <p id="lolServer"><span class="font-weight-600">Server</span>: </p>
+                </div>
+                <div class="box_league_account" style="display: none;">
                 </div>
                 <?php if ($user['user_game'] === 'League of Legends'): ?>
                     <?php include 'views/swiping/lol_all_champions.phtml' ?><br>

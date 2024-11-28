@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         console.log('Fetching messages for userId:', userId, 'and friendId:', friendId);
 
-        fetch('index.php?action=getMessageData', {
+        fetch('index.php?action=getMessageDataWebsite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

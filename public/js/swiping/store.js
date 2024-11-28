@@ -14,7 +14,7 @@ function buyItem(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend);
     
-    fetch('index.php?action=buyItem', {
+    fetch('index.php?action=buyItemWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -52,7 +52,7 @@ function buyRole(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend);
     
-    fetch('index.php?action=buyRole', {
+    fetch('index.php?action=buyRoleWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

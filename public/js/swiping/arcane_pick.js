@@ -6,7 +6,7 @@ let arcanePicker = document.getElementById('arcane_picker');
 let arcaneBar = document.getElementById('progress-bar-container');
 
 function joinSide(userId, side) {
-    fetch('index.php?action=arcaneSide', {
+    fetch('index.php?action=arcaneSideWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

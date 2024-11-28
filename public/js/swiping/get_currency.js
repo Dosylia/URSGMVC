@@ -7,7 +7,7 @@ function getCurrency(userId) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `userId=${encodeURIComponent(userId)}`
+        body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1`
     })
     .then(response => response.json())
     .then(data => {

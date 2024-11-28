@@ -80,6 +80,26 @@ class User extends DataBase
         }
     }
 
+    public function addCurrencySnapshot($userId, $currency)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `arcane_snapshot` = `arcane_snapshot` + ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addCurrencyTest = $query -> execute([$currency, $userId]);
+
+        if ($addCurrencyTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function updateSide($side, $userId, $currency)
     {
         $query = $this -> bdd -> prepare("
@@ -204,9 +224,9 @@ class User extends DataBase
     {
         $query = $this->bdd->prepare("
                                         SELECT
-                                            u.*,
-                                            l.*,
-                                            v.*,
+                                            u.*, 
+                                            l.*, 
+                                            v.*, 
                                             lf.*
                                         FROM
                                             `user` AS u
@@ -216,22 +236,114 @@ class User extends DataBase
                                             `valorant` AS v ON u.user_id = v.user_id
                                         INNER JOIN
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
-                                        LEFT JOIN
-                                            `friendrequest` AS fr1 ON u.user_id = fr1.fr_senderId AND fr1.fr_receiverId = ?
-                                        LEFT JOIN
-                                            `friendrequest` AS fr2 ON u.user_id = fr2.fr_receiverId AND fr2.fr_senderId = ?
                                         WHERE
-                                            fr1.fr_id IS NULL AND fr2.fr_id IS NULL;
+                                            NOT EXISTS (
+                                                SELECT 1
+                                                FROM `friendrequest` AS fr1
+                                                WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id
+                                            )
+                                            AND NOT EXISTS (
+                                                SELECT 1
+                                                FROM `friendrequest` AS fr2
+                                                WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
+                                            );
         ");
         
         $query->execute([$userId, $userId]);
         $users = $query->fetchAll();
         
-        if ($users) {
-            return $users;
+        return $users ?: false;
+    }
+
+    public function getAllUsersExceptFriendsLimit($userId, $game)
+    {
+        $query = $this->bdd->prepare("
+            SELECT
+                u.*, 
+                l.*, 
+                v.*, 
+                lf.*
+            FROM
+                `user` AS u
+            LEFT JOIN
+                `leagueoflegends` AS l ON u.user_id = l.user_id
+            LEFT JOIN
+                `valorant` AS v ON u.user_id = v.user_id
+            INNER JOIN
+                `userlookingfor` AS lf ON u.user_id = lf.user_id
+            WHERE
+                u.user_game = ? 
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM `friendrequest` AS fr1
+                    WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id
+                )
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM `friendrequest` AS fr2
+                    WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
+                )
+            LIMIT 5;
+        ");
+    
+        $query->execute([$game, $userId, $userId]);
+        $users = $query->fetchAll();
+    
+        return $users ?: false;
+    }
+
+    public function storeDeletionToken($userId, $deletionToken, $expiry, $currentDate)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE `user`
+                                        SET `user_deletionToken` = ?, `user_deletionTokenExpiry` = ?
+                                        WHERE `user_id` = ?
+        ");
+    
+         $storeDeletionTokenTest = $query->execute([$deletionToken, $currentDate, $userId]);
+        
+        if ($storeDeletionTokenTest) {
+            return true;
         } else {
             return false;
         }
+    }
+
+    public function getDeletionToken($token)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            u.`user_deletionToken`,
+                                            u.`user_deletionTokenExpiry`,
+                                            g.`google_email`
+                                        FROM 
+                                            `user`AS u
+                                        INNER JOIN
+                                            `googleuser` AS g 
+                                        ON 
+                                            u.`google_userId` = g.`google_userId`
+                                        WHERE 
+                                            `user_deletionToken` = ?
+        ");
+    
+        $query->execute([$token]);
+        $deletionToken = $query->fetch();
+    
+        if ($deletionToken) {
+            return $deletionToken;
+        } else {
+            return false;
+        }
+    }
+
+    public function invalidateDeletionToken($token)
+    {
+        $query = $this->bdd->prepare("
+            UPDATE `user`
+            SET `user_deletionToken` = NULL, `user_deletionTokenExpiry` = NULL
+            WHERE `user_deletionToken` = ?
+        ");
+        return $query->execute([$token]);
     }
     
 
@@ -510,5 +622,5 @@ class User extends DataBase
         ");
         
         return $query->execute([$userId]);
-    }
+    } 
 }

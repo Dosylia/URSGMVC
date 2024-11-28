@@ -43,3 +43,6 @@ Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
 # Cache-Control
 Header set Cache-Control "public, max-age=3600"
+
+# Token
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1

@@ -33,6 +33,13 @@ class BlockController
             $this->setReceiverId((int) $receiverId);
             $date = date("Y-m-d H:i:s");
 
+            $user = $this->user->getUserById($_SESSION['userId']);
+
+            if ($user['user_id'] !== $this->getSenderId()) {
+                header("location:/userProfile?message=Unauthorized");
+                exit;
+            }
+
             $blockPerson = $this->block->blockPerson($this->getSenderId(), $this->getReceiverId(), $date);
 
             if ($blockPerson)

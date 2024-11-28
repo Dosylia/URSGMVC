@@ -1377,6 +1377,10 @@ section.siteMap tr:nth-child(even) {
       color: rgb(72, 69, 69);
     }
 
+    #lolServer {
+      padding: 0 0 10px 0;
+    }
+
     #myForm {
       display: flex;
       justify-content: center;
@@ -3233,6 +3237,10 @@ justify-content: center;
   padding: 40px 20px;
   background: linear-gradient(135deg, var(--main--red), #bd3d48); 
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #partners h2 {
@@ -3248,6 +3256,7 @@ justify-content: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 40%;
 }
 
 .dark-mode #partners h2 {
@@ -3261,6 +3270,8 @@ justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  align-items: center;
+  width: 50%;
 }
 
 /* Partner card styles */
@@ -3268,10 +3279,11 @@ justify-content: center;
   flex: 1 1 calc(33.333% - 20px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
   padding: 20px;
-  background-color: #fff;
+  background: linear-gradient(135deg, white, #e0e0e0);
   text-align: center;
   border-radius: 8px; 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 25%;
 }
 
 .partner:hover {
@@ -3282,6 +3294,7 @@ justify-content: center;
 .partner img.partner-img {
   max-width: 200px;
   width: 100%;
+  max-height: 200px;
   height: auto;
   border-radius: 8px;
   margin-bottom: 15px;

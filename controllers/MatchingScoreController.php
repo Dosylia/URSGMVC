@@ -23,44 +23,41 @@ class MatchingScoreController
     {
         if (isset($_POST['param'])) {
             $datas = json_decode($_POST['param']);
-
             $messages = [];  
-
+    
             foreach ($datas as $data) {
                 $userMatching = (int)$data->user_id;
-                $this->setUserMatching($userMatching);
                 $userMatched = (int)$data->user_matching;
-                $this->setUserMatched($userMatched);
                 $score = (int)$data->score;
-                $this->setScore($score);
-            
-                $checkMatching = $this->matchingscore->checkMatching($this->getUserMatching(), $this->getUserMatched());
-            
-                if ($checkMatching) {
-                    if ($checkMatching['match_score'] !== $this->getScore()) {
-                        $updateMatching = $this->matchingscore->updateMatching($this->getScore(), $this->getUserMatching(), $this->getUserMatched());
-                        $messages[] = ['message' => 'Success', 'Action' => 'Updated', 'score' => $this->getScore(), 'userMatching' => $this->getUserMatching(), 'userMatched' => $this->getUserMatched()];
-                    } else {
-                        $messages[] = ['message' => 'Success', 'Action' => 'No change', 'score' => $this->getScore(), 'userMatching' => $this->getUserMatching(), 'userMatched' => $this->getUserMatched()];
-                    }
+    
+                // Upsert Matching
+                $result = $this->matchingscore->upsertMatching($userMatching, $userMatched, $score);
+    
+                if ($result) {
+                    $messages[] = [
+                        'message' => 'Success', 
+                        'Action' => 'Inserted/Updated', 
+                        'score' => $score, 
+                        'userMatching' => $userMatching, 
+                        'userMatched' => $userMatched
+                    ];
                 } else {
-                    $insertMatching = $this->matchingscore->insertMatching($this->getUserMatching(), $this->getUserMatched(), $this->getScore());
-            
-                    if ($insertMatching) {
-                        $messages[] = ['message' => 'Success', 'Action' => 'Inserted'];
-                    } else {
-                        $messages[] = ['message' => 'Error', 'Action' => 'Insertion failed'];
-                    }
+                    $messages[] = [
+                        'message' => 'Error', 
+                        'Action' => 'Insertion/Update failed', 
+                        'userMatching' => $userMatching, 
+                        'userMatched' => $userMatched
+                    ];
                 }
             }
-            
+    
             echo json_encode($messages);
             exit();
-
         } else {
             echo json_encode(['message' => 'Invalid request']);
         }
     }
+    
 
     public function getUserMatching(): ?int
     {

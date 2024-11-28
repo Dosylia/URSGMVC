@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let sRank = document.getElementById('lolsRank');
     let sLevel = document.getElementById('lolsLevel');
     let sServer = document.getElementById('lolsServer');
+    let serverBackUp = document.getElementById('lolServer');
     let lolAccount = document.getElementById('lolAccount');
     let gender = document.getElementById('gender');
     let kindOfGamer = document.getElementById('kindOfGamer');
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `userId=${encodeURIComponent(userId)}`
+            body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1`
         })
         .then(response => {
             if (!response.ok) {
@@ -117,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
             sRank.innerText = data.lol_sRank;
             sLevel.innerText += `Level: ${sanitizeHtlm(data.lol_sLevel)}`;
             sServer.innerText = data.lol_server;
+            serverBackUp.remove();
         } else {
             document.querySelector('.box_league_account').style.display = 'none';
         }
@@ -126,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function() {
         btnSwipeNo.disabled = false;
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
-        lolAccount.innerText = data.valorant_account;
         gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
         kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
         shortBio.innerHTML += ` ${sanitizeHtlm(decodeHtmlEntities(data.user_shortBio))}`;
@@ -147,7 +148,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 lolRankPic.alt = data.lol_rank;
                 lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
                 lolRolePic.alt = data.lol_role;
+                lolAccount.remove(); 
+                if (serverBackUp) { 
+                    serverBackUp.innerHTML += `<span>${data.lol_server}</span>`;
+                }
             } else {
+                lolAccount.innerText =  data.valorant_account;
                 lolMain1P.innerText = data.valorant_main1;
                 lolMain2P.innerText = data.valorant_main2;
                 lolMain3P.innerText = data.valorant_main3;
@@ -163,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 lolRankPic.alt = data.valorant_rank;
                 lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.webp`;
                 lolRolePic.alt = data.valorant_role;
+                serverBackUp.innerHTML += `<span>${data.valorant_server}</span>`;
             }
 
             if (data.user_isVip === 1) {
@@ -187,9 +194,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // Clear text content
         sUsername.innerText = "";
         sRank.innerText = "";
+        sLevel.innerText = "";
         username.innerText = "";
         userAge.innerText = "";
         lolAccount.innerText = "";
+        serverBackUp.innerHTML = "<strong>Server:</strong> ";
         gender.innerHTML = "<strong>Gender:</strong> "; 
         kindOfGamer.innerHTML = "<strong>Kind of Gamer:</strong> "; 
         shortBio.innerHTML = "<strong>ShortBio:</strong>"; 
@@ -249,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Swipe functions
     function swipeYes(userId, receiverId) {
-        fetch('index.php?action=swipeDone', {
+        fetch('index.php?action=swipeDoneWebsite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -280,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function swipeNo(userId, receiverId) {
-        fetch('index.php?action=swipeDone', {
+        fetch('index.php?action=swipeDoneWebsite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

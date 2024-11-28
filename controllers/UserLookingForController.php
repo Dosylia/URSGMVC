@@ -125,7 +125,7 @@ class UserLookingForController
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
+            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
 
             $current_url = "https://ur-sg.com/updateLookingForPage";
@@ -160,7 +160,7 @@ class UserLookingForController
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
+            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
 
             $current_url = "https://ur-sg.com/updateLookingForGamePage";
@@ -199,7 +199,19 @@ class UserLookingForController
                 $this->setLoLRank($loLRank);
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
-                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+                $statusChampion = 0;
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                // if ($user['user_id'] != $this->getUserId())
+                // {
+                //     header("location:/userProfile?message=Could not update");
+                //     exit();
+                // }
+
+                if (isset($_POST["skipSelection"])) {
+                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
+                }
 
                 if ($statusChampion == "1") {
                     if (empty($loLRank) || empty($loLRole))
@@ -298,7 +310,19 @@ class UserLookingForController
                 $this->setValorantRank($valorantRank);
                 $valotantRole = $this->validateInput($_POST["role_valorant"]);
                 $this->setValorantRole($valotantRole);
-                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $this->getUserId())
+                {
+                    header("location:/userProfile?message=Could not update");
+                    exit();
+                }
+
+                $statusChampion = 0;
+                if (isset($_POST["skipSelection"])) {
+                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
+                }
 
                 if ($statusChampion == "1") {
                     if (empty($valorantRank) || empty($valotantRole))
@@ -498,7 +522,10 @@ class UserLookingForController
             $this->setValorantRank($valorantRank);
             $valotantRole = $this->validateInput($data->role);
             $this->setValorantRole($valotantRole);
-            $statusChampion = $this->validateInput($data->skipSelection);
+            $statusChampion = 0;
+            if (isset($_POST["skipSelection"])) {
+                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+            }
 
             if ($statusChampion == 1) {
                 if (empty($valorantRank) || empty($valotantRole))
@@ -598,7 +625,19 @@ class UserLookingForController
                 $this->setLoLRank($loLRank);
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
-                $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $this->getUserId())
+                {
+                    header("location:/userProfile?message=Could not update");
+                    exit();
+                }
+
+                $statusChampion = 0;
+                if (isset($_POST["skipSelection"])) {
+                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
+                }
 
                 $user = $this->user->getUserById($this->getUserId());
 
@@ -675,7 +714,18 @@ class UserLookingForController
                     $this->setValorantRank($valorantRank);
                     $valorantRole = $this->validateInput($_POST["role_valorant"]);
                     $this->setValorantRole($valorantRole);
-                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+                    $user = $this->user->getUserById($_SESSION['userId']);
+
+                    if ($user['user_id'] != $this->getUserId())
+                    {
+                        header("location:/userProfile?message=Could not update");
+                        exit();
+                    }
+                    $statusChampion = 0;
+                    if (isset($_POST["skipSelection"])) {
+                        $statusChampion = $this->validateInput($_POST["skipSelection"]);
+                    }
 
                     if ($statusChampion == "1") {
                         if (empty($valorantRank) || empty($valorantRole))

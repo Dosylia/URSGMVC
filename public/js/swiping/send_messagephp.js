@@ -24,7 +24,7 @@ function sendMessageToPhp(senderId, receiverId, message) {
 
     const jsonData = JSON.stringify(dataToSend);
 
-    fetch('index.php?action=sendMessageData', {
+    fetch('index.php?action=sendMessageDataWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

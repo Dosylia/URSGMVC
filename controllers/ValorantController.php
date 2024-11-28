@@ -137,6 +137,14 @@ class ValorantController
             $this->setValorantServer($valorantServer);
             $statusChampion = $this->validateInput($_POST["skipSelection"]);
 
+            $user = $this->user->getUserById($_SESSION['userId']);
+
+            if ($user['user_id'] != $this->getUserId())
+            {
+                header("location:/signup?message=Not allowed");
+                exit();
+            }
+
             if ($statusChampion == "1") {
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
@@ -309,6 +317,14 @@ class ValorantController
             $valorantServer = $this->validateInput($_POST["server"]);
             $this->setValorantServer($valorantServer);
             $statusChampion = $this->validateInput($_POST["skipSelection"]);
+
+            // $user = $this->user->getUserById($_SESSION['userId']);
+
+            // if ($user['user_id'] != $this->getUserId())
+            // {
+            //     header("location:/userProfile?message=Not allowed");
+            //     exit();
+            // }
 
             $updateValorant = $this->valorant->updateValorantData(
                 $this->getUserId(), 

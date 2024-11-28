@@ -132,6 +132,33 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function getUserByEmail($email) 
+    {
+        $query = $this -> bdd -> prepare ("
+                                            SELECT
+                                                u.`user_id`,
+                                                u.`user_username`
+                                            FROM
+                                                `googleuser` AS g
+                                            INNER JOIN
+                                                `user` AS u ON g.`google_userId` = u.`google_userId`
+                                            WHERE                                            
+                                                g.`google_email` = ?
+        ");
+
+        $query -> execute([$email]);
+        $emailTest = $query -> fetch();
+
+        if($emailTest)
+        {
+            return $emailTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function updateEmailStatus($email)
     {
         $query = $this-> bdd -> prepare ("
@@ -173,6 +200,70 @@ class GoogleUser extends DataBase
         }
         else
         {
+            return false;
+        }
+    }
+
+    public function storeMasterToken($googleUserId, $token)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `googleuser`
+                                        SET 
+                                            `google_masterToken` = ?
+                                        WHERE 
+                                            `google_userId` = ?
+        ");
+    
+         $tokenTest = $query->execute([$token, $googleUserId]);
+        
+        if ($tokenTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getMasterToken($googleUserId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            `google_masterToken`
+                                        FROM 
+                                            `googleuser`
+                                        WHERE 
+                                            `google_userId` = ?
+        ");
+    
+        $query->execute([$googleUserId]);
+        $token = $query->fetch();
+        
+        if ($token) {
+            return $token;
+        } else {
+            return false;
+        }
+    }
+
+    public function getMasterTokenByUserId($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            g.google_masterToken
+                                        FROM 
+                                            googleuser AS g
+                                        INNER JOIN
+                                            `user` AS u ON u.google_userId = g.google_userId
+                                        WHERE 
+                                            u.user_id = ?
+        ");
+    
+        $query->execute([$userId]);
+        $token = $query->fetch();
+    
+        if ($token) {
+            return $token;
+        } else {
             return false;
         }
     }

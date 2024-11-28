@@ -5,6 +5,7 @@ namespace controllers;
 use models\FriendRequest;
 use models\User;
 use models\Block;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class FriendRequestController
@@ -14,6 +15,7 @@ class FriendRequestController
     private FriendRequest $friendrequest;
     private User $user;
     private Block $block;
+    private GoogleUser $googleUser;
     private ?int $frId = null;
     private ?int $userId = null;
     private ?int $senderId = null;
@@ -25,6 +27,7 @@ class FriendRequestController
         $this->friendrequest = new FriendRequest();
         $this->user = new User();
         $this->block = new Block();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function pageFriendlist(): void
@@ -65,6 +68,7 @@ class FriendRequestController
                 $amount = 2;
             }
             $addCurrency = $this->user->addCurrency($userId, $amount);
+            $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
 
             if ($friendRequest) {
                 $data = [
@@ -86,6 +90,18 @@ class FriendRequestController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
+
+            if (isset($_POST['isNotReactNative'])) {
+                if (isset($_SESSION)) {
+                    $user = $this->user->getUserById($_SESSION['userId']);
+    
+                    if ($user['user_id'] != $this->getUserId())
+                    {
+                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                        return;
+                    }
+                }
+            }
     
             $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
     
@@ -136,6 +152,91 @@ class FriendRequestController
         }
     }
 
+    public function getFriendlistPhone(): void
+    {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $this->setUserId($userId);
+    
+        if (isset($_POST['isNotReactNative'])) {
+            if (isset($_SESSION)) {
+                $user = $this->user->getUserById($_SESSION['userId']);
+        
+                if ($user['user_id'] != $this->getUserId()) {
+                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                    return;
+                }
+            }
+        }
+    
+        $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
+    
+        if ($getFriendlist) {
+            $formattedFriendList = [];
+    
+            foreach ($getFriendlist as $friend) {
+                if ($userId == $friend['sender_id']) {
+                    $friendId = $friend['receiver_id'];
+                    $friendUsername = $friend['receiver_username'];
+                    $friendPicture = $friend['receiver_picture'];
+                    $friendGame = $friend['receiver_game'];
+                } else {
+                    $friendId = $friend['sender_id'];
+                    $friendUsername = $friend['sender_username'];
+                    $friendPicture = $friend['sender_picture'];
+                    $friendGame = $friend['sender_game'];
+                }
+    
+                // Add friend to the list, excluding the user themselves
+                if ($userId != $friendId) {
+                    $formattedFriendList[] = [
+                        'fr_id' => $friend['fr_id'],
+                        'friend_id' => $friendId,
+                        'friend_username' => $friendUsername,
+                        'friend_picture' => $friendPicture,
+                        'friend_game' => $friendGame,
+                        'latest_message_date' => $friend['latest_message_date']
+                    ];
+                }
+            }
+    
+            // Check if there are any friends to return
+            if (count($formattedFriendList) > 0) {
+                $data = [
+                    'success' => true,
+                    'friendlist' => $formattedFriendList,
+                ];
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No friends found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No friends found']);
+        }
+    }
+    
+
     public function swipeStatus(): void
     {
         if (isset($_POST['swipe_yes'])) {
@@ -145,24 +246,29 @@ class FriendRequestController
 
             $user = $this->user->getUserById($_POST["senderId"]);
 
-            if ($user['user_isVip'] == 1) {
-                $amount = 12;
-            }
+            // if ($user['user_isVip'] == 1) {
+            //     $amount = 12;
+            // }
 
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
             $receiverId = $this->validateInput($_POST["receiverId"]);
             $this->setReceiverId((int)$receiverId);
 
+
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
-                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                echo json_encode(['success' => true, 'error' => 'Swipped yes, updated']);
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                }
             } else {
                 $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
 
@@ -174,9 +280,9 @@ class FriendRequestController
 
             $user = $this->user->getUserById($_POST["senderId"]);
 
-            if ($user['user_isVip'] == 1) {
-                $amount = 12;
-            }
+            // if ($user['user_isVip'] == 1) {
+            //     $amount = 12;
+            // }
 
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
@@ -186,12 +292,239 @@ class FriendRequestController
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
-                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                }
             } else {
                 $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
+            }
+
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
+        }
+    }
+
+    public function swipeStatusPhone(): void
+    {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Check if swipe data is set (either swipe_yes or swipe_no)
+        if (isset($_POST['swipe_yes'])) {
+            // Check for required fields in POST data
+            if (!isset($_POST['senderId']) || !isset($_POST['receiverId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+    
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            
+            // Validate token for user
+            if (!$this->validateToken($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+    
+            $this->setSenderId((int)$senderId);
+            $this->setReceiverId((int)$receiverId);
+    
+            // Initialize request data
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'pending';
+    
+            // Check if friend request is pending
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+    
+            if ($checkIfPending) {
+                // Update friend request to accepted
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    echo json_encode(['success' => true, 'message' => 'Swipe No, updated']);
+                }
+            } else {
+                // Create new friend request with status 'pending'
+                $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                echo json_encode(['success' => true, 'message' => 'Swipe Yes, created']);
+            }
+    
+        } elseif (isset($_POST['swipe_no'])) {
+            // Check for required fields in POST data
+            if (!isset($_POST['senderId']) || !isset($_POST['receiverId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+    
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            
+            // Validate token for user
+            if (!$this->validateToken($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+    
+            $this->setSenderId((int)$senderId);
+            $this->setReceiverId((int)$receiverId);
+    
+            // Initialize request data
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'rejected';
+    
+            // Check if friend request is pending
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+    
+            if ($checkIfPending) {
+                // Update friend request to rejected
+                $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    echo json_encode(['success' => true, 'message' => 'Swipe No, updated']);
+                }
+            } else {
+                // Create new friend request with status 'rejected'
+                $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                echo json_encode(['success' => true, 'message' => 'Swipe No, created']);
+            }
+    
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
+        }
+    }
+    
+
+    public function swipeStatusWebsite(): void
+    {
+        if (isset($_POST['swipe_yes'])) {
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'pending';
+            $amount = 10;
+
+
+                if (isset($_SESSION)) {
+
+                    $user = $this->user->getUserById($_SESSION['userId']);
+    
+                    if ($user['user_id'] != $_POST["senderId"])
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
+                    }
+
+                    // $masterToken = $_POST['masterToken'];
+
+                    // if ($masterToken != $_SESSION['masterToken']) {
+                    //     echo json_encode(['success' => false, 'message' => 'Master token not valid']);
+                    //     return;
+                    // } else {
+                        
+                    //     $token = bin2hex(random_bytes(32));
+                    //     $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                        
+                    //     if ($createToken) {
+                    //         $_SESSION['masterToken'] = $token;
+                    //     }
+                    // }
+                }
+
+
+            $user = $this->user->getUserById($_POST["senderId"]);
+
+            // if ($user['user_isVip'] == 1) {
+            //     $amount = 12;
+            // }
+
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $this->setSenderId((int)$senderId);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            $this->setReceiverId((int)$receiverId);
+
+
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                }
+            } else {
+                $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
+            }
+
+
+        } elseif (isset($_POST['swipe_no'])) {
+            $requestDate = date('Y-m-d H:i:s');
+            $status = 'rejected';
+            $amount = 10;
+
+                if (isset($_SESSION)) {
+
+                    $user = $this->user->getUserById($_SESSION['userId']);
+    
+                    if ($user['user_id'] != $_POST["senderId"])
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
+                    }
+
+                    // $masterToken = $_POST['masterToken'];
+
+                    // if ($masterToken != $_SESSION['masterToken']) {
+                    //     echo json_encode(['success' => false, 'message' => 'Master token not valid']);
+                    //     return;
+                    // } else {
+                        
+                    //     $token = bin2hex(random_bytes(32));
+                    //     $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                        
+                    //     if ($createToken) {
+                    //         $_SESSION['masterToken'] = $token;
+                    //     }
+                    // }
+                }
+
+
+            $user = $this->user->getUserById($_POST["senderId"]);
+
+            // if ($user['user_isVip'] == 1) {
+            //     $amount = 12;
+            // }
+
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $this->setSenderId((int)$senderId);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            $this->setReceiverId((int)$receiverId);
+
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                }
+            } else {
+                $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
+                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
                 echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
             }
 
@@ -346,6 +679,125 @@ class FriendRequestController
                     $amount = 3;
                 }
                 $addCurrency = $this->user->addCurrency($userId, $amount);
+                $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
+
+                if ($addCurrency) {
+                    $this->user->updateLastRequestTime($userId);
+                }
+            }
+    
+
+            if ($pendingCount !== false) {
+                $data = [
+                    'success' => true,
+                    'pendingCount' => ['pendingFriendRequest' => $pendingCount]
+                ];
+
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No friend requests found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
+    public function getFriendRequestReact(): void
+    {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $this->setUserId($userId);
+    
+        // Fetch pending friend request count
+        $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
+    
+        // Currency update logic
+        $lastRequestTime = $this->user->getLastRequestTime($userId);
+        $currentTime = time();
+    
+        if ($currentTime - $lastRequestTime > 20) {
+            $amount = 2;
+            $user = $this->user->getUserById($userId);
+    
+            if ($user['user_isVip'] == 1) {
+                $amount = 3;
+            }
+    
+            $addCurrency = $this->user->addCurrency($userId, $amount);
+            $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
+    
+            if ($addCurrency) {
+                $this->user->updateLastRequestTime($userId);
+            }
+        }
+    
+        // Response with pending count
+        if ($pendingCount !== false) {
+            $data = [
+                'success' => true,
+                'pendingCount' => ['pendingFriendRequest' => $pendingCount]
+            ];
+    
+            echo json_encode($data);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No friend requests found']);
+        }
+    }
+    
+
+    public function getFriendRequestWebsite(): void
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+
+
+                if (isset($_SESSION)) {
+                    $user = $this->user->getUserById($_SESSION['userId']);
+    
+                    if ($user['user_id'] != $this->getUserId())
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
+                    }
+                }
+
+
+            $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
+
+            $lastRequestTime = $this->user->getLastRequestTime($userId);
+            $currentTime = time();
+
+            if ($currentTime - $lastRequestTime > 20) {
+                $amount = 2;
+                $user = $this->user->getUserById($userId);
+    
+                if ($user['user_isVip'] == 1) {
+                    $amount = 3;
+                }
+                $addCurrency = $this->user->addCurrency($userId, $amount);
+                $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
 
                 if ($addCurrency) {
                     $this->user->updateLastRequestTime($userId);
@@ -389,6 +841,17 @@ class FriendRequestController
         $input = trim($input);
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
         return $input;
+    }
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function getFrId(): ?int

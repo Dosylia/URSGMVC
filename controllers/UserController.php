@@ -10,6 +10,7 @@ use models\Valorant;
 use models\UserLookingFor;
 use models\MatchingScore;
 use models\Items;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class UserController
@@ -24,6 +25,7 @@ class UserController
     private UserLookingFor $userlookingfor;    
     private MatchingScore $matchingscore;
     private Items $items;
+    private GoogleUser $googleUser;
     private $googleUserId;
     private $userId;
     private $username;
@@ -72,6 +74,7 @@ class UserController
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
         $this -> items = new Items();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function getAllUsers()
@@ -103,6 +106,55 @@ class UserController
             header('Content-Type: application/json');
             echo json_encode($response);
             exit;  
+        }
+    }
+
+    public function getAllUsersPhone()
+    {
+        require 'keys.php';
+        $response = array('message' => 'Error');
+    
+        // Check if the token is provided in the request header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Check if the provided token matches the valid token
+        if ($token !== $validToken) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        // Check if the 'allUsers' POST parameter is set
+        if (isset($_POST['allUsers'])) {
+            $allUsers = $this->user->getAllUsers();
+    
+            if ($allUsers) {
+                $response = array(
+                    'allUsers' => $allUsers,
+                    'message' => 'Success'
+                );
+    
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            } else {
+                $response = array('message' => 'Could not get all users');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+    
+        } else {
+            $response = array('message' => 'Cannot access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
         }
     }
 
@@ -273,6 +325,12 @@ class UserController
             $short_bio = $this->validateInput($_POST["short_bio"]);
             $this->setShortBio($short_bio);
 
+            // if ($_SESSION['google_id'] != $this->getGoogleUserId())
+            // {
+            //     header("location:/signup?message=Unauthorized");
+            //     exit();
+            // }
+
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
                 exit();
@@ -353,6 +411,14 @@ class UserController
             $twitch = $this->validateInput($_POST["twitch"]);
             $this->setTwitch($twitch);
 
+            $user = $this->googleUser->getUserByEmail($_SESSION['email']);
+
+            if ($user['user_username'] != $this->getUsername())
+            {
+                header("location:/userProfile?message=Could not update");
+                exit();
+            }
+
             $updateSocial = $this->user->updateSocial($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch());
 
 
@@ -425,6 +491,14 @@ class UserController
             $this->setGame($game);
             $short_bio = $this->validateInput($_POST["short_bio"]);
             $this->setShortBio($short_bio);
+
+            $user = $this->user->getUserById($_SESSION['userId']);
+
+            if ($user['user_id'] != $this->getUserId())
+            {
+                header("location:/userProfile?message=Could not update");
+                exit();
+            }
 
             if ($this->emptyInputSignupUpdate($this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
@@ -808,8 +882,13 @@ class UserController
         $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
 
         if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
+            $user = $this->user->getUserById($_SESSION['userId']);
             $username = $this->validateInput($_GET["username"]);
             $this->setUsername($username);
+            if ($user['user_username'] !== $this->getUsername()) {
+                header("location:/userProfile?message=Unauthorized");
+                exit;
+            }
 
             $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
 
@@ -1002,15 +1081,33 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $user = $this->user->getUserById($userId);
-            $usersAfterMatching = $this->matchingscore->getMatchingScore($userId);
+            // $usersAfterMatching = $this->matchingscore->getMatchingScore($userId);
             // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
+
+            // if (isset($_POST['isNotReactNative'])) {
+            //     if (isset($_SESSION)) {
+            //         $user = $this->user->getUserById($_SESSION['userId']);
+    
+            //         if ($user['user_id'] != $this->getUserId())
+            //         {
+            //             echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+            //             return;
+            //         }
+            //     }
+            // }
+
+            //Retry without scores 
+            $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit($userId, $user['user_game']);
             
             $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {
                 foreach ($usersAfterMatching as $match) {
-                    $matchedUserId = $match['match_userMatched'];
-                    // if (!in_array($matchedUserId, $userFriendRequest)) {
-                        $userMatched = $this->user->getUserById($matchedUserId);               
+                    $matchedUserId = $match['user_id'];
+            
+                    // Check if the matched user is not the current user
+                    if ($matchedUserId != $userId) {
+                        $userMatched = $this->user->getUserById($matchedUserId);
+            
                         if ($userMatched && $userMatched['user_game'] === $user['user_game']) {
                             if ($userMatched['user_game'] == "League of Legends") {
                                 $data = [
@@ -1036,7 +1133,6 @@ class UserController
                                         'lol_sLevel' => $userMatched['lol_sLevel'],
                                         'lol_sRank' => $userMatched['lol_sRank'],
                                         'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
-                                        'lol_sUsername' => $userMatched['lol_sUsername'],
                                         'lol_server' => $userMatched['lol_server'],
                                     ]
                                 ];
@@ -1068,12 +1164,13 @@ class UserController
                         } else {
                             $data = ['success' => false, 'error' => 'No matching users found..', 'matching2' => $usersAfterMatching];
                         }
-                    // }
+                    }
                 }
                 echo json_encode($data);
             } else {
                 echo json_encode(['success' => false, 'error' => 'No matching users found...', 'matching3' => $usersAfterMatching]);
             }
+            
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
@@ -1089,6 +1186,16 @@ class UserController
             $this->isConnectLf()
         )
         {
+            if (isset($_GET['username']))
+            {
+                if($_GET['username'] !== $_SESSION['username']) 
+                {
+                    $username = $_GET['username'];
+                    header("Location: /anotherUser&username=" . $username);
+                    exit();                    
+                }
+            }
+
             // Get important datas
             require_once 'keys.php';
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -1176,22 +1283,6 @@ class UserController
             }
             $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
             
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($usersAll as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
-
             $current_url = "https://ur-sg.com/anotherUser";
             $template = "views/swiping/swiping_profile_other";
             $page_title = "URSG - Profile " . $username;
@@ -1234,7 +1325,7 @@ class UserController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All"];
+            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $current_url = "https://ur-sg.com/updateProfile";
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";
@@ -1302,6 +1393,68 @@ class UserController
             $side = $_POST['side'];
             $userId = $_POST['userId'];
             $user = $this->user->getUserById($userId);
+
+            if (in_array($side, ["Piltover", "Zaun", "none"])) 
+            {
+                // if they pick Piltover
+                if ($side === "Piltover") {
+                    $updateSide = $this->user->updateSide($side, $userId, $user['user_currency']);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Piltover');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+
+                // if they pick Zaun
+                if ($side === "Zaun") {
+                    $updateSide = $this->user->updateSide($side, $userId, $user['user_currency']);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Zaun');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+
+                //if they wanna ignore
+                if ($side === "none") {
+                    $updateSide = $this->user->ignoreSide($userId);
+
+                    if ($updateSide) {
+                        $response = array('success' => true, 'side' => 'Ignored');
+                    } else {
+                        $response = array('success' => false, 'error' => 'No side could be picked');
+                    }
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+        }
+    }
+
+    public function arcaneSideWebsite()
+    {
+        if (isset($_POST['pick'])) {
+            $side = $_POST['side'];
+            $userId = $_POST['userId'];
+            $user = $this->user->getUserById($userId);
+
+
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
+                    }
+                }
+
             if (in_array($side, ["Piltover", "Zaun", "none"])) 
             {
                 // if they pick Piltover
@@ -1351,6 +1504,19 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
+
+            if (isset($_POST['isNotReactNative'])) {
+                if (isset($_SESSION)) {
+                    $user = $this->user->getUserById($_SESSION['userId']);
+    
+                    if ($user['user_id'] != $this->getUserId())
+                    {
+                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                        return;
+                    }
+                }
+            }
+
 
             $currencyData = $this->user->getCurrencyByUserId($this->getUserId());
             if ($currencyData) {
