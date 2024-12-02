@@ -1,18 +1,24 @@
 const dialogCookie = document.getElementById('dialogCookie');
 const optionsCookies = document.getElementById('optionsCookies');
 const aboutCookies = document.getElementById('aboutCookies');
+const darkOverlay = document.getElementById('darkOverlay');
 const savedCookies = localStorage.getItem('cookies');
+const header = document.querySelector('header');
 let stateOptions = 1;
 let stateAbout = 0;
 
 // Functions
 function openModalCookie() {
     dialogCookie.style.display = 'flex';
+    darkOverlay.style.display = 'block'; // Show the overlay
+    header.style.opacity = '0.5'; // Optional, dims only the header
     dialogCookie.showModal();
 }
 
 function closeModalCookie() {
     dialogCookie.style.display = 'none';
+    darkOverlay.style.display = 'none'; // Hide the overlay
+    header.style.opacity = '1'; // Restore header opacity
     dialogCookie.close();
 }
 

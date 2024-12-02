@@ -171,23 +171,7 @@ class UserController
 
             // Get important datas
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($allUsers as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
+            $allUsers = $this-> user -> getTopUsers();
 
             $usersPerPage = 50;
             $totalUsers = count($allUsers);
@@ -262,8 +246,7 @@ class UserController
                 exit;
             }
 
-            if ($this->getAge() > 99)
-            {
+            if ($age < 13 || $age > 99) {
                 $response = array('message' => 'Age is not valid');
                 echo json_encode($response);
                 exit;
@@ -346,7 +329,7 @@ class UserController
                 exit();
             }
 
-            if ($this->getAge() > 99)
+            if ($age < 13 || $age > 99)
             {
                 header("location:/signup?message=Age is not valid");
                 exit();
@@ -510,9 +493,9 @@ class UserController
                 exit();
             }
 
-            if ($this->getAge() > 99)
+            if ($age < 13 || $age > 99)
             {
-                header("location:/signup?message=Age is not valid");
+                header("location:/userProfile?message=Age is not valid");
                 exit();
             }
 
@@ -876,36 +859,40 @@ class UserController
 
     public function updatePicture() {
         $targetDir = "public/upload/";
-        $fileName = basename($_FILES["file"]["name"]);
-        $this->setFileName($fileName);
-        $targetFilePath = $targetDir . $fileName;
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-
+        $originalFileName = basename($_FILES["file"]["name"]);
+        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+    
+        // Generate a unique file name
+        $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
+        $this->setFileName($uniqueFileName);
+        $targetFilePath = $targetDir . $uniqueFileName;
+    
         if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
             $user = $this->user->getUserById($_SESSION['userId']);
             $username = $this->validateInput($_GET["username"]);
             $this->setUsername($username);
+    
             if ($user['user_username'] !== $this->getUsername()) {
                 header("location:/userProfile?message=Unauthorized");
                 exit;
             }
-
+    
             $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
-
-            if (in_array($fileType, $allowTypes)) {
+    
+            if (in_array($fileExtension, $allowTypes)) {
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
                     // Check for animated images (for GIFs)
-                    if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+                    if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
                         header("location:/userProfile?message=Animated GIFs are not allowed");
                         exit;
                     }
-
+    
                     // Resize the image to 200x200
-                    $resizedFilePath = $targetDir . 'resized_' . $fileName;
+                    $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
                     if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
                         // Update the database with the resized image
                         $uploadPicture = $this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename());
-
+    
                         if ($uploadPicture) {
                             header("location:/userProfile?message=Updated successfully");
                             exit;
@@ -922,11 +909,11 @@ class UserController
                     exit;
                 }
             } else {
-                header("location:/userProfile?message=Wrong type of picture"); // Not accepted format
+                header("location:/userProfile?message=Wrong type of picture"); 
                 exit;
             }
         } else {
-            header("location:/userProfile?message=Nothing to upload"); // If no picture or no form
+            header("location:/userProfile?message=Nothing to upload"); 
             exit;
         }
     }
@@ -1371,6 +1358,38 @@ class UserController
             
             $userId = $data->userId;
             $status = $data->status;
+
+
+                $updateFilter = $this->user->updateFilter($status, $userId);
+
+                if ($updateFilter) {
+                    $response = array('message' => 'Success');
+                    echo json_encode($response);
+                    exit;
+                } else {
+                    $response = array('message' => 'Couldnt update status');
+                    echo json_encode($response);
+                    exit;
+                }
+        }
+    }
+
+    public function chatFilterSwitchWebsite()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            
+            $userId = $data->userId;
+            $status = $data->status;
+
+            if (isset($_SESSION)) {
+
+                if ($user['user_id'] != $userId)
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
+                }
+            }
 
 
                 $updateFilter = $this->user->updateFilter($status, $userId);

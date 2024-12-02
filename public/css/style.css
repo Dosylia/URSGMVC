@@ -968,6 +968,104 @@ section.siteMap tr:nth-child(even) {
     z-index: 9999;
     display: none;
 }
+
+  .top-part-about {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .about-users-containers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: fit-content;
+  }
+
+  .about-uses-title {
+    font-size: 2vh;
+    font-family: 'Geologica', sans-serif;
+    font-weight: 600;
+    color: black;
+  }
+
+  .about-users-box p {
+    color: rgb(107, 101, 101);
+  }
+
+  .dark-mode .about-users-box p {
+    color: rgb(48, 47, 47);
+  }
+
+  .about-users-box .about-users-selected {
+    color: black;
+    font-weight: 600;
+    font-size: 1.75vh;
+  }
+
+  .dark-mode .about-users-box .about-users-selected {
+    color: white;
+  }
+
+  .dark-mode .about-uses-title {
+    font-size: 2vh;
+    font-family: 'Geologica', sans-serif;
+    font-weight: 600;
+    color: white;
+  }
+
+  .about-users-box {
+    background-color: #e0e0e0;
+    padding: 10px 15px; 
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    flex-wrap: wrap; 
+    justify-content: space-around;
+    width: 300px;
+}
+  .about-users-box-bio {
+    background-color: #e0e0e0;
+    height: fit-content;
+    padding: 10px 10px;
+    border-radius: 20px;
+    border: none;
+  }
+
+
+  .about-users-low-opacity {
+    opacity: 0.3;
+  }
+
+  .about-users-bio {
+    margin-top: 10px;
+  }
+
+  .dark-mode .about-users-box, .dark-mode .about-users-box-bio {
+    background-color: var(--dark-grey);
+  }
+
+  .about-users-box img {
+    width: 30px; 
+    height: 30px; 
+    opacity: 0.3; 
+    transition: opacity 0.3s ease, transform 0.3s ease; 
+}
+
+.about-users-box .about-users-selected {
+    opacity: 1; 
+    transform: scale(1.2); 
+}
+
+.about-users-box img:hover {
+    opacity: 0.7; 
+    cursor: pointer;
+}
   
   /* Style pour le bouton de fermeture */
   #closeButton_user_picture, #closeButton_social_links, #closeButton, .closeButton {
@@ -1105,6 +1203,10 @@ section.siteMap tr:nth-child(even) {
     .about_you_users .font-weight-600 {
       font-weight: 600;
     }
+
+    .font-weight-600 {
+      font-weight: 600;
+    }
   
     .no_display_phone {
       color: #504e4e;
@@ -1129,6 +1231,12 @@ section.siteMap tr:nth-child(even) {
     #age_user {
       font-family: 'Geologica', sans-serif;
       font-size: 2vh;  
+    }
+
+    #friendrequest-backend {
+      color: var(--main--red);
+      padding: 10px;
+      font-size: 1em;
     }
   
     .friend_request_ctn {
@@ -1256,6 +1364,14 @@ section.siteMap tr:nth-child(even) {
     justify-content: space-between;
     width: fit-content;
     }
+
+    span.chat-name.friendlist-page, span.friendlist-name.friendlist-page {
+      transition: transform 1s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+  }
   
     span.chat-name span.friendlist-name{
       transform: scale(1.3);
@@ -1582,7 +1698,7 @@ section.siteMap tr:nth-child(even) {
       height: 75%;
     }
   
-    #accept_friend_button {
+    .accept_friend_button {
       background:    #93c47d;
       border-radius: 11px;
       font-size: 20px;
@@ -1595,8 +1711,17 @@ section.siteMap tr:nth-child(even) {
       border: none;
       cursor: pointer;
     }
+
+    .accept_friend_button button, .refuse_friend_button button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      font-family: "Open Sans", sans-serif;
+      cursor: pointer;
+    }
   
-    #refuse_friend_button {
+    .refuse_friend_button {
       background:    #e06666;
       border-radius: 11px;
       font-size: 20px;
@@ -1610,7 +1735,7 @@ section.siteMap tr:nth-child(even) {
       cursor: pointer;
     }
 
-    #refuse_friend_button:hover, #accept_friend_button:hover {
+    .refuse_friend_button:hover, #accept_friend_button:hover {
       background-color: var(--dark-ligher-grey);
     }
   
@@ -1976,6 +2101,15 @@ section.siteMap tr:nth-child(even) {
     padding: 5px 10px;
     cursor: pointer;
   }
+
+  .unfriend_user {
+    color: #e0ad66;
+    border: 1px solid #e0ad66;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
   
   .unblock_user {
     color: #93c47d;
@@ -2246,6 +2380,18 @@ justify-content: center;
   border: none;
   text-align: center;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); 
+  z-index: 10; 
+  display: none;
 }
 
 .dialogCookieRow {
@@ -2729,6 +2875,7 @@ justify-content: center;
   padding: 10px;
   background-color: var(--main--red);
   color: black;
+  position: relative;
 }
 
 .page-header a {
@@ -2852,6 +2999,90 @@ justify-content: center;
 .old-price {
   text-decoration: line-through;
   color: gray;
+}
+
+/* Modal Styles LEADERBOARD AND STORE*/
+
+#earnpoints {
+  position: absolute;
+  background-color: white;
+  color: var(--main--red);
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2em;
+  font-weight: 900;
+  width: 45px; 
+  height: 45px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  right: 10px;  
+  top: 10px;    
+  cursor: pointer;
+}
+
+.dark-mode #earnpoints {
+  background-color: var(--ligher--grey);
+  color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.store {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  width: 400px;
+  max-width: 90%;
+}
+
+.dark-mode .modal.store {
+  background: var(--dark-grey);
+  color: white;
+}
+
+.modal.store h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: var(--main--red);
+}
+
+.modal.store p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: black;
+}
+
+.dark-mode .modal.store p {
+  color: white;
+}
+
+.modal.store button {
+  padding: 10px 20px;
+  background-color: var(--main--red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal.store button:hover {
+  background-color: var(--ligher--grey);
 }
 
 /* PAGE LEADERBOARD */
@@ -3599,7 +3830,7 @@ justify-content: center;
   color: white;
 }
 
-.dark-mode   .block_user {
+.dark-mode   .block_user, .dark-mode .unfriend_user {
   background-color: var(--ligher--grey);
 }
 
@@ -4184,6 +4415,37 @@ justify-content: center;
   font-size: 1em;
 }
 
+#popup_user_picture {
+
+  width: 250px;
+  padding: 15px;
+}
+
+.top-part-about {
+  gap: 15px;
+}
+
+.about-users-box img {
+  width: 20px; 
+  height: 20px; 
+  opacity: 0.3; 
+  transition: opacity 0.3s ease, transform 0.3s ease; 
+}
+
+.about-users-box .about-users-selected {
+  transform: scale(1.1); 
+}
+
+.profile-picture-container {
+  margin: 0px 0px;
+  width: unset;
+  height: unset; 
+}
+
+.user_box {
+  padding: 0px 20px;
+}
+
 }
 
   @media only screen and (max-width: 600px) {
@@ -4341,6 +4603,13 @@ justify-content: center;
     gap: 20px;
   }
 
+  #image_users {
+    width: 100px;
+    height: 100px;
+    margin-left: 15px;
+    border-radius: 1000px;
+  }
+
 }
 
 
@@ -4348,13 +4617,6 @@ justify-content: center;
 
   .nav-swiping-row {
     gap: 10px;
-  }
-
-  #image_users {
-    width: 150px;
-    height: 150px;
-    margin-left: 15px;
-    border-radius: 1000px;
   }
 
   .frame_around_picture {

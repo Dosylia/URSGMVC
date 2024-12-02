@@ -94,6 +94,8 @@ class FriendRequest extends DataBase
                                             fr.fr_receiverId,
                                             fr.fr_date,
                                             fr.fr_status,
+                                            u.user_gender,
+                                            u.user_age,
                                             u.user_username,
                                             u.user_id,
                                             u.user_picture
@@ -270,7 +272,7 @@ class FriendRequest extends DataBase
         ");
 
         
-        $updateFriendTest =  $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
+        $updateFriendTest =  $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
 
         if($updateFriendTest)
         {
@@ -384,7 +386,7 @@ class FriendRequest extends DataBase
         ");
 
         
-        $acceptedFriendRequestTest =  $query->execute([$status, $senderId, $receiverId, $senderId, $receiverId]);
+        $acceptedFriendRequestTest =  $query->execute([$status, $senderId, $receiverId, $receiverId, $senderId]);
 
         if($acceptedFriendRequestTest)
         {

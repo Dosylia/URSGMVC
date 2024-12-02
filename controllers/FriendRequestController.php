@@ -423,6 +423,12 @@ class FriendRequestController
                         return;
                     }
 
+                    if ($user['user_id'] != $_POST["receiverId"])
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Cant swipe yourself, weirdo']);
+                        return;
+                    }
+
                     // $masterToken = $_POST['masterToken'];
 
                     // if ($masterToken != $_SESSION['masterToken']) {
@@ -574,26 +580,6 @@ class FriendRequestController
         }
     }
 
-    public function acceptFriendRequest(): void
-    {
-        $frId = $this->validateInput($_GET["fr_id"]);
-        $friendId = $this->validateInput($_GET["friend_id"]);
-        $this->setFrId((int)$frId);
-        $this->setFriendId((int)$friendId);
-        $user = $this->user->getUserById($_SESSION['userId']);
-
-        $updateStatus = $this->friendrequest->acceptFriendRequest($this->getFrId());
-
-        if ($updateStatus) {
-            $sendNotifications = $this->sendNotificationsPhone($friendId, "You have matched with ". $user['user_username'], $_SESSION['userId']);
-            header("Location: /persoChat?friend_id=" . $this->getFriendId() . "&mark_as_read=true");
-            exit();
-        } else {
-            header("location:/userProfile?message=Could not accept it");
-            exit();
-        }
-    }
-
     public function acceptFriendRequestPhone(): void
     {
         if (isset($_POST["friendId"]) && isset($_POST["frId"])) {
@@ -643,20 +629,50 @@ class FriendRequestController
             exit();
         }
     }
-
-    public function rejectFriendRequest(): void
+    
+    public function updateFriendWebsite()
     {
-        $frId = $this->validateInput($_GET["fr_id"]);
-        $this->setFrId((int)$frId);
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
 
-        $updateStatus = $this->friendrequest->rejectFriendRequest($this->getFrId());
+            if (isset($data->frId) && isset($data->userId) && isset($data->status)) {
+                $frId = $data->frId;
+                $userId = $data->userId;
+                $status = $data->status;
 
-        if ($updateStatus) {
-            header("location:/userProfile?message=Friend request rejected");
-            exit();
+                $user = $this->user->getUserById($_SESSION['userId']);
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
+                    }
+                }
+
+                if ($status == 'accepted') {
+                    $updateFriend = $this->friendrequest->acceptFriendRequest($frId);
+                    if ($updateFriend) {
+                        echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Could not accept friend request']);
+                    }
+                } else {
+                    $updateFriend = $this->friendrequest->rejectFriendRequest($frId);
+                    if ($updateFriend) {
+                        echo json_encode(['success' => true, 'message' => 'Friend request refused']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Could not refuse friend request']);
+                    }
+                }
+
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+            }
+
+
         } else {
-            header("location:/userProfile?message=Could not accept it");
-            exit();
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
     }
 
@@ -833,6 +849,46 @@ class FriendRequestController
         } catch (\Exception $e) {
             error_log($e->getMessage());
             echo "An error occurred: " . $e->getMessage();
+        }
+    }
+
+    public function unfriendPerson(): void
+    {
+        if (isset($_POST['submit']))
+        {
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $this->setSenderId((int) $senderId);            
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            $this->setReceiverId((int) $receiverId);
+            $date = date("Y-m-d H:i:s");
+
+            $user = $this->user->getUserById($_SESSION['userId']);
+
+            if ($user['user_id'] !== $this->getSenderId()) {
+                header("location:/userProfile?message=Unauthorized");
+                exit;
+            }
+
+            $status = 'rejected';
+            $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId(), $status);
+
+            if ($updateFriend)
+            {
+                header("location:/friendlistPage?message=User unfriended");
+                exit();  
+            }
+            else
+            {
+                header("location:/friendlistPage?message=Could not unfriend user");
+                exit();
+            }
+
+         
+        }
+        else
+        {
+            header("location:/friendlistPage?message=No form");
+            exit();    
         }
     }
 

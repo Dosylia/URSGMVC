@@ -33,3 +33,21 @@ function closeConfirmationPopup2(dialogId) {
       confirmationPopup2.style.display = "none";
   }
 }
+
+function openConfirmationPopupUnfriend(dialogId, friendUsername) {
+  var confirmationPopupUnfriend = document.getElementById(dialogId);
+  if (typeof confirmationPopupUnfriend.showModal === "function") {
+      confirmationPopupUnfriend.showModal();
+  } else {
+      confirmationPopupUnfriend.style.display = "block";
+  }
+}
+
+function closeConfirmationPopupUnfriend(dialogId) {
+  var confirmationPopupUnfriend = document.getElementById(dialogId);
+  if (typeof confirmationPopupUnfriend.close === "function") {
+      confirmationPopupUnfriend.close();
+  } else {
+      confirmationPopupUnfriend.style.display = "none";
+  }
+}

@@ -4,6 +4,7 @@ namespace controllers;
 
 use models\Block;
 use models\FriendRequest;
+use models\User;
 
 use traits\SecurityController;
 
@@ -13,6 +14,7 @@ class BlockController
 
     private Block $block;
     private FriendRequest $friendrequest;
+    private User $user;
     private int $senderId;
     private int $receiverId;
     private int $blockId;
@@ -21,6 +23,7 @@ class BlockController
     {
         $this->block = new Block();
         $this->friendrequest = new FriendRequest();
+        $this -> user = new User();
     }
 
     public function blockPerson(): void
@@ -44,7 +47,8 @@ class BlockController
 
             if ($blockPerson)
             {
-                $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
+                $status = 'rejected';
+                $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId(), $status);
 
                 if ($updateFriend)
                 {

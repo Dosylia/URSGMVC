@@ -219,6 +219,34 @@ class User extends DataBase
         }
     }
 
+    public function getTopUsers()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `user_id`,
+                                            `user_username`,    
+                                            `user_picture`,
+                                            `user_isVip`,
+                                            `user_currency`
+                                        FROM
+                                            `user`
+                                        ORDER BY
+                                            `user_currency` DESC
+                                        LIMIT
+                                            100;
+        ");
+        
+        $query->execute();
+        $users = $query->fetchAll();
+        
+        if ($users) {
+            return $users;
+        } else {
+            return false;
+        }
+    }
+    
+
     
     public function getAllUsersExceptFriends($userId)
     {
@@ -258,32 +286,33 @@ class User extends DataBase
     public function getAllUsersExceptFriendsLimit($userId, $game)
     {
         $query = $this->bdd->prepare("
-            SELECT
-                u.*, 
-                l.*, 
-                v.*, 
-                lf.*
-            FROM
-                `user` AS u
-            LEFT JOIN
-                `leagueoflegends` AS l ON u.user_id = l.user_id
-            LEFT JOIN
-                `valorant` AS v ON u.user_id = v.user_id
-            INNER JOIN
-                `userlookingfor` AS lf ON u.user_id = lf.user_id
-            WHERE
-                u.user_game = ? 
-                AND NOT EXISTS (
-                    SELECT 1
-                    FROM `friendrequest` AS fr1
-                    WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id
-                )
-                AND NOT EXISTS (
-                    SELECT 1
-                    FROM `friendrequest` AS fr2
-                    WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
-                )
-            LIMIT 5;
+                                        SELECT
+                                            u.*, 
+                                            l.*, 
+                                            v.*, 
+                                            lf.*
+                                        FROM
+                                            `user` AS u
+                                        LEFT JOIN
+                                            `leagueoflegends` AS l ON u.user_id = l.user_id
+                                        LEFT JOIN
+                                            `valorant` AS v ON u.user_id = v.user_id
+                                        INNER JOIN
+                                            `userlookingfor` AS lf ON u.user_id = lf.user_id
+                                        WHERE
+                                            u.user_game = ? 
+                                            AND NOT EXISTS (
+                                                SELECT 1
+                                                FROM `friendrequest` AS fr1
+                                                WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id
+                                            )
+                                            AND NOT EXISTS (
+                                                SELECT 1
+                                                FROM `friendrequest` AS fr2
+                                                WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
+                                            )
+                                        ORDER BY RAND()
+                                        LIMIT 5;
         ");
     
         $query->execute([$game, $userId, $userId]);

@@ -121,8 +121,8 @@ class UserLookingForController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
@@ -156,8 +156,8 @@ class UserLookingForController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $title = "What are you looking for?";
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
@@ -226,6 +226,11 @@ class UserLookingForController
                         exit();
                     }
                 }
+
+                if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
+                    header("location:/userProfile?message=Each champion must be unique");
+                    exit();
+                }
                 
                 $testLeagueAccount = $this->user->getUserById($this->getUserId());
     
@@ -259,6 +264,7 @@ class UserLookingForController
                         exit();  
                     }
                 }
+
     
                 $createLookingFor = $this->userlookingfor->createLookingForUser(
                     $this->getUserId(), 
@@ -337,7 +343,11 @@ class UserLookingForController
                         exit();
                     }
                 }
-    
+
+                if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
+                    header("location:/userProfile?message=Each agents must be unique");
+                    exit();
+                }
                 
                 $testValorantAccount = $this->user->getUserById($this->getUserId());
     

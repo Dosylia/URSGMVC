@@ -67,7 +67,7 @@
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
-                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                        <img id="profilepicture_lol" src="http://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
                             <div class="box_league_account_main_row_column">
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                 <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
@@ -77,10 +77,10 @@
                         </div>
                     </div><br>
                 <?php endif; ?>
-                <?php if (!empty($lolUser['lol_account']) && empty($lolUser['lol_sUsername'])): ?>
+                <?php if (!empty($lolUser['lol_role']) && empty($lolUser['lol_sUsername'])): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
-                            <p><?= strtoupper($lolUser['lol_server']) ?></p> 
+                            <p><strong>Server: </strong><?= strtoupper($lolUser['lol_server']) ?></p><br> 
                         </div>
                     </div>
                 <?php endif; ?>
@@ -111,12 +111,64 @@
 
 
             <div class="about_you_users"><br>
-                <p><strong>Gender</strong>: <?= ucfirst($anotherUser['user_gender']) ?></p><br>
-                <p><strong>Kind of gamer</strong>: <?= ucfirst($anotherUser['user_kindOfGamer']) ?></p><br>
-                <p><strong>Your short bio</strong>: <?= htmlspecialchars($anotherUser['user_shortBio'], ENT_QUOTES, 'UTF-8') ?></p><br>
+                <div class="top-part-about">
+                    <div class="gender about-users-containers">
+                    <p class="about-users-title"><strong>Gender</strong></p>
+                    <?php if ($anotherUser['user_gender'] == "femenine") : ?>
+                        <p class="about-users-box">
+                            <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                            <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
+                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                            <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                        </p>
+                    <?php elseif ($anotherUser['user_gender'] == "Male") : ?>
+                        <p class="about-users-box">
+                            <img src="public/images/male.png" alt="Male" class="about-users-selected" />
+                            <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                            <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                        </p>
+                    <?php elseif ($anotherUser['user_gender'] == "Non Binary") : ?>
+                        <p class="about-users-box">
+                            <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                            <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
+                            <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                        </p>
+                    <?php else : ?>
+                        <p class="about-users-box">
+                            <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                            <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                            <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
+                        </p>
+                    <?php endif; ?>
+                    </div>
+                    <div class="queues about-users-containers">
+                    <p class="about-users-title"><strong>Queues</strong></p>
+                        <?php if($anotherUser['user_kindOfGamer'] == "Chill") :?>
+                            <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-low-opacity">Competition</span></p>
+                        <?php elseif($anotherUser['user_kindOfGamer'] == "Competition") :?>
+                            <p class="about-users-box"><span class="about-users-low-opacity">Chill</span>      <span class="about-users-selected">Competiton</span></p>
+                        <?php else  :?>
+                            <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-selected">Competiton</span></p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="servers about-users-containers">
+                    <p class="about-users-title"><strong>Server</strong></p>
+                    <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                        <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
+                    <?php else : ?>
+                        <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
+                    <?php endif; ?>
+                    </div>
+                </div>
+                <div class="about-users-bio">
+                    <p class="about-users-box-bio"><?= htmlspecialchars($anotherUser['user_shortBio'], ENT_QUOTES, 'UTF-8') ?></p>
+                </div>
             </div>
         </div>
-    </div>
+
 
     <dialog id="favDialogSocialLinks">
         <br><h2 class="title_generalbox">Your social links:</h2><br>  
@@ -144,3 +196,4 @@
 </section>
 
 <script src="public/js/swiping/button_otherUser.js"></script>
+<script src="public/js/swiping/gender-icon.js"></script>

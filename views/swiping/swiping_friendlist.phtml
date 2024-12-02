@@ -30,11 +30,14 @@
                                 <?php endif; ?>
                         </div>
                         <div class="friend-details">
-                            <span class="friendlist-name">
+                            <span class="friendlist-name friendlist-page">
                                 <a class="person_button" href="/anotherUser&username=<?= $friendUsername ?>">
                                     <?= $friendUsername ?>
                                 </a>
-                                <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                                <div class="button_container">
+                                    <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
+                                    <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                                </div>
                             </span>
                         </div>
                     </div>                
@@ -48,6 +51,21 @@
                                     <div class="button_container">
                                         <button class="confirmation-button" name="submit" type="submit">Yes</button>
                                         <button class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">No</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </dialog>
+
+                        <dialog id="confirmationPopupUnfriend<?= $friendId ?>" class="confirmationPopup">
+                            <div class="popup-content">
+                                <button class="closeButton" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">X</button>
+                                <h2 class="title_generalbox">Are you sure you want to unfriend <span><?= $friendUsername ?></span>?</h2>
+                                <form action="/unfriendPerson" method="post">
+                                    <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
+                                    <input type="hidden" name="receiverId" value="<?= $friendId ?>">
+                                    <div class="button_container">
+                                        <button class="confirmation-button" name="submit" type="submit">Yes</button>
+                                        <button class="confirmation-button" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">No</button>
                                     </div>
                                 </form>
                             </div>

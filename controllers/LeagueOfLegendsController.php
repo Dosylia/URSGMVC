@@ -600,6 +600,11 @@ class LeagueOfLegendsController
                 }
             }
 
+            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
+                header("location:/signup?message=Each champion must be unique");
+                exit();
+            }
+
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lol_id'] !== null) {
@@ -690,6 +695,14 @@ class LeagueOfLegendsController
                 }
             }
 
+            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
+                header("location:/signup?message=Each champion must be unique");
+                $response = array('message' => 'Each champ must be unique');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
@@ -763,6 +776,10 @@ class LeagueOfLegendsController
                 $statusChampion = $this->validateInput($_POST["skipSelection"]);
             }
 
+            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
+                header("location:/userProfile?message=Each champion must be unique");
+                exit();
+            }
 
             $updateLeague = $this->leagueOfLegends->updateLeagueData(
                 $this->getUserId(), 

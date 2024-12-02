@@ -16,7 +16,7 @@ function switchChatFilter(userId, status) {
 
     const jsonData = JSON.stringify(dataToSend);
 
-    fetch('/chatFilterSwitch', {
+    fetch('/chatFilterSwitchWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

@@ -68,7 +68,7 @@ fileInput.addEventListener('change', (event) => {
   }
 });
 
-function usePictureFrameWebsite(itemId, userId) {
+function usePictureFrame(itemId, userId) {
   console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {
@@ -78,7 +78,7 @@ function usePictureFrameWebsite(itemId, userId) {
 
   const jsonData = JSON.stringify(dataToSend);
   
-  fetch('index.php?action=usePictureFrame', {
+  fetch('index.php?action=usePictureFrameWebsite', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded'

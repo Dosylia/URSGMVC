@@ -161,6 +161,11 @@ class ValorantController
     
             }
 
+            if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
+                header("location:/signup?message=Each agents must be unique");
+                exit();
+            }
+
             $testValorantAccount = $this->user->getUserById($this->getUserId());
 
             if ($testValorantAccount && $testValorantAccount['valorant_id'] !== null) {
@@ -325,6 +330,11 @@ class ValorantController
             //     header("location:/userProfile?message=Not allowed");
             //     exit();
             // }
+
+            if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
+                header("location:/userProfile?message=Each agents must be unique");
+                exit();
+            }
 
             $updateValorant = $this->valorant->updateValorantData(
                 $this->getUserId(), 

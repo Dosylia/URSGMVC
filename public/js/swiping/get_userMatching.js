@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let sRank = document.getElementById('lolsRank');
     let sLevel = document.getElementById('lolsLevel');
     let sServer = document.getElementById('lolsServer');
-    let serverBackUp = document.getElementById('lolServer');
     let lolAccount = document.getElementById('lolAccount');
     let gender = document.getElementById('gender');
     let kindOfGamer = document.getElementById('kindOfGamer');
@@ -113,12 +112,11 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(data.lol_sUsername)
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
             document.querySelector('.box_league_account').style.display = 'flex';
-            sProfileIcon.src = `public/images/profileicon/${data.lol_sProfileIcon}.png`;
+            sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/${data.lol_sProfileIcon}.png`;
             sUsername.innerText = data.lol_account;
             sRank.innerText = data.lol_sRank;
             sLevel.innerText += `Level: ${sanitizeHtlm(data.lol_sLevel)}`;
             sServer.innerText = data.lol_server;
-            serverBackUp.remove();
         } else {
             document.querySelector('.box_league_account').style.display = 'none';
         }
@@ -128,49 +126,179 @@ document.addEventListener("DOMContentLoaded", function() {
         btnSwipeNo.disabled = false;
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
-        gender.innerHTML += ` ${sanitizeHtlm(data.user_gender)}`;
-        kindOfGamer.innerHTML += ` ${sanitizeHtlm(data.user_kindOfGamer)}`;
-        shortBio.innerHTML += ` ${sanitizeHtlm(decodeHtmlEntities(data.user_shortBio))}`;
+        const game = data.user_game; // For example, "League of Legends" or "Valorant"
+        const server = game === "League of Legends" ? data.lol_server : data.valorant_server;
+        
+        const aboutYouUsers = document.querySelector('.about_you_users'); // The container element
+        
+        // Map user gender to corresponding image classes
+        const isDarkMode = document.body.classList.contains('dark-mode');
+
+        // Define the image suffix based on dark mode
+        const imageSuffix = isDarkMode ? "-white" : "";
+        
+        // Gender Section with images
+        let genderHtml = `
+            <div class="gender about-users-containers">
+                <p class="about-users-title"><strong>Gender</strong></p>
+                <p class="about-users-box">
+        `;
+        
+        // Map user gender to corresponding image classes
+        switch (data.user_gender) {
+            case 'Female':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
+                `;
+                break;
+            case 'Male':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
+                `;
+                break;
+            case 'Non Binary':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-selected">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
+                `;
+                break;
+            case 'Trans':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-selected">
+                `;
+                break;
+            case 'Male and Female':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
+                `;
+                break;
+            case 'All':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-selected">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-selected">
+                `;
+                break;
+            default:
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
+                `;
+                break;
+        }
+        
+        genderHtml += `</p></div>`;
+        
+        // Queues Section (as previously shown)
+        let queuesHtml = `
+            <div class="queues about-users-containers">
+                <p class="about-users-title"><strong>Queues</strong></p>
+                <div class="about-users-box">
+        `;
+        
+        switch (data.user_kindOfGamer) {
+            case 'Chill':
+                queuesHtml += `
+                    <p class="about-users-selected">Chill</p>
+                    <p class="about-users-low-opacity">Competition</p>
+                `;
+                break;
+            case 'Competition':
+                queuesHtml += `
+                    <p class="about-users-low-opacity">Chill</p>
+                    <p class="about-users-selected">Competition</p>
+                `;
+                break;
+            default:
+                queuesHtml += `
+                    <p class="about-users-selected">Chill</p>
+                    <p class="about-users-selected">Competition</p>
+                `;
+                break;
+        }
+        queuesHtml += `</div></div>`;
+        
+        // Server Section (new part based on game)
+        let serverHtml = `
+            <div style="margin-bottom: 10px;" class="server about-users-containers">
+                <p class="about-users-title"><strong>Server</strong></p>
+                <p class="about-users-box about-users-selected">
+                    ${server ? server.toUpperCase() : "Unknow"}
+                </p>
+            </div>
+        `;
+        
+        // Bio Section
+        let bioHtml = `
+            <div class="about-users-bio">
+                <p class="about-users-box-bio">${data.user_shortBio ? sanitizeHtlm(decodeHtmlEntities(data.user_shortBio)) : "No bio available."}</p>
+            </div>
+        `;
+        
+        // Add all sections to the container
+        aboutYouUsers.innerHTML = `
+            <div class="top-part-about">
+                ${genderHtml}
+                ${queuesHtml}
+                ${serverHtml}
+            </div>
+                ${bioHtml}
+        `;
+        
         receiverId.value = data.user_id;
-            if (data.user_game === "League of Legends") {
-                lolMain1P.innerText = data.lol_main1;
-                lolMain2P.innerText = data.lol_main2;
-                lolMain3P.innerText = data.lol_main3;
-                lolRankP.innerText = data.lol_rank;
-                lolRoleP.innerText = data.lol_role;
-                lolMain1Pic.src = `public/images/champions/${sanitize(data.lol_main1)}.png`;
-                lolMain1Pic.alt = data.lol_main1;
-                lolMain2Pic.src = `public/images/champions/${sanitize(data.lol_main2)}.png`;
-                lolMain2Pic.alt = data.lol_main2;
-                lolMain3Pic.src = `public/images/champions/${sanitize(data.lol_main3)}.png`;
-                lolMain3Pic.alt = data.lol_main3;
-                lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank)}.png`;
-                lolRankPic.alt = data.lol_rank;
-                lolRolePic.src = `public/images/roles/${sanitize(data.lol_role)}.png`;
-                lolRolePic.alt = data.lol_role;
-                lolAccount.remove(); 
-                if (serverBackUp) { 
-                    serverBackUp.innerHTML += `<span>${data.lol_server}</span>`;
-                }
-            } else {
-                lolAccount.innerText =  data.valorant_account;
-                lolMain1P.innerText = data.valorant_main1;
-                lolMain2P.innerText = data.valorant_main2;
-                lolMain3P.innerText = data.valorant_main3;
-                lolRankP.innerText = data.valorant_rank;
-                lolRoleP.innerText = data.valorant_role;
-                lolMain1Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp`;
-                lolMain1Pic.alt = data.valorant_main1;
-                lolMain2Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp`;
-                lolMain2Pic.alt = data.valorant_main2;
-                lolMain3Pic.src = `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp`;
-                lolMain3Pic.alt = data.valorant_main3;
-                lolRankPic.src = `public/images/valorant_ranks/${sanitize(data.valorant_rank)}.png`;
-                lolRankPic.alt = data.valorant_rank;
-                lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role)}.webp`;
-                lolRolePic.alt = data.valorant_role;
-                serverBackUp.innerHTML += `<span>${data.valorant_server}</span>`;
-            }
+        if (data.user_game === "League of Legends" && data.lol_role) {
+            lolMain1P.innerText = data.lol_main1 || ""; 
+            lolMain2P.innerText = data.lol_main2 || ""; 
+            lolMain3P.innerText = data.lol_main3 || ""; 
+            lolRankP.innerText = data.lol_rank || "Unranked";
+            lolRoleP.innerText = data.lol_role || "Unknown";
+            lolMain1Pic.src = data.lol_main1 ? `public/images/champions/${sanitize(data.lol_main1)}.png` : ""; // Empty src if no main
+            lolMain1Pic.alt = data.lol_main1 || ""; 
+            lolMain2Pic.src = data.lol_main2 ? `public/images/champions/${sanitize(data.lol_main2)}.png` : ""; // Empty src if no main
+            lolMain2Pic.alt = data.lol_main2 || ""; 
+            lolMain3Pic.src = data.lol_main3 ? `public/images/champions/${sanitize(data.lol_main3)}.png` : ""; // Empty src if no main
+            lolMain3Pic.alt = data.lol_main3 || ""; 
+            lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank || "default")}.png`;
+            lolRankPic.alt = data.lol_rank || "Default Rank";
+            lolRolePic.src = `public/images/roles/${sanitize(data.lol_role || "default")}.png`;
+            lolRolePic.alt = data.lol_role || "Default Role";
+        } else if (data.user_game === "Valorant" && data.valorant_role) {
+            lolAccount.innerText = data.valorant_account || "Unknown Account";
+            lolMain1P.innerText = data.valorant_main1 || ""; 
+            lolMain2P.innerText = data.valorant_main2 || ""; 
+            lolMain3P.innerText = data.valorant_main3 || ""; 
+            lolRankP.innerText = data.valorant_rank || "Unranked";
+            lolRoleP.innerText = data.valorant_role || "Unknown";
+            lolMain1Pic.src = data.valorant_main1 ? `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp` : ""; // Empty src if no main
+            lolMain1Pic.alt = data.valorant_main1 || ""; 
+            lolMain2Pic.src = data.valorant_main2 ? `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp` : ""; // Empty src if no main
+            lolMain2Pic.alt = data.valorant_main2 || ""; 
+            lolMain3Pic.src = data.valorant_main3 ? `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp` : ""; // Empty src if no main
+            lolMain3Pic.alt = data.valorant_main3 || ""; 
+            lolRankPic.src = `public/images/valorant_ranks/${sanitize(data.valorant_rank || "default")}.png`;
+            lolRankPic.alt = data.valorant_rank || "Default Rank";
+            lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role || "default")}.webp`;
+            lolRolePic.alt = data.valorant_role || "Default Role";
+        }
+        
+        
 
             if (data.user_isVip === 1) {
                 const vipBadge = document.createElement('img');
@@ -190,6 +318,8 @@ document.addEventListener("DOMContentLoaded", function() {
         sProfileIcon.src = "";
         sProfileIcon.alt = "";
         frameSwiping.src = "";
+        isVip.innerHTML = "";
+        frameSwiping.style.opacity = '0';
         
         // Clear text content
         sUsername.innerText = "";
@@ -198,7 +328,6 @@ document.addEventListener("DOMContentLoaded", function() {
         username.innerText = "";
         userAge.innerText = "";
         lolAccount.innerText = "";
-        serverBackUp.innerHTML = "<strong>Server:</strong> ";
         gender.innerHTML = "<strong>Gender:</strong> "; 
         kindOfGamer.innerHTML = "<strong>Kind of Gamer:</strong> "; 
         shortBio.innerHTML = "<strong>ShortBio:</strong>"; 
@@ -370,12 +499,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const screenWidth = window.innerWidth;
     
     function handleSwipeGesture() {
-        const swipeDistance = touchendX - touchstartX;
+        const swipeDistanceX = touchendX - touchstartX;  // Horizontal distance
+        const swipeDistanceY = touchendY - touchstartY;  // Vertical distance
         const center = screenWidth / 2;
         console.log('Handling swipe gesture');
-        
-        // Only proceed if the swipe distance is greater than the threshold
-        if (Math.abs(swipeDistance) > threshold) {
+    
+        if (Math.abs(swipeDistanceX) > threshold && Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
             // Swipe right detection
             if (touchstartX < center && touchendX > touchstartX) {
                 swipeYes(userId, receiverId.value);
@@ -389,12 +518,14 @@ document.addEventListener("DOMContentLoaded", function() {
     
     swipeArea.addEventListener('touchstart', function(event) {
         touchstartX = event.changedTouches[0].screenX;
-        console.log('Touch start:', touchstartX);
+        touchstartY = event.changedTouches[0].screenY;  // Track vertical start position
+        console.log('Touch start:', touchstartX, touchstartY);
     }, false);
     
     swipeArea.addEventListener('touchend', function(event) {
         touchendX = event.changedTouches[0].screenX;
-        console.log('Touch end:', touchendX);
+        touchendY = event.changedTouches[0].screenY;  // Track vertical end position
+        console.log('Touch end:', touchendX, touchendY);
         handleSwipeGesture();
     }, false);
 });
