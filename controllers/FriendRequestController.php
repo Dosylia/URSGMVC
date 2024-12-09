@@ -6,6 +6,7 @@ use models\FriendRequest;
 use models\User;
 use models\Block;
 use models\GoogleUser;
+use models\ChatMessage;
 use traits\SecurityController;
 
 class FriendRequestController
@@ -16,6 +17,7 @@ class FriendRequestController
     private User $user;
     private Block $block;
     private GoogleUser $googleUser;
+    private ChatMessage $chatmessage;
     private ?int $frId = null;
     private ?int $userId = null;
     private ?int $senderId = null;
@@ -28,6 +30,7 @@ class FriendRequestController
         $this->user = new User();
         $this->block = new Block();
         $this -> googleUser = new GoogleUser();
+        $this->chatmessage = new ChatMessage();
     }
 
     public function pageFriendlist(): void
@@ -201,11 +204,13 @@ class FriendRequestController
                     $friendUsername = $friend['receiver_username'];
                     $friendPicture = $friend['receiver_picture'];
                     $friendGame = $friend['receiver_game'];
+                    $friendOnline = $friend['receiver_isOnline'];
                 } else {
                     $friendId = $friend['sender_id'];
                     $friendUsername = $friend['sender_username'];
                     $friendPicture = $friend['sender_picture'];
                     $friendGame = $friend['sender_game'];
+                    $friendOnline = $friend['sender_isOnline'];
                 }
     
                 // Add friend to the list, excluding the user themselves
@@ -216,6 +221,7 @@ class FriendRequestController
                         'friend_username' => $friendUsername,
                         'friend_picture' => $friendPicture,
                         'friend_game' => $friendGame,
+                        'friend_online' => $friendOnline,
                         'latest_message_date' => $friend['latest_message_date']
                     ];
                 }
@@ -423,7 +429,7 @@ class FriendRequestController
                         return;
                     }
 
-                    if ($user['user_id'] != $_POST["receiverId"])
+                    if ($user['user_id'] == $_POST["receiverId"])
                     {
                         echo json_encode(['success' => false, 'message' => 'Cant swipe yourself, weirdo']);
                         return;
@@ -874,6 +880,7 @@ class FriendRequestController
 
             if ($updateFriend)
             {
+                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
                 header("location:/friendlistPage?message=User unfriended");
                 exit();  
             }
@@ -889,6 +896,62 @@ class FriendRequestController
         {
             header("location:/friendlistPage?message=No form");
             exit();    
+        }
+    }
+
+    public function unfriendPersonPhone(): void
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+
+
+        $response = array('message' => 'Error');
+        if (isset($_POST['userData']))
+        {
+            $data = json_decode($_POST['userData']);
+            $senderId = $this->validateInput($data->senderId);
+            $this->setSenderId((int) $senderId);            
+            $receiverId = $this->validateInput($data->receiverId);
+            $this->setReceiverId((int) $receiverId);
+            $date = date("Y-m-d H:i:s");
+
+            // Validate token for user
+            if (!$this->validateToken($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+                
+
+            $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
+
+            if ($updateFriend)
+            {
+                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
+                $response = array('message' => 'Success');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit(); 
+            }
+            else
+            {
+                $response = array('message' => 'Could not unfriend user');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit(); 
+            }
+        }
+        else
+        {
+            $response = array('message' => 'No form');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit(); 
         }
     }
 

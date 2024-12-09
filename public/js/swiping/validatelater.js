@@ -32,8 +32,7 @@ function updateFriend(frId, userId, status) {
             if (data.success) {
                 friendRequestSpan.innerText = data.message;
 
-                // Update the friendRequests array and re-render     
-                frId = Number(frId); 
+                // Update the friendRequests array and re-render
                 friendRequests = friendRequests.filter(request => request.fr_id !== frId);
                 renderFriendRequests();
             } else {

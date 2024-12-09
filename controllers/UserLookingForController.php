@@ -123,7 +123,7 @@ class UserLookingForController
 
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
-            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
+            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
@@ -158,7 +158,7 @@ class UserLookingForController
             $title = "What are you looking for?";
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
-            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
+            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
@@ -220,16 +220,15 @@ class UserLookingForController
                         exit();
                     }
                 } else {
+                    if (($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3)) {
+                        header("location:/signup?message=Each champion must be unique");
+                        exit();
+                    }
                     if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
                     {
                         header("location:/signup?message=Inputs cannot be empty");
                         exit();
                     }
-                }
-
-                if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
-                    header("location:/userProfile?message=Each champion must be unique");
-                    exit();
                 }
                 
                 $testLeagueAccount = $this->user->getUserById($this->getUserId());
@@ -319,11 +318,11 @@ class UserLookingForController
 
                 $user = $this->user->getUserById($_SESSION['userId']);
 
-                if ($user['user_id'] != $this->getUserId())
-                {
-                    header("location:/userProfile?message=Could not update");
-                    exit();
-                }
+                // if ($user['user_id'] != $this->getUserId())
+                // {
+                //     header("location:/userProfile?message=Could not update");
+                //     exit();
+                // }
 
                 $statusChampion = 0;
                 if (isset($_POST["skipSelection"])) {
@@ -337,17 +336,20 @@ class UserLookingForController
                         exit();
                     }
                 } else {
-                    if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
+
+                    if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
+                        header("location:/userProfile?message=Each agents must be unique");
+                        exit();
+                    }
+
+                    if ((empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole)) || $statusChampion == "1")
                     {
                         header("location:/signup?message=Inputs cannot be empty");
                         exit();
                     }
                 }
 
-                if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
-                    header("location:/userProfile?message=Each agents must be unique");
-                    exit();
-                }
+
                 
                 $testValorantAccount = $this->user->getUserById($this->getUserId());
     

@@ -5,6 +5,7 @@ namespace controllers;
 use models\Block;
 use models\FriendRequest;
 use models\User;
+use models\GoogleUser;
 
 use traits\SecurityController;
 
@@ -15,6 +16,7 @@ class BlockController
     private Block $block;
     private FriendRequest $friendrequest;
     private User $user;
+    private GoogleUser $googleUser;
     private int $senderId;
     private int $receiverId;
     private int $blockId;
@@ -24,6 +26,7 @@ class BlockController
         $this->block = new Block();
         $this->friendrequest = new FriendRequest();
         $this -> user = new User();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function blockPerson(): void
@@ -76,6 +79,16 @@ class BlockController
 
     public function blockPersonPhone(): void
     {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+
+
         $response = array('message' => 'Error');
         if (isset($_POST['userData']))
         {
@@ -85,6 +98,13 @@ class BlockController
             $receiverId = $this->validateInput($data->receiverId);
             $this->setReceiverId((int) $receiverId);
             $date = date("Y-m-d H:i:s");
+
+            // Validate token for user
+            if (!$this->validateToken($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+                
 
             $blockPerson = $this->block->blockPerson($this->getSenderId(), $this->getReceiverId(), $date);
 
@@ -149,6 +169,18 @@ class BlockController
             header("location:/friendlistPage?message=No form");
             exit();    
         }
+    }
+
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function validateInput(string $input): string

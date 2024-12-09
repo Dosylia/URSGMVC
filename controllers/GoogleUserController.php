@@ -278,10 +278,16 @@ class GoogleUserController
             !$this->isConnectLf()
         ) {
             // Code block 4: User is connected via Google, Website and has League data, need looking for
-            $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            if ($this->isConnectLeague()) {
+                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+                $current_url = "https://ur-sg.com/lookingforuserlol";
+                $template = "views/signup/lookingforlol";
+            } else {
+                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+                $current_url = "https://ur-sg.com/lookingforuservalorant";
+                $template = "views/signup/lookingforvalorant";
+            }
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $current_url = "https://ur-sg.com/lookingforuserlol";
-            $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
             require "views/layoutSignup.phtml";
@@ -773,7 +779,7 @@ class GoogleUserController
                             'twitter' => $user['user_twitter'] ?? null,
                             'currency' => $user['user_currency'] ?? null,
                             'isVip' => $user['user_isVip'] ?? null,
-                            'hasChatFilter' => ['user_hasChatFilter'] ?? null,
+                            'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
                             'arcane' => $user['user_arcane'] ?? null,
                             'arcaneIgnore' => $user['user_ignore'] ?? null
                         );

@@ -96,6 +96,7 @@ $actionMap = [
     'friendlistPage' => [FriendRequestController::class, 'pageFriendlist'],
     'blockPerson' => [BlockController::class, 'blockPerson'],
     'unfriendPerson' => [FriendRequestController::class, 'unfriendPerson'],
+    'unfriendPersonPhone' => [FriendRequestController::class, 'unfriendPersonPhone'],
     'blockPersonPhone' => [BlockController::class, 'blockPersonPhone'],
     'unblockPerson' => [BlockController::class, 'unblockPerson'],
     'swipeDone' => [FriendRequestController::class, 'swipeStatus'],

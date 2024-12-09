@@ -76,7 +76,7 @@ class ValorantController
           $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
 
             
-            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Ascendant", "Immortal", "Radiant"];
+            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $valorant_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
@@ -139,11 +139,11 @@ class ValorantController
 
             $user = $this->user->getUserById($_SESSION['userId']);
 
-            if ($user['user_id'] != $this->getUserId())
-            {
-                header("location:/signup?message=Not allowed");
-                exit();
-            }
+            // if ($user['user_id'] != $this->getUserId())
+            // {
+            //     header("location:/signup?message=Not allowed");
+            //     exit();
+            // }
 
             if ($statusChampion == "1") {
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
@@ -153,17 +153,17 @@ class ValorantController
                 }
     
             } else {
+                if (($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3)) {
+                    header("location:/signup?message=Each agents must be unique");
+                    exit();
+                }
+
                 if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
                     header("location:/signup?message=Inputs cannot be empty");
                     exit();
                 }
     
-            }
-
-            if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
-                header("location:/signup?message=Each agents must be unique");
-                exit();
             }
 
             $testValorantAccount = $this->user->getUserById($this->getUserId());

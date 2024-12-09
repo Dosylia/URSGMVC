@@ -1236,7 +1236,8 @@ section.siteMap tr:nth-child(even) {
     #friendrequest-backend {
       color: var(--main--red);
       padding: 10px;
-      font-size: 1em;
+      font-size: 1.5em;
+      font-weight: 600;
     }
   
     .friend_request_ctn {
@@ -1363,6 +1364,7 @@ section.siteMap tr:nth-child(even) {
     align-items: center;
     justify-content: space-between;
     width: fit-content;
+    gap: 10px;
     }
 
     span.chat-name.friendlist-page, span.friendlist-name.friendlist-page {
@@ -1623,6 +1625,15 @@ section.siteMap tr:nth-child(even) {
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .online-status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4CAF50, #66bb6a); 
+      border: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
     
     .friend-name {
@@ -3174,7 +3185,7 @@ justify-content: center;
   margin: 20px 0;
 }
 
-.pagination a {
+.pagination a, .pagination button {
   display: inline-block;
   padding: 10px 15px;
   margin: 0 5px;
@@ -3182,15 +3193,20 @@ justify-content: center;
   color: var(--main--red);
   text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
-.pagination a.active {
+.dark-mode .pagination button {
+  background-color: var(--dark-ligher-grey);
+}
+
+.pagination a.active, .pagination button.active  {
   background-color: var(--main--red);
   color: white;
   border: none;
 }
 
-.pagination a:hover {
+.pagination a:hover, .pagination button:hover {
   background-color: var(--main--red);
   color: white;
 }

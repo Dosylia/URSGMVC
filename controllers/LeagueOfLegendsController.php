@@ -600,10 +600,10 @@ class LeagueOfLegendsController
                 }
             }
 
-            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
-                header("location:/signup?message=Each champion must be unique");
-                exit();
-            }
+            // if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3 && $statusChampion == "1") {
+            //     header("location:/signup?message=Each champion must be unique");
+            //     exit();
+            // }
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 

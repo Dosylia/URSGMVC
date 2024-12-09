@@ -40,8 +40,6 @@ class ChatMessageController
             $this->isConnectLf()
         ) {
             $user = $this->user->getUserById($_SESSION['userId']);
-            $usersAll = $this->user->getAllUsers();
-            $friendRequest = $this->friendrequest->getFriendRequest($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
 
             if ($getFriendlist) {
@@ -170,6 +168,13 @@ class ChatMessageController
         $this->setSenderId($data->senderId);
         $this->setReceiverId($data->receiverId);
         $this->setMessage($this->validateInput($data->message));
+
+        $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
+
+        if ($testFriendstatus != "accepted") {
+            echo json_encode(['success' => false, 'error' => 'You are not friends with this user']);
+            return;
+        }
     
         $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
     
@@ -201,6 +206,13 @@ class ChatMessageController
                         echo json_encode(['success' => false, 'error' => 'Request not allowed']);
                         return;
                     }
+                }
+
+                $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
+
+                if ($testFriendstatus != "accepted") {
+                    echo json_encode(['success' => false, 'error' => 'You are not friends with this user']);
+                    return;
                 }
     
             $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);

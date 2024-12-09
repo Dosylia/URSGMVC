@@ -1186,7 +1186,6 @@ class UserController
             // Get important datas
             require_once 'keys.php';
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsers();
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             if ($user['user_game'] == "League of Legends")
             {
@@ -1201,21 +1200,6 @@ class UserController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
 
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($usersAll as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['arcane_snapshot'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['arcane_snapshot'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
@@ -1872,7 +1856,7 @@ class UserController
 
     public function setLoLRoleLf($loLRoleLf)
     {
-        $this->loLRole = $loLRoleLf;
+        $this->loLRoleLf = $loLRoleLf; 
     }
 
     public function getValorantMain1()

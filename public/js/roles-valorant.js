@@ -4,6 +4,7 @@ const selectedRoles = [
     { name: 'Initiator', image: 'images/valorant_roles/midlaner.png' },
     { name: 'Sentinel', image: 'images/valorant_roles/jungle.png' },
     { name: 'Fill', image: 'images/valorant_roles/fill.png' },
+    { name: 'Any', image: 'images/valorant_roles/Any.png' },
   ];
   
   const selectedRolesContainer = document.getElementById('selected-roles-valorant');

@@ -75,60 +75,14 @@
                         </div><br>
                     </div>
                 </div>
-                <?php if ($user['user_ignore'] === 0): ?>
-                <div id="progress-bar-container">
-                    <div class="arcane-ign-comment">
-                        <p id="progressbar-comment"><?= $user['user_arcane'] ?></p>
-                    </div>
-                    <div id="progress-bar">
-                        <div id="zaun-bar"></div>
-                        <div id="piltover-bar"></div>
-                    </div>
-                    <div class="currency-sumup">
-                        <p id="zaun-currency">Zaun : <?= $totalZaunCurrency ?></p>
-                        <p id="piltover-currency">Piltover : <?= $totalPiltoverCurrency ?></p>
-                    </div>
-                </div>
-
-                <script>
-                    const piltoverPercentage = <?php echo json_encode($piltoverPercentage); ?>;
-                    const zaunPercentage = <?php echo json_encode($zaunPercentage); ?>;
-                    const leadingSide = <?php echo json_encode($totalPiltoverCurrency > $totalZaunCurrency ? 'Piltover' : 'Zaun'); ?>;
-                    const comment = document.getElementById('progressbar-comment');
-                    const userArcane = "<?= $user['user_arcane'] ?>";
-
-
-                    if (leadingSide === 'Piltover') {
-                        if (userArcane === 'Piltover') {
-                            comment.innerHTML = "Piltover is winning! Keep earning points.";
-                        } else {
-                            comment.innerHTML = "Zaun is losing, don't give up and earn more points!";
-                        }
-                    } else if (leadingSide === 'Zaun') {
-                        if (userArcane === 'Zaun') {
-                            comment.innerHTML = "Zaun is winning! Keep earning points.";
-                        } else {
-                            comment.innerHTML = "Piltover is losing, don't give up and earn more points!";
-                        }
-                    } else {
-                        comment.innerHTML = "The battle is neck and neck! Keep contributing points!";
-                        comment.style.color = "#000"; 
-                    }
-
-                    const piltoverBar = document.getElementById('piltover-bar');
-                    const zaunBar = document.getElementById('zaun-bar');
-
-                    piltoverBar.style.width = piltoverPercentage + "%";
-
-                    zaunBar.style.width = zaunPercentage + "%";
-                </script>
-
-            <?php endif; ?>
             </div>
         </div>        
     </div>
 
     <?php if(!empty($friendRequest)) :?>
+        <div id="friendRequestData" style="display: none;">
+            <?= json_encode($friendRequest); ?>
+        </div>
         <div class="friendrequest_box"><br>
             <h2 class="title_generalbox">Friend requests</h2><br>
             <span id="friendrequest-backend"></span>
@@ -428,6 +382,5 @@
 </section>
 
 <script src="public/js/swiping/dialog_picture_social.js"></script>
-<script type="module" src="public/js/swiping/arcane_pick.js"></script>
 <script src="public/js/swiping/gender-icon.js"></script>
 <script src="public/js/swiping/friendrequest.js"></script>

@@ -175,4 +175,27 @@ class ChatMessage extends DataBase
         }
     }
 
+    public function deleteMessageUnfriend($userId, $friendId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        DELETE FROM
+                                            `chatmessage`
+                                        WHERE
+                                            (chat_receiverId = ? AND chat_senderId = ?)
+                                            OR
+                                            (chat_receiverId = ? AND chat_senderId = ?)
+        ");
+
+        $deleteMessageTest = $query -> execute([$userId, $friendId, $friendId, $userId]);
+
+        if($deleteMessageTest)
+        {
+            return $deleteMessageTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

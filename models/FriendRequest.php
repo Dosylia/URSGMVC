@@ -129,64 +129,67 @@ class FriendRequest extends DataBase
     public function getFriendlist($userId)
     {
         $query = $this->bdd->prepare("
-                                        SELECT
-                                            fr.fr_id,
-                                            fr.fr_senderId,
-                                            fr.fr_receiverId,
-                                            fr.fr_date,
-                                            fr.fr_status,
-                                            fr.fr_acceptedAt,
-                                            us.user_id AS sender_id,
-                                            us.user_username AS sender_username,
-                                            us.user_picture AS sender_picture,
-                                            us.user_game AS sender_game,
-                                            ur.user_id AS receiver_id,
-                                            ur.user_username AS receiver_username,
-                                            ur.user_picture AS receiver_picture,
-                                            ur.user_game AS receiver_game,
-                                            c.latest_message_date
-                                        FROM
-                                            `friendrequest` AS fr
-                                        INNER JOIN
-                                            `user` AS us
-                                            ON fr.fr_senderId = us.user_id
-                                        INNER JOIN
-                                            `user` AS ur
-                                            ON fr.fr_receiverId = ur.user_id
-                                        LEFT JOIN (
-                                            SELECT
-                                                CASE 
-                                                    WHEN chat_senderId = :userId1 THEN chat_receiverId
-                                                    WHEN chat_receiverId = :userId2 THEN chat_senderId
-                                                END AS friend_id,
-                                                MAX(chat_date) AS latest_message_date
-                                            FROM
-                                                `chatmessage`
-                                            WHERE
-                                                chat_senderId = :userId3 OR chat_receiverId = :userId4
-                                            GROUP BY
-                                                friend_id
-                                        ) AS c
-                                        ON (fr.fr_senderId = c.friend_id AND fr.fr_receiverId = :userId5)
-                                        OR (fr.fr_receiverId = c.friend_id AND fr.fr_senderId = :userId6)
-                                        WHERE
-                                            (fr.fr_senderId = :userId7 OR fr.fr_receiverId = :userId8)
-                                        AND
-                                            fr.fr_status = 'accepted'
-                                        ORDER BY
-                                            COALESCE(c.latest_message_date, fr.fr_acceptedAt) DESC
-    ");
+            SELECT
+                fr.fr_id,
+                fr.fr_senderId,
+                fr.fr_receiverId,
+                fr.fr_date,
+                fr.fr_status,
+                fr.fr_acceptedAt,
+                us.user_id AS sender_id,
+                us.user_username AS sender_username,
+                us.user_picture AS sender_picture,
+                us.user_game AS sender_game,
+                us.user_lastRequestTime AS sender_lastRequestTime,
+                ur.user_id AS receiver_id,
+                ur.user_username AS receiver_username,
+                ur.user_picture AS receiver_picture,
+                ur.user_game AS receiver_game,
+                ur.user_lastRequestTime AS receiver_lastRequestTime,
+                c.latest_message_date,
+                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(us.user_lastRequestTime) <= 30) AS sender_isOnline,
+                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_lastRequestTime) <= 30) AS receiver_isOnline
+            FROM
+                `friendrequest` AS fr
+            INNER JOIN
+                `user` AS us ON fr.fr_senderId = us.user_id
+            INNER JOIN
+                `user` AS ur ON fr.fr_receiverId = ur.user_id
+            LEFT JOIN (
+                SELECT
+                    CASE 
+                        WHEN chat_senderId = :userId1 THEN chat_receiverId
+                        WHEN chat_receiverId = :userId2 THEN chat_senderId
+                    END AS friend_id,
+                    MAX(chat_date) AS latest_message_date
+                FROM
+                    `chatmessage`
+                WHERE
+                    chat_senderId = :userId3 OR chat_receiverId = :userId4
+                GROUP BY
+                    friend_id
+            ) AS c
+            ON (fr.fr_senderId = c.friend_id AND fr.fr_receiverId = :userId5)
+            OR (fr.fr_receiverId = c.friend_id AND fr.fr_senderId = :userId6)
+            WHERE
+                (fr.fr_senderId = :userId7 OR fr.fr_receiverId = :userId8)
+            AND
+                fr.fr_status = 'accepted'
+            ORDER BY
+                COALESCE(c.latest_message_date, fr.fr_acceptedAt) DESC
+        ");
     
-    $query->execute([
-        'userId1' => $userId,
-        'userId2' => $userId,
-        'userId3' => $userId,
-        'userId4' => $userId,
-        'userId5' => $userId,
-        'userId6' => $userId,
-        'userId7' => $userId,
-        'userId8' => $userId,
-    ]);
+        $query->execute([
+            'userId1' => $userId,
+            'userId2' => $userId,
+            'userId3' => $userId,
+            'userId4' => $userId,
+            'userId5' => $userId,
+            'userId6' => $userId,
+            'userId7' => $userId,
+            'userId8' => $userId,
+        ]);
+    
         $friendlistTest = $query->fetchAll();
     
         if ($friendlistTest) {
@@ -195,6 +198,7 @@ class FriendRequest extends DataBase
             return false;
         }
     }
+    
 
     public function acceptFriendRequest($frId) 
     {
@@ -396,6 +400,30 @@ class FriendRequest extends DataBase
         {
             return false;
         }        
+    }
+
+    public function getFriendStatus($receiverId, $senderId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            `fr_status`
+                                        FROM 
+                                            `friendrequest`
+                                        WHERE 
+                                            (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
+        ");
+    
+        $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
+        $friendStatusTest = $query->fetch();
+        
+        if ($friendStatusTest)
+        {
+            return $friendStatusTest['fr_status'];
+        }
+        else
+        {
+            return false;  
+        }
     }
 
 }

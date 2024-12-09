@@ -9,6 +9,7 @@ const selectedRanksLol = [
     { name: 'Ascendant', image: 'images/valorant_ranks/Ascendant.png' },
     { name: 'Immortal', image: 'images/valorant_ranks/Immortal.png' },
     { name: 'Radiant', image: 'images/valorant_ranks/Radiant.png' },
+    { name: 'Any', image: 'images/valorant_roles/Any.png' },
   ];
   
   const selectedRanksContainerValorant = document.getElementById('selected-ranks-valorant');
