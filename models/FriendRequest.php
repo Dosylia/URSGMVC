@@ -413,7 +413,7 @@ class FriendRequest extends DataBase
                                             (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
         ");
     
-        $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
         $friendStatusTest = $query->fetch();
         
         if ($friendStatusTest)

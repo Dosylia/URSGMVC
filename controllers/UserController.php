@@ -1367,6 +1367,7 @@ class UserController
             $status = $data->status;
 
             if (isset($_SESSION)) {
+                $user = $this-> user -> getUserById($userId);
 
                 if ($user['user_id'] != $userId)
                 {

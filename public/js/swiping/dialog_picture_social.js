@@ -105,7 +105,7 @@ function usePictureFrame(itemId, userId) {
   });
 }
 
-function RemovePictureFrameWebsite(itemId, userId) {
+function RemovePictureFrame(itemId, userId) {
   console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`);
 
   const dataToSend = {
@@ -115,7 +115,7 @@ function RemovePictureFrameWebsite(itemId, userId) {
 
   const jsonData = JSON.stringify(dataToSend);
   
-  fetch('index.php?action=removePictureFrame', {
+  fetch('index.php?action=removePictureFrameWebsite', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
