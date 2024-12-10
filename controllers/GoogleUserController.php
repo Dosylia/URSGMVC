@@ -9,6 +9,7 @@ use models\Valorant;
 use models\UserLookingFor;
 use models\MatchingScore;
 use models\Partners;
+use models\BannedUsers;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -26,6 +27,7 @@ class GoogleUserController
     private UserLookingFor $userlookingfor;
     private MatchingScore $matchingscore;
     private Partners $partners;
+    private BannedUsers $bannedusers;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -44,6 +46,7 @@ class GoogleUserController
         $this -> userlookingfor = new UserLookingFor();
         $this -> matchingscore = new MatchingScore();
         $this -> partners = new Partners();
+        $this -> bannedusers = new BannedUsers();
     }
 
     public function signUpBypass() {
@@ -421,6 +424,14 @@ class GoogleUserController
             }
             $googleEmail = $googleData->email;
             $this->setGoogleEmail($googleEmail);  
+
+            $testBan = $this->bannedusers->checkBan($this->getGoogleEmail());
+
+            if ($testBan) {
+                $response = array('message' => 'Account is banned');
+                echo json_encode($response);
+                exit;
+            }
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
 
@@ -737,6 +748,14 @@ class GoogleUserController
             }
             $googleEmail = $googleData->email;
             $this->setGoogleEmail($googleEmail);  
+
+            $testBan = $this->bannedusers->checkBan($this->getGoogleEmail());
+
+            if ($testBan) {
+                $response = array('message' => 'Account is banned');
+                echo json_encode($response);
+                exit;
+            }
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
 

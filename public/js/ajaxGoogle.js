@@ -53,7 +53,8 @@ function handleCredentialResponse(response) {
                 console.log("Server response indicates success:", data);
                 window.location.href = '/confirmMail';
             } else {
-                console.error("Server response indicates failure:", data);
+                spanError = document.querySelector('.form-error');
+                spanError.innerHTML = "Error: " + data.message;
             }
         })
         .catch(error => {
