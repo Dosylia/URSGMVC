@@ -418,38 +418,40 @@ class FriendRequestController
             $status = 'pending';
             $amount = 10;
 
+            // // Validate Authorization Header
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                if (isset($_SESSION)) {
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $_POST["senderId"])
-                    {
-                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                        return;
-                    }
+            // $token = $matches[1];
 
-                    if ($user['user_id'] == $_POST["receiverId"])
-                    {
-                        echo json_encode(['success' => false, 'message' => 'Cant swipe yourself, weirdo']);
-                        return;
-                    }
+            // // Validate Token for User
+            // if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //     return;
+            // }
 
-                    // $masterToken = $_POST['masterToken'];
 
-                    // if ($masterToken != $_SESSION['masterToken']) {
-                    //     echo json_encode(['success' => false, 'message' => 'Master token not valid']);
-                    //     return;
-                    // } else {
-                        
-                    //     $token = bin2hex(random_bytes(32));
-                    //     $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
-                        
-                    //     if ($createToken) {
-                    //         $_SESSION['masterToken'] = $token;
-                    //     }
-                    // }
+
+            if (isset($_SESSION)) {
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $_POST["senderId"])
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
                 }
+
+                if ($user['user_id'] == $_POST["receiverId"])
+                {
+                    echo json_encode(['success' => false, 'message' => 'Cant swipe yourself, weirdo']);
+                    return;
+                }
+            }
 
 
             $user = $this->user->getUserById($_POST["senderId"]);
@@ -486,31 +488,32 @@ class FriendRequestController
             $status = 'rejected';
             $amount = 10;
 
-                if (isset($_SESSION)) {
+            // // Validate Authorization Header
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $_POST["senderId"])
-                    {
-                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                        return;
-                    }
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
 
-                    // $masterToken = $_POST['masterToken'];
+            // $token = $matches[1];
 
-                    // if ($masterToken != $_SESSION['masterToken']) {
-                    //     echo json_encode(['success' => false, 'message' => 'Master token not valid']);
-                    //     return;
-                    // } else {
-                        
-                    //     $token = bin2hex(random_bytes(32));
-                    //     $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
-                        
-                    //     if ($createToken) {
-                    //         $_SESSION['masterToken'] = $token;
-                    //     }
-                    // }
+            // // Validate Token for User
+            // if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //     return;
+            // }
+
+            if (isset($_SESSION)) {
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $_POST["senderId"])
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
                 }
+            }
 
 
             $user = $this->user->getUserById($_POST["senderId"]);
@@ -794,6 +797,21 @@ class FriendRequestController
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
 
+            // // Validate Authorization Header
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
+
+            // $token = $matches[1];
+
+            // // Validate Token for User
+            // if (!$this->validateTokenWebsite($token, $userId)) {
+            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //     return;
+            // }
 
                 if (isset($_SESSION)) {
                     $user = $this->user->getUserById($_SESSION['userId']);
@@ -967,6 +985,18 @@ class FriendRequestController
     
         if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
             $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
             return hash_equals($storedToken, $token);
         }
     

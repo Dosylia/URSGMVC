@@ -2,6 +2,7 @@
 const buyButtons = document.querySelectorAll(".buy-button");
 const categoryFilter = document.getElementById('category-filter');
 const itemCards = document.querySelectorAll('.item-card');
+const token = localStorage.getItem('masterTokenWebsite');
 
 // FUNCTIONS
 function buyItem(itemId, userId) {
@@ -17,7 +18,8 @@ function buyItem(itemId, userId) {
     fetch('index.php?action=buyItemWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: "param=" + encodeURIComponent(jsonData)
     })
@@ -55,7 +57,8 @@ function buyRole(itemId, userId) {
     fetch('index.php?action=buyRoleWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: "param=" + encodeURIComponent(jsonData)
     })

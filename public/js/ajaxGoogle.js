@@ -50,6 +50,9 @@ function handleCredentialResponse(response) {
         .then(response => response.json())
         .then(data => {
             if (data.message === "Success") {
+                const token = data.masterTokenWebsite;
+                // Store token in local storage
+                localStorage.setItem('masterTokenWebsite', token);
                 console.log("Server response indicates success:", data);
                 window.location.href = '/confirmMail';
             } else {

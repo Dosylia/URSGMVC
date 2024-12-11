@@ -443,12 +443,12 @@ class GoogleUserController
                     if (!isset($_SESSION['googleId'])) 
                     {
                         // MASTER TOKEN SYSTEM
-                        // $token = bin2hex(random_bytes(32));
-                        // $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
-
-                        // if ($createToken) {
-                        //     $_SESSION['masterToken'] = $token;
-                        // }
+                        $token = bin2hex(random_bytes(32));
+                        $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
+    
+                        if ($createToken) {
+                            $_SESSION['masterTokenWebsite'] = $token;
+                        }
 
                         $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                         $_SESSION['full_name'] = $this->getGoogleFullName();
@@ -494,7 +494,8 @@ class GoogleUserController
                                                 'googleUser' => $testGoogleUser,
                                                 'user' => $user,
                                                 'leagueUser' => $lolUser,
-                                                'lookingForUser' => $lfUser
+                                                'lookingForUser' => $lfUser,
+                                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                             );                                
                                         } else {
                                             $response = array(
@@ -505,7 +506,8 @@ class GoogleUserController
                                                 'lookingForUserExists' => false,
                                                 'googleUser' => $testGoogleUser,
                                                 'user' => $user,
-                                                'leagueUser' => $lolUser
+                                                'leagueUser' => $lolUser,
+                                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                             );
                                         }
                                     } else {
@@ -515,7 +517,8 @@ class GoogleUserController
                                             'googleUser' => $testGoogleUser,
                                             'user' => $user,
                                             'userExists' => true,
-                                            'leagueUserExists' => false
+                                            'leagueUserExists' => false,
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                         );
                                     }
                                 } else {
@@ -540,7 +543,8 @@ class GoogleUserController
                                                 'user' => $user,
                                                 'valorantUser' => $valorantUser,
                                                 'lookingForUser' => $lfUser,
-                                                'valorantUserExists' => true
+                                                'valorantUserExists' => true,
+                                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                             );                                
                                         } else {
                                             $response = array(
@@ -552,7 +556,8 @@ class GoogleUserController
                                                 'googleUser' => $testGoogleUser,
                                                 'user' => $user,
                                                 'valorantUser' => $valorantUser,
-                                                'valorantUserExists' => true
+                                                'valorantUserExists' => true,
+                                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                             );
                                         }
                                     } else {
@@ -563,7 +568,8 @@ class GoogleUserController
                                             'user' => $user,
                                             'userExists' => true,
                                             'leagueUserExists' => false,
-                                            'valorantUserExists' => false
+                                            'valorantUserExists' => false,
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                         );
                                     }
                                 }
@@ -572,7 +578,8 @@ class GoogleUserController
                                     'message' => 'Success',
                                     'newUser' => false,
                                     'googleUser' => $testGoogleUser,
-                                    'userExists' => false
+                                    'userExists' => false,
+                                    'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                                 );
                             }
                         } else {
@@ -580,7 +587,8 @@ class GoogleUserController
                                 'message' => 'Success',
                                 'newUser' => false,
                                 'googleUser' => $testGoogleUser,
-                                'userExists' => false
+                                'userExists' => false,
+                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                             );
                         }
                     }
@@ -611,12 +619,12 @@ class GoogleUserController
                     }
 
                     // MASTER TOKEN SYSTEM
-                    // $token = bin2hex(random_bytes(32));
-                    // $createToken = $this->googleUser->storeMasterToken($this->getGoogleUserId(), $token);
+                    $token = bin2hex(random_bytes(32));
+                    $createToken = $this->googleUser->storeMasterTokenWebsite($this->getGoogleUserId(), $token);
 
-                    // if ($createToken) {
-                    //     $_SESSION['masterToken'] = $token;
-                    // }
+                    if ($createToken) {
+                        $_SESSION['masterTokenWebsite'] = $token;
+                    }
                     
                     if (!isset($_SESSION['googleId'])) {
                         $_SESSION['google_userId'] = $this->getGoogleUserId();
@@ -698,6 +706,7 @@ class GoogleUserController
                             'message' => 'Success',
                             'newUser' => true,
                             'googleUser' => $createGoogleUser,
+                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
                         );
                     } else {
                         $response = array(
@@ -976,8 +985,9 @@ class GoogleUserController
     
                 if($createGoogleUser) 
                 {
+                    $this->setGoogleUserId($createGoogleUser);
                     $token = bin2hex(random_bytes(32));
-                    $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                    $createToken = $this->googleUser->storeMasterToken($this->getGoogleUserId(), $token);
 
                     $googleData = array(
                         'googleId' => $this->getGoogleId(),

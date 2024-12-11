@@ -81,7 +81,8 @@ function usePictureFrame(itemId, userId) {
   fetch('index.php?action=usePictureFrameWebsite', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
       },
       body: "param=" + encodeURIComponent(jsonData)
   })
@@ -118,7 +119,8 @@ function RemovePictureFrame(itemId, userId) {
   fetch('index.php?action=removePictureFrameWebsite', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`,
       },
       body: "param=" + encodeURIComponent(jsonData)
   })

@@ -261,15 +261,32 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-                    if (isset($_SESSION)) {
-    
-                        if ($user['user_id'] != $userId)
-                        {
-                            echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                            return;
-                        }
+                // // Validate Authorization Header
+                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                //     return;
+                // }
+
+                // $token = $matches[1];
+
+                // // Validate Token for User
+                // if (!$this->validateTokenWebsite($token, $userId)) {
+                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                //     return;
+                // }
+
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
                     }
+                }
 
                 $item = $this->items->getItemById($itemId);
                 $user = $this->user->getUserById($userId);
@@ -439,15 +456,31 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-                    if (isset($_SESSION)) {
-    
-                        if ($user['user_id'] != $userId)
-                        {
-                            echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                            return;
-                        }
+                // // Validate Authorization Header
+                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                //     return;
+                // }
+
+                // $token = $matches[1];
+
+                // // Validate Token for User
+                // if (!$this->validateTokenWebsite($token, $userId)) {
+                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                //     return;
+                // }
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
                     }
+                }
 
                 $item = $this->items->getItemById($itemId);
                 $user = $this->user->getUserById($userId);
@@ -537,15 +570,31 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-                    if (isset($_SESSION)) {
-    
-                        if ($user['user_id'] != $userId)
-                        {
-                            echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                            return;
-                        }
+                // // Validate Authorization Header
+                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                //     return;
+                // }
+
+                // $token = $matches[1];
+
+                // // Validate Token for User
+                // if (!$this->validateTokenWebsite($token, $userId)) {
+                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                //     return;
+                // }
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
                     }
+                }
 
                 $ownedItems = $this->items->getOwnedItems($userId);
 
@@ -617,15 +666,31 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                    $user = $this->user->getUserById($_SESSION['userId']);
-                    if (isset($_SESSION)) {
-    
-                        if ($user['user_id'] != $userId)
-                        {
-                            echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                            return;
-                        }
+                // // Validate Authorization Header
+                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                //     return;
+                // }
+
+                // $token = $matches[1];
+
+                // // Validate Token for User
+                // if (!$this->validateTokenWebsite($token, $userId)) {
+                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                //     return;
+                // }
+
+                $user = $this->user->getUserById($_SESSION['userId']);
+                if (isset($_SESSION)) {
+
+                    if ($user['user_id'] != $userId)
+                    {
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        return;
                     }
+                }
 
                 if ($itemId && $userId) {
                     $removeItems = $this->items->removeItems($itemId, $userId);
@@ -654,6 +719,18 @@ class ItemsController
     
         if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
             $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
             return hash_equals($storedToken, $token);
         }
     

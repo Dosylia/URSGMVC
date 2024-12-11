@@ -15,6 +15,7 @@ function sendMessageToPhp(senderId, receiverId, message) {
     // let localOffset = utcDate.getTimezoneOffset() * 60000;
     // let localDate = new Date(utcDate.getTime() - localOffset);
     // let formattedTime = localDate.toLocaleTimeString();
+    const token = localStorage.getItem('masterTokenWebsite');
 
     const dataToSend = {
         senderId,
@@ -27,7 +28,8 @@ function sendMessageToPhp(senderId, receiverId, message) {
     fetch('index.php?action=sendMessageDataWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: "param=" + encodeURIComponent(jsonData)
     })

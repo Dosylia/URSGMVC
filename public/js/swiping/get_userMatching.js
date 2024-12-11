@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const frameSwiping = document.querySelector('.frame-swiping')
     const isVip = document.querySelector('.vip-badge');
     let profileFrames = null;
+    const token = localStorage.getItem('masterTokenWebsite');
 
     function getOwnedItems(userId) {
         fetch('/getOwnedItems', {
@@ -74,7 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('/getUserMatching', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
             },
             body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1`
         })
@@ -390,7 +392,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('index.php?action=swipeDoneWebsite', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
             },
             body: `swipe_yes=1&senderId=${encodeURIComponent(userId)}&receiverId=${encodeURIComponent(receiverId)}`
         })
@@ -421,7 +424,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('index.php?action=swipeDoneWebsite', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
             },
             body: `swipe_no=1&senderId=${encodeURIComponent(userId)}&receiverId=${encodeURIComponent(receiverId)}`
         })

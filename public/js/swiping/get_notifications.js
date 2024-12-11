@@ -2,13 +2,15 @@
 let userIdElementHeader = document.getElementById('userId');
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null;
 let originalTitle = document.title;
+const token = localStorage.getItem('masterTokenWebsite');
 
 // Fonction pour récupérer les demandes d'ami en attente
 function fetchFriendRequest(userId) {
     fetch('index.php?action=getFriendRequestWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: `userId=${encodeURIComponent(userId)}`
     })
@@ -32,7 +34,8 @@ function fetchUnreadMessage(userId) {
     fetch('index.php?action=getUnreadMessageWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: `userId=${encodeURIComponent(userId)}`
     })

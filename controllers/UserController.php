@@ -1366,6 +1366,22 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
+            // // Validate Authorization Header
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
+
+            // $token = $matches[1];
+
+            // // Validate Token for User
+            // if (!$this->validateTokenWebsite($token, $userId)) {
+            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //     return;
+            // }
+
             if (isset($_SESSION)) {
                 $user = $this-> user -> getUserById($userId);
 
@@ -1551,6 +1567,18 @@ class UserController
           }
           
           $darkMode = ($_SESSION['mode'] === 'dark');        
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function emptyInputSignup($username, $age, $short_bio) 

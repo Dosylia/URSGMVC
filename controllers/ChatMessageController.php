@@ -208,6 +208,22 @@ class ChatMessageController
                     }
                 }
 
+            // // Validate Authorization Header
+            //  $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            //  if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //      echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //      return;
+            //  }
+ 
+            //  $token = $matches[1];
+ 
+            //  // Validate Token for User
+            //  if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
+            //      echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //      return;
+            //  }
+
                 $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
 
                 if ($testFriendstatus != "accepted") {
@@ -355,15 +371,31 @@ class ChatMessageController
             $this->setFriendId((int) $_POST['friendId']);
 
 
-                if (isset($_SESSION)) {
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $this->getUserId())
-                    {
-                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                        return;
-                    }
+            if (isset($_SESSION)) {
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $this->getUserId())
+                {
+                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                    return;
                 }
+            }
+
+            //  // Validate Authorization Header
+            //  $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            //  if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //      echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //      return;
+            //  }
+ 
+            //  $token = $matches[1];
+ 
+            //  // Validate Token for User
+            //  if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+            //      echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //      return;
+            //  }
 
             $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
             $friend = $this->user->getUserById($this->getFriendId());
@@ -502,15 +534,31 @@ class ChatMessageController
         if (isset($_POST['userId'])) {
             $this->setUserId($_POST['userId']);
 
-                if (isset($_SESSION)) {
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $this->getUserId())
-                    {
-                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                        return;
-                    }
+            // // Validate Authorization Header
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
+
+            // $token = $matches[1];
+
+            // // Validate Token for User
+            // if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            //     return;
+            // }
+
+            if (isset($_SESSION)) {
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $this->getUserId())
+                {
+                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                    return;
                 }
+            }
 
             $unreadCounts = $this->chatmessage->countMessage($this->getUserId());
 
@@ -593,6 +641,18 @@ class ChatMessageController
     
         if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
             $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
             return hash_equals($storedToken, $token);
         }
     

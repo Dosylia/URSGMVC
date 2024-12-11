@@ -245,11 +245,75 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function storeMasterTokenWebsite($googleUserId, $token)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `googleuser`
+                                        SET 
+                                            `google_masterTokenWebsite` = ?
+                                        WHERE 
+                                            `google_userId` = ?
+        ");
+    
+         $tokenTest = $query->execute([$token, $googleUserId]);
+        
+        if ($tokenTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getMasterTokenWebsite($googleUserId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            `google_masterTokenWebsite`
+                                        FROM 
+                                            `googleuser`
+                                        WHERE 
+                                            `google_userId` = ?
+        ");
+    
+        $query->execute([$googleUserId]);
+        $token = $query->fetch();
+        
+        if ($token) {
+            return $token;
+        } else {
+            return false;
+        }
+    }
+
     public function getMasterTokenByUserId($userId)
     {
         $query = $this->bdd->prepare("
                                         SELECT 
                                             g.google_masterToken
+                                        FROM 
+                                            googleuser AS g
+                                        INNER JOIN
+                                            `user` AS u ON u.google_userId = g.google_userId
+                                        WHERE 
+                                            u.user_id = ?
+        ");
+    
+        $query->execute([$userId]);
+        $token = $query->fetch();
+    
+        if ($token) {
+            return $token;
+        } else {
+            return false;
+        }
+    }
+
+    public function getMasterTokenWebsiteByUserId($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            g.google_masterTokenWebsite
                                         FROM 
                                             googleuser AS g
                                         INNER JOIN

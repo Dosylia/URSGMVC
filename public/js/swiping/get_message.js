@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to fetch messages
     export function fetchMessages(userId, friendId) {
+        const token = localStorage.getItem('masterTokenWebsite');
         if (isFirstFetch) {
             showLoadingIndicator();
             isFirstFetch = false; // Reset the flag after the first fetch
@@ -59,7 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch('index.php?action=getMessageDataWebsite', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
             },
             body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(friendId)}`
         })

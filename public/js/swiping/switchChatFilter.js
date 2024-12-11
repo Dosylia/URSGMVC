@@ -8,6 +8,7 @@ let chatFilterActive = initialChatFilterState;
 // Function to switch chat filter
 function switchChatFilter(userId, status) {
     console.log(`Switching chat filter for user ID: ${userId}, status: ${status}`);
+    const token = localStorage.getItem('masterTokenWebsite');
 
     const dataToSend = {
         userId: userId,
@@ -19,7 +20,8 @@ function switchChatFilter(userId, status) {
     fetch('/chatFilterSwitchWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
         body: "param=" + encodeURIComponent(jsonData)
     })
