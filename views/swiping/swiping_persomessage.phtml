@@ -14,6 +14,11 @@
 
                     <input type="text" id="friendSearch" placeholder="Search for friends..." class="search-bar">
 
+                    <label for="toggleOnlineOnly" class="toggle-label">
+                        <input type="checkbox" id="toggleOnlineOnly">
+                        Show Online Friends Only
+                    </label>
+
                     <div class="friend-list" id="friendList">
                         <?php foreach($getFriendlist as $friend) : ?>
                             <?php
@@ -36,9 +41,9 @@
                             <div class="friend" data-sender-id="<?= $friendId ?>">
                                 <div class="friend-avatar">
                                     <?php if (!empty($friendPicture)): ?>  
-                                        <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
+                                        <img loading="lazy" src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
                                     <?php else :?>
-                                        <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
+                                        <img loading="lazy" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
                                     <?php endif; ?>        
                                 </div>
 
@@ -61,10 +66,10 @@
                                 </div>
                             </div>
                         </a>
-
                         <?php endforeach; ?>
                     </div>
                 </div>   
+                <div id="pagination"></div>
             </div>
                 
                 <div class="messages-container" style="display : block;">
@@ -105,6 +110,7 @@
                     </div>
                 </div>
             <script type="module" src="public/js/swiping/perso_chat.js"></script>
+            <script type="module" src="public/js/swiping/get_friendlist.js"></script>
             <script type="module" src="public/js/swiping/get_message.js"></script>
             <script type="module" src="public/js/swiping/send_messagephp.js"></script>
         </div>

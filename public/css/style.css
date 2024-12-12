@@ -754,6 +754,44 @@ section.siteMap tr:nth-child(even) {
       background-color: var(--dark-ligher-grey);
       color: white;
     }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 10px;
+      font-size: 16px;
+      color: var(--main--red); 
+      cursor: pointer;
+    }
+    
+    .toggle-label input {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      border-radius: 50%;
+      background-color: var(--light-grey);
+      transition: background-color 0.3s, transform 0.3s;
+      accent-color: var(--main--red);
+    }
+    
+    .toggle-label input:checked {
+      background-color: var(--main--red); 
+      transform: scale(1.1);
+    }
+    
+    .toggle-label input:checked + span {
+      color: var(--main--red); 
+    }
+    
+    .dark-mode .toggle-label input {
+      background-color: var(--dark-ligher-grey);
+    }
+    
+    .dark-mode .toggle-label input:checked {
+      background-color: var(--dark-red);
+    }
   
     #lol-fields,
     #valorant-fields {
@@ -3185,7 +3223,7 @@ justify-content: center;
   margin: 20px 0;
 }
 
-.pagination a, .pagination button {
+.pagination a, .pagination button, .pagination-button {
   display: inline-block;
   padding: 10px 15px;
   margin: 0 5px;
@@ -3196,17 +3234,17 @@ justify-content: center;
   cursor: pointer;
 }
 
-.dark-mode .pagination button {
+.dark-mode .pagination button , .dark-mode .pagination-button {
   background-color: var(--dark-ligher-grey);
 }
 
-.pagination a.active, .pagination button.active  {
+.pagination a.active, .pagination button.active, .pagination-button.active  {
   background-color: var(--main--red);
   color: white;
   border: none;
 }
 
-.pagination a:hover, .pagination button:hover {
+.pagination a:hover, .pagination button:hover, .pagination-button:hover {
   background-color: var(--main--red);
   color: white;
 }

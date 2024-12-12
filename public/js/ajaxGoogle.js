@@ -31,7 +31,8 @@ function handleCredentialResponse(response) {
         givenName: responsePayload.given_name,
         familyName: responsePayload.family_name,
         imageUrl: responsePayload.picture,
-        email: responsePayload.email
+        email: responsePayload.email,
+        idToken: response.credential,
     };
 
     if (!userData.googleId || !userData.email) {
@@ -40,6 +41,7 @@ function handleCredentialResponse(response) {
     }
 
     async function sendUserData(userData) {
+        console.log("User data:", userData);
         await fetch('/googleTest', {
             method: 'POST',
             headers: {

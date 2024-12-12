@@ -6,6 +6,7 @@ use models\Block;
 use models\FriendRequest;
 use models\User;
 use models\GoogleUser;
+use models\ChatMessage;
 
 use traits\SecurityController;
 
@@ -17,6 +18,7 @@ class BlockController
     private FriendRequest $friendrequest;
     private User $user;
     private GoogleUser $googleUser;
+    private ChatMessage $chatmessage;
     private int $senderId;
     private int $receiverId;
     private int $blockId;
@@ -27,6 +29,7 @@ class BlockController
         $this->friendrequest = new FriendRequest();
         $this -> user = new User();
         $this -> googleUser = new GoogleUser();
+        $this->chatmessage = new ChatMessage();
     }
 
     public function blockPerson(): void
@@ -50,8 +53,8 @@ class BlockController
 
             if ($blockPerson)
             {
-                $status = 'rejected';
-                $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId(), $status);
+                $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
 
                 if ($updateFriend)
                 {
@@ -111,6 +114,7 @@ class BlockController
             if ($blockPerson)
             {
                 $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
 
                 if ($updateFriend)
                 {

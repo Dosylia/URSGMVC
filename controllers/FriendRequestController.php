@@ -88,6 +88,82 @@ class FriendRequestController
         }
     }
 
+    public function getFriendlistWebsite(): void
+    {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $this->setUserId($userId);
+    
+        $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
+    
+        if ($getFriendlist) {
+            $formattedFriendList = [];
+    
+            foreach ($getFriendlist as $friend) {
+                if ($userId == $friend['sender_id']) {
+                    $friendId = $friend['receiver_id'];
+                    $friendUsername = $friend['receiver_username'];
+                    $friendPicture = $friend['receiver_picture'];
+                    $friendGame = $friend['receiver_game'];
+                    $friendOnline = $friend['receiver_isOnline'];
+                } else {
+                    $friendId = $friend['sender_id'];
+                    $friendUsername = $friend['sender_username'];
+                    $friendPicture = $friend['sender_picture'];
+                    $friendGame = $friend['sender_game'];
+                    $friendOnline = $friend['sender_isOnline'];
+                }
+    
+                // Add friend to the list, excluding the user themselves
+                if ($userId != $friendId) {
+                    $formattedFriendList[] = [
+                        'fr_id' => $friend['fr_id'],
+                        'friend_id' => $friendId,
+                        'friend_username' => $friendUsername,
+                        'friend_picture' => $friendPicture,
+                        'friend_game' => $friendGame,
+                        'friend_online' => $friendOnline,
+                        'latest_message_date' => $friend['latest_message_date']
+                    ];
+                }
+            }
+    
+            // Check if there are any friends to return
+            if (count($formattedFriendList) > 0) {
+                $data = [
+                    'success' => true,
+                    'friendlist' => $formattedFriendList,
+                ];
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No friends found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No friends found']);
+        }
+    }
+
     public function getFriendlist()
     {
         if (isset($_POST['userId'])) {
@@ -181,17 +257,6 @@ class FriendRequestController
         }
     
         $this->setUserId($userId);
-    
-        if (isset($_POST['isNotReactNative'])) {
-            if (isset($_SESSION)) {
-                $user = $this->user->getUserById($_SESSION['userId']);
-        
-                if ($user['user_id'] != $this->getUserId()) {
-                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                    return;
-                }
-            }
-        }
     
         $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
     

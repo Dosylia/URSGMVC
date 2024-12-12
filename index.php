@@ -107,6 +107,7 @@ $actionMap = [
     'getMessageDataWebsite' => [ChatMessageController::class, 'getMessageDataWebsite'],
     'getMessageDataPhone' => [ChatMessageController::class, 'getMessageDataPhone'],
     'getFriendlist' => [FriendRequestController::class, 'getFriendlist'],
+    'getFriendlistWebsite' => [FriendRequestController::class, 'getFriendlistWebsite'],
     'getFriendlistPhone' => [FriendRequestController::class, 'getFriendlistPhone'],
     'acceptFriendRequestPhone' => [FriendRequestController::class, 'acceptFriendRequestPhone'],
     'refuseFriendRequestPhone' => [FriendRequestController::class, 'refuseFriendRequestPhone'],

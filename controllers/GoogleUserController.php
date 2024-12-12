@@ -13,6 +13,7 @@ use models\BannedUsers;
 use traits\SecurityController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Google_Client;
 
 require 'vendor/autoload.php';
 
@@ -47,25 +48,6 @@ class GoogleUserController
         $this -> matchingscore = new MatchingScore();
         $this -> partners = new Partners();
         $this -> bannedusers = new BannedUsers();
-    }
-
-    public function signUpBypass() {
-        $_SESSION['google_userId'] = 67;
-        $_SESSION['full_name'] = 'Emma Montbarbon Dosylia';
-        $_SESSION['google_id'] = 100980850167766474664;
-        $_SESSION['email'] = "n7xemma@gmail.com";
-        $_SESSION['google_firstName'] = "Emma Montbarbon";
-        $_SESSION['userId'] = 57;
-        $_SESSION['username'] = "GirlLFeDaddy";
-        $_SESSION['gender'] = "Female";
-        $_SESSION['age'] = 26;
-        $_SESSION['kindOfGamer'] = "Chill";
-        $_SESSION['game'] = "League of Legends";
-        $_SESSION['lol_id'] = 15;
-        $_SESSION['lf_id'] = 8;
-
-        header("Location: /swiping");
-        exit();
     }
 
     public function homePage() 
@@ -170,8 +152,6 @@ class GoogleUserController
             }
         }
     }
-
-    
 
     public function pageSignUp()
     {
@@ -369,33 +349,32 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
-    public function verifyIdToken($idToken) {
-        $client = new GoogleClient(['client_id' => '666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com']);
-        $payload = $client->verifyIdToken($idToken);
-        return $payload;
+    public function verifyGoogleToken($idToken) {
+        $client = new Google_Client();
+        $client->setClientId('666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com'); 
+    
+        try {
+            $payload = $client->verifyIdToken($idToken);
+            if ($payload) {
+                $userId = $payload['sub'];
+                $email = $payload['email'];
+                $name = $payload['name'];
+                $picture = $payload['picture'];
+    
+                return [
+                    'userId' => $userId,
+                    'email' => $email,
+                    'name' => $name,
+                    'picture' => $picture,
+                    'verified' => true
+                ];
+            } else {
+                return ['verified' => false, 'error' => 'Invalid token'];
+            }
+        } catch (Exception $e) {
+            return ['verified' => false, 'error' => $e->getMessage()];
+        }
     }
-
-    // public function getGoogleData() 
-    // {
-    //     $_SESSION['google_userId'] = 67;
-    //     $_SESSION['full_name'] = 'Emma Montbarbon Dosylia';
-    //     $_SESSION['google_id'] = 100980850167766474664;
-    //     $_SESSION['email'] = "n7xemma@gmail.com";
-    //     $_SESSION['google_firstName'] = "Emma Montbarbon";
-    //     $_SESSION['userId'] = 57;
-    //     $_SESSION['username'] = "GirlLFeDaddy";
-    //     $_SESSION['gender'] = "Female";
-    //     $_SESSION['age'] = 26;
-    //     $_SESSION['kindOfGamer'] = "Chill";
-    //     $_SESSION['game'] = "League of Legends";
-    //     $_SESSION['lol_id'] = 15;
-    //     $_SESSION['lf_id'] = 8;
-
-    //     $response = array('message' => 'Success');
-    //     header('Content-Type: application/json');
-    //     echo json_encode($response);
-    //     exit;   
-    // }
 
     public function getGoogleData() 
     {
@@ -404,6 +383,23 @@ class GoogleUserController
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
             $googleData = json_decode($_POST['googleData']);
+            // $idToken = $googleData->idToken ?? null;
+
+            // if ($idToken) {
+            //     $verificationResult = $this->verifyGoogleToken($idToken);
+
+            //     if (!$verificationResult) {
+            //         $response = array('message' => 'Invalid token');
+            //         echo json_encode($response);
+            //         exit;
+            //     }
+            // } else {
+            //     $response = array('message' => 'No token');
+            //     echo json_encode($response);
+            //     exit;
+            // }
+
+
             $googleId = $googleData->googleId;
             $this->setGoogleId($googleId); 
             if (isset($googleData->fullName))

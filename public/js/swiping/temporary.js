@@ -2,12 +2,12 @@ let userId = document.getElementById('userId').value;
 let currentPage = 1;
 const itemsPerPage = 10; // Define how many friends to show per page
 let totalFriends = 0;
-let showOnlineOnly = false; 
+let showOnlineOnly = false; // Toggle for online-only filter
 
 // Fetch and render friend list
 function getFriendList(userId, page = 1) {
     const token = localStorage.getItem('masterTokenWebsite');
-    fetch('index.php?action=getFriendlistWebsite', {
+    fetch('index.php?getFriendlistWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -21,6 +21,7 @@ function getFriendList(userId, page = 1) {
                 totalFriends = data.friendlist.length;
                 let filteredFriends = data.friendlist;
 
+                // Apply online-only filter if enabled
                 if (showOnlineOnly) {
                     filteredFriends = filteredFriends.filter(friend => friend.friend_online === 1);
                 }
@@ -98,8 +99,7 @@ function setupPagination(totalItems, itemsPerPage) {
 
     // First Button
     const firstButton = document.createElement('button');
-    firstButton.className = 'pagination-button';
-    firstButton.textContent = '<<';
+    firstButton.textContent = 'First';
     firstButton.disabled = currentPage === 1;
     firstButton.addEventListener('click', () => {
         currentPage = 1;
@@ -109,8 +109,7 @@ function setupPagination(totalItems, itemsPerPage) {
 
     // Previous Button
     const prevButton = document.createElement('button');
-    prevButton.className = 'pagination-button';
-    prevButton.textContent = '<';
+    prevButton.textContent = 'Previous';
     prevButton.disabled = currentPage === 1;
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -121,7 +120,7 @@ function setupPagination(totalItems, itemsPerPage) {
     paginationContainer.appendChild(prevButton);
 
     // Page Buttons
-    const maxVisiblePages = 3;
+    const maxVisiblePages = 5;
     const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
@@ -141,8 +140,7 @@ function setupPagination(totalItems, itemsPerPage) {
 
     // Next Button
     const nextButton = document.createElement('button');
-    nextButton.className = 'pagination-button';
-    nextButton.textContent = '>';
+    nextButton.textContent = 'Next';
     nextButton.disabled = currentPage === totalPages;
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
@@ -154,8 +152,7 @@ function setupPagination(totalItems, itemsPerPage) {
 
     // Last Button
     const lastButton = document.createElement('button');
-    lastButton.className = 'pagination-button';
-    lastButton.textContent = '>>';
+    lastButton.textContent = 'Last';
     lastButton.disabled = currentPage === totalPages;
     lastButton.addEventListener('click', () => {
         currentPage = totalPages;
@@ -169,14 +166,16 @@ setInterval(() => {
     getFriendList(userId, currentPage);
 }, 30000); // Update every 30 seconds
 
+// Add toggle for online-only filter
 document.addEventListener('DOMContentLoaded', function () {
     const toggleOnlineOnly = document.getElementById('toggleOnlineOnly');
     if (toggleOnlineOnly) {
         toggleOnlineOnly.addEventListener('change', () => {
             showOnlineOnly = toggleOnlineOnly.checked;
-            currentPage = 1;
+            currentPage = 1; // Reset to the first page
             getFriendList(userId, currentPage);
         });
     }
+
     getFriendList(userId, currentPage);
 });
