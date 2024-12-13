@@ -939,6 +939,35 @@ section.siteMap tr:nth-child(even) {
     align-items: center;
     width: 100%;
     padding-top: 30px;
+    position: relative;
+  }
+
+  #report-button {
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--main--red);
+    color: white;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  #report-button:hover {
+    background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
+  } 
+
+  .report-feedback {
+    position: absolute;
+    top: 40px;
+    right: 150px;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: var(--main--red);
   }
 
   .swiping_row {
@@ -3996,6 +4025,7 @@ justify-content: center;
 
   .chat_page {
     gap: 10px;
+    min-height: unset;
   }
 
   .chat-interface {
@@ -4427,6 +4457,18 @@ justify-content: center;
     flex: 1 1 100%;
   }
 
+  .picture_frame_ctn {
+    flex-wrap: wrap;
+  }
+  
+  .picture_frame {
+    width: 20%;
+  }
+
+  .user_page #favDialogPicture {
+    min-width: 90%;
+  }
+
   #partners h2 {
     font-size: 4vh;
     margin-bottom: 40px;
@@ -4503,6 +4545,13 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    .frame_around_picture {
+      top: -20px;
+      left: -20px;
+      width: 180px;
+      height: 140px;
+    }
 
     #league_champions_user, .league_champions_user
     {
@@ -4671,13 +4720,6 @@ justify-content: center;
 
   .nav-swiping-row {
     gap: 10px;
-  }
-
-  .frame_around_picture {
-    top: -30px;
-    left: -62px;
-    width: 310px; 
-    height: 220px;
   }
 
   #join_piltover, #join_zaun {

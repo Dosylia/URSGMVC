@@ -6,10 +6,12 @@
 
     <script type="module" src="public/js/algo.js"></script> -->
 
-        <script type="module" src="public/js/swiping/get_userMatching.js"></script>
+        <script type="module" src="public/js/swiping/get_userMatching.js?nocache=<%= Date.now() %>"></script>
 
     <section class="user_page" id="swipe-area" style="display: none;">
         <div class="user_page_main_content_row swiping_row">
+            <button id="report-button">Report</button>
+            <span class="report-feedback"></span>
             <div class="main_box-swiping-main">
                 <div class="user_page_picture">
                     <div class="profile-picture-container">

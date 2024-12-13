@@ -146,7 +146,8 @@ $actionMap = [
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
     'updateFriendWebsite' => [FriendRequestController::class, 'updateFriendWebsite'],
     'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],
-    'notFound' => [GoogleUserController::class, 'notFoundPage']
+    'notFound' => [GoogleUserController::class, 'notFoundPage'],
+    'reportUserWebsite' => [UserController::class, 'reportUserWebsite'],
 ];
 
 $action = "home";

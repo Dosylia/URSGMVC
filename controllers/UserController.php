@@ -11,6 +11,7 @@ use models\UserLookingFor;
 use models\MatchingScore;
 use models\Items;
 use models\GoogleUser;
+use models\Report;
 use traits\SecurityController;
 
 class UserController
@@ -26,6 +27,7 @@ class UserController
     private MatchingScore $matchingscore;
     private Items $items;
     private GoogleUser $googleUser;
+    private Report $report;
     private $googleUserId;
     private $userId;
     private $username;
@@ -75,6 +77,7 @@ class UserController
         $this -> matchingscore = new MatchingScore();
         $this -> items = new Items();
         $this -> googleUser = new GoogleUser();
+        $this -> report = new Report();
     }
 
     public function getAllUsers()
@@ -1548,6 +1551,53 @@ class UserController
             $response = array('message' => 'Proper data not sent');
         }
         echo json_encode($response);
+    }
+
+    public function reportUserWebsite()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            $userId = $data->userId;
+            $reportedId = $data->reportedId;
+            $reason = $data->reason;
+            $status = $data->status;
+            $content = $data->content;
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            if (isset($_SESSION)) {
+                $user = $this-> user -> getUserById($userId);
+
+                if ($user['user_id'] != $userId)
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
+                }
+            }
+
+            $reportUser = $this->report->reportUser($userId, $reportedId, $content, $status, $reason);
+
+            if ($reportUser) {
+                $response = array('success' => true, 'message' => 'Reported successfully');
+            } else {
+                $response = array('success' => false, 'message' => 'Could not report user');
+            }
+            echo json_encode($response);
+        }
     }
 
     public function saveDarkMode()
