@@ -410,7 +410,7 @@ class UserController
 
             if ($updateSocial)
             {
-                header("location:/userProfile?message=Udpated successfully");
+                header("location:/userProfile?message=Updated successfully");
                 exit();  
             }
             else
@@ -525,10 +525,10 @@ class UserController
                             if($user['lf_valrole'] !== NULL)
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
-                                header("location:/userProfile?message=Udpated successfully");
+                                header("location:/userProfile?message=Updated successfully");
                                 exit();  
                             } else {
-                                header("location:/updateLookingForGame?message=Udpated successfully");
+                                header("location:/updateLookingForGame?message=Updated successfully");
                                 exit();  
                             }
                         } else {
@@ -547,10 +547,10 @@ class UserController
                             if($user['lf_lolrole'] !== NULL)
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
-                                header("location:/userProfile?message=Udpated successfully");
+                                header("location:/userProfile?message=Updated successfully");
                                 exit();  
                             } else {
-                                header("location:/updateLookingForGamePage?message=Udpated successfully");
+                                header("location:/updateLookingForGamePage?message=Updated successfully");
                                 exit();  
                             }
                         } else {
@@ -558,13 +558,13 @@ class UserController
                             exit();  
                         }
 
-                        header("location:/updateLookingForGamePage?message=Udpated successfully");
+                        header("location:/updateLookingForGamePage?message=Updated successfully");
                         exit();  
                     }
                 }
                 else 
                 {
-                    header("location:/userProfile?message=Udpated successfully");
+                    header("location:/userProfile?message=Updated successfully");
                     exit();  
                 }
             }
@@ -1113,6 +1113,8 @@ class UserController
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
                                         'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isPartner' => $userMatched['user_isPartner'],
+                                        'user_isCertified' => $userMatched['user_isCertified'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],
                                         'lol_main3' => $userMatched['lol_main3'],
@@ -1141,6 +1143,8 @@ class UserController
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
                                         'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isPartner' => $userMatched['user_isPartner'],
+                                        'user_isCertified' => $userMatched['user_isCertified'],
                                         'valorant_main1' => $userMatched['valorant_main1'],
                                         'valorant_main2' => $userMatched['valorant_main2'],
                                         'valorant_main3' => $userMatched['valorant_main3'],

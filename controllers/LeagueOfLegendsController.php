@@ -793,7 +793,7 @@ class LeagueOfLegendsController
 
             if ($updateLeague)
             {
-                header("location:/userProfile?message=Udpated successfully");
+                header("location:/userProfile?message=Updated successfully");
                 exit();  
             }
             else

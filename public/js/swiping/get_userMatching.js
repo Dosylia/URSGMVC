@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnSwipeNo = document.getElementById('swipe_no');
     const swipeArea = document.getElementById('swipe-area');
     const frameSwiping = document.querySelector('.frame-swiping')
-    const isVip = document.querySelector('.vip-badge');
     let profileFrames = null;
     const token = localStorage.getItem('masterTokenWebsite');
     const ErrorSpan = document.querySelector('.report-feedback');
+    const badgeContainer = document.querySelector('.badge-container-swiping');
 
     function getOwnedItems(userId) {
         fetch('/getOwnedItems', {
@@ -112,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function() {
         imageUser.src = data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg";
 
         // Fill the league of legends data if available
-        console.log(data.lol_sUsername)
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
             document.querySelector('.box_league_account').style.display = 'flex';
             sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/${data.lol_sProfileIcon}.png`;
@@ -303,12 +302,44 @@ document.addEventListener("DOMContentLoaded", function() {
         
         
 
-            if (data.user_isVip === 1) {
-                const vipBadge = document.createElement('img');
-                vipBadge.src = '/public/images/premium-badge.png';   
-                vipBadge.alt = 'Premium Badge';
-                isVip.appendChild(vipBadge);
-            }
+        if (data.user_isVip === 1) {
+            const spanBadge = document.createElement('span');
+            spanBadge.classList.add('vip-badge');
+            spanBadge.title = 'Premium Badge';
+        
+            const vipBadge = document.createElement('img');
+            vipBadge.src = '/public/images/premium-badge.png';
+            vipBadge.alt = 'Premium Badge';
+        
+            spanBadge.appendChild(vipBadge); 
+            badgeContainer.appendChild(spanBadge); 
+        }
+        
+        if (data.user_isPartner === 1) {
+            const spanBadge = document.createElement('span');
+            spanBadge.classList.add('vip-badge');
+            spanBadge.title = 'Partner Badge';
+        
+            const partnerBadge = document.createElement('img');
+            partnerBadge.src = '/public/images/partner-badge.png';
+            partnerBadge.alt = 'Partner Badge';
+        
+            spanBadge.appendChild(partnerBadge);
+            badgeContainer.appendChild(spanBadge); 
+        }
+        
+        if (data.user_isCertified === 1) {
+            const spanBadge = document.createElement('span');
+            spanBadge.classList.add('vip-badge');
+            spanBadge.title = 'Certified Badge';
+        
+            const certifiedBadge = document.createElement('img');
+            certifiedBadge.src = '/public/images/certified-badge.png';
+            certifiedBadge.alt = 'Certified Badge';
+        
+            spanBadge.appendChild(certifiedBadge);
+            badgeContainer.appendChild(spanBadge);
+        }
     }
 
     function clearData() {
@@ -321,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function() {
         sProfileIcon.src = "";
         sProfileIcon.alt = "";
         frameSwiping.src = "";
-        isVip.innerHTML = "";
+        badgeContainer.innerHTML = "";
         frameSwiping.style.opacity = '0';
         ErrorSpan.innerText = "";
         reportButton.disabled = false;

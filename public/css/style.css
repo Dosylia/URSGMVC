@@ -930,6 +930,7 @@ section.siteMap tr:nth-child(even) {
     overflow: hidden;
     word-break: break-word;
     margin-left: 10px;
+    position: relative;
   }
 
   .user_page_main_content_row {
@@ -943,23 +944,19 @@ section.siteMap tr:nth-child(even) {
   }
 
   #report-button {
+    all: unset;
     position: absolute;
-    top: 40px;
+    top: 20px;
     right: 20px;
-    padding: 10px;
-    font-size: 1em;
     border: none;
-    border-radius: 20px;
-    background-color: var(--main--red);
-    color: white;
     cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
+    z-index: 1000;
   }
 
-  #report-button:hover {
-    background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
-  } 
+  #report-button img {
+    display: block;
+    width: 30px;
+  }
 
   .report-feedback {
     position: absolute;
@@ -1505,6 +1502,7 @@ section.siteMap tr:nth-child(even) {
       width: 100%;
       padding: 10px 0;
       border-radius: 20px;
+      position: relative;
     }
 
     .main_box-swiping-main {
@@ -1515,6 +1513,7 @@ section.siteMap tr:nth-child(even) {
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg,#e0e0e0, white);
+      position: relative;
     }
 
     .frame-swiping {
@@ -3223,6 +3222,39 @@ justify-content: center;
   border-radius: 20px;
 }
 
+.badge-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  padding: 2px;
+  gap: 5px;
+  width: fit-content;
+  border-radius: 20px;
+  position: absolute;
+  top: 20px;
+  left: 40px;
+}
+
+.badge-container-swiping {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  padding: 2px;
+  gap: 5px;
+  width: fit-content;
+  border-radius: 20px;
+  position: absolute;
+  top: 20px;
+  left: 260px;
+  z-index: 1000;
+}
+
+.dark-mode .badge-container, .dark-mode .badge-container-swiping {
+  background-color: var(--dark-grey);
+}
+
 .vip-badge {
   color: black;
 }
@@ -4071,6 +4103,11 @@ justify-content: center;
 
 @media only screen and (max-width: 900px) {
 
+  .badge-container-swiping {
+    top: 40px;
+    left: 220px;
+  }
+
   #league_champions_user, .league_champions_user
   {
     width: 4vh;
@@ -4452,6 +4489,23 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+  .badge-container-swiping {
+    top: 20px;
+    left: 140px;
+  }
+
+  .badge-container-swiping img {
+    width: 20px;
+  }
+
+  #report-button {
+    top: 20px;
+  }
+
+  #report-button img {
+    width: 20px;
+  }
 
   .partner {
     flex: 1 1 100%;

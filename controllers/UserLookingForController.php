@@ -254,7 +254,7 @@ class UserLookingForController
                                 $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
                                 $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
                         }
-                        header("location:/userProfile?message=Udpated successfully");
+                        header("location:/userProfile?message=Updated successfully");
                         exit();  
                     }
                     else
@@ -374,7 +374,7 @@ class UserLookingForController
                                 $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
                                 $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
                         }
-                        header("location:/userProfile?message=Udpated successfully");
+                        header("location:/userProfile?message=Updated successfully");
                         exit();  
                     }
                     else
@@ -697,7 +697,7 @@ class UserLookingForController
                             $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
                             $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
                     }
-                    header("location:/userProfile?message=Udpated successfully");
+                    header("location:/userProfile?message=Updated successfully");
                     exit();  
                 }
                 else
@@ -783,7 +783,7 @@ class UserLookingForController
                                 $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
                                 $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
                         }
-                        header("location:/userProfile?message=Udpated successfully");
+                        header("location:/userProfile?message=Updated successfully");
                         exit();  
                     }
                     else

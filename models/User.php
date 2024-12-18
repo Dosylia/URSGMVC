@@ -301,6 +301,7 @@ class User extends DataBase
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
                                         WHERE
                                             u.user_game = ? 
+                                            AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 10 DAY)
                                             AND NOT EXISTS (
                                                 SELECT 1
                                                 FROM `friendrequest` AS fr1
