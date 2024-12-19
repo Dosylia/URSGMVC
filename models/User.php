@@ -524,6 +524,30 @@ class User extends DataBase
         }
     }
 
+    public function updateSocial2($username, $discord, $twitter, $instagram, $twitch, $bluesky) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user` 
+                                        SET
+                                            `user_discord` = ?,
+                                            `user_twitter` = ?,
+                                            `user_instagram` = ?,
+                                            `user_twitch` = ?,
+                                            `user_bluesky` = ?
+                                        WHERE
+                                            `user_username` = ?
+        ");
+
+        $updateSocialTest = $query->execute([$discord, $twitter, $instagram, $twitch, $bluesky, $username]);
+
+        if ($updateSocialTest) {
+            return true;
+        } else {
+            return false;  
+        }
+    }
+
     public function uploadPicture($username, $fileName) 
     {
         $query = $this->bdd->prepare("

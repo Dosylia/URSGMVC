@@ -801,8 +801,11 @@ class GoogleUserController
                             'twitch' => $user['user_twitch'] ?? null,
                             'instagram' => $user['user_instagram'] ?? null,
                             'twitter' => $user['user_twitter'] ?? null,
+                            'bluesky' => $user['user_bluesky'] ?? null,
                             'currency' => $user['user_currency'] ?? null,
                             'isVip' => $user['user_isVip'] ?? null,
+                            'isPartner'=> $user['user_isPartner'] ?? null,
+                            'isCertified' => $user['user_isCertified'] ?? null,
                             'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
                             'arcane' => $user['user_arcane'] ?? null,
                             'arcaneIgnore' => $user['user_ignore'] ?? null

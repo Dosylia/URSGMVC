@@ -40,6 +40,7 @@ class UserController
     private $twitter;
     private $instagram;
     private $twitch;
+    private $bluesky;
     private $fileName;
     private $loLMain1;
     private $loLMain2;
@@ -396,6 +397,8 @@ class UserController
             $this->setInstagram($instagram);
             $twitch = $this->validateInput($_POST["twitch"]);
             $this->setTwitch($twitch);
+            $bluesky = $this->validateInput($_POST["bluesky"]);
+            $this->setBluesky($bluesky);
 
             $user = $this->googleUser->getUserByEmail($_SESSION['email']);
 
@@ -405,7 +408,7 @@ class UserController
                 exit();
             }
 
-            $updateSocial = $this->user->updateSocial($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch());
+            $updateSocial = $this->user->updateSocial2($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch(), $this->getBluesky());
 
 
             if ($updateSocial)
@@ -1604,6 +1607,53 @@ class UserController
         }
     }
 
+    public function reportUserPhone()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            $userId = $data->userId;
+            $reportedId = $data->reportedId;
+            $reason = $data->reason;
+            $status = $data->status;
+            $content = $data->content;
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            if (isset($_SESSION)) {
+                $user = $this-> user -> getUserById($userId);
+
+                if ($user['user_id'] != $userId)
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
+                }
+            }
+
+            $reportUser = $this->report->reportUser($userId, $reportedId, $content, $status, $reason);
+
+            if ($reportUser) {
+                $response = array('success' => true, 'message' => 'Reported successfully');
+            } else {
+                $response = array('success' => false, 'message' => 'Could not report user');
+            }
+            echo json_encode($response);
+        }
+    }
+
     public function saveDarkMode()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -1634,6 +1684,19 @@ class UserController
     
         return false;
     }
+
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
 
     public function emptyInputSignup($username, $age, $short_bio) 
     {
@@ -1798,6 +1861,16 @@ class UserController
     public function setTwitch($twitch)
     {
         $this->twitch = $twitch;
+    }
+
+    public function getBluesky()
+    {
+        return $this->bluesky;
+    }
+
+    public function setBluesky($bluesky)
+    {
+        $this->bluesky = $bluesky;
     }
 
     public function getFileName()

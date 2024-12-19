@@ -53,7 +53,7 @@
                                 <i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
                             <?php endif; ?>
                                 <button class="btn_user_updates" id="opendialog_update_picture"><i class="fa-solid fa-image"></i> UPDATE PICTURE/ PROFILE DESIGN</button>   
-                            <?php if(isset($user['user_discord']) || isset($user['user_instagram']) || isset($user['user_twitter']) || isset($user['user_twitch'])) : ?>
+                            <?php if(isset($user['user_discord']) || isset($user['user_instagram']) || isset($user['user_twitter']) || isset($user['user_twitch']) || isset($user['user_bluesky'])) : ?>
                                 <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>UPDATE SOCIAL LINKS</button>
                             <?php else : ?>
                                 <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>ADD SOCIAL LINKS</button>
@@ -81,7 +81,12 @@
                             <?php if (!empty($user['user_twitch'])): ?>
                                 <a target="_blank" href="https://www.twitch.tv/<?= $user['user_twitch'] ?>">
                                 <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
-                            <?php endif; ?>                             
+                            <?php endif; ?>    
+                            
+                            <?php if (!empty($user['user_bluesky'])): ?>  
+                                <a target="_blank" href="https://bsky.app/profile/<?= $user['user_bluesky'] ?>">
+                                <img class="social_picture" src="public/images/bluesky_user.png" alt="bluesky_user"></a>
+                            <?php endif; ?> 
                         </div><br>
                     </div>
                 </div>
@@ -335,6 +340,13 @@
                 <input type="text" id="twitch" name="twitch" value="<?= $user['user_twitch'] ?>"><br><br>
             <?php else : ?>
                 <input type="text" id="twitch" name="twitch" placeholder="Your Twitch username.."><br><br>
+            <?php endif; ?> 
+
+            <label for="instagram">Bluesky:</label><br><br>
+            <?php if (!empty($user['user_bluesky'])): ?>  
+                <input type="text" id="bluesky" name="bluesky" value="<?= $user['user_bluesky'] ?>"><br><br>
+            <?php else : ?>
+                <input type="text" id="bluesky" name="bluesky" placeholder="Your Bluesky @.."><br><br>
             <?php endif; ?> 
 
 

@@ -30,7 +30,7 @@ function fetchFriendRequest(userId) {
 
 // Fonction pour récupérer les messages non lus pour l'utilisateur principal
 function fetchUnreadMessage(userId) {
-    
+    const servedMessageIds = JSON.parse(localStorage.getItem('servedMessageIds')) || [];
     fetch('index.php?action=getUnreadMessageWebsite', {
         method: 'POST',
         headers: {
@@ -43,8 +43,29 @@ function fetchUnreadMessage(userId) {
     .then(data => {
         if (data.success && data.unreadCount) {
             console.log('Message Count fetched successfully');
+
+            const newMessages = [];
+            const updatedServedMessageIds = [...servedMessageIds];
+
+            data.unreadCount.forEach((message) => {
+                if (!servedMessageIds.includes(message.chat_message)) {
+                    // Serve the notification
+                    displayNotification(`New message from ${message.user_username}: ${message.chat_message}`);
+
+                    // Track as served
+                    newMessages.push(message.chat_message);
+                    updatedServedMessageIds.push(message.chat_message);
+                }
+            });
+
+            // Update local storage
+            localStorage.setItem('servedMessageIds', JSON.stringify(updatedServedMessageIds));
+
+            
             fillUnread(data.unreadCount);
             updateUnreadMessagesForFriends(data.unreadCount);
+
+            cleanupServedMessages(data.unreadCount.map(m => m.chat_message));
         } else {
             clearContainer();
             console.log('No unread messages or success flag not set');
@@ -53,6 +74,12 @@ function fetchUnreadMessage(userId) {
     .catch(error => {
         console.error('Fetch error:', error);
     });
+}
+
+function cleanupServedMessages(currentUnreadMessages) {
+    const servedMessageIds = JSON.parse(localStorage.getItem('servedMessageIds')) || [];
+    const validServedMessages = servedMessageIds.filter(id => currentUnreadMessages.includes(id));
+    localStorage.setItem('servedMessageIds', JSON.stringify(validServedMessages));
 }
 
 function clearContainer() {

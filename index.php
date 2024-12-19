@@ -148,6 +148,7 @@ $actionMap = [
     'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],
     'notFound' => [GoogleUserController::class, 'notFoundPage'],
     'reportUserWebsite' => [UserController::class, 'reportUserWebsite'],
+    'reportUserPhone' => [UserController::class, 'reportUserPhone'],
 ];
 
 $action = "home";

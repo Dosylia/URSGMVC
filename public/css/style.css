@@ -967,6 +967,156 @@ section.siteMap tr:nth-child(even) {
     color: var(--main--red);
   }
 
+    /* Report Modal */
+  
+  #report-modal .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%);
+      width: 90%;
+      max-width: 700px;
+      min-width: 300px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 20px;
+      color: black;
+      text-align: center;
+  }
+
+  .report-textarea {
+    text-align: left;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .low-opacity {
+    opacity: 0.4;
+  }
+
+  .report-textarea label {
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+
+  #report-modal h2 {
+      color: black;
+      font-size: 1.5em;
+      font-weight: 800;
+  }
+
+  #report-modal .report-modal-p {
+    color: rgb(77, 73, 73);
+    margin-top: 30px;
+  }
+
+  .dark-mode   #report-modal .report-modal-p {
+    color: rgb(184, 170, 170);
+    margin-top: 30px;
+  }
+
+  .dark-mode #report-modal h2 {
+    color: white;
+}
+
+  .dark-mode #report-modal .modal-content {
+    background-color: var(--dark-ligher-grey);
+    color: white;
+}
+
+#report-modal {
+  position: relative;
+  z-index: 9000;
+}
+
+  #report-modal .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: var(--main--red);
+      font-size: 40px;
+      font-weight: 800;
+      cursor: pointer;
+  }
+
+  /* User Info */
+  #report-modal .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+      border: 1px solid var(--ligher--grey);
+      border-radius: 50px;
+      padding: 10px;
+  }
+
+  #report-username {
+      font-size: 2em;
+      font-weight: 800;
+  }
+
+  #report-modal .user-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+  }
+
+  /* Description Box */
+  #report-modal textarea {
+      width: 90%;
+      height: 120px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      font-size: 14px;
+      resize: none;
+      background-color: #e0e0e0;
+      color: black;
+  }
+
+  .dark-mode #report-modal textarea {
+    background-color: white;
+  }
+
+  .label-container {
+    width: 100%;
+    text-align: left;
+    padding-left: 20px;
+    padding-bottom: 10px;
+  }
+
+  .dark-mode #report-modal textarea {
+    background-color: var(--dark-grey);
+    color: white;
+}
+
+  /* Report Button */
+  #report-modal #submit-report {
+      margin-top: 15px;
+      background-color: var(--main--red);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      width: 30%;
+  }
+
+  #report-modal #submit-report:hover {
+      opacity: 0.9;
+  }
+
+  .report-modal-hidden {
+      display: none;
+  }
+
+  /* End report modal */
+
   .swiping_row {
     width: 60%;
   }
@@ -1580,6 +1730,18 @@ section.siteMap tr:nth-child(even) {
       position: relative;
       z-index: 2;
       cursor: pointer;
+    }
+
+    .notification-span {
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--main--red);
+      color: white;
+      border-radius: 20px;
+      padding: 5px;
+      font-size: 1.5vh;
     }
 
 

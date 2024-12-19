@@ -8,7 +8,25 @@
 
         <script type="module" src="public/js/swiping/get_userMatching.js?nocache=<%= Date.now() %>"></script>
 
-    <section class="user_page" id="swipe-area" style="display: none;">
+    <section class="user_page" id="swipe-area" style="display: none; position: relative;">
+        <div id="report-modal" class="modal report-modal-hidden">
+            <div class="modal-content">
+                <span id="close-modal" class="close">&times;</span>
+                <h2>Report User</h2>
+                <p class="report-modal-p">Please let us know why you are reporting this user</p>
+                <div class="user-info">
+                        <img id="image_users_modal" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                    <span id="report-username"></span>
+                </div>
+                <div class="report-textarea">
+                    <div class="label-container">
+                        <label for="report-description">Description <span class="low-opacity">(optional)</span></label>
+                    </div>
+                    <textarea id="report-description" placeholder="Provide details here..."></textarea>
+                </div>
+                <button id="submit-report">Report</button>
+            </div>
+        </div>
         <div class="user_page_main_content_row swiping_row">
             <button id="report-button"><img src="public/images/hammer.png" alt="report an user"></button>
             <span class="report-feedback"></span>
@@ -77,3 +95,5 @@
         </a>
     </section>
 <?php endif; ?>
+
+<script src="public/js/swiping/report.js?nocache=<%= Date.now() %>"></script>

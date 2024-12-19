@@ -4,6 +4,29 @@
             <div class="main_box">
                 <input id="receiverId" type="hidden" name="receiver_id" value="<?= $anotherUser['user_id'] ?>">
                 <button id="report-button"><img src="public/images/hammer.png" alt="report an user"></button>
+            <!-- Modal Structure -->
+            <div id="report-modal" class="modal report-modal-hidden">
+                <div class="modal-content">
+                    <span id="close-modal" class="close">&times;</span>
+                    <h2>Report User</h2>
+                    <p class="report-modal-p">Please let us know why you are reporting this user</p>
+                    <div class="user-info">
+                    <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
+                            <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
+                        <?php else :?>
+                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                        <?php endif; ?>
+                        <span id="report-username"><?= $anotherUser['user_username'] ?></span>
+                    </div>
+                    <div class="report-textarea">
+                        <div class="label-container">
+                            <label for="report-description">Description <span class="low-opacity">(optional)</span></label>
+                        </div>
+                        <textarea id="report-description" placeholder="Provide details here..."></textarea>
+                    </div>
+                    <button id="submit-report">Report</button>
+                </div>
+            </div>
                 <div class="user_page_picture">
                 <div class="profile-picture-container">
                         <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
@@ -209,4 +232,4 @@
 
 <script src="public/js/swiping/button_otherUser.js"></script>
 <script src="public/js/swiping/gender-icon.js"></script>
-<script src="public/js/swiping/report.js"></script>
+<script src="public/js/swiping/report.js?nocache=<%= Date.now() %>"></script>
