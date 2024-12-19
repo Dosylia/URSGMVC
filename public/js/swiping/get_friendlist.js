@@ -1,8 +1,8 @@
 let userId = document.getElementById('userId').value;
 let currentPage = 1;
-const itemsPerPage = 10; // Define how many friends to show per page
+const itemsPerPage = 10; 
 let totalFriends = 0;
-let showOnlineOnly = false; 
+let showOnlineOnly = localStorage.getItem('showOnlineFriends') === 'true';
 
 // Fetch and render friend list
 function getFriendList(userId, page = 1) {
@@ -172,8 +172,10 @@ setInterval(() => {
 document.addEventListener('DOMContentLoaded', function () {
     const toggleOnlineOnly = document.getElementById('toggleOnlineOnly');
     if (toggleOnlineOnly) {
+        toggleOnlineOnly.checked = showOnlineOnly; 
         toggleOnlineOnly.addEventListener('change', () => {
             showOnlineOnly = toggleOnlineOnly.checked;
+            localStorage.setItem('showOnlineFriends', showOnlineOnly); 
             currentPage = 1;
             getFriendList(userId, currentPage);
         });

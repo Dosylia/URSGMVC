@@ -312,15 +312,21 @@ class User extends DataBase
                                                 FROM `friendrequest` AS fr2
                                                 WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
                                             )
+                                            AND NOT EXISTS (
+                                                SELECT 1
+                                                FROM `block` AS b
+                                                WHERE b.block_senderId = ? AND b.block_receiverId = u.user_id
+                                            )
                                         ORDER BY RAND()
                                         LIMIT 5;
         ");
     
-        $query->execute([$game, $userId, $userId]);
+        $query->execute([$game, $userId, $userId, $userId]);
         $users = $query->fetchAll();
     
         return $users ?: false;
     }
+    
 
     public function storeDeletionToken($userId, $deletionToken, $expiry, $currentDate)
     {

@@ -3391,11 +3391,9 @@ justify-content: center;
   background-color: #e0e0e0;
   padding: 2px;
   gap: 5px;
-  width: fit-content;
+  width: 20%;
+  margin: auto;
   border-radius: 20px;
-  position: absolute;
-  top: 20px;
-  left: 40px;
 }
 
 .badge-container-swiping {
@@ -4134,6 +4132,10 @@ justify-content: center;
 
 @media only screen and (max-width: 1420px) {
 
+  .badge-container {
+    width: 30%;
+  }
+
   .btn_user_updates {
     width: 250px;
   }
@@ -4259,6 +4261,10 @@ justify-content: center;
   .main_section {
     background: url('../images/mobile_background.webp');
     background-size: 100% 100%;
+}
+
+.top-part-about {
+  justify-content: center;
 }
 
 }
@@ -4648,6 +4654,10 @@ justify-content: center;
     border-radius: 30px;
   }
 
+  .about-users-box {
+    width: 90%;
+  }
+
 }
 
 @media only screen and (max-width: 600px) {
@@ -4755,7 +4765,7 @@ justify-content: center;
 }
 
 .user_box {
-  padding: 0px 20px;
+  padding: 20px;
 }
 
 }
@@ -4929,13 +4939,36 @@ justify-content: center;
     border-radius: 1000px;
   }
 
+  .vip-badge img {
+    width: 20px;
+  }
+
+  .badge-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e0e0e0;
+    padding: 2px;
+    gap: 1px;
+    width: fit-content;
+    border-radius: 20px;
+  }
+
 }
 
 
 @media only screen and (max-width: 500px) {
 
+  .about-users-containers {
+    width: 100%;
+  }
+
   .nav-swiping-row {
     gap: 10px;
+  }
+
+  .vip-badge img {
+    width: 15px;
   }
 
   #join_piltover, #join_zaun {
@@ -4944,6 +4977,10 @@ justify-content: center;
     font-size: 0.7em;
     font-weight: bold;
     border-radius: 30px;
+  }
+
+  .about-users-box .about-users-selected {
+    font-size: 1.2vh;
   }
     
 }
