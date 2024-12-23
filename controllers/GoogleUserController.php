@@ -383,21 +383,21 @@ class GoogleUserController
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
             $googleData = json_decode($_POST['googleData']);
-            // $idToken = $googleData->idToken ?? null;
+            $idToken = $googleData->idToken ?? null;
 
-            // if ($idToken) {
-            //     $verificationResult = $this->verifyGoogleToken($idToken);
+            if ($idToken) {
+                $verificationResult = $this->verifyGoogleToken($idToken);
 
-            //     if (!$verificationResult) {
-            //         $response = array('message' => 'Invalid token');
-            //         echo json_encode($response);
-            //         exit;
-            //     }
-            // } else {
-            //     $response = array('message' => 'No token');
-            //     echo json_encode($response);
-            //     exit;
-            // }
+                if (!$verificationResult) {
+                    $response = array('message' => 'Invalid token');
+                    echo json_encode($response);
+                    exit;
+                }
+            } else {
+                $response = array('message' => 'No token');
+                echo json_encode($response);
+                exit;
+            }
 
 
             $googleId = $googleData->googleId;
@@ -439,11 +439,11 @@ class GoogleUserController
                     if (!isset($_SESSION['googleId'])) 
                     {
                         // MASTER TOKEN SYSTEM
-                        $token = bin2hex(random_bytes(32));
-                        $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
-    
-                        if ($createToken) {
-                            $_SESSION['masterTokenWebsite'] = $token;
+                        if (isset($testGoogleUser['google_masterTokenWebsite'])) {
+                            $token = $testGoogleUser['google_masterTokenWebsite'];
+                        } else {
+                            $token = bin2hex(random_bytes(32));
+                            $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
                         }
 
                         $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
@@ -451,6 +451,7 @@ class GoogleUserController
                         $_SESSION['google_id'] = $this->getGoogleId();
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
+                        $_SESSION['masterTokenWebsite'] = $token;
     
                         $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
                         if ($googleUser) {
@@ -630,87 +631,79 @@ class GoogleUserController
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
                     }
 
-                    $email = $this->getGoogleEmail();
+                    // $email = $this->getGoogleEmail();
     
-                    $mail = new PHPMailer;
-                    $mail->isSMTP();
-                    $mail->Host = 'smtp.ionos.de';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'contact@ur-sg.com';
-                    $mail->Password = $password_gmail;
-                    $mail->SMTPSecure = 'tls';
-                    $mail->Port = 587;
+                    // $mail = new PHPMailer;
+                    // $mail->isSMTP();
+                    // $mail->Host = 'smtp.ionos.de';
+                    // $mail->SMTPAuth = true;
+                    // $mail->Username = 'contact@ur-sg.com';
+                    // $mail->Password = $password_gmail;
+                    // $mail->SMTPSecure = 'tls';
+                    // $mail->Port = 587;
                     
-                    $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
-                    $mail->addAddress($this->getGoogleEmail());
-                    $mail->Subject = 'Confirm your email for UR-SG.com';
-                    $mail->isHTML(true);
+                    // $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
+                    // $mail->addAddress($this->getGoogleEmail());
+                    // $mail->Subject = 'Confirm your email for UR-SG.com';
+                    // $mail->isHTML(true);
                     
-                    $mail->CharSet = 'UTF-8'; 
-                    $mail->Encoding = 'quoted-printable'; 
+                    // $mail->CharSet = 'UTF-8'; 
+                    // $mail->Encoding = 'quoted-printable'; 
                     
-                    $mail->Body = "
-                    <html>
-                    <head>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                background-color: #f4f4f4;
-                                padding: 20px;
-                            }
-                            .container {
-                                background-color: #ffffff;
-                                padding: 20px;
-                                border-radius: 10px;
-                                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                            }
-                            .header {
-                                color: #333;
-                                font-size: 24px;
-                                margin-bottom: 20px;
-                            }
-                            .button {
-                                display: inline-block;
-                                padding: 10px 20px;
-                                color: #fff !important;
-                                background-color: #e74057;
-                                text-decoration: none;
-                                border-radius: 5px;
-                            }
-                            .footer {
-                                margin-top: 20px;
-                                font-size: 12px;
-                                color: #999;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class='container'>
-                            <div class='header'>Confirm Your Email for UR-SG.com</div>
-                            <p>Thank you for registering on UR-SG.com!</p>
-                            <p>Your email: {$email}</p>
-                            <p>To confirm your email, please click the button below:</p>
-                            <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
-                        </div>
-                        <div class='footer'>If you didn't request this, please ignore this email.</div>
-                    </body>
-                    </html>
-                    ";
+                    // $mail->Body = "
+                    // <html>
+                    // <head>
+                    //     <style>
+                    //         body {
+                    //             font-family: Arial, sans-serif;
+                    //             background-color: #f4f4f4;
+                    //             padding: 20px;
+                    //         }
+                    //         .container {
+                    //             background-color: #ffffff;
+                    //             padding: 20px;
+                    //             border-radius: 10px;
+                    //             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    //         }
+                    //         .header {
+                    //             color: #333;
+                    //             font-size: 24px;
+                    //             margin-bottom: 20px;
+                    //         }
+                    //         .button {
+                    //             display: inline-block;
+                    //             padding: 10px 20px;
+                    //             color: #fff !important;
+                    //             background-color: #e74057;
+                    //             text-decoration: none;
+                    //             border-radius: 5px;
+                    //         }
+                    //         .footer {
+                    //             margin-top: 20px;
+                    //             font-size: 12px;
+                    //             color: #999;
+                    //         }
+                    //     </style>
+                    // </head>
+                    // <body>
+                    //     <div class='container'>
+                    //         <div class='header'>Confirm Your Email for UR-SG.com</div>
+                    //         <p>Thank you for registering on UR-SG.com!</p>
+                    //         <p>Your email: {$email}</p>
+                    //         <p>To confirm your email, please click the button below:</p>
+                    //         <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
+                    //     </div>
+                    //     <div class='footer'>If you didn't request this, please ignore this email.</div>
+                    // </body>
+                    // </html>
+                    // ";
     
-                    if ($mail->send()) {
-                        $response = array(
-                            'message' => 'Success',
-                            'newUser' => true,
-                            'googleUser' => $createGoogleUser,
-                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
-                        );
-                    } else {
-                        $response = array(
-                            'message' => 'Failed to send email',
-                            'newUser' => false,
-                            'googleUser' => null,
-                        );
-                    }
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => true,
+                        'googleUser' => $createGoogleUser,
+                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                    );
                 }
             }
         }
@@ -768,8 +761,12 @@ class GoogleUserController
             {
 
      
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                if (isset($testGoogleUser['google_masterToken'])) {
+                    $token = $testGoogleUser['google_masterToken'];
+                } else {
+                    $token = bin2hex(random_bytes(32));
+                    $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                }
 
             
                 $googleUserData = array(
@@ -980,7 +977,7 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
-                $createGoogleUser = $this->googleUser->createGoogleUserPhone($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
+                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
     
                 if($createGoogleUser) 
                 {

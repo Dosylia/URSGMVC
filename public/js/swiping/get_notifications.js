@@ -3,6 +3,7 @@ let userIdElementHeader = document.getElementById('userId');
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null;
 let originalTitle = document.title;
 const token = localStorage.getItem('masterTokenWebsite');
+let globalUnreadCounts = {};
 
 // Fonction pour récupérer les demandes d'ami en attente
 function fetchFriendRequest(userId) {
@@ -28,9 +29,10 @@ function fetchFriendRequest(userId) {
     });
 }
 
-// Fonction pour récupérer les messages non lus pour l'utilisateur principal
+// Function to fetch unread messages for the main user
 function fetchUnreadMessage(userId) {
-    const servedMessageIds = JSON.parse(localStorage.getItem('servedMessageIds')) || [];
+    const servedSenderIds = JSON.parse(localStorage.getItem('servedSenderIds')) || []; // Track sender IDs
+
     fetch('index.php?action=getUnreadMessageWebsite', {
         method: 'POST',
         headers: {
@@ -42,32 +44,40 @@ function fetchUnreadMessage(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.unreadCount) {
-            console.log('Message Count fetched successfully');
+            console.log('Unread messages fetched successfully');
 
-            const newMessages = [];
-            const updatedServedMessageIds = [...servedMessageIds];
+            const newSenderIds = [];
+            const updatedServedSenderIds = [...servedSenderIds];
 
             data.unreadCount.forEach((message) => {
-                if (!servedMessageIds.includes(message.chat_message)) {
+                if (!servedSenderIds.includes(message.chat_senderId)) {
                     // Serve the notification
-                    displayNotification(`New message from ${message.user_username}: ${message.chat_message}`);
+                    const type = 'message';
+                    displayNotification(
+                        `New message from ${message.user_username}: ${message.chat_message}`,
+                        type,
+                        message.chat_senderId,
+                        message.user_picture
+                    );
 
-                    // Track as served
-                    newMessages.push(message.chat_message);
-                    updatedServedMessageIds.push(message.chat_message);
+                    // Track sender as served
+                    newSenderIds.push(message.chat_senderId);
+                    updatedServedSenderIds.push(message.chat_senderId);
                 }
             });
 
-            // Update local storage
-            localStorage.setItem('servedMessageIds', JSON.stringify(updatedServedMessageIds));
+            // Update local storage with new served sender IDs
+            localStorage.setItem('servedSenderIds', JSON.stringify(updatedServedSenderIds));
 
-            
+            // Update UI or perform other actions
             fillUnread(data.unreadCount);
             updateUnreadMessagesForFriends(data.unreadCount);
 
-            cleanupServedMessages(data.unreadCount.map(m => m.chat_message));
+            // Clean up old sender IDs
+            cleanupServedSenders(data.unreadCount.map(m => m.chat_senderId));
         } else {
             clearContainer();
+            localStorage.removeItem('servedSenderIds');
             console.log('No unread messages or success flag not set');
         }
     })
@@ -76,10 +86,10 @@ function fetchUnreadMessage(userId) {
     });
 }
 
-function cleanupServedMessages(currentUnreadMessages) {
-    const servedMessageIds = JSON.parse(localStorage.getItem('servedMessageIds')) || [];
-    const validServedMessages = servedMessageIds.filter(id => currentUnreadMessages.includes(id));
-    localStorage.setItem('servedMessageIds', JSON.stringify(validServedMessages));
+function cleanupServedSenders(currentUnreadSenderIds) {
+    const servedSenderIds = JSON.parse(localStorage.getItem('servedSenderIds')) || [];
+    const validServedSenderIds = servedSenderIds.filter(id => currentUnreadSenderIds.includes(id));
+    localStorage.setItem('servedSenderIds', JSON.stringify(validServedSenderIds));
 }
 
 function clearContainer() {
@@ -135,28 +145,26 @@ function fillUnread(unreadCounts) {
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami
 function updateUnreadMessagesForFriends(unreadCounts) {
-    // Convertir unreadCounts en un objet pour un accès plus rapide
-    const unreadCountsMap = {};
+    // Update global unread counts
     unreadCounts.forEach(unreadCount => {
-        unreadCountsMap[unreadCount.chat_senderId] = unreadCount.unread_count;
+        globalUnreadCounts[unreadCount.chat_senderId] = unreadCount.unread_count;
     });
 
+    // Update currently visible friends
     const friendElements = document.querySelectorAll('.friend');
 
     friendElements.forEach(friendElement => {
         const friendId = friendElement.getAttribute('data-sender-id');
-        
         const friendContainer = document.getElementById(`unread_messages_for_friend_container_${friendId}`);
         if (!friendContainer) {
-            console.log(`friendContainer avec ID ${friendId} non trouvé`);
+            console.log(`friendContainer with ID ${friendId} not found`);
             return;
         }
 
         friendContainer.innerHTML = '';
 
-        const unreadCount = unreadCountsMap[friendId];
+        const unreadCount = globalUnreadCounts[friendId] || 0;
         if (unreadCount > 0) {
-            
             const span = document.createElement('span');
             span.className = 'unread-count';
             span.style.marginLeft = '10px';
@@ -170,6 +178,7 @@ function updateUnreadMessagesForFriends(unreadCounts) {
         }
     });
 }
+
 
 
 // Fonction pour remplir les demandes d'ami en attente

@@ -2,12 +2,14 @@ let userIdElementHeaderCurrency = document.getElementById('userId');
 let userIdHeaderCurrency = userIdElementHeaderCurrency ? userIdElementHeaderCurrency.value : null;
 
 function getCurrency(userId) {
-    fetch('index.php?action=getCurrency', {
+    const token = localStorage.getItem('masterTokenWebsite');
+    fetch('index.php?action=getCurrencyWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
         },
-        body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1`
+        body: `userId=${encodeURIComponent(userId)}`
     })
     .then(response => response.json())
     .then(data => {

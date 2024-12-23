@@ -401,7 +401,7 @@ class ChatMessageController
             $friend = $this->user->getUserById($this->getFriendId());
             $user = $this->user->getUserById($this->getUserId());
 
-            if ($messages) {
+            if (isset($_POST['firstFriend']) && $_POST['firstFriend'] === "no" && $messages) {
                 $this->chatmessage->updateMessageStatus('read', $this->getUserId(), $this->getFriendId());
             }
 
@@ -441,6 +441,15 @@ class ChatMessageController
 
     public function deleteOldMessage(): void
     {
+        require_once 'keys.php';
+
+        $token = $_GET['token'] ?? null;
+
+        if (!isset($token) || $token !== $tokenRefresh) { 
+            header("Location: /?message=Unauthorized");
+            exit();
+        }
+        
         try {
             $this->chatmessage->createRecentMessagesTable();
             $deleteOldMessage = $this->chatmessage->deleteOldMessage();
@@ -534,30 +543,20 @@ class ChatMessageController
         if (isset($_POST['userId'])) {
             $this->setUserId($_POST['userId']);
 
-            // // Validate Authorization Header
-            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //     return;
-            // }
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
 
-            // $token = $matches[1];
+            $token = $matches[1];
 
-            // // Validate Token for User
-            // if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //     return;
-            // }
-
-            if (isset($_SESSION)) {
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                if ($user['user_id'] != $this->getUserId())
-                {
-                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                    return;
-                }
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
             }
 
             $unreadCounts = $this->chatmessage->countMessage($this->getUserId());

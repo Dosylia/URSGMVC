@@ -59,7 +59,7 @@ function renderFriendList(friendList, page) {
         const img = document.createElement('img');
         img.src = friend.friend_picture ? `public/upload/${friend.friend_picture}` : 'public/images/defaultprofilepicture.jpg';
         img.alt = `Avatar ${friend.friend_username}`;
-        img.loading = 'lazy'; // Lazy loading images
+        img.loading = 'lazy';
         avatarDiv.appendChild(img);
 
         const detailsDiv = document.createElement('div');
@@ -87,8 +87,25 @@ function renderFriendList(friendList, page) {
         friendElement.appendChild(friendDiv);
 
         friendListContainer.appendChild(friendElement);
+
+        // Update unread counts for this friend
+        const unreadCount = globalUnreadCounts[friend.friend_id] || 0;
+        const friendContainer = document.getElementById(`unread_messages_for_friend_container_${friend.friend_id}`);
+        if (unreadCount > 0 && friendContainer) {
+            const span = document.createElement('span');
+            span.className = 'unread-count';
+            span.style.marginLeft = '10px';
+
+            const button = document.createElement('button');
+            button.className = 'unread_message';
+            button.textContent = unreadCount;
+
+            span.appendChild(button);
+            friendContainer.appendChild(span);
+        }
     });
 }
+
 
 // Set up pagination
 function setupPagination(totalItems, itemsPerPage) {

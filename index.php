@@ -114,6 +114,7 @@ $actionMap = [
     'persoChat' => [ChatMessageController::class, 'pagePersoMessage'],
     'getUserMatching' => [UserController::class, 'getUserMatching'],
     'getCurrency' => [UserController::class, 'getCurrency'],
+    'getCurrencyWebsite' => [UserController::class, 'getCurrencyWebsite'],
     'leaderboard' => [UserController::class, 'pageleaderboard'],
     'store' => [ItemsController::class, 'pageStore'],
     'getItems' => [ItemsController::class, 'getItems'],

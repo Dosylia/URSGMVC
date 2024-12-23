@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Function to fetch messages
     export function fetchMessages(userId, friendId) {
         const token = localStorage.getItem('masterTokenWebsite');
+        const firstFriend = document.getElementById('firstFriend') ? 'yes' : 'no';
+        console.log('firstFriend:', firstFriend);
         if (isFirstFetch) {
             showLoadingIndicator();
             isFirstFetch = false; // Reset the flag after the first fetch
@@ -63,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `Bearer ${token}`,
             },
-            body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(friendId)}`
+            body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
         })
         .then(response => response.json())
         .then(data => {

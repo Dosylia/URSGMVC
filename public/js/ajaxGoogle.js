@@ -56,7 +56,7 @@ function handleCredentialResponse(response) {
                 // Store token in local storage
                 localStorage.setItem('masterTokenWebsite', token);
                 console.log("Server response indicates success:", data);
-                window.location.href = '/confirmMail';
+                window.location.href = '/signup';
             } else {
                 spanError = document.querySelector('.form-error');
                 spanError.innerHTML = "Error: " + data.message;

@@ -41,6 +41,7 @@ function fetchAllFriends(userId) {
 }
 
 // Search and filter friends
+// Search and filter friends
 function searchFriends(query) {
     const friendListContainer = document.getElementById('friendList');
     friendListContainer.innerHTML = ''; // Clear the current list
@@ -68,19 +69,34 @@ function searchFriends(query) {
         const detailsDiv = document.createElement('div');
         detailsDiv.className = 'friend-details';
 
+        // Construct chatNameSpan with username, unread messages container, and online status
         const chatNameSpan = document.createElement('span');
         chatNameSpan.className = 'chat-name clickable';
-        chatNameSpan.textContent = friend.friend_username;
-
-        if (friend.friend_online === 1) {
-            const onlineStatus = document.createElement('span');
-            onlineStatus.className = 'online-status';
-            chatNameSpan.appendChild(onlineStatus);
-        }
+        chatNameSpan.innerHTML = `
+            ${friend.friend_username}
+            <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>
+            ${friend.friend_online === 1 ? '<span class="online-status"></span>' : ''}
+        `;
 
         const gameLogo = document.createElement('img');
         gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/lol-logo.png' : 'public/images/Valorant.png';
         gameLogo.alt = friend.friend_game;
+
+        // Update unread messages count if applicable
+        const unreadCount = globalUnreadCounts[friend.friend_id] || 0;
+        if (unreadCount > 0) {
+            const unreadMessagesContainer = chatNameSpan.querySelector(`#unread_messages_for_friend_container_${friend.friend_id}`);
+            const span = document.createElement('span');
+            span.className = 'unread-count';
+            span.style.marginLeft = '10px';
+
+            const button = document.createElement('button');
+            button.className = 'unread_message';
+            button.textContent = unreadCount;
+
+            span.appendChild(button);
+            unreadMessagesContainer.appendChild(span);
+        }
 
         detailsDiv.appendChild(chatNameSpan);
         detailsDiv.appendChild(gameLogo);
@@ -92,6 +108,7 @@ function searchFriends(query) {
         friendListContainer.appendChild(friendElement);
     });
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const userId = document.getElementById('userId').value;

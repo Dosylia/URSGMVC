@@ -21,7 +21,9 @@ class GoogleUser extends DataBase
                                                 `google_fullName`,
                                                 `google_firstName`,                                                
                                                 `google_lastName`,
-                                                `google_email`
+                                                `google_email`,
+                                                `google_masterTokenWebsite`,
+                                                `google_masterToken`
                                             FROM
                                                 `googleuser`
                                             WHERE
@@ -42,36 +44,36 @@ class GoogleUser extends DataBase
         }
     }
 
+    // public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
+    // {
+    //     $query = $this -> bdd -> prepare("
+    //                                         INSERT INTO `googleuser`(
+    //                                             `google_id`,
+    //                                             `google_fullName`,
+    //                                             `google_firstName`,                                                
+    //                                             `google_lastName`,
+    //                                             `google_email`
+    //                                         )
+    //                                         VALUES (
+    //                                             ?,
+    //                                             ?,
+    //                                             ?,
+    //                                             ?,
+    //                                             ?
+    //                                         )
+    //     ");
+
+    //     $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail]);
+
+    //     if($createGoogleUser)
+    //     {
+    //         return $this->bdd-> lastInsertId();
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
     public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
-    {
-        $query = $this -> bdd -> prepare("
-                                            INSERT INTO `googleuser`(
-                                                `google_id`,
-                                                `google_fullName`,
-                                                `google_firstName`,                                                
-                                                `google_lastName`,
-                                                `google_email`
-                                            )
-                                            VALUES (
-                                                ?,
-                                                ?,
-                                                ?,
-                                                ?,
-                                                ?
-                                            )
-        ");
-
-        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail]);
-
-        if($createGoogleUser)
-        {
-            return $this->bdd-> lastInsertId();
-        } else {
-            return false;
-        }
-    }
-
-    public function createGoogleUserPhone($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
     {
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `googleuser`(

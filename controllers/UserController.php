@@ -1529,24 +1529,52 @@ class UserController
         }
     }
 
+    public function getCurrencyWebsite() {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+        
+            $userId = (int)$_POST['userId'];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $this->setUserId((int)$userId);
+
+            $currencyData = $this->user->getCurrencyByUserId($this->getUserId());
+            if ($currencyData) {
+                $response = array('message' => 'Success', 'currency' => $currencyData);
+            } else {
+                $response = array('message' => 'Could not get currency');
+            }
+        } else {
+            $response = array('message' => 'Proper data not sent');
+        }
+        echo json_encode($response);
+    }
+
     public function getCurrency() {
         $response = array('message' => 'Error');
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
-
-            if (isset($_POST['isNotReactNative'])) {
-                if (isset($_SESSION)) {
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $this->getUserId())
-                    {
-                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                        return;
-                    }
-                }
-            }
-
 
             $currencyData = $this->user->getCurrencyByUserId($this->getUserId());
             if ($currencyData) {

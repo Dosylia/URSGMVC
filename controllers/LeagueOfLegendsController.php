@@ -228,18 +228,18 @@ class LeagueOfLegendsController
                 $summoner_name = $summoner['gameName'];
                 $verificationCode = bin2hex(random_bytes(5));
 
-                            $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $this->getUserId());
+                $insertLeagueData = $this->leagueOfLegends->addLoLAccount($this->getLolServer(), $this->getLolAccount(), $verificationCode, $this->getUserId());
 
-                            if ($insertLeagueData)
-                            {
-                                echo json_encode(['status' => 'Success', 
-                                'message' => 'Verification code generated',
-                                'verification_code' => $verificationCode,
-                                'puuId' => $puudId,
-                                'summonerName' => $summoner_name,
-                                'tagLine' => $tagLine,
-                            ]);
-                            }
+                if ($insertLeagueData)
+                {
+                    echo json_encode(['status' => 'Success', 
+                    'message' => 'Verification code generated',
+                    'verification_code' => $verificationCode,
+                    'puuId' => $puudId,
+                    'summonerName' => $summoner_name,
+                    'tagLine' => $tagLine,
+                    ]);
+                }
             } 
             else
             {
@@ -430,13 +430,62 @@ class LeagueOfLegendsController
     
     public function getSummonerRankedStats($summonerId, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+        $response = @file_get_contents($url);
+        if ($response === false) {
+            return null;
+        }
+    
+        return json_decode($response, true);
+    }
+
+    public function getTagLine($puuid, $server, $apiKey) {
+        $regionMap = [
+            "Europe West" => "europe",
+            "North America" => "americas",
+            "Europe Nordic" => "europe",
+            "Brazil" => "americas",
+            "Latin America North" => "americas",
+            "Latin America South" => "americas",
+            "Oceania" => "americas",
+            "Russia" => "europe",
+            "Turkey" => "europe",
+            "Japan" => "asia",
+            "Korea" => "asia",
+        ];
+    
+        // Get the correct region value
+        $selectedRegionValue = $regionMap[$server] ?? null;
+    
+        if (!$selectedRegionValue) {
+            throw new Exception("Invalid server: $server");
+        }
+
+        $url = "https://{$selectedRegionValue}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{$puuid}?api_key={$apiKey}";
+    
+        $response = file_get_contents($url);
+    
+        if ($response === false) {
+            throw new Exception("Failed to fetch data from Riot API for PUUID: $puuid");
+        }
+    
+        return json_decode($response, true);
     }
 
     public function refreshRiotData()
     {
 
+        require_once 'keys.php';
+
+        $token = $_GET['token'] ?? null;
+
+        if (!isset($token) || $token !== $tokenRefresh) { 
+            header("Location: /?message=Unauthorized");
+            exit();
+        }
+
         $allUsers = $this->user->getAllUsers();
+
+        $allUsers = array_slice($allUsers, 0, 100);
     
         foreach ($allUsers as $user)
         {
@@ -458,15 +507,20 @@ class LeagueOfLegendsController
     
                 $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
     
-                require_once 'keys.php';
-    
                 $summonerProfile = $this->getSummonerProfile($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
     
                 if ($summonerProfile)
                 {
                     $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
 
-                    $rankAndTier = $this->determineRankAndTier($summonerRankedStats);
+                    if ($summonerRankedStats) {
+                        $rankAndTier = $this->determineRankAndTier($summonerRankedStats);
+                    } else {
+                        $rankAndTier = 'Unranked';
+                    }
+                   
+
+                    $getTagLine = $this->getTagLine($user['lol_sPuuid'], $user['lol_server'], $apiKey);
     
                     $username = $user['lol_sUsername'];
                     $userId = $user['user_id'];
@@ -479,7 +533,7 @@ class LeagueOfLegendsController
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
                         $summonerProfile['profileIconId'], 
-                        $username,
+                        $username. "#" . $getTagLine['tagLine'],
                         $userId
                     );
                 }
@@ -501,10 +555,11 @@ class LeagueOfLegendsController
         'SILVER' => 3,
         'GOLD' => 4,
         'PLATINUM' => 5,
-        'DIAMOND' => 6,
-        'MASTER' => 7,
-        'GRANDMASTER' => 8,
-        'CHALLENGER' => 9
+        'EMERALD' => 6,
+        'DIAMOND' => 7,
+        'MASTER' => 8,
+        'GRANDMASTER' => 9,
+        'CHALLENGER' => 10
     ];
 
     $divisions = [

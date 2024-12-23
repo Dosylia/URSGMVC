@@ -137,7 +137,11 @@ function addActionListeners() {
 // Initialize friend requests and render the first page
 document.addEventListener("DOMContentLoaded", function () {
     // Populate friendRequests from the server (e.g., as a JSON array)
-    const requestData = document.getElementById('friendRequestData').textContent;
-    friendRequests = JSON.parse(requestData);
-    renderFriendRequests();
+    const friendRequestElement = document.getElementById('friendRequestData');
+
+    if (friendRequestElement) {
+        const requestData = friendRequestElement.textContent;
+        friendRequests = JSON.parse(requestData);
+        renderFriendRequests();
+    } 
 });

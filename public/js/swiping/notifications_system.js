@@ -1,48 +1,79 @@
+let notificationQueue = [];
+let isNotificationDisplayed = false;
 
-// Initialize the global notification system if it doesn't already exist
-window.notificationSystem = window.notificationSystem || {
-    notificationQueue: [],
-    isNotificationDisplayed: false,
-    displayNotification: function (message) {
-        // Add the message to the queue
-        this.notificationQueue.push(message);
+function displayNotification(message, type, userId, picture) {
+    console.log('Notification Details:', { message, type, userId, picture });
 
-        // Process the queue if no notification is currently displayed
-        if (!this.isNotificationDisplayed) {
-            this.processNotificationQueue();
-        }
-    },
-    processNotificationQueue: function () {
-        // If the queue is empty, stop processing
-        if (this.notificationQueue.length === 0) {
-            this.isNotificationDisplayed = false;
-            return;
-        }
+    // Add the notification details to the queue
+    notificationQueue.push({ message, type, userId, picture });
 
-        // Mark that a notification is being displayed
-        this.isNotificationDisplayed = true;
+    // Process the queue if no notification is currently displayed
+    if (!isNotificationDisplayed) {
+        processNotificationQueue();
+    }
+}
 
-        // Get the next message from the queue
-        const message = this.notificationQueue.shift();
+function processNotificationQueue() {
+    // If the queue is empty, stop processing
+    if (notificationQueue.length === 0) {
+        isNotificationDisplayed = false;
+        return;
+    }
 
-        // Display the notification
-        const notificationSpan = document.querySelector('.notification-span');
-        if (!notificationSpan) {
-            console.error("Notification span not found!");
-            return;
-        }
+    // Mark that a notification is being displayed
+    isNotificationDisplayed = true;
 
-        notificationSpan.style.display = 'block';
+    // Get the next notification from the queue
+    const { message, type, userId, picture } = notificationQueue.shift();
+
+    // Display the notification
+    const notificationSpan = document.querySelector('.notification-span');
+    if (!notificationSpan) {
+        console.error("Notification span not found!");
+        return;
+    }
+
+    // Reset the content of the notification span
+    notificationSpan.innerHTML = ''; // Clear existing content
+    notificationSpan.style.display = 'block';
+
+    if (type === "message" && userId) {
+        // Create a clickable link
+        const link = document.createElement('a');
+        link.href = `/persoChat&friend_id=${userId}&mark_as_read=true`;
+        link.style.textDecoration = 'none';
+        link.style.color = 'inherit';
+
+        // Add the user's picture
+        const img = document.createElement('img');
+        img.src = picture ? `public/upload/${picture}` : 'public/images/defaultprofilepicture.jpg';
+        img.alt = 'User Avatar';
+        img.className = 'avatar';
+        img.style.marginRight = '10px'; // Optional styling
+        img.style.verticalAlign = 'middle'; // Align with text
+
+        // Add the message text
+        const text = document.createElement('span');
+        text.textContent = message;
+
+        // Append elements to the link
+        link.appendChild(img);
+        link.appendChild(text);
+
+        // Append the link to the notification span
+        notificationSpan.appendChild(link);
+    } else {
+        // Display the message text for non-message types
         notificationSpan.innerText = message;
+    }
 
-        // Clear the notification after 5 seconds
-        setTimeout(() => {
-            notificationSpan.innerText = '';
-            notificationSpan.style.display = 'none'; // Hide the notification
-            this.isNotificationDisplayed = false;
+    // Clear the notification after 5 seconds
+    setTimeout(() => {
+        notificationSpan.innerHTML = ''; // Clear the content
+        notificationSpan.style.display = 'none'; // Hide the notification
+        isNotificationDisplayed = false;
 
-            // Process the next notification in the queue
-            this.processNotificationQueue();
-        }, 5000);
-    },
-};
+        // Process the next notification in the queue
+        processNotificationQueue();
+    }, 5000);
+}

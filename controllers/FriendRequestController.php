@@ -862,32 +862,21 @@ class FriendRequestController
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
 
-            // // Validate Authorization Header
-            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //     return;
-            // }
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
 
-            // $token = $matches[1];
+            $token = $matches[1];
 
-            // // Validate Token for User
-            // if (!$this->validateTokenWebsite($token, $userId)) {
-            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //     return;
-            // }
-
-                if (isset($_SESSION)) {
-                    $user = $this->user->getUserById($_SESSION['userId']);
-    
-                    if ($user['user_id'] != $this->getUserId())
-                    {
-                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                        return;
-                    }
-                }
-
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
             $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
 
@@ -927,6 +916,15 @@ class FriendRequestController
 
     public function deleteFriendRequestAfterWeek()
     {
+        require_once 'keys.php';
+
+        $token = $_GET['token'] ?? null;
+
+        if (!isset($token) || $token !== $tokenRefresh) { 
+            header("Location: /?message=Unauthorized");
+            exit();
+        }
+        
         try {
             $deleteFriendRequest = $this->friendrequest->deleteFriendRequestAfterWeek();
 

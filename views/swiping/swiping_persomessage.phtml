@@ -1,4 +1,7 @@
 <div class="chat_page">   
+    <?php if (isset($_GET['firstFriend'])) : ?>
+        <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
+    <?php endif; ?>
     <?php if (empty($getFriendlist)) :?>
             <section class="google_needed"><br><br>
                 <img src="public/images/sadbee.webp" alt="jhinshrug">
@@ -111,7 +114,7 @@
                 </div>
             <script type="module" src="public/js/swiping/perso_chat.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_friendlist.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/get_message.js"></script>
+            <script type="module" src="public/js/swiping/get_message.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/send_messagephp.js"></script>
         </div>
     <?php endif; ?>

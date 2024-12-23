@@ -52,7 +52,7 @@ $roles = [
 
 <div class="user_page_main_league">
     <?php if (isset($user)) : ?>
-        <?php if ($user['user_game'] !== 'League of Legends'): ?>
+        <?php if ($user['user_game'] !== 'Valorant'): ?>
             <div class="league_of_legends_user">
                 <?php if (isset($champions[$valorantUser['valorant_main1']])): ?>
                     <div class="league_of_legends_user_column">
@@ -86,40 +86,39 @@ $roles = [
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-    <?php else : ?>
-        <?php if (isset($anotherUser) && $anotherUser['user_game'] !== 'valorant'): ?>
-            <div class="league_of_legends_user">
-                <?php if (isset($champions[$valorantUser['valorant_main1']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main1']] ?>" alt="<?= $valorantUser['valorant_main1'] ?>">
-                        <p class="no_display_phone"><?= $valorantUser['valorant_main1']; ?></p>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($champions[$valorantUser['valorant_main2']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main2']] ?>" alt="<?= $valorantUser['valorant_main2'] ?>">
-                        <p class="no_display_phone"><?= $valorantUser['valorant_main2']; ?></p>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($champions[$valorantUser['valorant_main3']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main3']] ?>" alt="<?= $valorantUser['valorant_main3'] ?>">
-                        <p class="no_display_phone"><?= $valorantUser['valorant_main3']; ?></p>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($ranks[$valorantUser['valorant_rank']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $ranks[$valorantUser['valorant_rank']] ?>" alt="<?= $valorantUser['valorant_rank'] ?>">
-                        <p class="no_display_phone"><?= $valorantUser['valorant_rank'] ?></p>
-                    </div>
-                <?php endif; ?>
-                <?php if (isset($roles[$valorantUser['valorant_role']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $roles[$valorantUser['valorant_role']] ?>" alt="<?= $valorantUser['valorant_role'] ?>">
-                        <p class="no_display_phone"><?= $valorantUser['valorant_role'] ?></p>
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+    <?php endif; ?>
+    <?php if (isset($anotherUser) && $anotherUser['user_game'] !== 'Valorant'): ?>
+        <div class="league_of_legends_user">
+            <?php if (isset($champions[$valorantUser['valorant_main1']])): ?>
+                <div class="league_of_legends_user_column">
+                    <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main1']] ?>" alt="<?= $valorantUser['valorant_main1'] ?>">
+                    <p class="no_display_phone"><?= $valorantUser['valorant_main1']; ?></p>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($champions[$valorantUser['valorant_main2']])): ?>
+                <div class="league_of_legends_user_column">
+                    <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main2']] ?>" alt="<?= $valorantUser['valorant_main2'] ?>">
+                    <p class="no_display_phone"><?= $valorantUser['valorant_main2']; ?></p>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($champions[$valorantUser['valorant_main3']])): ?>
+                <div class="league_of_legends_user_column">
+                    <img class="league_champions_user" src="<?= $champions[$valorantUser['valorant_main3']] ?>" alt="<?= $valorantUser['valorant_main3'] ?>">
+                    <p class="no_display_phone"><?= $valorantUser['valorant_main3']; ?></p>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($ranks[$valorantUser['valorant_rank']])): ?>
+                <div class="league_of_legends_user_column">
+                    <img class="league_champions_user" src="<?= $ranks[$valorantUser['valorant_rank']] ?>" alt="<?= $valorantUser['valorant_rank'] ?>">
+                    <p class="no_display_phone"><?= $valorantUser['valorant_rank'] ?></p>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($roles[$valorantUser['valorant_role']])): ?>
+                <div class="league_of_legends_user_column">
+                    <img class="league_champions_user" src="<?= $roles[$valorantUser['valorant_role']] ?>" alt="<?= $valorantUser['valorant_role'] ?>">
+                    <p class="no_display_phone"><?= $valorantUser['valorant_role'] ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
 </div>
