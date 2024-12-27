@@ -127,12 +127,16 @@ class FriendRequestController
                     $friendPicture = $friend['receiver_picture'];
                     $friendGame = $friend['receiver_game'];
                     $friendOnline = $friend['receiver_isOnline'];
+                    $friendIsLookingGame = $friend['receiver_isLookingGame'];
+                    $friendIsLookingGameUser = $friend['sender_isLookingGame'];
                 } else {
                     $friendId = $friend['sender_id'];
                     $friendUsername = $friend['sender_username'];
                     $friendPicture = $friend['sender_picture'];
                     $friendGame = $friend['sender_game'];
                     $friendOnline = $friend['sender_isOnline'];
+                    $friendIsLookingGame = $friend['sender_isLookingGame'];
+                    $friendIsLookingGameUser = $friend['receiver_isLookingGame'];
                 }
     
                 // Add friend to the list, excluding the user themselves
@@ -144,7 +148,9 @@ class FriendRequestController
                         'friend_picture' => $friendPicture,
                         'friend_game' => $friendGame,
                         'friend_online' => $friendOnline,
-                        'latest_message_date' => $friend['latest_message_date']
+                        'friend_isLookingGame' => $friendIsLookingGame,
+                        'friend_isLookingGameUser' => $friendIsLookingGameUser,
+                        'latest_message_date' => $friend['latest_message_date'],
                     ];
                 }
             }

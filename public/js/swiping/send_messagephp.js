@@ -50,6 +50,38 @@ function sendMessageToPhp(senderId, receiverId, message) {
     });
 }
 
+function markMessageAsRead(senderId, receiverId) {
+    const token = localStorage.getItem('masterTokenWebsite');
+
+    const dataToSend = {
+        senderId,
+        receiverId,
+    };
+
+    const jsonData = JSON.stringify(dataToSend);
+
+    fetch('index.php?action=markMessageAsReadWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: "param=" + encodeURIComponent(jsonData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     let senderIdElement = document.getElementById("senderId");
     let receiverIdElement = document.getElementById("receiverId");
@@ -61,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
     receiverId = receiverIdElement ? receiverIdElement.value : null;
 
     messageInput.addEventListener("focus", function() {
+        markMessageAsRead(senderId, receiverId);
         setTimeout(function() {
             messageInput.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 300);

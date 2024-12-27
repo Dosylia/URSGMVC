@@ -73,9 +73,15 @@ function searchFriends(query) {
         const chatNameSpan = document.createElement('span');
         chatNameSpan.className = 'chat-name clickable';
         chatNameSpan.innerHTML = `
-            ${friend.friend_username}
-            <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>
-            ${friend.friend_online === 1 ? '<span class="online-status"></span>' : ''}
+        ${friend.friend_username}
+        <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>
+        ${
+          friend.friend_online === 1 && friend.friend_isLookingGame === 1 
+            ? '<span class="looking-game-status"></span>' 
+            : friend.friend_online === 1 
+              ? '<span class="online-status"></span>' 
+              : ''
+        }
         `;
 
         const gameLogo = document.createElement('img');

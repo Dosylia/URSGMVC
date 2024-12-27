@@ -130,6 +130,7 @@ $actionMap = [
     'removePictureFrameWebsite' => [ItemsController::class, 'removePictureFrameWebsite'],
     'getUnreadMessagePhone' => [ChatMessageController::class, 'getUnreadMessagePhone'],
     'getUnreadMessageWebsite' => [ChatMessageController::class, 'getUnreadMessageWebsite'],
+    'markMessageAsReadWebsite' => [ChatMessageController::class, 'markMessageAsReadWebsite'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
     'getFriendRequestPhone' => [FriendRequestController::class, 'getFriendRequestPhone'], // Add security on that one for app
     'getFriendRequestReact' => [FriendRequestController::class, 'getFriendRequestReact'],
@@ -150,6 +151,8 @@ $actionMap = [
     'notFound' => [GoogleUserController::class, 'notFoundPage'],
     'reportUserWebsite' => [UserController::class, 'reportUserWebsite'],
     'reportUserPhone' => [UserController::class, 'reportUserPhone'],
+    'userIsLookingForGameWebsite' => [UserController::class, 'userIsLookingForGameWebsite'],
+    'userIsLookingForGamePhone' => [UserController::class, 'userIsLookingForGamePhone'],
 ];
 
 $action = "home";

@@ -200,7 +200,7 @@ $ranks = [
 ?>
 
 <div class="user_page_main_league">
-    <?php if (isset($user)) : ?>
+    <?php if (isset($user) && !isset($anotherUser)) : ?>
         <?php if ($user['user_game'] == 'League of Legends'): ?>
             <div class="league_of_legends_user">
                 <?php if (isset($champions[$lolUser['lol_main1']])): ?>
@@ -236,7 +236,7 @@ $ranks = [
             </div>
         <?php endif; ?>
     <?php endif; ?>
-    <?php if (isset($anotherUser) && $anotherUser['user_game'] !== 'League of Legends'): ?>
+    <?php if (isset($anotherUser) && $anotherUser['user_game'] == 'League of Legends'): ?>
         <div class="league_of_legends_user">
             <?php if (isset($champions[$lolUser['lol_main1']])): ?>
                 <div class="league_of_legends_user_column">

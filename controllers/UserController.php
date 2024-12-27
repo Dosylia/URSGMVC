@@ -1682,6 +1682,78 @@ class UserController
         }
     }
 
+    public function userIsLookingForGameWebsite() {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $this->setUserId($userId);
+
+        $setStatus = $this->user->userIsLookingForGame($this->getUserId());
+
+        if($setStatus) {
+            $response = array('success' => true, 'message' => 'Status updated');
+        } else {
+            $response = array('success' => false, 'message' => 'Could not update status');
+        }
+
+        echo json_encode($response);
+    }
+
+    public function userIsLookingForGamePhone() {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $this->setUserId($userId);
+
+        $setStatus = $this->user->userIsLookingForGame($this->getUserId());
+
+        if($setStatus) {
+            $response = array('success' => true, 'message' => 'Status updated');
+        } else {
+            $response = array('success' => false, 'message' => 'Could not update status');
+        }
+
+        echo json_encode($response);
+    }
+
     public function saveDarkMode()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -76,6 +76,7 @@ function fetchUnreadMessage(userId) {
             // Clean up old sender IDs
             cleanupServedSenders(data.unreadCount.map(m => m.chat_senderId));
         } else {
+            globalUnreadCounts = {};
             clearContainer();
             localStorage.removeItem('servedSenderIds');
             console.log('No unread messages or success flag not set');

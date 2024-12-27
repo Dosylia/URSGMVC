@@ -148,7 +148,9 @@ class FriendRequest extends DataBase
                 ur.user_lastRequestTime AS receiver_lastRequestTime,
                 c.latest_message_date,
                 (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(us.user_lastRequestTime) <= 30) AS sender_isOnline,
-                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_lastRequestTime) <= 30) AS receiver_isOnline
+                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_lastRequestTime) <= 30) AS receiver_isOnline,
+                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(us.user_requestIsLooking) <= 300) AS sender_isLookingGame,
+                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_requestIsLooking) <= 300) AS receiver_isLookingGame
             FROM
                 `friendrequest` AS fr
             INNER JOIN

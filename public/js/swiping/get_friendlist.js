@@ -7,7 +7,7 @@ let showOnlineOnly = localStorage.getItem('showOnlineFriends') === 'true';
 // Fetch and render friend list
 function getFriendList(userId, page = 1) {
     const token = localStorage.getItem('masterTokenWebsite');
-    fetch('index.php?action=getFriendlistWebsite', {
+    fetch('/getFriendlistWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -28,7 +28,7 @@ function getFriendList(userId, page = 1) {
                 renderFriendList(filteredFriends, page);
                 setupPagination(filteredFriends.length, itemsPerPage);
             } else {
-                console.error('Error fetching messages:', data.error);
+                console.error('Error fetching friends:', data.error);
             }
         })
         .catch(error => {
@@ -44,6 +44,17 @@ function renderFriendList(friendList, page) {
 
     const friendListContainer = document.getElementById('friendList');
     friendListContainer.innerHTML = '';
+
+    if (paginatedFriends.length > 0) {
+        const firstFriend = paginatedFriends[0];
+        const lookingForButton = document.getElementById('looking-for-button');
+
+        if (firstFriend.friend_isLookingGameUser === 1) {
+            lookingForButton.style.background = "linear-gradient(45deg, #4CAF50, #66bb6a)";
+        } else {
+            lookingForButton.style.background = "linear-gradient(135deg, #722084, #b026cf)";
+        }
+    }
 
     paginatedFriends.forEach(friend => {
         const friendElement = document.createElement('a');
@@ -69,7 +80,11 @@ function renderFriendList(friendList, page) {
         chatNameSpan.className = 'chat-name clickable';
         chatNameSpan.innerHTML = `${friend.friend_username} <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>`;
 
-        if (friend.friend_online === 1) {
+        if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
+            const lookingForGame = document.createElement('span');
+            lookingForGame.className = 'looking-game-status';
+            chatNameSpan.appendChild(lookingForGame);
+        } else if (friend.friend_online === 1) {
             const onlineStatus = document.createElement('span');
             onlineStatus.className = 'online-status';
             chatNameSpan.appendChild(onlineStatus);

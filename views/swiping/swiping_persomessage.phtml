@@ -22,6 +22,12 @@
                         Show Online Friends Only
                     </label>
 
+                    <?php if ($user['user_isLooking'] === 1 && $user['user_requestIsLooking'] && (time() - strtotime($user['user_requestIsLooking']) <= 300)) : ?>
+                        <button id="looking-for-button" style="background: linear-gradient(45deg, #4CAF50, #66bb6a);">Change status to : Looking for a game</button>
+                    <?php else : ?>
+                        <button id="looking-for-button">Change status to : Looking for a game</button>
+                    <?php endif; ?>
+
                     <div class="friend-list" id="friendList">
                         <?php foreach($getFriendlist as $friend) : ?>
                             <?php
@@ -31,12 +37,14 @@
                                     $friendPicture = $friend['receiver_picture'];
                                     $friendGame = $friend['receiver_game'];
                                     $friendOnline = $friend['receiver_isOnline'];
+                                    $friendIsLookingGame = $friend['receiver_isLookingGame'];
                                 } else {
                                     $friendId = $friend['sender_id'];
                                     $friendUsername = $friend['sender_username'];
                                     $friendPicture = $friend['sender_picture'];
                                     $friendGame = $friend['sender_game'];
                                     $friendOnline = $friend['sender_isOnline'];
+                                    $friendIsLookingGame = $friend['sender_isLookingGame'];
                                 }
                             ?>
                         
@@ -55,9 +63,11 @@
                                     <span class="chat-name clickable">
                                         <?= $friendUsername ?>
                                         <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span> 
-                                        <?php if ($friendOnline === 1) : ?>
+                                        <?php if ($friendOnline === 1 && $friendIsLookingGame === 1) : ?>
+                                            <span class="looking-game-status"></span>
+                                        <?php elseif ($friendOnline === 1) : ?>
                                             <span class="online-status"></span>
-                                        <?php endif; ?>     
+                                        <?php endif; ?>    
                                     </span>
                                     <span>
                                         <?php if ($friendGame === "League of Legends") : ?>
@@ -115,7 +125,8 @@
             <script type="module" src="public/js/swiping/perso_chat.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_friendlist.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_message.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/send_messagephp.js"></script>
+            <script type="module" src="public/js/swiping/send_messagephp.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/get_lookingFor.js?nocache=<%= Date.now() %>"></script>
         </div>
     <?php endif; ?>
 </div>

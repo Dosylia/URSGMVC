@@ -247,6 +247,60 @@ class ChatMessageController
         }
     }
 
+    public function markMessageAsReadWebsite(): void 
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+    
+            $status = "unread";
+    
+            $this->setSenderId($data->senderId);
+            $this->setReceiverId($data->receiverId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            if (isset($_SESSION)) {
+                $user = $this->user->getUserById($_SESSION['userId']);
+
+                if ($user['user_id'] != $this->getSenderId())
+                {
+                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                    return;
+                }
+            }
+
+            $messages = $this->chatmessage->getMessage($this->getSenderId(), $this->getReceiverId());
+
+            if ($messages) {
+                $readMessage = $this->chatmessage->updateMessageStatus('read', $this->getSenderId(), $this->getReceiverId());
+
+                if ($readMessage) {
+                    echo json_encode(['success' => true, 'message' => 'Message marked as read']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to mark message as read']);
+                }
+            }
+
+             
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+        }
+    }
+
     public function getMessageData(): void
     {
         if (isset($_POST['userId']) && isset($_POST['friendId'])) {

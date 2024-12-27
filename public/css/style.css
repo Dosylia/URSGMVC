@@ -1831,7 +1831,7 @@ section.siteMap tr:nth-child(even) {
     .friend {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       cursor: pointer;
     }
     
@@ -1862,6 +1862,29 @@ section.siteMap tr:nth-child(even) {
       background: linear-gradient(45deg, #4CAF50, #66bb6a); 
       border: none;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .looking-game-status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #722084, #b026cf); 
+      border: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #looking-for-button {
+      background: linear-gradient(135deg, #722084, #b026cf); 
+      border-radius: 11px;
+      padding: 7px 15px;
+      color: #ffffff;
+      display: inline-block;
+      font-weight: bold;
+      font-family: "Open Sans", sans-serif; 
+      text-align: center; 
+      border: none;
+      cursor: pointer;
+      margin: 10px 0;
     }
     
     .friend-name {

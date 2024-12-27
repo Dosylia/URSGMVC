@@ -301,7 +301,7 @@ class User extends DataBase
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
                                         WHERE
                                             u.user_game = ? 
-                                            AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 10 DAY)
+                                            AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                                             AND NOT EXISTS (
                                                 SELECT 1
                                                 FROM `friendrequest` AS fr1
@@ -379,9 +379,31 @@ class User extends DataBase
             SET `user_deletionToken` = NULL, `user_deletionTokenExpiry` = NULL
             WHERE `user_deletionToken` = ?
         ");
+
+
         return $query->execute([$token]);
     }
-    
+
+    public function userIsLookingForGame($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE `user`
+                                        SET `user_isLooking` = 1, `user_requestIsLooking` =  NOW()
+                                        WHERE `user_id` = ?
+        ");
+
+        $updateStatusLookingGame = $query -> execute([$userId]);
+
+
+        if($updateStatusLookingGame)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+    }
 
     public function createUser($googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game) 
     {

@@ -46,13 +46,15 @@ $roles = [
     "Duelist" => "public/images/valorant_roles/Duelist.webp",
     "Initiator" => "public/images/valorant_roles/Initiator.webp",
     "Sentinel" => "public/images/valorant_roles/Sentinel.webp",
-    "Any" => "public/images/valorant_roles/Any.png"
+    "Any" => "public/images/valorant_roles/Any.png",
+    "fill" => "public/images/valorant_roles/fill.png",
+    "Fill" => "public/images/valorant_roles/fill.png"
 ];
 ?>
 
 <div class="user_page_main_league">
     <?php if (isset($user)) : ?>
-        <?php if ($user['user_game'] !== 'Valorant'): ?>
+        <?php if ($user['user_game'] == 'Valorant'): ?>
             <div class="league_of_legends_user">
                 <?php if (isset($champions[$valorantUser['valorant_main1']])): ?>
                     <div class="league_of_legends_user_column">
@@ -87,7 +89,7 @@ $roles = [
             </div>
         <?php endif; ?>
     <?php endif; ?>
-    <?php if (isset($anotherUser) && $anotherUser['user_game'] !== 'Valorant'): ?>
+    <?php if (isset($anotherUser) && $anotherUser['user_game'] == 'Valorant'): ?>
         <div class="league_of_legends_user">
             <?php if (isset($champions[$valorantUser['valorant_main1']])): ?>
                 <div class="league_of_legends_user_column">
