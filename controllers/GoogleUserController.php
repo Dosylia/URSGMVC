@@ -439,7 +439,7 @@ class GoogleUserController
                     if (!isset($_SESSION['googleId'])) 
                     {
                         // MASTER TOKEN SYSTEM
-                        if (isset($testGoogleUser['google_masterTokenWebsite'])) {
+                        if (isset($testGoogleUser['google_masterTokenWebsite']) && $testGoogleUser['google_masterTokenWebsite'] !== null && !empty($testGoogleUser['google_masterTokenWebsite'])) {
                             $token = $testGoogleUser['google_masterTokenWebsite'];
                         } else {
                             $token = bin2hex(random_bytes(32));
@@ -761,7 +761,7 @@ class GoogleUserController
             {
 
      
-                if (isset($testGoogleUser['google_masterToken'])) {
+                if (isset($testGoogleUser['google_masterToken']) && $testGoogleUser['google_masterToken'] !== null && !empty($testGoogleUser['google_masterToken'])) {
                     $token = $testGoogleUser['google_masterToken'];
                 } else {
                     $token = bin2hex(random_bytes(32));

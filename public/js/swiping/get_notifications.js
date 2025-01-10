@@ -2,6 +2,7 @@
 let userIdElementHeader = document.getElementById('userId');
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null;
 let originalTitle = document.title;
+let originalTitleNoChange = document.title;
 const token = localStorage.getItem('masterTokenWebsite');
 let globalUnreadCounts = {};
 
@@ -78,6 +79,7 @@ function fetchUnreadMessage(userId) {
         } else {
             globalUnreadCounts = {};
             clearContainer();
+            document.title = originalTitleNoChange;
             localStorage.removeItem('servedSenderIds');
             console.log('No unread messages or success flag not set');
         }
@@ -110,10 +112,11 @@ function fillUnread(unreadCounts) {
         console.error('Container element not found');
         return;
     }
-    
+
     container.innerHTML = ''; // Clear previous content
     let count = 0;
 
+    // Calculate the total unread message count
     unreadCounts.forEach(unreadCount => {
         if (unreadCount.unread_count > 0) {
             count += unreadCount.unread_count;
@@ -121,6 +124,7 @@ function fillUnread(unreadCounts) {
     });
 
     if (count > 0) {
+        // Create and append unread message notification
         const anchor = document.createElement('a');
         anchor.href = '/persoChat';
 
@@ -136,13 +140,16 @@ function fillUnread(unreadCounts) {
         anchor.appendChild(span);
         container.appendChild(anchor);
 
-        if (count = 1) {
-            document.title = `${count} New message - ${originalTitle}`;
-        } else {
-            document.title = `${count} New messages - ${originalTitle}`;
-        }
+        // Update the title with unread messages count
+        document.title = count === 1
+            ? `1 New message - ${originalTitle}`
+            : `${count} New messages - ${originalTitle}`;
+    } else {
+        // No unread messages: reset title to original
+        document.title = originalTitleNoChange;
     }
 }
+
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami
 function updateUnreadMessagesForFriends(unreadCounts) {
