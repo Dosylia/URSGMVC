@@ -22,7 +22,7 @@ function getFriendList(userId, page = 1) {
                 let filteredFriends = data.friendlist;
 
                 if (showOnlineOnly) {
-                    filteredFriends = filteredFriends.filter(friend => friend.friend_online === 1);
+                    filteredFriends.sort((a, b) => b.friend_online - a.friend_online);
                 }
 
                 renderFriendList(filteredFriends, page);
