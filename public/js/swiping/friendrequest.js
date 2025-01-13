@@ -48,6 +48,13 @@ function updateFriend(frId, userId, status) {
 // Render friend requests for the current page
 function renderFriendRequests() {
     const friendRequestBox = document.querySelector('.friendrequest_box');
+
+    if (friendRequests.length === 0) {
+        friendRequestBox.innerHTML = '';
+        friendRequestBox.style.display = 'none';
+        return;
+    }
+
     const startIndex = (currentPage - 1) * usersPerPage;
     const endIndex = startIndex + usersPerPage;
     const requestsToDisplay = friendRequests.slice(startIndex, endIndex);
