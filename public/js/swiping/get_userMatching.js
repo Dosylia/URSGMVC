@@ -188,6 +188,22 @@ document.addEventListener("DOMContentLoaded", function() {
                     <img src="public/images/transexual.png" alt="Trans" class="about-users-selected">
                 `;
                 break;
+            case 'Trans Man':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/trans-man.png" alt="Trans Man" class="about-users-selected">
+                `;
+                break;
+            case 'Trans Woman':
+                genderHtml += `
+                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
+                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
+                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
+                    <img src="public/images/trans-woman.png" alt="Trans Woman" class="about-users-selected">
+                `;
+                break;
             case 'Male and Female':
                 genderHtml += `
                     <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">

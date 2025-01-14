@@ -644,6 +644,23 @@ class UserController
             {
             // Validate and set user data
             $userId = $this->validateInput($data->userId);
+
+            
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
             $username = $this->validateInput($data->username);
             $gender = $this->validateInput($data->gender);
             $age = $this->validateInput($data->age);
@@ -1306,7 +1323,7 @@ class UserController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
+            $genders = ["Male", "Female", "Non binary", "Trans Male", "Trans Woman"];
             $current_url = "https://ur-sg.com/updateProfile";
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";

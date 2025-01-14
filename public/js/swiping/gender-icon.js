@@ -16,10 +16,8 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log('Processing image:', altText);
 
         // Only apply suffix to male, female, or non-binary images
-        if (altText !== "trans") {
-            // Construct the new image path
+        if (altText !== "Trans Man" && altText !== "Trans Woman" && altText !== "trans") {
             const newSrc = `public/images/${altText}${imageSuffix}.png`;
-            // Log the new image path for debugging
             console.log('New image source:', newSrc);
             img.src = newSrc;
         }

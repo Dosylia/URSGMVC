@@ -5,6 +5,7 @@ namespace controllers;
 use models\LeagueOfLegends;
 use models\User;
 use models\FriendRequest;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class LeagueOfLegendsController
@@ -14,6 +15,7 @@ class LeagueOfLegendsController
     private LeagueOfLegends $leagueOfLegends;
     private FriendRequest $friendrequest;
     private User $user;
+    private GoogleUser $googleUser;
     private $userId;
     private $loLMain1;
     private $loLMain2;
@@ -29,6 +31,7 @@ class LeagueOfLegendsController
         $this -> leagueOfLegends = new LeagueOfLegends();
         $this -> user = new User();
         $this -> friendrequest = new FriendRequest();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function pageLeagueUser()
@@ -614,6 +617,12 @@ class LeagueOfLegendsController
 
             $userId = $this->validateInput($_POST["userId"]);
             $this->setUserId($userId);
+
+            if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                header("location:/userProfile?message=Token not valid");
+                exit();
+            }
+
             $loLMain1 = $this->validateInput($_POST["main1"]);
             $this->setLoLMain1($loLMain1);
             $loLMain2 = $this->validateInput($_POST["main2"]);
@@ -626,15 +635,6 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($_POST["server"]);
             $this->setLoLServer($loLServer);
-            
-            // $user = $this-> user -> getUserById($_SESSION['userId']);
-
-            // if ($user['user_id'] != $this->getUserId())
-            // {
-            //     header("location:/signup?message=Not allowed, first Used id :".$user['user_id']."second one:".$this->getUserId());
-            //     exit();
-            // }
-
             
             $statusChampion = 0;
             if (isset($_POST["skipSelection"])) {
@@ -813,6 +813,12 @@ class LeagueOfLegendsController
         {
 
             $userId = $this->validateInput($_POST["userId"]);
+
+            if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                header("location:/userProfile?message=Token not valid");
+                exit();
+            }
+
             $this->setUserId($userId);
             $loLMain1 = $this->validateInput($_POST["main1"]  ?? "");
             $this->setLoLMain1($loLMain1);
@@ -859,6 +865,18 @@ class LeagueOfLegendsController
 
         }
 
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function emptyInputSignup($account) 

@@ -6,6 +6,7 @@ use models\UserLookingFor;
 use models\User;
 use models\LeagueOfLegends;
 use models\FriendRequest;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class UserLookingForController
@@ -16,6 +17,7 @@ class UserLookingForController
     private User $user; 
     private LeagueOfLegends $leagueoflegends;
     private FriendRequest $friendrequest;
+    private GoogleUser $googleUser;
     private $userId;
     private $lfGender;
     private $lfKindOfGamer;
@@ -39,6 +41,7 @@ class UserLookingForController
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> friendrequest = new FriendRequest();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function pageLookingFor()
@@ -183,6 +186,12 @@ class UserLookingForController
 
                 $userId = $this->validateInput($_POST["userId"]);
                 $this->setUserId($userId);
+
+                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                    header("location:/userProfile?message=Token not valid");
+                    exit();
+                }
+
                 $lfGender = $this->validateInput($_POST["gender"]);
                 $this->setLfGender($lfGender);
                 $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
@@ -298,6 +307,12 @@ class UserLookingForController
             } else {
 
                 $userId = $this->validateInput($_POST["userId"]);
+
+                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                    header("location:/userProfile?message=Token not valid");
+                    exit();
+                }
+
                 $this->setUserId($userId);
                 $lfGender = $this->validateInput($_POST["gender"]);
                 $this->setLfGender($lfGender);
@@ -620,6 +635,12 @@ class UserLookingForController
         {
             if (isset($_POST['game']) && $_POST['game'] == "League of Legends") {
                 $userId = $this->validateInput($_POST["userId"]);
+
+                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                    header("location:/userProfile?message=Token not valid");
+                    exit();
+                }
+
                 $this->setUserId($userId);
                 $lfGender = $this->validateInput($_POST["gender"]);
                 $this->setLfGender($lfGender);
@@ -709,6 +730,12 @@ class UserLookingForController
                 } else {
 
                     $userId = $this->validateInput($_POST["userId"]);
+
+                    if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                        header("location:/userProfile?message=Token not valid");
+                        exit();
+                    }
+                    
                     $this->setUserId($userId);
                     $lfGender = $this->validateInput($_POST["gender"]);
                     $this->setLfGender($lfGender);
@@ -797,6 +824,18 @@ class UserLookingForController
 
         }
 
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function validateInput($input) 

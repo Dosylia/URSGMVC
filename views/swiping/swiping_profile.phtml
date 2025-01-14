@@ -199,12 +199,19 @@
                             <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
                             <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
                         </p>
-                    <?php else : ?>
+                        <?php elseif ($user['user_gender'] == "Trans Man" || $user['user_gender'] == "Trans Man") : ?>
                         <p class="about-users-box">
                             <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
                             <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
                             <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                            <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
+                            <img src="public/images/trans-man.jpg" alt="Trans Man" class="about-users-selected" />
+                        </p>
+                        <?php elseif ($user['user_gender'] == "Trans Woman" || $user['user_gender'] == "Trans Woman") : ?>
+                        <p class="about-users-box">
+                            <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                            <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                            <img src="public/images/trans-woman.jpg" alt="Trans Woman" class="about-users-selected" />
                         </p>
                     <?php endif; ?>
                 </div>

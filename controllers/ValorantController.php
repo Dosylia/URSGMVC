@@ -5,6 +5,7 @@ namespace controllers;
 use models\Valorant;
 use models\User;
 use models\FriendRequest;
+use models\GoogleUser;
 use traits\SecurityController;
 
 class ValorantController
@@ -14,6 +15,7 @@ class ValorantController
     private Valorant $valorant;
     private FriendRequest $friendrequest;
     private User $user;
+    private GoogleUser $googleUser;
     private $userId;
     private $valorantMain1;
     private $valorantMain2;
@@ -29,6 +31,7 @@ class ValorantController
         $this -> valorant = new Valorant();
         $this -> user = new User();
         $this -> friendrequest = new FriendRequest();
+        $this -> googleUser = new GoogleUser();
     }
 
     public function pageValorantUser()
@@ -123,6 +126,13 @@ class ValorantController
 
             $userId = $this->validateInput($_POST["userId"]);
             $this->setUserId($userId);
+
+            if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                header("location:/userProfile?message=Token not valid");
+                exit();
+            }
+
+
             $valorantMain1 = $this->validateInput($_POST["main1"]);
             $this->setValorantMain1($valorantMain1);
             $valorantMain2 = $this->validateInput($_POST["main2"]);
@@ -139,11 +149,6 @@ class ValorantController
 
             $user = $this->user->getUserById($_SESSION['userId']);
 
-            // if ($user['user_id'] != $this->getUserId())
-            // {
-            //     header("location:/signup?message=Not allowed");
-            //     exit();
-            // }
 
             if ($statusChampion == "1") {
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
@@ -308,6 +313,12 @@ class ValorantController
         {
 
             $userId = $this->validateInput($_POST["userId"]);
+
+            if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                header("location:/userProfile?message=Token not valid");
+                exit();
+            }
+
             $this->setUserId($userId);
             $valorantMain1 = $this->validateInput($_POST["main1"]);
             $this->setValorantMain1($valorantMain1);
@@ -359,6 +370,18 @@ class ValorantController
 
         }
 
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
     }
 
     public function emptyInputSignup($account) 
