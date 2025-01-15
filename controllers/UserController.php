@@ -1323,7 +1323,7 @@ class UserController
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $genders = ["Male", "Female", "Non binary", "Trans Male", "Trans Woman"];
+            $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
             $current_url = "https://ur-sg.com/updateProfile";
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";

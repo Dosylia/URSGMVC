@@ -28,6 +28,7 @@ use controllers\MatchingScoreController;
 use controllers\ItemsController;
 use controllers\ValorantController;
 use controllers\RiotController;
+use controllers\GameController;
 
 function loadClass($class)
 {
@@ -153,6 +154,9 @@ $actionMap = [
     'reportUserPhone' => [UserController::class, 'reportUserPhone'],
     'userIsLookingForGameWebsite' => [UserController::class, 'userIsLookingForGameWebsite'],
     'userIsLookingForGamePhone' => [UserController::class, 'userIsLookingForGamePhone'],
+    'getGameUser' => [GameController::class, 'getGameUser'],
+    'pageGame' => [GameController::class, 'pageGame'],
+    'submitGuess' => [GameController::class, 'submitGuess'],
 ];
 
 $action = "home";

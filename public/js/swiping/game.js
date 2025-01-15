@@ -1,0 +1,191 @@
+let selectedUser = null;
+
+function getGameUser(userId, game, tryCount) {
+    const token = localStorage.getItem('masterTokenWebsite');
+
+    fetch('/getGameUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: `userId=${encodeURIComponent(userId)}&game=${encodeURIComponent(game)}&tryCount=${encodeURIComponent(tryCount)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        const elements = getElements(); // Assuming this retrieves UI element references
+        const ignore = localStorage.getItem('ignoreGame');
+
+        if (ignore === "1") {
+            elements.minigameWindow.classList.add("hidden");
+            return;
+        }
+
+        if (data.message === "Success") {
+            elements.minigameWindow.classList.remove("hidden");
+
+            switch (tryCount) {
+                case 1:
+                    setCharacterImage(data.hints.game_main);
+                    elements.affiliationHint.textContent = data.hints.hint_affiliation;
+                    break;
+                case 2:
+                    setCharacterImage(data.hints.game_main);
+                    elements.affiliationHint.textContent = data.hints.hint_affiliation;
+                    elements.genderHint.textContent = data.hints.hint_gender;
+                    break;
+                case 3:
+                    setCharacterImage(data.hints.game_main);
+                    elements.affiliationHint.textContent = data.hints.hint_affiliation;
+                    elements.genderHint.textContent = data.hints.hint_gender;
+                    elements.guessHint.textContent = data.hints.hint_guess;
+                    break;
+                default:
+                    setCharacterImage(data.hints.game_main);
+                    break;
+            }
+
+        } else if (data.message === "Already played") {
+            elements.minigameWindow.classList.add("hidden");
+            console.log(data.message);
+        } else {
+            console.log(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+}
+
+function getHintsToShow(hints, tryCount) {
+    const hintKeys = ['hint_affiliation', 'hint_secondary', 'hint_tertiary', 'hint_final'];
+    return hintKeys.slice(0, tryCount + 1).map(key => hints[key]).filter(Boolean);
+}
+
+function updateHint(elements, hints) {
+    if (hints[0]) elements.affiliationHint.textContent = `Affiliation: ${hints[0]}`;
+    if (hints[1]) elements.genderHint.textContent = `Gender: ${hints[1]}`;
+    if (hints[2]) elements.guessHint.textContent = `Guess: ${hints[2]}`;
+}
+
+async function setCharacterImage(championName) {
+    try {
+        const sanitizedChampionName = sanitizeChampionName(championName);
+        const version = await fetchDdragonVersion();
+        const ddragonBaseUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/`;
+        const characterImg = document.querySelector(".character-img");
+        characterImg.src = `${ddragonBaseUrl}${sanitizedChampionName}.png`;
+        characterImg.alt = `${championName} Image`;
+    } catch (error) {
+        console.error("Failed to fetch the ddragon version or set the character image:", error);
+    }
+}
+
+const sanitizeChampionName = (championName) => championName.replace(/[^a-zA-Z0-9]/g, "");
+
+const fetchDdragonVersion = async () => {
+    const response = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+    const versions = await response.json();
+    return versions[0];
+};
+
+function getElements() {
+    const minigameWindow = document.getElementById("minigameWindow");
+    const query = (selector) => minigameWindow.querySelector(selector);
+
+    return {
+        minigameWindow,
+        exitButton: query(".exit-button"),
+        submitButton: query(".submit-button"),
+        nameInput: query(".name-input"),
+        affiliationHint: query(".affiliation-hint"),
+        genderHint: query(".gender-hint"),
+        guessHint: query(".guess-hint"),
+        characterImg: query(".character-img"),
+        playerImg: query(".player-img")
+    };
+}
+
+function toggleSubmitButton(elements) {
+    const isDisabled = !elements.nameInput.value.trim();
+    elements.submitButton.disabled = isDisabled;
+    elements.submitButton.style.backgroundColor = isDisabled ? "#8E8E8E" : "#AE7B32";
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const elements = getElements();
+    let userId = document.getElementById('userId').value;
+    let tryCount = parseInt(localStorage.getItem('tryCount'), 10) || 0;
+    const currentDate = new Date().toISOString().split('T')[0];
+    const storedDate = localStorage.getItem('gameDate');
+
+    if (storedDate !== currentDate) {
+        localStorage.setItem('gameDate', currentDate);
+        tryCount = 0;
+        localStorage.setItem('tryCount', tryCount);
+        localStorage.setItem('ignoreGame', 0);
+    }
+
+    elements.exitButton.addEventListener("click", () => {
+
+        elements.minigameWindow.classList.add("hidden")
+        localStorage.setItem('ignoreGame', 1);
+    });
+
+    getGameUser(userId, "League of Legends", tryCount);
+
+    elements.nameInput.addEventListener("input", () => toggleSubmitButton(elements));
+    elements.submitButton.addEventListener("click", () => handleSubmit(elements));
+    elements.nameInput.addEventListener("keydown", (event) => 
+        event.key === "Enter" && handleSubmit(elements)
+    );
+
+    toggleSubmitButton(elements);
+
+    const handleSubmit = (elements) => {
+        const userGuess = elements.nameInput.value.trim();
+        const token = localStorage.getItem('masterTokenWebsite');
+        if (!userGuess) return;
+
+        tryCount++;
+        localStorage.setItem('tryCount', tryCount);
+        const dataToSend = {
+            userId: document.getElementById('userId').value,
+            game: "League of Legends",
+            guess: userGuess,
+            tryCount: tryCount
+        };
+
+        const jsonData = JSON.stringify(dataToSend);
+
+        fetch('/submitGuess', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+            },
+            body: "param=" + encodeURIComponent(jsonData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Correct") {
+                alert(`Congratulations! You guessed the user correctly: ${data.gameUser.game_username}!`);
+                elements.minigameWindow.classList.add("hidden");
+            } else if (data.message === "Game Over") {
+                alert(`Game Over! The correct user was: ${data.gameUser.game_username}`);
+                elements.minigameWindow.classList.add("hidden");
+            } else {
+                updateHint(elements, data.hint);
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting guess:', error);
+        });
+    };
+
+    const updateHint = (elements, hint) => {
+        if (hint.affiliation) elements.affiliationHint.textContent = `Affiliation: ${hint.affiliation}`;
+        if (hint.gender) elements.genderHint.textContent = `Gender: ${hint.gender}`;
+        if (hint.guess) elements.guessHint.textContent = `Guess: ${hint.guess}`;
+    };
+});

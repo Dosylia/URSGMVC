@@ -314,18 +314,24 @@ class User extends DataBase
                                             )
                                             AND NOT EXISTS (
                                                 SELECT 1
-                                                FROM `block` AS b
-                                                WHERE b.block_senderId = ? AND b.block_receiverId = u.user_id
+                                                FROM `block` AS b1
+                                                WHERE b1.block_senderId = ? AND b1.block_receiverId = u.user_id
+                                            )
+                                            AND NOT EXISTS (
+                                                SELECT 1
+                                                FROM `block` AS b2
+                                                WHERE b2.block_receiverId = ? AND b2.block_senderId = u.user_id
                                             )
                                         ORDER BY RAND()
                                         LIMIT 5;
         ");
     
-        $query->execute([$game, $userId, $userId, $userId]);
+        $query->execute([$game, $userId, $userId, $userId, $userId]);
         $users = $query->fetchAll();
     
         return $users ?: false;
     }
+    
     
 
     public function storeDeletionToken($userId, $deletionToken, $expiry, $currentDate)
@@ -705,4 +711,18 @@ class User extends DataBase
         
         return $query->execute([$userId]);
     } 
+
+    public function markGameAsPlayed($userId, $date)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET 
+                                            `user_lastCompletedGame` = ?
+                                        WHERE 
+                                            `user_id` = ?
+        ");
+        
+        return $query->execute([$date, $userId]);
+    }   
 }
