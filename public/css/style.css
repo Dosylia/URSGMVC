@@ -51,6 +51,7 @@
   main {
     min-height: 65vh;
     background-color: var(--white);
+    position: relative;
   }
   
   .main_section {
@@ -3918,7 +3919,7 @@ justify-content: center;
   z-index: 10;
   overflow: hidden;
   color : black;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -4144,6 +4145,28 @@ justify-content: center;
   color: #7A7A7A;
   font-weight: bold;
   text-align: center;
+}
+
+#restore-game-container {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+#restore-game-btn {
+  background-color: #C89B3E;
+  font-size: 2em;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#restore-game-btn:hover {
+  background-color: #866115;
 }
 
 /* DARK MODE */

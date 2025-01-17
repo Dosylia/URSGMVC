@@ -17,12 +17,12 @@ function getGameUser(userId, game, tryCount) {
         const ignore = localStorage.getItem('ignoreGame');
 
         if (ignore === "1") {
-            elements.minigameWindow.classList.add("hidden");
+            elements.minigameWindow.style.display = "none";
             return;
         }
 
         if (data.message === "Success") {
-            elements.minigameWindow.classList.remove("hidden");
+            elements.minigameWindow.style.display = "flex";
 
             switch (tryCount) {
                 case 1:
@@ -46,7 +46,7 @@ function getGameUser(userId, game, tryCount) {
             }
 
         } else if (data.message === "Already played") {
-            elements.minigameWindow.classList.add("hidden");
+            elements.minigameWindow.style.display = "none";
             console.log(data.message);
         } else {
             console.log(data.message);
@@ -118,6 +118,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     let tryCount = parseInt(localStorage.getItem('tryCount'), 10) || 0;
     const currentDate = new Date().toISOString().split('T')[0];
     const storedDate = localStorage.getItem('gameDate');
+    let restoreGame = document.getElementById('restore-game-container');
+    let restoreGameBtn = document.getElementById('restore-game-container');
+    const ignore = localStorage.getItem('ignoreGame');
+
+    if (ignore === "1") {
+        restoreGame.style.display = "block";
+    }
+
+    restoreGameBtn.addEventListener("click", () => {
+        localStorage.setItem('ignoreGame', 0);
+        getGameUser(userId, "League of Legends", tryCount)
+        restoreGame.style.display = "none";
+    });
 
     if (storedDate !== currentDate) {
         localStorage.setItem('gameDate', currentDate);
@@ -127,9 +140,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     elements.exitButton.addEventListener("click", () => {
-
-        elements.minigameWindow.classList.add("hidden")
+        console.log("Exit button clicked");
+        elements.minigameWindow.style.display = "none";
         localStorage.setItem('ignoreGame', 1);
+        restoreGame.style.display = "block";
     });
 
     getGameUser(userId, "League of Legends", tryCount);
@@ -170,10 +184,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         .then(data => {
             if (data.message === "Correct") {
                 alert(`Congratulations! You guessed the user correctly: ${data.gameUser.game_username}!`);
-                elements.minigameWindow.classList.add("hidden");
+                elements.minigameWindow.style.display = "none";
             } else if (data.message === "Game Over") {
                 alert(`Game Over! The correct user was: ${data.gameUser.game_username}`);
-                elements.minigameWindow.classList.add("hidden");
+                elements.minigameWindow.style.display = "none";
             } else {
                 updateHint(elements, data.hint);
             }
