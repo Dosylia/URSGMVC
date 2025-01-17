@@ -1,30 +1,41 @@
 <div class="minigame-window hidden" id="minigameWindow">
+    <div class="exit-button-container">
         <button class="exit-button" aria-label="Close Minigame Window">X</button>
-        <div class="guess-text-title">Guess this Famous player</div>
-        <div class="guess-text-subtitle">
-            Guess the player and earn extra
-            <img src="public/images/game/soulhard.png" alt="Soulhard Icon" class="subtitle-icon" />
-        </div>
+    </div>
+    <h1 class="guess-text-title">Guess this Famous player</h1>
+    <div class="guess-text-subtitle">
+        <p>Guess the player and earn extra</p>
+        <img src="public/images/game/soulhard.png" alt="Soulhard Icon" class="subtitle-icon" />
+    </div>
+
+    <div class="player-container">
         <img src="public/images/game/question.png" alt="Player" class="player-img" />
         <img src="" alt="" class="character-img" />
-
-        <div class="affiliation-container">
-            <div class="affiliation-header">Affiliation</div>
-            <div class="affiliation-hint">???</div>
-        </div>
-
-        <div class="gender-container">
-            <div class="gender-header">Gender</div>
-            <div class="gender-hint">???</div>
-        </div>
-
-        <div class="guess-hint-container">
-            <div class="guess-hint-header">Hint</div>
-            <div class="guess-hint">???</div>
-        </div>
-
-        <input type="text" class="name-input" placeholder="Enter Name" aria-label="Enter User Name" />
-        <button class="submit-button">Submit</button>
     </div>
+
+    <div class="hints-container">
+        <div class="top-hint">
+            <div class="affiliation-container">
+                <div class="affiliation-header">Affiliation</div>
+                <div class="affiliation-hint">???</div>
+            </div>
+
+            <div class="gender-container">
+                <div class="gender-header">Gender</div>
+                <div class="gender-hint">???</div>
+            </div>
+        </div>
+
+        <div class="bottom-hint">
+            <div class="guess-hint-container">
+                <div class="guess-hint-header">Hint</div>
+                <div class="guess-hint">???</div>
+            </div>
+        </div>
+    </div>
+
+    <input type="text" class="name-input" placeholder="Enter Name" aria-label="Enter User Name" />
+    <button class="submit-button">Submit</button>
+</div>
 
     <script type="module" src="public/js/swiping/game.js"></script>

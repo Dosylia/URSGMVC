@@ -184,8 +184,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     const updateHint = (elements, hint) => {
-        if (hint.affiliation) elements.affiliationHint.textContent = `Affiliation: ${hint.affiliation}`;
-        if (hint.gender) elements.genderHint.textContent = `Gender: ${hint.gender}`;
-        if (hint.guess) elements.guessHint.textContent = `Guess: ${hint.guess}`;
+        if (hint.affiliation) elements.affiliationHint.textContent = hint.affiliation;
+        if (hint.gender) elements.genderHint.textContent = hint.gender;
+        if (hint.guess) elements.guessHint.textContent = hint.guess;
     };
 });

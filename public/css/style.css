@@ -3906,9 +3906,9 @@ justify-content: center;
 }
 
 .minigame-window {
-  width: 800px;
-  height: 700px;
-  background-color: #1E1E1E;
+  width: 50%;
+  height: auto;
+  background-color: linear-gradient(135deg, #ede9e9, white);;
   border-radius: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -3917,14 +3917,25 @@ justify-content: center;
   transform: translate(-50%, -50%);
   z-index: 10;
   overflow: hidden;
+  color : black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dark-mode .minigame-window {
+  background-color: #1E1E1E;
+  color : white;
 }
 
 .minigame-window .exit-button {
   position: absolute;
   top: 10px;
-  left: 737px;
-  width: 60px;
-  height: 60px;
+  right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3932,8 +3943,8 @@ justify-content: center;
   background-color: transparent;
   border: none;
   outline: none;
-  color: #CA4545;
-  font-size: 44px;
+  color: var(--main--red);
+  font-size: 30px;
   transition: color 0.3s, transform 0.2s;
   user-select: none;
   line-height: 1;
@@ -3951,25 +3962,24 @@ justify-content: center;
 }
 
 .minigame-window .guess-text-title {
-  position: absolute;
   width: 100%;
-  height: 46px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
   font-weight: bold;
   font-size: 40px;
-  color: #FFFFFF;
+  color: black;
   text-align: center;
-  top: 18px;
   user-select: none;
 }
 
+.dark-mode .minigame-window .guess-text-title {
+  color: white;
+}
+
 .minigame-window .guess-text-subtitle {
-  position: absolute;
   width: 100%;
-  height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3978,7 +3988,6 @@ justify-content: center;
   font-size: 24px;
   color: #8E8E8E;
   text-align: center;
-  top: 70px;
   user-select: none;
 }
 
@@ -3992,12 +4001,8 @@ justify-content: center;
 }
 
 .minigame-window .player-img {
-  position: absolute;
   width: 150px;
   height: 150px;
-  top: 155px;
-  left: 50%;
-  transform: translateX(-50%);
   border: none;
   border-radius: 50%;
   box-shadow: 0 0 0 4px #2D2D2D;
@@ -4008,9 +4013,9 @@ justify-content: center;
 
 .minigame-window .character-img {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  top: 245px;
+  width: 70px;
+  height: 70px;
+  top: 120px;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 50%;
@@ -4018,30 +4023,39 @@ justify-content: center;
   pointer-events: none;
 }
 
+.top-hint {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
 
+.bottom-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.minigame-window .affiliation-container {
-  position: absolute;
-  top: 358px;
-  left: 80px;
-  text-align: center;
-  width: 200px;
+.minigame-window .affiliation-container, .minigame-window .guess-hint-container, .minigame-window .guess-hint-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   user-select: none;
 }
 
-.minigame-window .affiliation-header {
+.minigame-window .affiliation-header, .minigame-window .gender-header, .minigame-window .guess-hint-header {
   font-family: Arial, sans-serif;
   font-size: 24px;
-  color: #9B9B9B;
+  color: #5d5757;
   font-weight: normal;
   white-space: nowrap;
 }
 
-.minigame-window .affiliation-hint {
+.minigame-window .affiliation-hint, .minigame-window .gender-hint, .minigame-window .guess-hint {
   margin-top: 10px;
   font-family: Arial, sans-serif;
   font-size: 24px;
-  color: #FFFFFF;
+  color: black;
   font-weight: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -4049,75 +4063,29 @@ justify-content: center;
   width: 100%;
 }
 
-.minigame-window .gender-container {
-  position: absolute;
-  top: 358px;
-  right: 80px;
-  text-align: center;
-  width: 200px;
-  user-select: none;
-}
-
-.minigame-window .gender-header {
-  font-family: Arial, sans-serif;
-  font-size: 24px;
+.dark-mode .minigame-window .affiliation-header,  .dark-mode .minigame-window .gender-header, .dark-mode .minigame-window .guess-hint-header{
   color: #9B9B9B;
-  font-weight: normal;
-  white-space: nowrap;
 }
 
-.minigame-window .gender-hint {
-  margin-top: 10px;
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  color: #FFFFFF;
-  font-weight: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  text-align: center;
+.dark-mode .minigame-window .affiliation-hint, .dark-mode .minigame-window .gender-hint, .dark-mode .minigame-window .guess-hint {
+  color: white;
+}
+
+.player-container {
+  position: relative;
   width: 100%;
-}
-
-.minigame-window .guess-hint-container {
-  position: absolute;
-  top: 450px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  width: 300px;
-  user-select: none;
-}
-
-.minigame-window .guess-hint-header {
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  color: #9B9B9B;
-  font-weight: normal;
-  white-space: nowrap;
-}
-
-.minigame-window .guess-hint {
-  margin-top: 10px;
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  color: #FFFFFF;
-  font-weight: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  text-align: center;
-  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .minigame-window .submit-button {
-  position: absolute;
-  width: 293px;
-  height: 52px;
-  top: 615px;
-  left: 255px;
+  width: 40%;
   background-color: #C89B3E;
   border: none;
   border-radius: 25px;
-  box-shadow: 0 0 0 4px #2D2D2D;
+  box-shadow: 0 0 0 1px #2D2D2D;
   font-family: Arial, sans-serif;
   font-size: 36px;
   font-weight: normal;
@@ -4126,6 +4094,12 @@ justify-content: center;
   line-height: 52px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.3s;
+  margin-bottom: 20px;
+}
+
+.dark-mode .minigame-window .submit-button {
+  box-shadow: 0 0 0 4px #2D2D2D;
+  color: #FFFFFF;
 }
 
 .minigame-window .submit-button:hover {
@@ -4138,25 +4112,32 @@ justify-content: center;
   transform: scale(0.95);
 }
 
+.hints-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
 .minigame-window .name-input {
-  position: absolute;
-  width: 740px;
-  height: 58px;
-  top: 530px;
-  left: 31px;
-  background-color: #131313;
-  box-shadow: 0 0 0 4px #2D2D2D;
+  width: 90%;
+  background-color: #e6e6e6;
+  box-shadow: 0 0 0 1px #2D2D2D;
   border: none;
   border-radius: 25px;
   padding: 0 16px;
   font-family: Arial, sans-serif;
   font-size: 20px;
   font-weight: bold;
-  color: #FFFFFF;
+  color: black;
   text-align: center;
   line-height: 58px;
   outline: none;
   box-sizing: border-box;
+}
+
+.dark-mode .minigame-window .name-input {
+  background-color: #131313;
+  color: #FFFFFF;
 }
 
 .minigame-window .name-input::placeholder {
@@ -4488,6 +4469,54 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 1018px) {
+
+  .minigame-window {
+    width: 70%;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .minigame-window .guess-text-title {
+    font-size: 32px;
+  }
+
+  .minigame-window .guess-text-subtitle {
+    font-size: 20px;
+  }
+
+  .minigame-window .submit-button {
+    font-size: 28px;
+    line-height: 40px;
+    width: 60%;
+  }
+
+  .minigame-window .name-input {
+    font-size: 18px;
+    line-height: 50px;
+  }
+
+  .minigame-window .player-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .minigame-window .character-img {
+    width: 60px;
+    height: 60px;
+    top: 100px;
+  }
+
+  .minigame-window .affiliation-header,
+  .minigame-window .gender-header,
+  .minigame-window .guess-hint-header {
+    font-size: 20px;
+  }
+
+  .minigame-window .affiliation-hint,
+  .minigame-window .gender-hint,
+  .minigame-window .guess-hint {
+    font-size: 20px;
+  }
 
   .picture_with_form {
     width: 300px;
@@ -4946,6 +4975,87 @@ justify-content: center;
     width: 90%;
   }
 
+}
+
+@media (max-width: 768px) {
+  .minigame-window {
+    width: 70%;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .minigame-window .guess-text-title {
+    font-size: 24px;
+  }
+
+  .minigame-window .guess-text-subtitle {
+    font-size: 16px;
+  }
+
+  .minigame-window .submit-button {
+    font-size: 20px;
+    line-height: 36px;
+    width: 80%;
+  }
+
+  .minigame-window .name-input {
+    font-size: 16px;
+    line-height: 40px;
+  }
+
+  .minigame-window .player-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .minigame-window .character-img {
+    width: 50px;
+    height: 50px;
+    top: 80px;
+  }
+
+  .minigame-window .affiliation-header,
+  .minigame-window .gender-header,
+  .minigame-window .guess-hint-header {
+    font-size: 16px;
+  }
+
+  .minigame-window .affiliation-hint,
+  .minigame-window .gender-hint,
+  .minigame-window .guess-hint {
+    font-size: 16px;
+  }
+
+  .top-hint,
+  .bottom-hint {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .affiliation-container {
+    margin-top: 30px;
+  }
+
+  .gender-container {
+    margin-bottom: 15px;
+  }
+
+  .minigame-window .guess-text-subtitle .subtitle-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .minigame-window .exit-button {
+    position: relative;
+    top: unset;
+    right: unset;
+  }
+
+  .exit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
 }
 
 @media only screen and (max-width: 600px) {

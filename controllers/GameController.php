@@ -172,6 +172,17 @@ class GameController
             
             // Fetch game user data
             $date = date("Y-m-d");
+
+            $user = $this-> user -> getUserById($userId);
+
+            if ($user['user_lastCompletedGame'] == $date)
+            {
+                $response = array('message' => 'Already played');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+            
             $gameUser = $this->game->getGameUser($date, $gameData);
     
             if ($gameUser) {
