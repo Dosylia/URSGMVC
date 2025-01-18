@@ -102,7 +102,11 @@ function getElements() {
         genderHint: query(".gender-hint"),
         guessHint: query(".guess-hint"),
         characterImg: query(".character-img"),
-        playerImg: query(".player-img")
+        playerImg: query(".player-img"),
+        hintContainer: query(".hints-container"),
+        resultContainer: query(".result-container"),
+        resultTitle: query(".result-title"),
+        resultText: query(".result-text"),
     };
 }
 
@@ -183,11 +187,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         .then(response => response.json())
         .then(data => {
             if (data.message === "Correct") {
-                alert(`Congratulations! You guessed the user correctly: ${data.gameUser.game_username}!`);
-                elements.minigameWindow.style.display = "none";
+                displayNotification(
+                    `Congratulations! You guessed the user correctly: ${data.gameUser.game_username}!`,
+                    userId
+                );
+                // elements.minigameWindow.style.display = "none";
+                elements.playerImg.src = `public/images/game/${data.gameUser.game_username}.jpg`;
+                elements.hintContainer.innerHTML = "";
+                party.confetti( elements.hintContainer, {
+                    count: party.variation.range(20, 40),
+                });
+                elements.resultContainer.style.display = "flex";
+                elements.resultTitle.innerText = `Well done!`;
+                elements.resultText.innerText = `The answer was ${data.gameUser.game_username}`;
             } else if (data.message === "Game Over") {
-                alert(`Game Over! The correct user was: ${data.gameUser.game_username}`);
-                elements.minigameWindow.style.display = "none";
+                displayNotification(
+                    `Game Over! The correct user was ${data.gameUser.game_username}`,
+                    userId
+                );
+                elements.playerImg.src = `public/images/game/${data.gameUser.game_username}.jpg`;
+                elements.hintContainer.innerHTML = "";
+                elements.resultContainer.style.display = "flex";
+                elements.resultTitle.innerText = `Game Over!`;
+                elements.resultText.innerText = `The answer was ${data.gameUser.game_username}`;
             } else {
                 updateHint(elements, data.hint);
             }

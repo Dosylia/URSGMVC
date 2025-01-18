@@ -4161,12 +4161,40 @@ justify-content: center;
   font-weight: bold;
   border: none;
   border-radius: 30px;
-  padding: 5px 10px;
+  padding: 5px 20px;
   cursor: pointer;
 }
 
 #restore-game-btn:hover {
   background-color: #866115;
+}
+
+.result-container {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.result-title {
+  font-weight: bold;
+  font-size: 3em;
+  color: black;
+}
+
+.dark-mode .result-title {
+  color: white;
+}
+
+.result-text {
+  font-weight: 500;
+  font-size: 1.5em;
+  color: black;
+}
+
+.dark-mode .result-text {
+  color: white;
 }
 
 /* DARK MODE */
