@@ -79,6 +79,14 @@ class GameController
 
             $user = $this-> user -> getUserById($userId);
 
+            if ($user['user_game'] !== $gameData)
+            {
+                $response = array('message' => 'Game not available, switch to League of Legends.');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+
             if ($user['user_lastCompletedGame'] == $date)
             {
                 $response = array('message' => 'Already played');

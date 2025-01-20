@@ -19,6 +19,9 @@ function getGameUser(userId, game, tryCount) {
         if (ignore === "1") {
             elements.minigameWindow.style.display = "none";
             return;
+        } else {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "block";
         }
 
         if (data.message === "Success") {
@@ -107,6 +110,8 @@ function getElements() {
         resultContainer: query(".result-container"),
         resultTitle: query(".result-title"),
         resultText: query(".result-text"),
+        rulesBtn: query(".rules-button"),
+        rulesText: query(".rules-text"),
     };
 }
 
@@ -120,17 +125,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const elements = getElements();
     let userId = document.getElementById('userId').value;
     let tryCount = parseInt(localStorage.getItem('tryCount'), 10) || 0;
+    const oldDate = localStorage.getItem('gameDate');
+    const overlay = document.getElementById("overlay");
     const currentDate = new Date().toISOString().split('T')[0];
+    if (oldDate != currentDate) {
+        localStorage.setItem('gameWon', 0);
+    }
     const storedDate = localStorage.getItem('gameDate');
     let restoreGame = document.getElementById('restore-game-container');
     let restoreGameBtn = document.getElementById('restore-game-container');
     const ignore = localStorage.getItem('ignoreGame');
 
-    if (ignore === "1") {
+    if (ignore === "1" && localStorage.getItem('gameWon') !== "1") {
         restoreGame.style.display = "block";
     }
 
     restoreGameBtn.addEventListener("click", () => {
+        overlay.style.display = "none";
         localStorage.setItem('ignoreGame', 0);
         getGameUser(userId, "League of Legends", tryCount)
         restoreGame.style.display = "none";
@@ -143,11 +154,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem('ignoreGame', 0);
     }
 
+    elements.rulesBtn.addEventListener("click", () => {
+        if (elements.rulesText.style.display === "none") {
+            elements.rulesText.style.display = "block";
+        } else {
+            elements.rulesText.style.display = "none";
+        }
+    });
+
     elements.exitButton.addEventListener("click", () => {
         console.log("Exit button clicked");
+        overlay.style.display = "none";
         elements.minigameWindow.style.display = "none";
         localStorage.setItem('ignoreGame', 1);
-        restoreGame.style.display = "block";
+        const gameStatus = localStorage.getItem('gameWon');
+        if (gameStatus !== "1") {
+            restoreGame.style.display = "block";
+        }
     });
 
     getGameUser(userId, "League of Legends", tryCount);
@@ -193,11 +216,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 );
                 // elements.minigameWindow.style.display = "none";
                 elements.playerImg.src = `public/images/game/${data.gameUser.game_username}.jpg`;
+                
                 elements.hintContainer.innerHTML = "";
                 party.confetti( elements.hintContainer, {
                     count: party.variation.range(20, 40),
                 });
                 elements.resultContainer.style.display = "flex";
+                localStorage.setItem('gameWon', 1);
                 elements.resultTitle.innerText = `Well done!`;
                 elements.resultText.innerText = `The answer was ${data.gameUser.game_username}`;
             } else if (data.message === "Game Over") {
