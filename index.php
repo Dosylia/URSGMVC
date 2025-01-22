@@ -159,6 +159,8 @@ $actionMap = [
     'pageGame' => [GameController::class, 'pageGame'],
     'submitGuess' => [GameController::class, 'submitGuess'],
     'admin' => [AdminController::class, 'adminLandingPage'],
+    'adminUsers' => [AdminController::class, 'adminUsersPage'],
+    'adminUpdateCurrency' => [AdminController::class, 'adminUpdateCurrency'],
 ];
 
 $action = "home";

@@ -43,10 +43,76 @@ class AdminController
 
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersOnline = $this-> admin -> countOnlineUsers();
+            $purchases = $this-> admin -> countPurchases();
 
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
             $page_title = "URSG - Admin";
+            require "views/layoutAdmin.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminUpdateCurrency()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['currency']) && isset($_POST['user_id']))
+            {
+                $currency = $this->user->updateCurrency($_POST['user_id'], $_POST['currency']);
+
+                if ($currency)
+                {
+                    header("Location: /adminUsers?message=Money updated");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error updating money");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Error updating money");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminUsersPage(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+
+
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $users = $this-> user -> getAllUsers();
+
+            $current_url = "https://ur-sg.com/admin_users";
+            $template = "views/admin/admin_users";
+            $page_title = "URSG - Admin Users";
             require "views/layoutAdmin.phtml";
         } 
         else

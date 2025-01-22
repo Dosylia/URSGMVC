@@ -28,5 +28,20 @@ class Admin extends DataBase
     
         return $result ? $result['online_users'] : false;
     }
+
+    public function countPurchases()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            COUNT(*) AS `ownedItemss`
+                                        FROM
+                                            `user_items`
+        ");
+
+        $query->execute();
+        $result = $query->fetch();
+
+        return $result ? $result['ownedItemss'] : false;
+    }
     
 }

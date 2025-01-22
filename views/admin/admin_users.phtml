@@ -1,0 +1,84 @@
+<div class="admin-users-container">
+    <h1>Users</h1>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-filter-container">
+        <input type="text" id="searchInput" placeholder="Search by username">
+        
+        <select id="genderFilter">
+            <option value="">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        
+        <select id="gamerTypeFilter">
+            <option value="">All Gamers</option>
+            <option value="Casual">Casual</option>
+            <option value="Competitive">Competitive</option>
+            <option value="Streamer">Streamer</option>
+        </select>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Kind of Gamer</th>
+                <th>Currency</th>
+                <th>Bio</th>
+                <th>Profile Picture</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+        <?php foreach ($users as $user) : ?>
+            <tr>
+                <td><?= $user['user_id'] ?></td>
+                <td class="username"><?= htmlspecialchars($user['user_username']) ?></td>
+                <td class="gender"><?= htmlspecialchars($user['user_gender']) ?></td>
+                <td><?= htmlspecialchars($user['user_age']) ?></td>
+                <td class="gamer-type"><?= htmlspecialchars($user['user_kindOfGamer']) ?></td>
+                <td>
+                    <form method='POST' action='adminUpdateCurrency'>
+                        <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
+                        <input type='number' name='currency' value='<?= $user['user_currency'] ?>' min='0' style='width: 80px;'>
+                        <button type='submit'>Update</button>
+                    </form>
+                </td>
+                <td class="bio"><?= htmlspecialchars($user['user_shortBio']) ?></td>
+                <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                    <td><img src='public/upload/<?= $user['user_picture'] ?>' alt='Profile' style='width: 50px; height: 50px; border-radius: 50%;' loading="lazy"></td>
+                <?php else : ?>
+                    <td><img src='public/images/defaultprofilepicture.jpg' alt='Profile' style='width: 50px; height: 50px; border-radius: 50%;' loading="lazy"></td>
+                <?php endif; ?>
+                <td>
+                    <div class='actions'>
+                        <?php if ($this->isAdmin()) : ?>
+                        <form method='POST' action='banUser'>
+                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
+                            <button type='submit' class='delete'>Ban</button>
+                        </form>
+                        <?php endif; ?>
+                        <?php if ($this->isModerator()) : ?>
+                        <form method='POST' action='censorBio'>
+                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
+                            <button type='submit'>Censor Bio</button>
+                        </form>
+                        <form method='POST' action='censorPicture'>
+                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
+                            <button type='submit'>Censor Picture</button>
+                        </form>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<script src="public/js/admin/panel_users.js?nocache=<%= Date.now() %>"></script>

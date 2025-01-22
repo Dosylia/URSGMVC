@@ -4,12 +4,20 @@
 <?php else : ?>
     <body>
 <?php endif; ?>
-<script src="public/js/swiping/notifications_system.js?nocache=<%= Date.now() %>"></script>
 
 <input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
 <input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
 
-<header>
+<header class="admin-header">
+  <nav class="admin-nav">
+    <ul>
+      <li><a href="/">Home Website</a></li>
+      <li><a href="admin">Home Admin</a></li>
+      <li><a href="adminUsers">Users</a></li>
+      <li><a href="adminStats">Statistics</a></li>
+      <li><a href="adminSettings">Settings</a></li>
+    </ul>
+  </nav>
 </header>
     <main>
         <?php if (isset($_GET['message'])) : ?>
@@ -18,8 +26,6 @@
         <?php require $template . ".phtml"; ?>
         <span class="notification-span"></span>
     </main>
-    <script src="public/js/swiping/get_notifications.js?nocache=<%= Date.now() %>"></script>  
-    <script src="public/js/swiping/get_currency.js?nocache=<%= Date.now() %>"></script>
 </body>
 
 </html>

@@ -1,9 +1,25 @@
-<h1>Admin pannel</h1>
+<h1 class="admin-title">Admin Panel</h1>
 
-<h2>Number of online users</h2>
+<div class="admin-dashboard">
+  <div class="online-users-container">
+    <h2>Active Users</h2>
+    <p><?= $usersOnline ?></p>
+  </div>
 
-<div class="online-users-container">
-    <p>
-        <?= $usersOnline?>
-    </p>
+  <div class="purchase-container">
+    <h2>Total Purchases</h2>
+    <p><?= $purchases ?></p>
+  </div>
+
+  <div class="reports-container">
+    <h2>Reports</h2>
+    <p>Review pending reports and flagged content.</p>
+    <button>View Reports</button>
+  </div>
+
+  <div class="system-status-container">
+    <h2>System Status</h2>
+    <p>All systems operational.</p>
+    <button>View Logs</button>
+  </div>
 </div>
