@@ -13,14 +13,16 @@
     <?php else : ?>
         <div class="chat-interface"> <br>
             <div class="chat_box"><br>
-                <h1 class="title_generalbox">Chat</h1>    <br>
 
                     <input type="text" id="friendSearch" placeholder="Search for friends..." class="search-bar">
 
-                    <label for="toggleOnlineOnly" class="toggle-label">
+                    <div class="toggle-wrapper">
+                        <span class="toggle-text">Show Online Friends Only</span>
+                        <label class="switch">
                         <input type="checkbox" id="toggleOnlineOnly">
-                        Show Online Friends Only
-                    </label>
+                        <span class="slider"></span>
+                        </label>
+                    </div>
 
                     <?php if ($user['user_isLooking'] === 1 && $user['user_requestIsLooking'] && (time() - strtotime($user['user_requestIsLooking']) <= 300)) : ?>
                         <button id="looking-for-button" style="background: linear-gradient(45deg, #4CAF50, #66bb6a);">Change status to : Looking for a game</button>

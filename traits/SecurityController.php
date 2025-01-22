@@ -63,5 +63,29 @@ trait SecurityController
             return false;
         }
     }
+
+    public function isAdmin()
+    {
+        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function isModerator()
+    {
+        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 

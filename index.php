@@ -29,6 +29,7 @@ use controllers\ItemsController;
 use controllers\ValorantController;
 use controllers\RiotController;
 use controllers\GameController;
+use controllers\AdminController;
 
 function loadClass($class)
 {
@@ -157,6 +158,7 @@ $actionMap = [
     'getGameUser' => [GameController::class, 'getGameUser'],
     'pageGame' => [GameController::class, 'pageGame'],
     'submitGuess' => [GameController::class, 'submitGuess'],
+    'admin' => [AdminController::class, 'adminLandingPage'],
 ];
 
 $action = "home";

@@ -793,6 +793,72 @@ section.siteMap tr:nth-child(even) {
     .dark-mode .toggle-label input:checked {
       background-color: var(--dark-red);
     }
+
+    .toggle-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .dark-mode .toggle-wrapper {
+      color: white;
+    }
+    
+    /* Toggle Text */
+    .toggle-text {
+      margin-right: 15px;
+    }
+    
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555;
+      border-radius: 34px;
+      transition: background-color 0.3s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+    
   
     #lol-fields,
     #valorant-fields {
@@ -1510,7 +1576,8 @@ section.siteMap tr:nth-child(even) {
       background: linear-gradient(135deg, white, #f5f2f2);
       margin-top: 20px;
       width: 100%;
-      border-radius: 20px;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
       margin-bottom: 40px;
       text-align: center;
       max-height: 60vh;
@@ -1630,7 +1697,6 @@ section.siteMap tr:nth-child(even) {
       width: 800px;
       display: block;
       margin: auto;
-      transform: translateX(-80px);
     }
 
     .chat_page {
@@ -1803,12 +1869,12 @@ section.siteMap tr:nth-child(even) {
     }
   
     .chat-interface {
-      margin: 0 30px 0 50px;
       width: 20%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 0 20px;
     }
 
     .chat-interface-big {
@@ -3470,7 +3536,7 @@ justify-content: center;
 
 .pagination a, .pagination button, .pagination-button {
   display: inline-block;
-  padding: 10px 15px;
+  padding: 10px 12px;
   margin: 0 5px;
   border: 1px solid var(--main--red);
   color: var(--main--red);
@@ -3909,7 +3975,7 @@ justify-content: center;
 .minigame-window {
   width: 50%;
   height: auto;
-  background-color: linear-gradient(135deg, #ede9e9, white);;
+  background-color: white;
   border-radius: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -4497,6 +4563,15 @@ justify-content: center;
 
   .swiping_row {
     width: 80%;
+  }
+
+  .chat-interface {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
   }
 
 }

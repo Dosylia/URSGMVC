@@ -1,0 +1,25 @@
+<?php require "views/layout.phtml"; ?>
+<?php if (isset($_SESSION['mode'])) : ?>
+    <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
+<?php else : ?>
+    <body>
+<?php endif; ?>
+<script src="public/js/swiping/notifications_system.js?nocache=<%= Date.now() %>"></script>
+
+<input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
+<input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
+
+<header>
+</header>
+    <main>
+        <?php if (isset($_GET['message'])) : ?>
+            <span class="form-error"><?= $_GET['message'] ?></span>
+        <?php endif; ?>
+        <?php require $template . ".phtml"; ?>
+        <span class="notification-span"></span>
+    </main>
+    <script src="public/js/swiping/get_notifications.js?nocache=<%= Date.now() %>"></script>  
+    <script src="public/js/swiping/get_currency.js?nocache=<%= Date.now() %>"></script>
+</body>
+
+</html>

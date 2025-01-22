@@ -24,7 +24,7 @@
 
         <div class="rules-container">
             <button class="rules-button">Rules</button>
-            <span class="rules-text" style="display: none;">You have up to 3 chances to find the right person. The faster you find, the more you earn. Hints might be how they got known, not necessarily how they got known.</span>
+            <span class="rules-text" style="display: none;">You have up to 3 chances to find the right person. The faster you find, the more you earn. Hints might be how they got known, not necessarily how they got known. One new person per day.</span>
         </div>
 
         <div class="player-container">
@@ -151,5 +151,5 @@
 <?php endif; ?>
 
 <script src="public/js/swiping/report.js?nocache=<%= Date.now() %>"></script>
-<script type="module" src="public/js/swiping/game.js"></script>
+<script type="module" src="public/js/swiping/game.js?nocache=<%= Date.now() %>"></script>
 <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>

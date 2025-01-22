@@ -203,14 +203,17 @@ setInterval(() => {
 
 document.addEventListener('DOMContentLoaded', function () {
     const toggleOnlineOnly = document.getElementById('toggleOnlineOnly');
+    
     if (toggleOnlineOnly) {
         toggleOnlineOnly.checked = showOnlineOnly; 
+
         toggleOnlineOnly.addEventListener('change', () => {
-            showOnlineOnly = toggleOnlineOnly.checked;
+            showOnlineOnly = toggleOnlineOnly.checked; 
             localStorage.setItem('showOnlineFriends', showOnlineOnly); 
-            currentPage = 1;
-            getFriendList(userId, currentPage);
+            currentPage = 1; 
+            getFriendList(userId, currentPage); 
         });
     }
+
     getFriendList(userId, currentPage);
 });

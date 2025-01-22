@@ -49,6 +49,8 @@ function getGameUser(userId, game, tryCount) {
             }
 
         } else if (data.message === "Already played") {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
             elements.minigameWindow.style.display = "none";
             console.log(data.message);
         } else {
@@ -168,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         elements.minigameWindow.style.display = "none";
         localStorage.setItem('ignoreGame', 1);
         const gameStatus = localStorage.getItem('gameWon');
-        if (gameStatus !== "1") {
+        if (gameStatus != 1) {
             restoreGame.style.display = "block";
         }
     });

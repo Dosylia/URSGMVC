@@ -153,10 +153,17 @@ function fillUnread(unreadCounts) {
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami
 function updateUnreadMessagesForFriends(unreadCounts) {
-    // Update global unread counts
+
+    console.log('unread counts:', unreadCounts);    
+    const newGlobalUnreadCounts = {};
+
+    // Update with new unread counts
     unreadCounts.forEach(unreadCount => {
-        globalUnreadCounts[unreadCount.chat_senderId] = unreadCount.unread_count;
+        newGlobalUnreadCounts[unreadCount.chat_senderId] = unreadCount.unread_count;
     });
+
+    // Replace globalUnreadCounts with the new data
+    globalUnreadCounts = newGlobalUnreadCounts;
 
     // Update currently visible friends
     const friendElements = document.querySelectorAll('.friend');
