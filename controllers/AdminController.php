@@ -70,6 +70,15 @@ class AdminController
         )
         {
 
+            $totalPlayers = $this-> admin -> countTotalPlayers();
+            $totalCharacters = $this-> admin -> countTotalCharacters();
+            $lastGameDate = $this-> admin -> getLastGameDate();
+
+            if ($lastGameDate) {
+                $date = date("Y-m-d"); 
+                $lastGameDatePlusOne = date("Y-m-d", strtotime($date . " +1 day")); 
+            }
+
             $current_url = "https://ur-sg.com/adminGame";
             $template = "views/admin/admin_game";
             $page_title = "URSG - Admin Game";
@@ -107,7 +116,7 @@ class AdminController
     
                     // Resize and save the image
                     if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 50, 50)) {
-                        $addChar = $this->admin->addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $pictureFileName, $gameDate, $gameGame
+                        $addChar = $this->admin->addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $gameDate, $gameGame
                         );
     
                         if ($addChar) {

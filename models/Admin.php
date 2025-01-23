@@ -50,7 +50,7 @@ class Admin extends DataBase
     {
         $query = $this->bdd->prepare("
                                         SELECT
-                                            COUNT(*) AS `ownedItemss`
+                                            COUNT(*) AS `ownedItems`
                                         FROM
                                             `user_items`
         ");
@@ -58,7 +58,57 @@ class Admin extends DataBase
         $query->execute();
         $result = $query->fetch();
 
-        return $result ? $result['ownedItemss'] : false;
+        return $result ? $result['ownedItems'] : false;
+    }
+
+    public function countTotalCharacters()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            COUNT(*) AS `TotalChars`
+                                        FROM
+                                            `game`
+        ");
+
+        $query->execute();
+        $result = $query->fetch();
+
+        return $result ? $result['TotalChars'] : false;
+    }
+
+    public function countTotalPlayers()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            COUNT(*) AS `TotalPlayers`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            `user_lastCompletedGame` IS NOT NULL
+        ");
+
+        $query->execute();
+        $result = $query->fetch();
+
+        return $result ? $result['TotalPlayers'] : false;
+    }
+
+    public function getLastGameDate()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `game_date` AS `LastDateGame`
+                                        FROM
+                                            `game`
+                                        ORDER BY
+                                            `game_date` DESC
+                                        LIMIT 1
+        ");
+    
+        $query->execute();
+        $result = $query->fetch();
+    
+        return $result ? $result['LastDateGame'] : false;
     }
 
     public function censorBio($userId)

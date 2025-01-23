@@ -5,15 +5,15 @@
   <div class="game-stats">
     <div class="stat">
       <h2>Total Characters</h2>
-      <p id="total-characters">0</p>
+      <p id="total-characters"><?= $totalCharacters ?></p>
     </div>
     <div class="stat">
       <h2>Total Players</h2>
-      <p id="total-players">0</p>
+      <p id="total-players"><?= $totalPlayers ?></p>
     </div>
     <div class="stat">
       <h2>Last date</h2>
-      <p id="last-date-game">0</p>
+      <p id="last-date-game"><?= $lastGameDate ?></p>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
             type="text" 
             id="game_date" 
             name="game_date" 
-            placeholder="YYYY-MM-DD" 
+            placeholder="<?= $lastGameDatePlusOne ?>" 
             pattern="\d{4}-\d{2}-\d{2}" 
             required>
         <small>Format: Year-Month-Day (e.g., 2025-01-23)</small>
