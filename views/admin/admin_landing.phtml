@@ -14,7 +14,7 @@
   <div class="reports-container">
     <h2>Pending Reports</h2>
     <p><?= $pendingReports ?></p>
-    <button>View Reports</button>
+    <button><a href="adminReports">View Reports</a></button>
   </div>
 
   <div class="system-status-container">
@@ -33,7 +33,15 @@
         <li>
           <strong><?= htmlspecialchars($action['user_username']) ?></strong> 
           performed <em><?= htmlspecialchars($action['action_type']) ?></em> 
-          , added : <strong><?= htmlspecialchars($action['target_game_username']) ?></strong> 
+          and added <strong><?= htmlspecialchars($action['target_game_username']) ?></strong> 
+          at <?= htmlspecialchars($action['timestamp']) ?>.
+        </li>
+      <?php elseif ($action['action_type'] === 'Ban') : ?>
+        <li>
+          <strong><?= htmlspecialchars($action['user_username']) ?></strong> 
+          performed <em><?= htmlspecialchars($action['action_type']) ?></em> 
+          on <strong><?= htmlspecialchars($action['ban_username']) ?></strong> 
+          (ID: <?= htmlspecialchars($action['ban_userId']) ?>, email : <strong><?= htmlspecialchars($action['ban_email']) ?></strong>)
           at <?= htmlspecialchars($action['timestamp']) ?>.
         </li>
       <?php else : ?>

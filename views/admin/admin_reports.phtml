@@ -1,0 +1,127 @@
+<?php if ($this->isAdmin()) : ?>
+        <span id="banUserModal" style="display: none;">
+            <h2 id="banUserTitle">Are you sure you want to ban this user?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminBanUser'>
+                    <input type="hidden" id="userIdBan" name='user_id' value="">
+                    <button type="submit" id="banUserYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="banUserNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+    <?php endif; ?>
+        <span id="censorBioModal" style="display: none;">
+            <h2 id="censorBioTitle">Are you sure you want to censor this user's bio?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminCensorBio'>
+                    <input type="hidden" id="userIdCensorBio" name='user_id' value="">
+                    <button type="submit" id="censorBioYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="censorBioNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="censorPictureModal" style="display: none;">
+            <h2 id="censorPictureTitle">Are you sure you want to censor this user's picture?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminCensorPicture'>
+                    <input type="hidden" id="userIdCensorPicture" name='user_id' value="">
+                    <button type="submit" id="censorPictureYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="censorPictureNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="requestBanModal" style="display: none;">
+            <h2 id="requestBanTitle">Are you sure you want to request a ban for this user?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminRequestBan'>
+                    <input type="hidden" id="userIdRequestBan" name='user_id' value="">
+                    <button type="submit" id="requestBanYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="requestBanNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="censorBothModal" style="display: none;">
+            <h2 id="censorBothTitle">Are you sure you want to censor this user's bio and picture?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminCensorBoth'>
+                    <input type="hidden" id="userIdCensorBoth" name='user_id' value="">
+                    <button type="submit" id="censorBothYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="censorBothNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="dismissModal" style="display: none;">
+            <h2 id="dismissTitle">Are you sure you want to censor this user's bio and picture?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='reportAdminDismiss'>
+                    <input type="hidden" id="userIdDismiss" name='user_id' value="">
+                    <button type="submit" id="dismissYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="dismissNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+<div class="admin-container">
+        <h1>Reports Management</h1>
+
+        <?php if (empty($reports)) : ?>
+            <p>No pending reports.</p>
+        <?php else : ?>
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Report Count</th>
+                        <th>Username</th>
+                        <th>Picture</th>
+                        <th>ShortBio</th>
+                        <th>Age</th>
+                        <th>Reasons</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reports as $report) : ?>
+                        <tr>
+                            <td><?= htmlspecialchars($report['reported_id']); ?></td>
+                            <td><?= htmlspecialchars($report['report_count']); ?></td>
+                            <td class="username"><?= htmlspecialchars($report['user_username']) ?></td>
+                            <?php if (isset($report['user_picture']) && $report['user_picture'] !== null): ?>
+                                <td><img src='public/upload/<?= $report['user_picture'] ?>' alt='Profile' style='width: 50px; height: 50px; border-radius: 50%;' loading="lazy"></td>
+                            <?php else : ?>
+                                <td><img src='public/images/defaultprofilepicture.jpg' alt='Profile' style='width: 50px; height: 50px; border-radius: 50%;' loading="lazy"></td>
+                            <?php endif; ?>
+                            <td class="bio"><?= htmlspecialchars($report['user_shortBio']) ?></td>
+                            <td><?= htmlspecialchars($report['user_age']) ?></td>
+                            <td class="reasons">
+                                <ul>
+                                    <?php 
+                                    $reasons = explode('||', $report['reasons']);
+                                    foreach ($reasons as $reason) : ?>
+                                        <li><?= htmlspecialchars($reason); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <?php if ($this->isAdmin()) : ?>
+                                        <button onclick="openConfirmationPopupBanUser('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Ban</button>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->isModerator()) : ?>
+                                        <button onclick="openConfirmationPopupRequestBan('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Request Ban</button>
+                                        <button onclick="openConfirmationPopupCensorBio('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Censor Bio</button>
+                                        <button onclick="openConfirmationPopupCensorPicture('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Censor Picture</button>
+                                        <button onclick="openConfirmationPopupCensorBoth('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Censor both</button>
+                                        <button onclick="dismissReports('<?= $report['reported_id'] ?>', '<?= $report['user_username'] ?>')">Dismiss</button>
+                                    <?php endif; ?>
+
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+
+    <script src="public/js/admin/admin_confirmReports.js?nocache=<%= Date.now() %>"></script>

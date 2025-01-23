@@ -4305,29 +4305,29 @@ justify-content: center;
   background-color: var(--ligher--grey);
 }
 
-.admin-users-container h1 {
+.admin-users-container h1, .admin-container h1 {
   text-align: center;
   margin-bottom: 1rem;
   color: #333;
 }
 
-.dark-mode .admin-users-container h1 {
+.dark-mode .admin-users-container h1, .dark-mode .admin-container h1 {
   color: white;
 }
 
-.admin-users-container table {
+.admin-users-container table, .reports-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
 }
 
-.admin-users-container table th {
+.admin-users-container table th, .reports-table th {
   text-align: left;
   padding: 1rem;
   border: 1px solid #ddd;
 }
 
-.admin-users-container table td {
+.admin-users-container table td, .reports-table td {
   text-align: left;
   padding: 1rem;
   background-color: var(--dark-ligher-grey);
@@ -4338,31 +4338,31 @@ justify-content: center;
   white-space: nowrap; 
 }
 
-.admin-users-container table td.bio {
+.admin-users-container table td.bio, .reports-table td.bio, .reports-table td.reasons {
   max-width: 200px; 
   overflow: hidden;
   text-overflow: ellipsis; 
   white-space: nowrap; 
 }
 
-.admin-users-container table td:hover.bio {
+.admin-users-container table td:hover.bio, .reports-table td:hover.bio, .reports-table td:hover.reasons {
   white-space: normal; 
   overflow: visible; 
   z-index: 1;
   position: relative;
 }
 
-.admin-users-container table th {
+.admin-users-container table th, .reports-table th {
   background-color: var(--main--red);
   color: white;
   font-weight: bold;
 }
 
-.admin-users-container table tr:nth-child(even) {
+.admin-users-container table tr:nth-child(even), .reports-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.admin-users-container table tr:hover {
+.admin-users-container table tr:hover, .reports-table tr:hover {
   background-color: #f1f1f1;
 }
 
@@ -4372,7 +4372,7 @@ justify-content: center;
 }
 
 .admin-users-container .actions button,
-.admin-users-container form button {
+.admin-users-container form button, .reports-table button {
   padding: 0.5rem 0.75rem;
   border: none;
   background-color: var(--main--red);
@@ -4514,6 +4514,79 @@ justify-content: center;
 
 .admin-dashboard button:hover {
   background-color: var(--main--red);
+}
+
+#banUserModal, #censorBioModal, #censorPictureModal, #requestBanModal, #censorBothModal, #dismissModal {
+  width: 50%;
+  height: auto;
+  background-color: white;
+  border-radius: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  overflow: hidden;
+  color: black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dark-mode #banUserModal, .dark-mode #censorBioModal, .dark-mode #censorPictureModal, .dark-mode #requestBanModal, .dark-mode #censorBothModal, .dark-mode #dismissModal {
+  background-color: var(--dark-ligher-grey);
+  color: white;
+}
+
+#banUserTitle, #censorBioTitle, #censorPictureTitle {
+  font-size: 2em;
+  color: var(--main--red);
+  text-align: center;
+}
+
+.admin-form-btn-yes {
+  padding: 5px 20px;
+  background-color: #08bc26;
+  border: none;
+  border-radius: 25px;
+  box-shadow: 0 0 0 1px #2D2D2D;
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  font-weight: normal;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 52px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  margin-bottom: 20px;	
+}
+
+.admin-form-btn-no {
+  background-color: #cb1919;
+  border: none;
+  border-radius: 25px;
+  box-shadow: 0 0 0 1px #2D2D2D;
+  font-family: Arial, sans-serif;
+  padding: 5px 20px;
+  font-size: 36px;
+  font-weight: normal;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 52px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  margin-bottom: 20px;	
+}
+
+.modal-buttons-admin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
 }
 
 /* Admin Actions Section */
@@ -4754,6 +4827,12 @@ justify-content: center;
   background-color: var(--dark-ligher-grey);
   border: 1px solid #666363;
   color: white;
+}
+
+.actions button {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 

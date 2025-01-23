@@ -168,7 +168,8 @@ class User extends DataBase
                                             u.*,
                                             l.*,
                                             v.*,
-                                            lf.*
+                                            lf.*,
+                                            g.google_email
                                         FROM
                                             `user` AS u
                                         LEFT JOIN
@@ -177,6 +178,8 @@ class User extends DataBase
                                             `valorant` AS v ON u.user_id = v.user_id
                                         LEFT JOIN
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
+                                        LEFT JOIN
+                                            `googleuser` AS g ON u.google_userId = g.google_userId
                                         WHERE
                                             u.user_id = ?;
         ");

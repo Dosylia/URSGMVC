@@ -78,7 +78,7 @@ trait SecurityController
 
     public function isModerator()
     {
-        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158 || $_SESSION['userId'] == 161)
+        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158 || $_SESSION['userId'] == 161  || $_SESSION['userId'] == 198)
         {
             return true;
         }

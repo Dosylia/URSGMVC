@@ -1,3 +1,35 @@
+<?php if ($this->isAdmin()) : ?>
+        <span id="banUserModal" style="display: none;">
+            <h2 id="banUserTitle">Are you sure you want to ban this user?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='adminBanUser'>
+                    <input type="hidden" id="userIdBan" name='user_id' value="">
+                    <button type="submit" id="banUserYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="banUserNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+    <?php endif; ?>
+        <span id="censorBioModal" style="display: none;">
+            <h2 id="censorBioTitle">Are you sure you want to censor this user's bio?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='adminCensorBio'>
+                    <input type="hidden" id="userIdCensorBio" name='user_id' value="">
+                    <button type="submit" id="censorBioYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="censorBioNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="censorPictureModal" style="display: none;">
+            <h2 id="censorPictureTitle">Are you sure you want to censor this user's picture?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='adminCensorPicture'>
+                    <input type="hidden" id="userIdCensorPicture" name='user_id' value="">
+                    <button type="submit" id="censorPictureYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="censorPictureNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
 <div class="admin-users-container">
     <h1>Users</h1>
     
@@ -61,20 +93,11 @@
                 <td>
                     <div class='actions'>
                         <?php if ($this->isAdmin()) : ?>
-                        <form method='POST' action='adminBanUser'>
-                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
-                            <button type='submit' class='delete'>Ban</button>
-                        </form>
+                            <button class='delete censorBioYes' onclick="openConfirmationPopupBanUser('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Ban</button>
                         <?php endif; ?>
                         <?php if ($this->isModerator()) : ?>
-                        <form method='POST' action='adminCensorBio'>
-                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
-                            <button type='submit'>Censor Bio</button>
-                        </form>
-                        <form method='POST' action='adminCensorPicture'>
-                            <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
-                            <button type='submit'>Censor Picture</button>
-                        </form>
+                            <button class="censorBioButton" onclick="openConfirmationPopupCensorBio('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Censor Bio</button>
+                            <button class="censorPictureButton" onclick="openConfirmationPopupCensorPicture('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Censor Picture</button>
                         <?php endif; ?>
                     </div>
                 </td>
@@ -85,3 +108,4 @@
 </div>
 
 <script src="public/js/admin/panel_users.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/admin/admin_confirm.js?nocache=<%= Date.now() %>"></script>

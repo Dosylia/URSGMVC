@@ -161,11 +161,19 @@ $actionMap = [
     'admin' => [AdminController::class, 'adminLandingPage'],
     'adminUsers' => [AdminController::class, 'adminUsersPage'],
     'adminUpdateCurrency' => [AdminController::class, 'adminUpdateCurrency'],
-    // 'adminBanUser' => [AdminController::class, 'adminBanUser'],
+    'adminBanUser' => [AdminController::class, 'adminBanUser'],
     'adminCensorBio' => [AdminController::class, 'adminCensorBio'],
     'adminCensorPicture' => [AdminController::class, 'adminCensorPicture'],
     'adminGame' => [AdminController::class, 'adminGamePage'],
     'addCharGame' => [AdminController::class, 'addCharGame'],
+    'adminReports' => [AdminController::class, 'adminReportsPage'],
+    'reportAdminBanUser' => [AdminController::class, 'reportAdminBanUser'],
+    'reportAdminCensorBio' => [AdminController::class, 'reportAdminCensorBio'],
+    'reportAdminCensorPicture' => [AdminController::class, 'reportAdminCensorPicture'],
+    'reportAdminRequestBan' => [AdminController::class, 'reportAdminRequestBan'],
+    'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
+    'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
+
 ];
 
 $action = "home";

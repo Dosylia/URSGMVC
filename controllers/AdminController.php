@@ -75,13 +75,37 @@ class AdminController
             $lastGameDate = $this-> admin -> getLastGameDate();
 
             if ($lastGameDate) {
-                $date = date("Y-m-d"); 
-                $lastGameDatePlusOne = date("Y-m-d", strtotime($date . " +1 day")); 
+                $lastGameDatePlusOne = date("Y-m-d", strtotime($lastGameDate . " +1 day")); 
             }
 
             $current_url = "https://ur-sg.com/adminGame";
             $template = "views/admin/admin_game";
             $page_title = "URSG - Admin Game";
+            require "views/layoutAdmin.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminReportsPage(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+
+            $reports = $this->admin->getGroupedReports();
+
+            $current_url = "https://ur-sg.com/adminReports";
+            $template = "views/admin/admin_reports";
+            $page_title = "URSG - Admin Report";
             require "views/layoutAdmin.phtml";
         } 
         else
@@ -228,6 +252,57 @@ class AdminController
         }
     }
 
+    public function adminBanUser()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToBan = $this->user->getUserById($_POST['user_id']);
+                $userId = $userToBan['user_id'];
+                $username = $userToBan['user_username'];
+                $deleteUser = $this->googleUser->deleteAccount($userToBan['google_email']);
+
+                if ($deleteUser)
+                {
+                    $addBannedUser = $this->admin->addBannedUser($userToBan['google_email'], "Banned by admin");
+                    if ($addBannedUser)
+                    {
+                        $this-> admin -> logAdminActionBan($_SESSION['userId'],  $userId, $username, $userToBan['google_email'], "Ban");
+                        header("Location: /adminUsers?message=User banned");
+                        exit();
+                    }
+                    else
+                    {
+                        header("Location: /adminUsers?message=Error banning user");
+                        exit();
+                    }
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error banning user");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Error banning user");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
     public function adminCensorBio() 
     {
         if (
@@ -332,4 +407,296 @@ class AdminController
             exit();
         }
     }
+
+    public function reportAdminBanUser()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToBan = $this->user->getUserById($_POST['user_id']);
+                if ($userToBan) {
+                    $userId = $userToBan['user_id'];
+                    $username = $userToBan['user_username'];
+                    $googleEmail = $userToBan['google_email'];
+    
+                    $deleteUser = $this->googleUser->deleteAccount($googleEmail);
+    
+                    if ($deleteUser)
+                    {
+                        $addBannedUser = $this->admin->addBannedUser($googleEmail, "Banned by admin");
+    
+                        if ($addBannedUser)
+                        {
+                            $this->admin->logAdminActionBan($_SESSION['userId'], $userId, $username, $googleEmail, "Ban");
+    
+                            $userReports = $this->admin->getReportsByUserId($userId);
+                            foreach ($userReports as $report) {
+                                $this->admin->updateReport($report['reported_id'], 'reviewed');
+                            }
+    
+                            header("Location: /adminReports?message=User banned and reports reviewed");
+                            exit();
+                        }
+                        else
+                        {
+                            header("Location: /adminReports?message=Error banning user");
+                            exit();
+                        }
+                    }
+                    else
+                    {
+                        header("Location: /adminReports?message=Error deleting user account");
+                        exit();
+                    }
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=User not found");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function reportAdminCensorBio()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $censorBio = $this->admin->censorBio($_POST['user_id']);
+
+                if ($censorBio)
+                {
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Censor Bio");
+
+                    $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
+                    foreach ($userReports as $report) {
+                        $this->admin->updateReport($report['reported_id'], 'reviewed');
+                    }
+
+                    header("Location: /adminReports?message=Bio censored and reports reviewed");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminReports?message=Error censoring bio");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function reportAdminCensorPicture()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $censorPicture = $this->admin->censorPicture($_POST['user_id']);
+
+                if ($censorPicture)
+                {
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Censor Picture");
+
+                    $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
+                    foreach ($userReports as $report) {
+                        $this->admin->updateReport($report['reported_id'], 'reviewed');
+                    }
+
+                    header("Location: /adminReports?message=Picture censored and reports reviewed");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminReports?message=Error censoring picture");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function reportAdminCensorBoth()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $censorBio = $this->admin->censorBio($_POST['user_id']);
+                $censorPicture = $this->admin->censorPicture($_POST['user_id']);
+
+                if ($censorBio && $censorPicture)
+                {
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Censor Bio and Picture");
+
+                    $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
+                    foreach ($userReports as $report) {
+                        $this->admin->updateReport($report['reported_id'], 'reviewed');
+                    }
+
+                    header("Location: /adminReports?message=Bio and picture censored and reports reviewed");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminReports?message=Error censoring bio and picture");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function reportAdminRequestBan()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToBan = $this->user->getUserById($_POST['user_id']);
+                if ($userToBan) {
+                    $userId = $userToBan['user_id'];
+    
+                    $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
+                    foreach ($userReports as $report) {
+                        $this->admin->updateReport($report['reported_id'], 'requesting ban');
+                    }
+
+                    header("Location: /adminReports?message=Requested the ban successfully");
+                    exit();
+                  
+                }
+                else
+                {
+                    header("Location: /adminReports?message=User not found");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function reportAdminDismiss()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToDismiss = $this->user->getUserById($_POST['user_id']);
+                if ($userToDismiss) {
+                    $userId = $userToDismiss['user_id'];
+    
+                    $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
+                    foreach ($userReports as $report) {
+                        $this->admin->updateReport($report['reported_id'], 'dismissed');
+                    }
+
+                    header("Location: /adminReports?message=Requested the dismiss successfully");
+                    exit();
+                  
+                }
+                else
+                {
+                    header("Location: /adminReports?message=User not found");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+    
 }

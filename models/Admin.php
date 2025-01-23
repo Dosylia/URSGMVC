@@ -214,6 +214,38 @@ class Admin extends DataBase
 
     }
 
+    public function logAdminActionBan($adminId, $targetUserId, $username, $email, $actionType)
+    {
+        $query = $this -> bdd -> prepare("
+                INSERT INTO `admin_actions`(
+                    `admin_id`,
+                    `ban_userId`,
+                    `ban_username`,
+                    `ban_email`,
+                    `action_type`                                      
+                )
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+            ");
+
+        $logActiong = $query -> execute([$adminId, $targetUserId, $username, $email, $actionType]);
+
+        if($logActiong)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
     public function logAdminActionGame($adminId, $gameUsername, $actionType)
     {
         $query = $this -> bdd -> prepare("
@@ -276,5 +308,120 @@ class Admin extends DataBase
             return false;  
         }
     }
+
+    public function addBannedUser($email, $reason)
+    {
+        $query = $this -> bdd -> prepare("
+                INSERT INTO `banned_users`(
+                    `email`,
+                    `reason`                                   
+                )
+                VALUES (
+                    ?,
+                    ?
+                )
+        ");
+
+        $bannedUser = $query -> execute([$email, $reason]); 
+
+        if($bannedUser)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+    }
+
+    public function getReports()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            *
+                                        FROM 
+                                            `reports`
+        ");
     
+        $query->execute();
+        $allReports = $query->fetchAll();
+        
+        if ($allReports) {
+            return $allReports;
+        } else {
+            return false;
+        }
+    }
+
+    public function getGroupedReports()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                r.reported_id, 
+                u.user_username,
+                u.user_shortBio,
+                u.user_picture,
+                u.user_age,
+                GROUP_CONCAT(r.report_id) AS report_ids,
+                COUNT(*) AS report_count,
+                GROUP_CONCAT(r.content_id) AS content_ids,
+                GROUP_CONCAT(r.content_type) AS content_types,
+                GROUP_CONCAT(r.reason SEPARATOR '||') AS reasons,
+                GROUP_CONCAT(r.details SEPARATOR '||') AS details
+            FROM 
+                `reports` r
+            LEFT JOIN 
+                `user` u 
+            ON 
+                r.reported_id = u.user_id
+            WHERE 
+                r.status = 'pending'
+            GROUP BY 
+                r.reported_id, u.user_username
+            ORDER BY 
+                r.created_at DESC
+        ");
+    
+        $query->execute();
+        $allReports = $query->fetchAll();
+        
+        return $allReports ? $allReports : [];
+    }
+    
+    public function updateReport($reportedId, $status)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `reports`
+                                        SET 
+                                            `status` = ?
+                                        WHERE 
+                                            `reported_id` = ?
+        ");
+    
+        $query->execute([$status, $reportedId]);
+    
+        if ($query->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getReportsByUserId($userId)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                *
+            FROM 
+                `reports`
+            WHERE
+                `reported_id` = ?
+        ");
+    
+        $query->execute([$userId]);
+        $allReports = $query->fetchAll();
+        
+        return $allReports ? $allReports : [];
+    }
 }
