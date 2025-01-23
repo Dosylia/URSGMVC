@@ -59,6 +59,127 @@ class AdminController
         }
     }
 
+    public function adminGamePage(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+
+            $current_url = "https://ur-sg.com/adminGame";
+            $template = "views/admin/admin_game";
+            $page_title = "URSG - Admin Game";
+            require "views/layoutAdmin.phtml";
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function addCharGame()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        ) {
+            if (isset($_POST['game_username'])) {
+                $gameUsername = $_POST['game_username'];
+                $gameMain = $_POST['game_main'];
+                $hintAffiliation = $_POST['hint_affiliation'] ?? null;
+                $hintGender = $_POST['hint_gender'] ?? null;
+                $hintGuess = $_POST['hint_guess'] ?? null;
+                $gameDate = $_POST['game_date'];
+                $gameGame = $_POST['game_game'];
+    
+                // Handle the uploaded picture
+                if (isset($_FILES['game_picture']) && $_FILES['game_picture']['error'] === UPLOAD_ERR_OK) {
+                    $pictureTmpName = $_FILES['game_picture']['tmp_name'];
+                    $pictureFileName = "public/upload/{$gameUsername}.jpg";
+    
+                    // Resize and save the image
+                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 50, 50)) {
+                        $addChar = $this->admin->addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $pictureFileName, $gameDate, $gameGame
+                        );
+    
+                        if ($addChar) {
+                            $this->admin->logAdminActionGame($_SESSION['userId'], $gameUsername, "Added Character");
+                            header("Location: /adminGame?message=Character added successfully");
+                            exit();
+                        } else {
+                            header("Location: /adminGame?message=Error adding character");
+                            exit();
+                        }
+                    } else {
+                        header("Location: /adminGame?message=Error resizing image");
+                        exit();
+                    }
+                } else {
+                    header("Location: /adminGame?message=Image upload failed");
+                    exit();
+                }
+            } else {
+                header("Location: /adminGame?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function resizeAndSaveImage($sourcePath, $destinationPath, $width, $height)
+{
+    try {
+        $imageInfo = getimagesize($sourcePath);
+        $srcWidth = $imageInfo[0];
+        $srcHeight = $imageInfo[1];
+        $imageType = $imageInfo[2];
+
+        switch ($imageType) {
+            case IMAGETYPE_JPEG:
+                $srcImage = imagecreatefromjpeg($sourcePath);
+                break;
+            case IMAGETYPE_PNG:
+                $srcImage = imagecreatefrompng($sourcePath);
+                break;
+            case IMAGETYPE_GIF:
+                $srcImage = imagecreatefromgif($sourcePath);
+                break;
+            default:
+                return false;
+        }
+
+        $dstImage = imagecreatetruecolor($width, $height);
+
+        imagecopyresampled(
+            $dstImage,
+            $srcImage,
+            0, 0, 0, 0,
+            $width, $height,
+            $srcWidth, $srcHeight
+        );
+
+        $result = imagejpeg($dstImage, $destinationPath, 90);
+
+        imagedestroy($srcImage);
+        imagedestroy($dstImage);
+
+        return $result;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+    
+
     public function adminUpdateCurrency()
     {
         if (

@@ -107,21 +107,24 @@ class Admin extends DataBase
     public function getLastAdminActions()
     {
         $query = $this->bdd->prepare("
-                                        SELECT
+                                        SELECT 
                                             aa.*, 
                                             u.user_username,
-                                            target.user_username AS target_username 
+                                            -- Use a CASE or COALESCE to determine if it's a game action or user action
+                                            COALESCE(target.user_username, ga.game_username) AS target_username 
                                         FROM 
                                             admin_actions aa
-                                        JOIN
+                                        LEFT JOIN 
                                             user u ON aa.admin_id = u.user_id
-                                        JOIN 
+                                        LEFT JOIN 
                                             user target ON aa.target_user_id = target.user_id
-                                        ORDER BY
-                                        aa.timestamp DESC
+                                        LEFT JOIN 
+                                            game ga ON aa.target_game_username = ga.game_username
+                                        ORDER BY 
+                                            aa.timestamp DESC
                                         LIMIT 10
         ");
-
+    
         $query->execute();
         $lastActions = $query->fetchAll();
         
@@ -131,6 +134,7 @@ class Admin extends DataBase
             return false;
         }
     }
+    
 
     public function logAdminAction($adminId, $targetUserId, $actionType)
     {
@@ -147,8 +151,80 @@ class Admin extends DataBase
                 )
             ");
 
-        $query -> execute([$adminId, $targetUserId, $actionType]);
+        $logActiong = $query -> execute([$adminId, $targetUserId, $actionType]);
 
+        if($logActiong)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
+    public function logAdminActionGame($adminId, $gameUsername, $actionType)
+    {
+        $query = $this -> bdd -> prepare("
+                INSERT INTO `admin_actions`(
+                    `admin_id`,
+                    `target_game_username`,
+                    `action_type`                                      
+                )
+                VALUES (
+                    ?,
+                    ?,
+                    ?
+                )
+            ");
+
+        $logActiong = $query -> execute([$adminId, $gameUsername, $actionType]);
+
+        if($logActiong)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
+    public function addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $gameDate, $gameGame)
+    {
+        $query = $this -> bdd -> prepare("
+                INSERT INTO `game`(
+                    `game_username`,
+                    `game_main`,
+                    `hint_affiliation`,
+                    `hint_gender`,
+                    `hint_guess`,
+                    `game_date`,
+                    `game_game`                                      
+                )
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+        ");
+
+        $addCharGame = $query -> execute([$gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $gameDate, $gameGame]); 
+
+        if($addCharGame)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
     }
     
 }

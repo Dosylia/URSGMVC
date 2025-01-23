@@ -29,6 +29,14 @@
   
   <ul id="admin-actions-list">
     <?php foreach ($adminActions as $action) : ?>
+      <?php if ($action['action_type'] === 'Added Character') : ?>
+        <li>
+          <strong><?= htmlspecialchars($action['user_username']) ?></strong> 
+          performed <em><?= htmlspecialchars($action['action_type']) ?></em> 
+          , added : <strong><?= htmlspecialchars($action['target_game_username']) ?></strong> 
+          at <?= htmlspecialchars($action['timestamp']) ?>.
+        </li>
+      <?php else : ?>
       <li>
         <strong><?= htmlspecialchars($action['user_username']) ?></strong> 
         performed <em><?= htmlspecialchars($action['action_type']) ?></em> 
@@ -36,6 +44,7 @@
         (ID: <?= htmlspecialchars($action['target_user_id']) ?>) 
         at <?= htmlspecialchars($action['timestamp']) ?>.
       </li>
+      <?php endif; ?>
     <?php endforeach; ?>
   </ul>
 </div>

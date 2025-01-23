@@ -1,0 +1,68 @@
+<div class="game-admin-container">
+  <h1>Game Management</h1>
+
+  <!-- Statistics Section -->
+  <div class="game-stats">
+    <div class="stat">
+      <h2>Total Characters</h2>
+      <p id="total-characters">0</p>
+    </div>
+    <div class="stat">
+      <h2>Total Players</h2>
+      <p id="total-players">0</p>
+    </div>
+    <div class="stat">
+      <h2>Last date</h2>
+      <p id="last-date-game">0</p>
+    </div>
+  </div>
+
+  <!-- Add Character Form -->
+  <div class="add-character-form">
+    <h2>Add a New Character</h2>
+    <form action="addCharGame" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="game_username">Username:</label>
+        <input type="text" id="game_username" name="game_username" required>
+      </div>
+      <div class="form-group">
+        <label for="game_main">Main Character:</label>
+        <input type="text" id="game_main" name="game_main" required>
+      </div>
+      <div class="form-group">
+        <label for="hint_affiliation">Affiliation:</label>
+        <input type="text" id="hint_affiliation" name="hint_affiliation">
+      </div>
+      <div class="form-group">
+        <label for="hint_gender">Gender:</label>
+        <input type="text" id="hint_gender" name="hint_gender">
+      </div>
+      <div class="form-group">
+        <label for="hint_guess">Hint:</label>
+        <input type="text" id="hint_guess" name="hint_guess">
+      </div>
+      <div class="form-group">
+        <label for="game_picture">Upload Picture:</label>
+        <input type="file" id="game_picture" name="game_picture" accept="image/*" required>
+        <small>Only JPG</small>
+      </div>
+      <div class="form-group">
+        <label for="game_date">Date (YYYY-MM-DD):</label>
+        <input 
+            type="text" 
+            id="game_date" 
+            name="game_date" 
+            placeholder="YYYY-MM-DD" 
+            pattern="\d{4}-\d{2}-\d{2}" 
+            required>
+        <small>Format: Year-Month-Day (e.g., 2025-01-23)</small>
+        </div>
+      <div class="form-group">
+        <label for="game_game">Game:</label>
+        <input type="text" id="game_game" name="game_game" required>
+        <small>So far only "League of Legends"</small>
+      </div>
+      <button type="submit" class="submit-btn">Add Character</button>
+    </form>
+  </div>
+</div>

@@ -4607,6 +4607,156 @@ justify-content: center;
   background-color: #444;
 }
 
+/* Game Management Page */
+.game-admin-container {
+  width: 95%;
+  margin: 2rem auto;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.dark-mode .game-admin-container {
+  background-color: var(--ligher--grey);
+}
+
+.game-admin-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.dark-mode .game-admin-container h1 {
+  color: white;
+}
+
+/* Statistics Section */
+.game-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+
+.game-stats .stat {
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+  width: 30%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .game-stats .stat {
+  background-color: var(--dark-ligher-grey);
+}
+
+.game-stats .stat h2 {
+  font-size: 1.25rem;
+  color: var(--main--red);
+  margin-bottom: 0.5rem;
+}
+
+.game-stats .stat p {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.dark-mode .game-stats .stat p {
+  color: white;
+}
+
+.form-group  small {
+  font-size: 0.75rem;
+  color: black;
+  margin-top: 4px;
+}
+
+.dark-mode .form-group  small {
+  color: white;
+}
+
+/* Form Section */
+.add-character-form {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.dark-mode .add-character-form {
+  background-color: var(--dark-ligher-grey);
+}
+
+.add-character-form h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--main--red);
+}
+
+.add-character-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.add-character-form .form-group label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.dark-mode .add-character-form .form-group label {
+  color: #ddd;
+}
+
+.add-character-form .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.dark-mode .add-character-form .form-group input {
+  background-color: var(--dark-ligher-grey);
+  border: 1px solid #666363;
+  color: white;
+}
+
+.add-character-form .submit-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  color: white;
+  background-color: var(--main--red);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-character-form .submit-btn:hover {
+  opacity: 0.9;
+}
+
+.add-character-form .form-group input[type="file"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.dark-mode .add-character-form .form-group input[type="file"] {
+  background-color: var(--dark-ligher-grey);
+  border: 1px solid #666363;
+  color: white;
+}
+
+
 /* DARK MODE */
 
 .dark-mode .partner {
