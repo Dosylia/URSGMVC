@@ -4,6 +4,7 @@
     <!-- Search and Filter Section -->
     <div class="search-filter-container">
         <input type="text" id="searchInput" placeholder="Search by username">
+        <input type="number" id="searchInputId" placeholder="Search by ID">
         
         <select id="genderFilter">
             <option value="">All Genders</option>
@@ -37,7 +38,7 @@
         <tbody id="userTableBody">
         <?php foreach ($users as $user) : ?>
             <tr>
-                <td><?= $user['user_id'] ?></td>
+                <td class="userIdTable"><?= $user['user_id'] ?></td>
                 <td class="username"><?= htmlspecialchars($user['user_username']) ?></td>
                 <td class="gender"><?= htmlspecialchars($user['user_gender']) ?></td>
                 <td><?= htmlspecialchars($user['user_age']) ?></td>
@@ -46,7 +47,9 @@
                     <form method='POST' action='adminUpdateCurrency'>
                         <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
                         <input type='number' name='currency' value='<?= $user['user_currency'] ?>' min='0' style='width: 80px;'>
-                        <button type='submit'>Update</button>
+                        <?php if ($this->isAdmin()) : ?>
+                            <button type='submit'>Update</button>
+                        <?php endif; ?>
                     </form>
                 </td>
                 <td class="bio"><?= htmlspecialchars($user['user_shortBio']) ?></td>
@@ -58,17 +61,17 @@
                 <td>
                     <div class='actions'>
                         <?php if ($this->isAdmin()) : ?>
-                        <form method='POST' action='banUser'>
+                        <form method='POST' action='adminBanUser'>
                             <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
                             <button type='submit' class='delete'>Ban</button>
                         </form>
                         <?php endif; ?>
                         <?php if ($this->isModerator()) : ?>
-                        <form method='POST' action='censorBio'>
+                        <form method='POST' action='adminCensorBio'>
                             <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
                             <button type='submit'>Censor Bio</button>
                         </form>
-                        <form method='POST' action='censorPicture'>
+                        <form method='POST' action='adminCensorPicture'>
                             <input type='hidden' name='user_id' value='<?= $user['user_id'] ?>'>
                             <button type='submit'>Censor Picture</button>
                         </form>

@@ -44,6 +44,8 @@ class AdminController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersOnline = $this-> admin -> countOnlineUsers();
             $purchases = $this-> admin -> countPurchases();
+            $pendingReports = $this-> admin -> countPendingReports();
+            $adminActions = $this-> admin -> getLastAdminActions();
 
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
@@ -73,6 +75,7 @@ class AdminController
 
                 if ($currency)
                 {
+                    $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Updated Currency");
                     header("Location: /adminUsers?message=Money updated");
                     exit();
                 }
@@ -85,6 +88,84 @@ class AdminController
             else
             {
                 header("Location: /adminUsers?message=Error updating money");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminCensorBio() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $censorBio = $this->admin->censorBio($_POST['user_id']);
+
+                if ($censorBio)
+                {
+                    $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Censor Bio");
+                    header("Location: /adminUsers?message=Bio censored");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error censoring bio");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Error censoring bio");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminCensorPicture() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isModerator()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $censorPicture = $this->admin->censorPicture($_POST['user_id']);
+
+                if ($censorPicture)
+                {
+                    $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Censor Picture");
+                    header("Location: /adminUsers?message=Picture censored");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error censoring picture");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Error censoring picture");
                 exit();
             }
         } 

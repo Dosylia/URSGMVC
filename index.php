@@ -161,6 +161,9 @@ $actionMap = [
     'admin' => [AdminController::class, 'adminLandingPage'],
     'adminUsers' => [AdminController::class, 'adminUsersPage'],
     'adminUpdateCurrency' => [AdminController::class, 'adminUpdateCurrency'],
+    // 'adminBanUser' => [AdminController::class, 'adminBanUser'],
+    'adminCensorBio' => [AdminController::class, 'adminCensorBio'],
+    'adminCensorPicture' => [AdminController::class, 'adminCensorPicture'],
 ];
 
 $action = "home";

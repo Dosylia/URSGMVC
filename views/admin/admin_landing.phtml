@@ -12,8 +12,8 @@
   </div>
 
   <div class="reports-container">
-    <h2>Reports</h2>
-    <p>Review pending reports and flagged content.</p>
+    <h2>Pending Reports</h2>
+    <p><?= $pendingReports ?></p>
     <button>View Reports</button>
   </div>
 
@@ -23,3 +23,20 @@
     <button>View Logs</button>
   </div>
 </div>
+
+<div class="admin-actions-container">
+  <h2>Last Admin Actions</h2>
+  
+  <ul id="admin-actions-list">
+    <?php foreach ($adminActions as $action) : ?>
+      <li>
+        <strong><?= htmlspecialchars($action['user_username']) ?></strong> 
+        performed <em><?= htmlspecialchars($action['action_type']) ?></em> 
+        on <strong><?= htmlspecialchars($action['target_username']) ?></strong> 
+        (ID: <?= htmlspecialchars($action['target_user_id']) ?>) 
+        at <?= htmlspecialchars($action['timestamp']) ?>.
+      </li>
+    <?php endforeach; ?>
+  </ul>
+</div>
+
