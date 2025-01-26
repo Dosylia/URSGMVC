@@ -4597,6 +4597,7 @@ justify-content: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .dark-mode .admin-actions-container {
@@ -4833,6 +4834,48 @@ justify-content: center;
   margin: 5px;
   padding: 5px 10px;
   cursor: pointer;
+}
+
+/* Report Guideline Container */
+.report-guideline-container {
+  width: 90%;
+  margin: 1.5rem auto;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.dark-mode .report-guideline-container {
+  background-color: var(--ligher--grey);
+}
+
+.report-guideline-container h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.8rem;
+}
+
+.dark-mode .report-guideline-container h2 {
+  color: white;
+}
+
+.guidelines-list {
+  list-style-type: disc;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+  color: #333;
+  margin: 0;
+}
+
+.dark-mode .guidelines-list {
+  color: white;
+}
+
+.guidelines-list li {
+  margin-bottom: 0.4rem;
 }
 
 

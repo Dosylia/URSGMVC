@@ -136,7 +136,7 @@ class AdminController
                 // Handle the uploaded picture
                 if (isset($_FILES['game_picture']) && $_FILES['game_picture']['error'] === UPLOAD_ERR_OK) {
                     $pictureTmpName = $_FILES['game_picture']['tmp_name'];
-                    $pictureFileName = "public/upload/{$gameUsername}.jpg";
+                    $pictureFileName = "public/images/game/{$gameUsername}.jpg";
     
                     // Resize and save the image
                     if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 50, 50)) {
@@ -618,7 +618,7 @@ class AdminController
             $this->isConnectWebsite() &&
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf() &&
-            $this->isAdmin()
+            $this->isModerator()
         )
         {
             if (isset($_POST['user_id']))
@@ -626,10 +626,12 @@ class AdminController
                 $userToBan = $this->user->getUserById($_POST['user_id']);
                 if ($userToBan) {
                     $userId = $userToBan['user_id'];
+
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Requesting ban");
     
                     $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
                     foreach ($userReports as $report) {
-                        $this->admin->updateReport($report['reported_id'], 'requesting ban');
+                        $this->admin->updateReport($report['reported_id'], 'Request Ban');
                     }
 
                     header("Location: /adminReports?message=Requested the ban successfully");
@@ -662,7 +664,7 @@ class AdminController
             $this->isConnectWebsite() &&
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf() &&
-            $this->isAdmin()
+            $this->isModerator()
         )
         {
             if (isset($_POST['user_id']))
@@ -670,10 +672,12 @@ class AdminController
                 $userToDismiss = $this->user->getUserById($_POST['user_id']);
                 if ($userToDismiss) {
                     $userId = $userToDismiss['user_id'];
+
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Dismissed");
     
                     $userReports = $this->admin->getReportsByUserId($_POST['user_id']);
                     foreach ($userReports as $report) {
-                        $this->admin->updateReport($report['reported_id'], 'dismissed');
+                        $this->admin->updateReport($report['reported_id'], 'Dismissed');
                     }
 
                     header("Location: /adminReports?message=Requested the dismiss successfully");
