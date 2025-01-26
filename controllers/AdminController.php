@@ -173,11 +173,11 @@ class AdminController
 {
     try {
         $imageInfo = getimagesize($sourcePath);
-        $srcWidth = $imageInfo[0];
-        $srcHeight = $imageInfo[1];
-        $imageType = $imageInfo[2];
-
-        switch ($imageType) {
+        if (!$imageInfo) {
+            throw new Exception("Failed to get image size.");
+        }
+    
+        switch ($imageInfo[2]) {
             case IMAGETYPE_JPEG:
                 $srcImage = imagecreatefromjpeg($sourcePath);
                 break;
@@ -188,26 +188,33 @@ class AdminController
                 $srcImage = imagecreatefromgif($sourcePath);
                 break;
             default:
-                return false;
+                throw new Exception("Unsupported image type.");
         }
-
+    
         $dstImage = imagecreatetruecolor($width, $height);
-
-        imagecopyresampled(
+        if (!$dstImage) {
+            throw new Exception("Failed to create true color image.");
+        }
+    
+        $resampled = imagecopyresampled(
             $dstImage,
             $srcImage,
             0, 0, 0, 0,
             $width, $height,
-            $srcWidth, $srcHeight
+            $imageInfo[0], $imageInfo[1]
         );
-
-        $result = imagejpeg($dstImage, $destinationPath, 90);
-
-        imagedestroy($srcImage);
-        imagedestroy($dstImage);
-
-        return $result;
+        if (!$resampled) {
+            throw new Exception("Failed to resample the image.");
+        }
+    
+        $saved = imagejpeg($dstImage, $destinationPath, 90);
+        if (!$saved) {
+            throw new Exception("Failed to save the image.");
+        }
+    
+        return true;
     } catch (Exception $e) {
+        error_log("Image processing error: " . $e->getMessage());
         return false;
     }
 }

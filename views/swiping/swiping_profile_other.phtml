@@ -102,7 +102,13 @@
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
-                        <img id="profilepicture_lol" src="http://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/<?= $lolUser['lol_sProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                        <img 
+                            id="profilepicture_lol" 
+                            data-icon-id="<?= $lolUser['lol_sProfileIcon'] ?>" 
+                            src="public/images/profileicon/7.png" 
+                            alt="icon_league" 
+                            onerror="this.onerror=null; this.src='public/images/profileicon/7.png';"
+                        />
                             <div class="box_league_account_main_row_column">
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                 <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
@@ -241,3 +247,4 @@
 <script src="public/js/swiping/gender-icon.js"></script>
 <script src="public/js/swiping/copy_username.js"></script>
 <script src="public/js/swiping/report.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/swiping/profile_updateRiotPic.js?nocache=<%= Date.now() %>"></script>

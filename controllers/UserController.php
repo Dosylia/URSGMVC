@@ -1262,47 +1262,74 @@ class UserController
         )
         {
             // Get important datas
-
-            $username = $_GET['username'];
-            if ($_GET['username'] === $_SESSION['username'])
+            if (isset($_GET['username'])) 
             {
-                header("Location: /userProfile");
-                exit();
-            }
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $anotherUser = $this-> user -> getUserByUsername($username);
-            if ($anotherUser['user_game'] == "League of Legends")
-            {
-                $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                $username = $_GET['username'];
+                if ($_GET['username'] === $_SESSION['username'])
+                {
+                    header("Location: /userProfile");
+                    exit();
+                }
+                $user = $this-> user -> getUserById($_SESSION['userId']);
+                $anotherUser = $this-> user -> getUserByUsername($username);
+                if ($anotherUser) 
+                {
+                    if ($anotherUser['user_game'] == "League of Legends")
+                    {
+                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                    }
+                    else 
+                    {
+                        $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+                    }
+                    $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    
+                    $current_url = "https://ur-sg.com/anotherUser";
+                    $template = "views/swiping/swiping_profile_other";
+                    $page_title = "URSG - Profile " . $username;
+                    require "views/layoutSwiping.phtml";
+                } else {
+                    header("Location: /userProfile?message=No user found");
+                    exit();
+                }
             }
             else 
             {
-                $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+                header("Location: /userProfile?message=No user found");
+                exit();
             }
-            $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-            
-            $current_url = "https://ur-sg.com/anotherUser";
-            $template = "views/swiping/swiping_profile_other";
-            $page_title = "URSG - Profile " . $username;
-            require "views/layoutSwiping.phtml";
         } 
         else
         {
-            $username = $_GET['username'];
-            $anotherUser = $this-> user -> getUserByUsername($username);
-            if ($anotherUser['user_game'] == "League of Legends")
+            if (isset($_GET['username']))
             {
-                $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                $username = $_GET['username'];
+                $anotherUser = $this-> user -> getUserByUsername($username);
+                if ($anotherUser)
+                {
+                    if ($anotherUser['user_game'] == "League of Legends")
+                    {
+                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                    }
+                    else 
+                    {
+                        $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+                    }
+                    $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $current_url = "https://ur-sg.com/anotherUser";
+                    $template = "views/swiping/swiping_profile_other";
+                    $page_title = "URSG - Profile " . $username;
+                    require "views/layoutSwiping_noheader.phtml";
+                } else {
+                    header("Location: /?message=No user found");
+                    exit();
+                }
             }
             else 
             {
-                $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
+                header("Location: /No user found");
+                exit();
             }
-            $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-            $current_url = "https://ur-sg.com/anotherUser";
-            $template = "views/swiping/swiping_profile_other";
-            $page_title = "URSG - Profile " . $username;
-            require "views/layoutSwiping_noheader.phtml";
         }
     }
 

@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Function to fill the data
-    function fillData(data) {
+    async function fillData(data) {
 
         clearData();
         document.querySelector('.user_page').style.display = 'flex';
@@ -118,7 +118,8 @@ document.addEventListener("DOMContentLoaded", function() {
         // Fill the league of legends data if available
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
             document.querySelector('.box_league_account').style.display = 'flex';
-            sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/${data.lol_sProfileIcon}.png`;
+            const version = await fetchDdragonVersion();
+            sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.lol_sProfileIcon}.png`;
             sUsername.innerText = data.lol_account;
             sRank.innerText = data.lol_sRank;
             sLevel.innerText += `Level: ${sanitizeHtlm(data.lol_sLevel)}`;
@@ -595,3 +596,9 @@ document.addEventListener("DOMContentLoaded", function() {
         handleSwipeGesture();
     }, false);
 });
+
+const fetchDdragonVersion = async () => {
+    const response = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+    const versions = await response.json();
+    return versions[0];
+};
