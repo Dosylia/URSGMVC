@@ -43,9 +43,13 @@ class AdminController
 
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersOnline = $this-> admin -> countOnlineUsers();
+            $usersOnlineLast7Days = $this-> admin -> countOnlineUsersLast7Days();
+            $countOnlineUsersToday = $this-> admin -> countOnlineUsersToday();
             $purchases = $this-> admin -> countPurchases();
             $pendingReports = $this-> admin -> countPendingReports();
             $adminActions = $this-> admin -> getLastAdminActions();
+            $dailyActivity = $this-> admin -> dailyActivity();
+            $dailyActivityJson = json_encode($dailyActivity);
 
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";

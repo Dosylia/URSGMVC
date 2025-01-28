@@ -142,8 +142,8 @@ function fillUnread(unreadCounts) {
 
         // Update the title with unread messages count
         document.title = count === 1
-            ? `1 New message - ${originalTitle}`
-            : `${count} New messages - ${originalTitle}`;
+            ? `(1) ${originalTitle}`
+            : `(${count}) ${originalTitle}`;
     } else {
         // No unread messages: reset title to original
         document.title = originalTitleNoChange;

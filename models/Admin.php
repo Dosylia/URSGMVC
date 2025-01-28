@@ -29,6 +29,40 @@ class Admin extends DataBase
         return $result ? $result['online_users'] : false;
     }
 
+    public function countOnlineUsersToday()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            COUNT(*) AS `online_users`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(user_lastRequestTime) <= 24 * 60 * 60)
+        ");
+    
+        $query->execute();
+        $result = $query->fetch();
+    
+        return $result ? $result['online_users'] : false;
+    }
+
+    public function countOnlineUsersLast7Days()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            COUNT(*) AS `online_users`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(user_lastRequestTime) <= 7 * 24 * 60 * 60)
+        ");
+    
+        $query->execute();
+        $result = $query->fetch();
+    
+        return $result ? $result['online_users'] : false;
+    }
+
     public function countPendingReports()
     {
         $query = $this->bdd->prepare("
@@ -44,6 +78,28 @@ class Admin extends DataBase
         $result = $query->fetch();
 
         return $result ? $result['pendingReports'] : false;
+    }
+
+    public function dailyActivity()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            HOUR(activity_time) AS hour,
+                                            COUNT(*) AS activity_count
+                                        FROM 
+                                            user_activity_log
+                                        WHERE 
+                                            DATE(activity_time) = CURDATE()
+                                        GROUP BY 
+                                            HOUR(activity_time)
+                                        ORDER BY 
+                                            hour
+        ");
+
+        $query->execute();
+        $result = $query->fetchAll();
+
+        return $result ? $result : false;
     }
 
     public function countPurchases()

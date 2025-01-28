@@ -2,7 +2,7 @@
     --dark-grey: #151416;
     --dark-ligher-grey: #302e31;
     --ligher--grey: #4f4b52;
-    --main--red: #e74057;
+    --main--red: rgb(231, 64, 87);
     --dark--red: rgb(152, 12, 31);
     --white: rgb(255, 255, 255);
   }
@@ -4511,6 +4511,47 @@ justify-content: center;
   border-radius: 5px;
   cursor: pointer;
 }
+
+.online-users-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  margin-top: 20px;
+
+}
+
+.online-users-container-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.online-users-graph-container {
+  position: relative;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+}
+
+.dark-mode .online-users-graph-container {
+  background-color: var(--ligher--grey);
+  color: white;
+}
+
+.online-users-graph-container h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--main--red);
+}
+
+.dark-mode #userActivityGraph {
+  color: white;
+}
+
 
 .admin-dashboard button:hover {
   background-color: var(--main--red);

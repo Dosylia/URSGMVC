@@ -1,10 +1,31 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <h1 class="admin-title">Admin Panel</h1>
 
 <div class="admin-dashboard">
-  <div class="online-users-container">
+
+  <div>
     <h2>Active Users</h2>
-    <p><?= $usersOnline ?></p>
+    <div class="online-users-container">
+      <div class="online-users-container-row">
+        <h2>Right now</h2>
+        <p><?= $usersOnline ?></p>
+      </div>
+      <div class="online-users-container-row">
+        <h2>Today</h2>
+        <p><?= $countOnlineUsersToday ?></p>
+      </div>
+      <div class="online-users-container-row">
+        <h2>Last 7 days</h2>
+        <p><?= $usersOnlineLast7Days ?></p>
+      </div>
+    </div>
   </div>
+
+<div class="online-users-graph-container">
+    <h2>User Activity Today</h2>
+    <canvas id="userActivityGraph"></canvas>
+    <input type="hidden" id="hourlyData" value='<?= json_encode($dailyActivity); ?>'>
+</div>
 
   <div class="purchase-container">
     <h2>Total Purchases</h2>
@@ -56,4 +77,6 @@
     <?php endforeach; ?>
   </ul>
 </div>
+
+<script src="public/js/admin/userActivityGraph.js"></script>
 

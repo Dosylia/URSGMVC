@@ -715,6 +715,54 @@ class User extends DataBase
         return $query->execute([$userId]);
     } 
 
+    public function logUserActivity($userId)
+    {
+        $query = $this->bdd->prepare("
+                                            INSERT INTO `user_activity_log`(
+                                                `user_id`
+                                            )
+                                            VALUES (
+                                                ?
+                                            )
+        ");
+        
+        $logActivity = $query -> execute([$userId]);
+
+        if($logActivity)
+        {
+            return $this->bdd-> lastInsertId();
+        } else {
+            return false;
+        }
+    } 
+
+    public function selectLastActivity($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `id`,
+                                            `activity_time`
+                                        FROM
+                                            `user_activity_log`
+                                        WHERE
+                                            `user_id` = ?
+                                        ORDER BY
+                                            `activity_time` DESC
+                                        LIMIT 1
+        ");
+        
+        $query->execute([$userId]);
+
+        $logActivity = $query->fetch(); 
+
+        if($logActivity)
+        {
+            return $logActivity;
+        } else {
+            return false;
+        }
+    } 
+
     public function markGameAsPlayed($userId, $date)
     {
         $query = $this->bdd->prepare("

@@ -424,32 +424,29 @@ class ChatMessageController
             $this->setUserId($_POST['userId']);
             $this->setFriendId((int) $_POST['friendId']);
 
+            $user = $this->user->getUserById($_SESSION['userId']);
+   
+             // Validate Authorization Header
+             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            if (isset($_SESSION)) {
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                if ($user['user_id'] != $this->getUserId())
-                {
-                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                    return;
-                }
-            }
-
-            //  // Validate Authorization Header
-            //  $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            //  if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //      echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //      return;
-            //  }
+             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                 return;
+             }
  
-            //  $token = $matches[1];
+             $token = $matches[1];
  
-            //  // Validate Token for User
-            //  if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-            //      echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //      return;
-            //  }
+             // Validate Token for User
+             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 return;
+             }
+
+             if ($user['user_id'] != $this->getUserId())
+             {
+                 echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                 return;
+             }
 
             $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
             $friend = $this->user->getUserById($this->getFriendId());

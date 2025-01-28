@@ -884,10 +884,28 @@ class FriendRequestController
                 return;
             }
 
+            $lastActivity = $this->user->selectLastActivity($userId);
+            $currentTime = time();
+            $shouldLogActivity = false;
+            
+            if ($lastActivity) {
+                $lastActivityTime = strtotime($lastActivity['activity_time']);
+                $timeDifference = $currentTime - $lastActivityTime;
+            
+                if ($timeDifference > 3600) {
+                    $shouldLogActivity = true;
+                }
+            } else {
+                $shouldLogActivity = true;
+            }
+            
+            if ($shouldLogActivity) {
+                $this->user->logUserActivity($userId); 
+            }
+
             $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
 
             $lastRequestTime = $this->user->getLastRequestTime($userId);
-            $currentTime = time();
 
             if ($currentTime - $lastRequestTime > 20) {
                 $amount = 2;

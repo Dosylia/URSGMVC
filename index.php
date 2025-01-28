@@ -30,6 +30,7 @@ use controllers\ValorantController;
 use controllers\RiotController;
 use controllers\GameController;
 use controllers\AdminController;
+use controllers\WebSocketController;
 
 function loadClass($class)
 {
@@ -173,7 +174,6 @@ $actionMap = [
     'reportAdminRequestBan' => [AdminController::class, 'reportAdminRequestBan'],
     'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
-
 ];
 
 $action = "home";
