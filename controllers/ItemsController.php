@@ -40,24 +40,9 @@ class ItemsController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $items = $this-> items -> getItems();
+            $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
 
             
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($allUsers as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
-
             $current_url = "https://ur-sg.com/store";
             $template = "views/swiping/store";
             $page_title = "URSG - Store";

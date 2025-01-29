@@ -39,7 +39,12 @@
             <?php endif; ?>  
             <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
             <div class="buy-button-container">
-                <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                <?php   if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
+        in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
+                    <button class="buy-button-owned" disabled>Owned</button>
+                <?php else : ?>
+                    <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                <?php endif; ?>
             </div>
         </div>
         <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>

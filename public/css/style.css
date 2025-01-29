@@ -3314,6 +3314,17 @@ justify-content: center;
   cursor: pointer;
 }
 
+.buy-button-owned {
+  margin-top: 20px;
+  background-color: var(--ligher--grey);
+  color: white;
+  border: none;
+  font-size: 2em;
+  padding: 10px 50px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
 .buy-button:hover {
   background-color: var(--ligher--grey);
 }
