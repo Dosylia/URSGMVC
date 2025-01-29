@@ -48,6 +48,7 @@ $actionMap = [
     'riotAccountPhone' => [RiotController::class, 'riotAccountPhone'],
     'RiotCodePhone' => [RiotController::class, 'RiotCodePhone'],
     'legalNotice' => [GoogleUserController::class, 'legalNoticePage'],
+    'CSAE' => [GoogleUserController::class, 'CSAEPage'],
     'termsOfService' => [GoogleUserController::class, 'termsOfServicePage'],
     'siteMap' => [GoogleUserController::class, 'siteMapPage'],
     'logout' => [GoogleUserController::class, 'logOut'],

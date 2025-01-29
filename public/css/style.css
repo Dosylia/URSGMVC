@@ -2154,15 +2154,15 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark-grey);
   }
 
-  .dark-mode #legalNotice, .dark-mode #termsOfService {
+  .dark-mode #legalNotice, .dark-mode #termsOfService, .dark-mode #CSAE {
     color: white;
   }
 
-  .dark-mode #legalNotice h1, .dark-mode #legalNotice h2, .dark-mode #termsOfService h1, .dark-mode #termsOfService h2 {
+  .dark-mode #legalNotice h1, .dark-mode #legalNotice h2, .dark-mode #termsOfService h1, .dark-mode #termsOfService h2, .dark-mode #CSAE h1, .dark-mode #CSAE h2 {
     color: var(--dark--red);
   }
 
-  .dark-mode #legalNotice a, .dark-mode #termsOfService a {
+  .dark-mode #legalNotice a, .dark-mode #termsOfService a, .dark-mode #CSAE a {
     color: var(--dark--red);
   }
     
@@ -2355,25 +2355,25 @@ section.siteMap tr:nth-child(even) {
   
 /* LEGAL NOTICE PAGE */
   
-#legalNotice, #termsOfService {
+#legalNotice, #termsOfService, #CSAE {
   padding: 20px;
   max-width: 1100px;
   margin: auto;
 }
 
-#legalNotice h1, #legalNotice h2, #termsOfService h1, #termsOfService h2 {
+#legalNotice h1, #legalNotice h2, #termsOfService h1, #termsOfService h2, #CSAE h1, #CSAE h2 {
   color: var(--main--red);
   text-transform: uppercase;
   font-family: 'Libre Franklin', sans-serif;
 }
 
-#legalNotice h1, #termsOfService h1 {
+#legalNotice h1, #termsOfService h1, #CSAE h1 {
   text-align: center;
   margin: 20px 0;
   font-size: 2rem;
 }
 
-#legalNotice h2, #termsOfService h2 {
+#legalNotice h2, #termsOfService h2, #CSAE h2 {
   border-bottom: 2px solid #ccc;
   border-top: 2px solid #ccc;
   padding-bottom: 10px;
@@ -2415,7 +2415,7 @@ section.siteMap tr:nth-child(even) {
   font-family: 'Geologica', sans-serif;
 }
 
-#legalNotice a, #termsOfService a {
+#legalNotice a, #termsOfService a, #CSAE a {
   text-decoration: none;
   color: var(--main--red);
 }
@@ -4929,7 +4929,6 @@ justify-content: center;
 .guidelines-list li {
   margin-bottom: 0.4rem;
 }
-
 
 /* DARK MODE */
 

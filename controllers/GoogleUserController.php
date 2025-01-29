@@ -321,6 +321,15 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
+    public function CSAEPage() 
+    {
+        $current_url = "https://ur-sg.com/CSAE";
+        $template = "views/csae";
+        $title = "Child Sexual Abuse and Exploitation (CSAE) Policy";
+        $page_title = "URSG - Child Sexual Abuse and Exploitation (CSAE) Policy";
+        require "views/layoutSwiping_noheader.phtml";
+    }
+
     public function termsOfServicePage() 
     {
         $current_url = "https://ur-sg.com/termsOfService";
