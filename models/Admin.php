@@ -32,12 +32,9 @@ class Admin extends DataBase
     public function countOnlineUsersToday()
     {
         $query = $this->bdd->prepare("
-                                        SELECT
-                                            COUNT(*) AS `online_users`
-                                        FROM
-                                            `user`
-                                        WHERE
-                                            (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(user_lastRequestTime) <= 24 * 60 * 60)
+                                        SELECT COUNT(*) AS online_users
+                                        FROM `user`
+                                        WHERE user_lastRequestTime >= CURRENT_DATE
         ");
     
         $query->execute();
@@ -89,18 +86,19 @@ class Admin extends DataBase
                                         FROM 
                                             user_activity_log
                                         WHERE 
-                                            DATE(activity_time) = CURDATE()
+                                            activity_time >= NOW() - INTERVAL 24 HOUR
                                         GROUP BY 
                                             HOUR(activity_time)
                                         ORDER BY 
                                             hour
         ");
-
+    
         $query->execute();
         $result = $query->fetchAll();
-
+    
         return $result ? $result : false;
     }
+    
 
     public function countPurchases()
     {

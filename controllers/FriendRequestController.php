@@ -824,13 +824,32 @@ class FriendRequestController
         }
     
         $this->setUserId($userId);
+
+        $lastActivity = $this->user->selectLastActivity($userId);
+        $currentTime = time();
+        $shouldLogActivity = false;
+        
+        if ($lastActivity) {
+            $lastActivityTime = strtotime($lastActivity['activity_time']);
+            $timeDifference = $currentTime - $lastActivityTime;
+        
+            if ($timeDifference > 3600) {
+                $shouldLogActivity = true;
+            }
+        } else {
+            $shouldLogActivity = true;
+        }
+        
+        if ($shouldLogActivity) {
+            $this->user->logUserActivity($userId); 
+        }
+
     
         // Fetch pending friend request count
         $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
     
         // Currency update logic
         $lastRequestTime = $this->user->getLastRequestTime($userId);
-        $currentTime = time();
     
         if ($currentTime - $lastRequestTime > 20) {
             $amount = 2;
@@ -920,8 +939,7 @@ class FriendRequestController
                 if ($addCurrency) {
                     $this->user->updateLastRequestTime($userId);
                 }
-            }
-    
+            }    
 
             if ($pendingCount !== false) {
                 $data = [
