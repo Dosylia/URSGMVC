@@ -113,6 +113,41 @@ class ChatMessage extends DataBase
         }
     }
 
+    public function getNewMessages($userId, $friendId, $messageId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        SELECT * FROM (
+                                            SELECT
+                                                *
+                                            FROM
+                                                `chatmessage`
+                                            WHERE
+                                                (chat_receiverId = ? AND chat_senderId = ?)
+                                                OR
+                                                (chat_receiverId = ? AND chat_senderId = ?)
+                                            AND
+                                                `chat_id` > ?
+                                            ORDER BY
+                                                chat_date DESC
+                                            LIMIT 20
+                                        ) subquery
+                                        ORDER BY
+                                            chat_date ASC
+        ");
+
+        $query -> execute([$friendId, $userId, $userId, $friendId, $messageId]);
+        $getMessageTest = $query -> fetchAll();
+
+        if($getMessageTest)
+        {
+            return $getMessageTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function createRecentMessagesTable()
     {
         try {

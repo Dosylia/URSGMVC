@@ -884,64 +884,106 @@ class UserController
         $targetDir = "public/upload/";
         $originalFileName = basename($_FILES["file"]["name"]);
         $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-    
+        
         // Generate a unique file name
         $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
         $this->setFileName($uniqueFileName);
         $targetFilePath = $targetDir . $uniqueFileName;
     
-        if (isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
-            $user = $this->user->getUserById($_SESSION['userId']);
-            $username = $this->validateInput($_GET["username"]);
-            $this->setUsername($username);
-    
-            if ($user['user_username'] !== $this->getUsername()) {
-                header("location:/userProfile?message=Unauthorized");
-                exit;
-            }
-    
-            $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
-    
-            if (in_array($fileExtension, $allowTypes)) {
-                if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
-                    // Check for animated images (for GIFs)
-                    if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
-                        header("location:/userProfile?message=Animated GIFs are not allowed");
-                        exit;
-                    }
-    
-                    // Resize the image to 200x200
-                    $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
-                        // Update the database with the resized image
-                        $uploadPicture = $this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename());
-    
-                        if ($uploadPicture) {
-                            header("location:/userProfile?message=Updated successfully");
-                            exit;
-                        } else {
-                            header("location:/userProfile?message=Couldn't update");
-                            exit;
-                        }
-                    } else {
-                        header("location:/userProfile?message=Error resizing image");
-                        exit;
-                    }
-                } else {
-                    header("location:/userProfile?message=Error uploading");
-                    exit;
-                }
-            } else {
-                header("location:/userProfile?message=Wrong type of picture"); 
-                exit;
-            }
-        } else {
-            header("location:/userProfile?message=Nothing to upload"); 
+        if (!isset($_POST["submit"]) || empty($_FILES["file"]["name"])) {
+            header("location:/userProfile?message=Nothing to upload");
             exit;
         }
+    
+        // Retrieve current user info
+        $user = $this->user->getUserById($_SESSION['userId']);
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+    
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized");
+            exit;
+        }
+    
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
+    
+        if (!in_array($fileExtension, $allowTypes)) {
+            header("location:/userProfile?message=Wrong type of picture");
+            exit;
+        }
+    
+        try {
+            // Move uploaded file
+            if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+                throw new Exception("Error uploading file");
+            }
+    
+            // Check for animated GIFs
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+                unlink($targetFilePath); // Delete the uploaded GIF immediately
+                throw new Exception("Animated GIFs are not allowed");
+            }
+    
+            // Resize image
+            $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                unlink($targetFilePath); // Clean up original if resize fails
+                throw new Exception("Error resizing image");
+            }
+    
+            // Update database with resized image
+            if (!$this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename())) {
+                throw new Exception("Couldn't update profile picture");
+            }
+    
+            // ✅ **Now delete old images only after everything succeeds**
+            if (!empty($user['user_picture'])) {
+                $oldPicture = $targetDir . $user['user_picture'];
+                $oldResizedPicture = $targetDir . str_replace('resized_', '', $user['user_picture']);
+    
+                if (file_exists($oldPicture)) {
+                    unlink($oldPicture);
+                }
+                if (file_exists($oldResizedPicture)) {
+                    unlink($oldResizedPicture);
+                }
+            }
+    
+            // Delete original uploaded file after resizing
+            unlink($targetFilePath);
+    
+            header("location:/userProfile?message=Updated successfully");
+        } catch (Exception $e) {
+            header("location:/userProfile?message=" . urlencode($e->getMessage()));
+        }
+        exit;
     }
+    
 
     public function updatePicturePhone() {
+
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['message' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['username'])) {
+            echo json_encode(['message' => 'Invalid request']);
+            return;
+        }
+
+        $user = $this->user->getUserByUsername($_POST['username']);
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $user['user_id'])) {
+            echo json_encode(['message' => 'Invalid token']);
+            return;
+        }
+
         $targetDir = "public/upload/";
     
         // Validate if the file is received
@@ -974,6 +1016,18 @@ class UserController
                             $uploadPicture = $this->user->uploadPicture($username, 'resized_' . $this->getFilename());
     
                             if ($uploadPicture) {
+
+                                if (!empty($user['user_picture'])) {
+                                    $oldPicture = $targetDir . $user['user_picture'];
+                                    $oldResizedPicture = $targetDir . str_replace('resized_', '', $user['user_picture']);
+                        
+                                    if (file_exists($oldPicture)) {
+                                        unlink($oldPicture);
+                                    }
+                                    if (file_exists($oldResizedPicture)) {
+                                        unlink($oldResizedPicture);
+                                    }
+                                }
                                 echo json_encode(['message' => 'Success']);
                             } else {
                                 echo json_encode(['message' => 'Database update failed']);
@@ -993,9 +1047,7 @@ class UserController
         } else {
             echo json_encode(['message' => 'No file uploaded']);
         }
-    }
-    
-    
+    }   
 
     public function resizeImage($sourcePath, $destPath, $newWidth, $newHeight) {
         list($width, $height, $imageType) = getimagesize($sourcePath);

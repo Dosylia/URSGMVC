@@ -85,6 +85,116 @@ class ChatMessageController
         }
     }
 
+    public function pageChatTest(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        ) {
+            $user = $this->user->getUserById($_SESSION['userId']);
+            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+
+            if ($getFriendlist) {
+                $firstFriend = reset($getFriendlist);
+
+                if (isset($_GET['friend_id'])) {
+                    $friendId = $_GET['friend_id'];
+
+                    $isFriend = false;
+                    foreach ($getFriendlist as $friend) {
+                        if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
+                            if ($friendId == $user['user_id']) {
+                                $isFriend = false;
+                                break;
+                            }
+                            $isFriend = true;
+                            break;
+                        }
+                    }
+
+                    if ($isFriend) {
+                        $friendChat = $this->user->getUserById($friendId);
+                    } else {
+                        header("Location: /chatTest?msg=You are not friends with this user.");
+                        exit();
+                    }
+
+                } else {
+                    if (isset($firstFriend)) {
+                        $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
+                        $friendChat = $this->user->getUserById($friendId);
+                    }
+                }
+            }
+
+            $current_url = "https://ur-sg.com/chatTest";
+            $template = "views/swiping/message_test";
+            $page_title = "URSG - Chat";
+            require "views/layoutSwiping.phtml";
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function messageStream(): void
+{
+    header('Content-Type: text/event-stream');
+    header('Cache-Control: no-cache');
+    header('Connection: keep-alive');
+
+    $userId = $_GET['userId'] ?? null;
+    $friendId = $_GET['friendId'] ?? null;
+    $token = $_GET['token'] ?? null;
+
+    // Validate token and IDs (use your existing validation logic)
+    if (!$this->validateTokenWebsite($token, $userId)) {
+        echo "event: error\ndata: Invalid token\n\n";
+        ob_flush();
+        flush();
+        exit;
+    }
+
+    // Set initial last message ID
+    $lastMessageId = $_GET['lastId'] ?? 0;
+
+    // Keep connection open
+    while (true) {
+        // Get new messages since last check
+        $messages = $this->chatmessage->getNewMessages(
+            $userId,
+            $friendId,
+            $lastMessageId
+        );
+
+        if (!empty($messages)) {
+            $lastMessage = end($messages);
+            $lastMessageId = $lastMessage['chat_id'];
+
+            $data = [
+                'messages' => $messages,
+                'friend' => $this->user->getUserById($friendId),
+                'user' => $this->user->getUserById($userId)
+            ];
+
+            echo "data: " . json_encode($data) . "\n\n";
+            ob_flush();
+            flush();
+        }
+
+        // Sleep for 1 second before checking again
+        sleep(1);
+
+        // Check if client disconnected
+        if (connection_aborted()) {
+            exit;
+        }
+    }
+}
+
     public function sendMessageData(): void // Mobile version
     {
         if (isset($_POST['param'])) {

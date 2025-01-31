@@ -1,0 +1,134 @@
+<div class="chat_page">   
+    <?php if (isset($_GET['firstFriend'])) : ?>
+        <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
+    <?php endif; ?>
+    <?php if (empty($getFriendlist)) :?>
+            <section class="google_needed"><br><br>
+                <img src="public/images/sadbee.webp" alt="jhinshrug">
+                <h2>You have no friends yet, wait until they accept your request or swipe more!<h2>
+                <a class="btn_user_updates" href="/swiping">
+                    Swipe more
+                </a>
+            </section>
+    <?php else : ?>
+        <div class="chat-interface"> <br>
+            <div class="chat_box"><br>
+
+                    <input type="text" id="friendSearch" placeholder="Search for friends..." class="search-bar">
+
+                    <div class="toggle-wrapper">
+                        <span class="toggle-text">Show Online Friends Only</span>
+                        <label class="switch">
+                        <input type="checkbox" id="toggleOnlineOnly">
+                        <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <?php if ($user['user_isLooking'] === 1 && $user['user_requestIsLooking'] && (time() - strtotime($user['user_requestIsLooking']) <= 300)) : ?>
+                        <button id="looking-for-button" style="background: linear-gradient(45deg, #4CAF50, #66bb6a);">Change status to : Looking for a game</button>
+                    <?php else : ?>
+                        <button id="looking-for-button">Change status to : Looking for a game</button>
+                    <?php endif; ?>
+
+                    <div class="friend-list" id="friendList">
+                        <?php foreach($getFriendlist as $friend) : ?>
+                            <?php
+                                if ($user['user_id'] == $friend['sender_id']) {
+                                    $friendId = $friend['receiver_id'];
+                                    $friendUsername = $friend['receiver_username'];
+                                    $friendPicture = $friend['receiver_picture'];
+                                    $friendGame = $friend['receiver_game'];
+                                    $friendOnline = $friend['receiver_isOnline'];
+                                    $friendIsLookingGame = $friend['receiver_isLookingGame'];
+                                } else {
+                                    $friendId = $friend['sender_id'];
+                                    $friendUsername = $friend['sender_username'];
+                                    $friendPicture = $friend['sender_picture'];
+                                    $friendGame = $friend['sender_game'];
+                                    $friendOnline = $friend['sender_isOnline'];
+                                    $friendIsLookingGame = $friend['sender_isLookingGame'];
+                                }
+                            ?>
+                        
+                        <a href="/chatTest&friend_id=<?=  $friendId ?>&mark_as_read=true">
+                            <div class="friend" data-sender-id="<?= $friendId ?>">
+                                <div class="friend-avatar">
+                                    <?php if (!empty($friendPicture)): ?>  
+                                        <img loading="lazy" src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername?>">
+                                    <?php else :?>
+                                        <img loading="lazy" src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>">
+                                    <?php endif; ?>        
+                                </div>
+
+
+                                <div class="friend-details">
+                                    <span class="chat-name clickable">
+                                        <?= $friendUsername ?>
+                                        <span id="unread_messages_for_friend_container_<?= $friendId ?>"></span> 
+                                        <?php if ($friendOnline === 1 && $friendIsLookingGame === 1) : ?>
+                                            <span class="looking-game-status"></span>
+                                        <?php elseif ($friendOnline === 1) : ?>
+                                            <span class="online-status"></span>
+                                        <?php endif; ?>    
+                                    </span>
+                                    <span>
+                                        <?php if ($friendGame === "League of Legends") : ?>
+                                            <img src="public/images/lol-logo.png" alt="League of Legends">
+                                        <?php else : ?>
+                                            <img src="public/images/Valorant.png" alt="Valorant">
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>   
+                <div id="pagination"></div>
+            </div>
+                
+                <div class="messages-container" style="display : block;">
+                    <button type="button" id="buttonSwitchChat"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="chat-link-relative">
+
+                    <div id="friendInfo"></div>
+
+                    <div id="messages">
+                    </div>
+
+                    <div class="reply-box">
+                        <form method="POST" id="myForm">
+                            <div class="emote-picker">
+                                <button type="button" id="toggleEmotePicker"><i class="fa-solid fa-cat"></i></button>
+                                <div id="emoteContainer" class="emote-container" style="display: none;">
+                                    <img src="public/images/emotes/surprised-cat.png" alt=":surprised-cat:" class="emote">
+                                    <img src="public/images/emotes/cat-smile.png" alt=":cat-smile:" class="emote">
+                                    <img src="public/images/emotes/cat-cute.png" alt=":cat-cute:" class="emote">
+                                    <img src="public/images/emotes/goofy-ah-cat.png" alt=":goofy-ah-cat:" class="emote">
+                                    <img src="public/images/emotes/cat-surprised.png" alt=":cat-surprised:" class="emote">
+                                    <img src="public/images/emotes/cat-liked.png" alt=":cat-liked:" class="emote">
+                                    <img src="public/images/emotes/cat-sus.png" alt=":cat-sus:" class="emote">
+                                    <img src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
+                                    <img src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
+                                </div>
+                            </div>
+                            <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
+                            <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
+                            <input id="message_text" maxlength="500" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
+                            <div>
+                                <button id="btnDesign" type="button" class="send-message-button">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
+                        </form>
+                    </div>
+                </div>
+            <script type="module" src="public/js/swiping/perso_chat.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/get_friendlist.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/message_test.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/send_messagephp.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/get_lookingFor.js?nocache=<%= Date.now() %>"></script>
+        </div>
+    <?php endif; ?>
+</div>

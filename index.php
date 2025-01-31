@@ -175,6 +175,8 @@ $actionMap = [
     'reportAdminRequestBan' => [AdminController::class, 'reportAdminRequestBan'],
     'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
+    // 'chatTest' => [ChatMessageController::class, 'pageChatTest'],
+    // 'messageStream' => [ChatMessageController::class, 'messageStream'],
 ];
 
 $action = "home";
