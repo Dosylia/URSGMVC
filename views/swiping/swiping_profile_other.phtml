@@ -217,6 +217,30 @@
             </div>
         </div>
 
+        <?php if ($anotherUser['user_bonusPicture'] !== NULL || $user['user_bonusPicture'] !== "[]"): ?>
+            <div class="user_box">
+                <div class="pictures-container">
+                <br><h2 class="title_generalbox">Pictures</h2>
+                    <div class="pictures-row">
+                        <?php 
+                        if (!empty($anotherUser['user_bonusPicture'])): 
+                            $pictures = json_decode($anotherUser['user_bonusPicture'], true);
+                            if (!empty($pictures)): 
+                                foreach ($pictures as $picture): 
+                                    $picturePath = "public/upload/" . htmlspecialchars($picture);
+                        ?>
+                                    <div class="picture-wrapper">
+                                        <img src="<?= $picturePath ?>" class="user-picture" alt="User Picture">
+                                    </div>
+                        <?php 
+                                endforeach; 
+                            endif;
+                        endif; 
+                        ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
     <dialog id="favDialogSocialLinks">
         <br><h2 class="title_generalbox">Your social links:</h2><br>  

@@ -58,6 +58,9 @@
                             <?php else : ?>
                                 <button class="btn_user_updates" id="opendialog_add_social_links"><i class="fa-brands fa-discord"></i>ADD SOCIAL LINKS</button>
                             <?php endif; ?>     
+                            <?php if ($user['user_bonusPicture'] === NULL || $user['user_bonusPicture'] === "[]"): ?>
+                                <button class="btn_user_updates" id="opendialog_bonuspicture">ADD PICTURE TO YOUR GALLERY</button>
+                            <?php endif; ?>
                         </div><br>
                         
                         <div class="user_page_update_row">
@@ -248,6 +251,49 @@
             </div>
         </div>
 
+        <?php if ($user['user_bonusPicture'] !== NULL && $user['user_bonusPicture'] !== "[]"): ?>
+            <div class="user_box">
+                <div class="pictures-container">
+                <br><h2 class="title_generalbox">Pictures</h2>
+                    <div class="pictures-row">
+                        <button class="btn_user_updates" id="opendialog_bonuspicture">Add a picture</button>
+                        <?php 
+                        if (!empty($user['user_bonusPicture'])): 
+                            $pictures = json_decode($user['user_bonusPicture'], true);
+                            if (!empty($pictures)): 
+                                foreach ($pictures as $picture): 
+                                    $picturePath = "public/upload/" . htmlspecialchars($picture);
+                        ?>
+                                    <div class="picture-wrapper">
+                                        <img src="<?= $picturePath ?>" class="user-picture" alt="User Picture">
+                                        <button class="delete-picture" data-filename="<?= htmlspecialchars($picture) ?>">&times;</button>
+                                    </div>
+                        <?php 
+                                endforeach; 
+                            endif;
+                        endif; 
+                        ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+
+        <dialog id="favDialogBonusPicture">
+        <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
+            <p class="title_generalbox">Add a profile picture or update it</p>
+            <p>Accepted format : JPG, JPEG and PNG</p>
+            <div class="file-input-container">
+                <input type="file" id="file" name="file" class="file-input">
+                <label for="file" class="file-label">Choose a file</label>
+                <span id="file-name" class="file-name">No file selected</span>
+            </div>
+            <input type="submit" name="submit" value="Upload" id="send-button">
+        </form>
+        <button id="closeButton_user_picture_bonus">X</button>
+    </dialog>
+
+
         <div class="user_box">
             <br><h2 class="title_generalbox">Looking for</h2><br>
                     <?php if ($user['user_game'] !== 'Valorant'): ?>
@@ -418,6 +464,7 @@
     </dialog>
 </section>
 
+<script src="public/js/swiping/bonusPictures.js?nocache=<%= Date.now() %>"></script>
 <script src="public/js/swiping/dialog_picture_social.js?nocache=<%= Date.now() %>"></script>
 <script src="public/js/swiping/copy_username.js"></script>
 <script src="public/js/swiping/gender-icon.js"></script>

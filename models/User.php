@@ -609,6 +609,40 @@ class User extends DataBase
         }
     }
 
+    public function updateBonusPictures($username, $picturesArray)
+    {
+        $updatedPicturesJson = json_encode($picturesArray);
+    
+        $query = $this->bdd->prepare("
+            UPDATE `user`
+            SET `user_bonusPicture` = ?
+            WHERE `user_username` = ?
+        ");
+    
+        return $query->execute([$updatedPicturesJson, $username]);
+    }
+
+    public function getBonusPictures($username)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `user_bonusPicture`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            `user_username` = ?
+        ");
+
+        $query->execute([$username]);
+        $bonusPictures = $query->fetch();
+
+        if ($bonusPictures) {
+            return !empty($bonusPictures['user_bonusPicture']) ? json_decode($bonusPictures['user_bonusPicture'], true) : [];
+        } else {
+            return false;
+        }
+    }
+
     public function updateFilter($status, $userId) 
     {
         $query = $this->bdd->prepare("

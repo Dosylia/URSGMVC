@@ -580,6 +580,169 @@ class UserController
 
     }
 
+    public function addBonusPicture() {
+        $targetDir = "public/upload/";
+        $originalFileName = basename($_FILES["file"]["name"]);
+        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+        
+        // Generate a unique file name
+        $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
+        $this->setFileName($uniqueFileName);
+        $targetFilePath = $targetDir . $uniqueFileName;
+    
+        if (!isset($_POST["submit"]) || empty($_FILES["file"]["name"])) {
+            header("location:/userProfile?message=Nothing to upload");
+            exit;
+        }
+    
+        // Retrieve current user info
+        $user = $this->user->getUserById($_SESSION['userId']);
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+    
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized");
+            exit;
+        }
+    
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
+    
+        if (!in_array($fileExtension, $allowTypes)) {
+            header("location:/userProfile?message=Wrong type of picture");
+            exit;
+        }
+    
+        try {
+            // Move uploaded file
+            if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+                header("location:/userProfile?message=Error uploading file. Picture was probably too big");
+                exit;
+            }
+    
+            // Check for animated GIFs
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+                unlink($targetFilePath); // Delete the uploaded GIF immediately
+                header("location:/userProfile?message=Animated Gifs are not allowed");
+                exit;
+            }
+    
+            // Resize image
+            $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 500, 500)) {
+                unlink($targetFilePath); // Clean up original if resize fails
+                header("location:/userProfile?message=Error resizing image");
+                exit;
+            }
+    
+            // Get current bonus pictures
+            $bonusPictures = $this->user->getBonusPictures($this->getUsername());
+    
+            // Check if bonusPictures is an array
+            if (!is_array($bonusPictures)) {
+                $bonusPictures = [];
+            }
+    
+            // Check if the number of pictures exceeds 10
+            if (count($bonusPictures) >= 10) {
+                unlink($targetFilePath); // Delete the uploaded file if limit exceeded
+                header("location:/userProfile?message=You cannot upload more than 10 pictures.");
+                exit;
+            }
+    
+            // Add new picture to the list
+            $bonusPictures[] = 'resized_' . $this->getFilename();
+    
+            // Update the bonus pictures in the database
+            if (!$this->user->updateBonusPictures($this->getUsername(), $bonusPictures)) {
+                header("location:/userProfile?message=Couldn't update profile picture");
+                exit;
+            }
+    
+            // Delete original uploaded file after resizing
+            unlink($targetFilePath);
+    
+            header("location:/userProfile?message=Updated successfully");
+        } catch (Exception $e) {
+            header("location:/userProfile?message=" . urlencode($e->getMessage()));
+        }
+        exit;
+    }
+    
+
+    public function deleteBonusPicture()
+    {
+        $response = array('message' => 'Error');
+
+        if (isset($_POST['fileName']) && isset($_POST['userId'])) 
+        {
+            $userId = $this->validateInput($_POST['userId']);
+            $this->setUserId($userId);
+            $filename = $this->validateInput($_POST['fileName']);
+            $this->setFileName($filename);
+
+            $user = $this->user->getUserById($this->getUserId());
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+        
+            $userId = (int)$_POST['userId'];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+
+            $bonusPictures = $this->user->getBonusPictures($user['user_username']);
+
+            if (!is_array($bonusPictures)) {
+                $bonusPictures = [];
+            }
+
+            if (!in_array($this->getFileName(), $bonusPictures)) {
+                echo json_encode(['success' => false, 'error' => 'Picture not found in user\'s collection']);
+                return;
+            }
+
+            $key = array_search($this->getFileName(), $bonusPictures);
+
+            if ($key !== false) {
+                unset($bonusPictures[$key]);
+            }
+
+            if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
+                $response = array('message' => 'Could not delete picture');
+                echo json_encode($response);
+                exit;
+            }
+
+            $filePath = "public/upload/" . $this->getFileName();
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $response = array('message' => 'Success');
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = array('message' => 'Could not delete picture');
+            echo json_encode($response);
+            exit;
+        }
+    }
+
     public function getUserData()
     {
         $response = array('message' => 'Error');
@@ -915,25 +1078,29 @@ class UserController
         try {
             // Move uploaded file
             if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
-                throw new Exception("Error uploading file");
+                header("location:/userProfile?message=Error uploading file");
+                exit;
             }
     
             // Check for animated GIFs
             if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
-                throw new Exception("Animated GIFs are not allowed");
+                header("location:/userProfile?message=Animated GIFs are not allowed");
+                exit;
             }
     
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
             if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
                 unlink($targetFilePath); // Clean up original if resize fails
-                throw new Exception("Error resizing image");
+                header("location:/userProfile?message=Error resizing image");
+                exit;
             }
     
             // Update database with resized image
             if (!$this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename())) {
-                throw new Exception("Couldn't update profile picture");
+                header("location:/userProfile?message=Couldn't update profile picture");
+                exit;
             }
     
             // ✅ **Now delete old images only after everything succeeds**
@@ -1300,6 +1467,43 @@ class UserController
                 header("Location: /");
                 exit();
             }
+        }
+    }
+
+    public function pageUserProfileTest(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        ) {
+            require_once 'keys.php';
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            if ($user['user_game'] == "League of Legends")
+            {
+                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            }
+            else 
+            {
+                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+            }
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+            $bonusPictures = $this->user->getBonusPictures($this->getUsername());
+
+
+            $current_url = "https://ur-sg.com/chatTest";
+            $template = "views/swiping/message_test";
+            $page_title = "URSG - Chat";
+            require "views/layoutSwiping.phtml";
+        } else {
+            header("Location: /");
+            exit();
         }
     }
 

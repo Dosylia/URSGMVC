@@ -175,8 +175,9 @@ $actionMap = [
     'reportAdminRequestBan' => [AdminController::class, 'reportAdminRequestBan'],
     'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
-    // 'chatTest' => [ChatMessageController::class, 'pageChatTest'],
-    // 'messageStream' => [ChatMessageController::class, 'messageStream'],
+    'userTest' => [UserController::class, 'pageUserProfileTest'],
+    'addBonusPicture' => [UserController::class, 'addBonusPicture'],
+    'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
 ];
 
 $action = "home";
