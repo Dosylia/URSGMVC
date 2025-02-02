@@ -217,7 +217,7 @@
             </div>
         </div>
 
-        <?php if ($anotherUser['user_bonusPicture'] !== NULL || $user['user_bonusPicture'] !== "[]"): ?>
+        <?php if ($anotherUser['user_bonusPicture'] !== NULL && $anotherUser['user_bonusPicture'] !== "[]"): ?>
             <div class="user_box">
                 <div class="pictures-container">
                 <br><h2 class="title_generalbox">Pictures</h2>
@@ -241,30 +241,6 @@
                 </div>
             </div>
         <?php endif; ?>
-
-    <dialog id="favDialogSocialLinks">
-        <br><h2 class="title_generalbox">Your social links:</h2><br>  
-        <form action="/updateSocial&username=<?= urlencode($anotherUser['user_username']) ?>" method="post">
-        <label for="discord">Discord:</label><br><br>
-            <input type="text" id="discord" name="discord" placeholder="Your Discord username.."><br><br>
-            <label for="twitter">Twitter:</label><br><br>
-            <input type="text" id="twitter" name="twitter" placeholder="Your Twitter link.."><br><br>
-            <label for="instagram">Instagram:</label><br><br>
-            <input type="text" id="instagram" name="instagram" placeholder="Your Instagram link.."><br><br>
-            <label for="instagram">Twitch:</label><br><br>
-            <input type="text" id="twitch" name="twitch" placeholder="Your Instagram link.."><br><br>
-            <br><br><input name="submit" type="submit" value="Save">
-        </form>
-        <button id="closeButton_social_links">X</button>
-    </dialog>
-
-    <dialog id="favDialogPicture">
-        <form action="/updatePicture&username=<?= urlencode($anotherUser['user_username']) ?>" method="post" enctype="multipart/form-data">
-            <br><p class="title_generalbox">Add a profile picture or update it</p><br>
-            <input type="file" name="file"><br>
-            <input type="submit" name="submit" value="Upload">
-        </form>
-    <button id="closeButton_user_picture">X</button></dialog>
 </section>
 
 <script src="public/js/swiping/button_otherUser.js"></script>

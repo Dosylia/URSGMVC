@@ -1,6 +1,18 @@
 const buttonAddBonusPicture = document.getElementById('opendialog_bonuspicture');
 const favDialogBonusPicture = document.getElementById('favDialogBonusPicture');
 const cancelButtonPictureBonus = favDialogBonusPicture.querySelector('#closeButton_user_picture_bonus');
+const fileInput = document.getElementById('file');
+const fileName = document.getElementById('file-name');
+
+fileInput.addEventListener('change', (event) => {
+  const input = event.target;
+  if (input.files.length > 0) {
+    fileName.textContent = input.files[0].name;
+  } else {
+    fileName.textContent = 'No file selected';
+  }
+});
+
 
 buttonAddBonusPicture.addEventListener('click', () => {
   openDialogBonusPicture();

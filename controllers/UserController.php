@@ -1045,7 +1045,7 @@ class UserController
 
     public function updatePicture() {
         $targetDir = "public/upload/";
-        $originalFileName = basename($_FILES["file"]["name"]);
+        $originalFileName = basename($_FILES["fileProfile"]["name"]);
         $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
         
         // Generate a unique file name
@@ -1053,7 +1053,7 @@ class UserController
         $this->setFileName($uniqueFileName);
         $targetFilePath = $targetDir . $uniqueFileName;
     
-        if (!isset($_POST["submit"]) || empty($_FILES["file"]["name"])) {
+        if (!isset($_POST["submit"]) || empty($_FILES["fileProfile"]["name"])) {
             header("location:/userProfile?message=Nothing to upload");
             exit;
         }
@@ -1077,7 +1077,7 @@ class UserController
     
         try {
             // Move uploaded file
-            if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+            if (!move_uploaded_file($_FILES["fileProfile"]["tmp_name"], $targetFilePath)) {
                 header("location:/userProfile?message=Error uploading file");
                 exit;
             }
@@ -1335,6 +1335,9 @@ class UserController
             
                     // Check if the matched user is not the current user
                     if ($matchedUserId != $userId) {
+                        // if ($_SESSION['userId'] == 157) {
+                        //     $matchedUserId = 157;
+                        // }
                         $userMatched = $this->user->getUserById($matchedUserId);
             
                         if ($userMatched && $userMatched['user_game'] === $user['user_game']) {
@@ -1346,6 +1349,7 @@ class UserController
                                         'user_id' => $userMatched['user_id'],
                                         'user_username' => $userMatched['user_username'],
                                         'user_picture' => $userMatched['user_picture'],
+                                        'user_bonusPicture' => $userMatched['user_bonusPicture'],
                                         'user_age' => $userMatched['user_age'],
                                         'user_game' => $userMatched['user_game'],
                                         'user_gender' => $userMatched['user_gender'],

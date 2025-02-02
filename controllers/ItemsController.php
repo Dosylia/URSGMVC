@@ -42,6 +42,10 @@ class ItemsController
             $items = $this-> items -> getItems();
             $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
 
+            if (!is_array($ownedItems)) {
+                $ownedItems = [];
+            }
+
             
             $current_url = "https://ur-sg.com/store";
             $template = "views/swiping/store";

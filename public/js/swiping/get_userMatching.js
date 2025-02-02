@@ -36,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const reportUsername = document.getElementById('report-username');
     const reportDescription = document.getElementById('report-description');
     const submitReportButton = document.getElementById('submit-report');
+    const picturesRow = document.querySelector(".pictures-row");
+    const bonusPictureContainer = document.getElementById('bonus-picture-container');
 
     function getOwnedItems(userId) {
         fetch('/getOwnedItems', {
@@ -127,6 +129,36 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             document.querySelector('.box_league_account').style.display = 'none';
         }
+
+        if (data.user_bonusPicture && data.user_bonusPicture !== "[]") {
+            const pictures = JSON.parse(data.user_bonusPicture); 
+            console.log('Bonus pictures:', pictures);
+            bonusPictureContainer.style.display = "flex";
+        
+            // Limit to 2 pictures only
+            pictures.slice(0, 2).forEach(picture => { 
+                const picturePath = `public/upload/${picture}`;
+        
+                // Create the wrapper div
+                const pictureWrapper = document.createElement("div");
+                pictureWrapper.classList.add("picture-wrapper-swiping");
+        
+                // Create the image element
+                const img = document.createElement("img");
+                img.src = picturePath;
+                img.classList.add("user-picture-swiping");
+                img.alt = "User Picture";
+        
+                // Append image and button to wrapper
+                pictureWrapper.appendChild(img);
+        
+                // Append wrapper to the pictures row
+                picturesRow.appendChild(pictureWrapper);
+            });
+        } else {
+            bonusPictureContainer.style.display = "none";
+        }
+        
 
         reportPicture.src = `${data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg"}`;
         reportPicture.alt = data.user_username;
@@ -385,6 +417,7 @@ document.addEventListener("DOMContentLoaded", function() {
         reportUsername.innerText = "";
         reportDescription.value = "";
         submitReportButton.disabled = false;
+        picturesRow.innerHTML = "";
         
         // Clear text content
         sUsername.innerText = "";

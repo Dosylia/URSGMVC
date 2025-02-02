@@ -1,8 +1,8 @@
 const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
 const cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
-const fileInput = document.getElementById('file');
-const fileName = document.getElementById('file-name');
+const fileInputProfile = document.getElementById('fileProfile');
+const fileNameProfile = document.getElementById('file-nameProfile');
 const placeholderMessage = document.getElementById('placeholder-message');
 
 showButtonSocialLinks.addEventListener('click', () => {
@@ -59,12 +59,12 @@ if (imgDiscord !== null && imgDiscord !== undefined) {
 }
 
 
-fileInput.addEventListener('change', (event) => {
+fileInputProfile.addEventListener('change', (event) => {
   const input = event.target;
   if (input.files.length > 0) {
-    fileName.textContent = input.files[0].name;
+    fileNameProfile.textContent = input.files[0].name;
   } else {
-    fileName.textContent = 'No file selected';
+    fileNameProfile.textContent = 'No file selected';
   }
 });
 
