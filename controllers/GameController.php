@@ -202,19 +202,25 @@ class GameController
                     
                     // Add currency to the user's account
                     $this->user->addCurrency($userId, $currencyReward);
+                    $updatedStatus = $this->game->updateTotalCompletedGame($userId);
                     $markAsPlayed = $this->user->markGameAsPlayed($userId, $date);
+
+                    if ($markAsPlayed && $updatedStatus) {
+                        $response = array(
+                            'message' => 'Correct',
+                            'gameUser' => $gameUser,
+                            'reward' => $currencyReward
+                        );
+                    } else {
+                        $response = array('message' => 'Contact an administrator');
+                    }
     
-                    // Correct guess response
-                    $response = array(
-                        'message' => 'Correct',
-                        'gameUser' => $gameUser,
-                        'reward' => $currencyReward
-                    );
                 } else {
                     // Incorrect guess, provide a hint
                     $hint = $this->getHint($gameUser, $tryCount);
                     if ($tryCount >= 4) {
                         $markAsPlayed = $this->user->markGameAsPlayed($userId, $date);
+                        $this->game->updateTotalCompletedGame($userId);
                         $response = array(
                             'message' => 'Game Over',
                             'gameUser' => $gameUser

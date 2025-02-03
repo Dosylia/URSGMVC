@@ -38,4 +38,24 @@ class Game extends DataBase
             return false;
         }
     }
+
+    public function updateTotalCompletedGame($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET 
+                                            `user_totalCompletedGame` = `user_totalCompletedGame` + 1
+                                        WHERE 
+                                            `user_id` = ?
+        ");
+    
+        $addCompletedGameTest = $query->execute([$userId]);
+    
+        if ($addCompletedGameTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
