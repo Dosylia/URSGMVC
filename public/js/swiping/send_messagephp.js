@@ -9,7 +9,9 @@ let btnSubmit;
 let btnDesign;
 let isActionAllowed = true;
 
-function sendMessageToPhp(senderId, receiverId, message) {
+function sendMessageToPhp(senderId, message) {
+    let friendIdElement = document.getElementById("receiverId");
+    const receiverId = friendIdElement ? friendIdElement.value : null;
     // If wanna convert time directly before sending it
     // let utcDate = new Date();
     // let localOffset = utcDate.getTimezoneOffset() * 60000;
@@ -20,7 +22,7 @@ function sendMessageToPhp(senderId, receiverId, message) {
     const dataToSend = {
         senderId,
         receiverId,
-        message,
+        message: encodeURIComponent(message),
     };
 
     const jsonData = JSON.stringify(dataToSend);
@@ -43,15 +45,17 @@ function sendMessageToPhp(senderId, receiverId, message) {
         console.log('Success:', data);
         messageInput.value = '';
         // After successfully sending message, fetch updated messages
-        fetchMessages(userId, friendId);
+        fetchMessages(userId, receiverId);
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
 
-function markMessageAsRead(senderId, receiverId) {
+function markMessageAsRead(senderId) {
     const token = localStorage.getItem('masterTokenWebsite');
+    let friendIdElement = document.getElementById("receiverId");
+    const receiverId = friendIdElement ? friendIdElement.value : null;
 
     const dataToSend = {
         senderId,
@@ -115,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        sendMessageToPhp(senderId, receiverId, message);
+        sendMessageToPhp(senderId, message);
 
         setTimeout(() => {
             isActionAllowed = true;

@@ -308,31 +308,29 @@ class ChatMessageController
             $this->setReceiverId($data->receiverId);
             $this->setMessage($this->validateInput($data->message));
 
-                if (isset($_SESSION)) {
-                    $user = $this->user->getUserById($_SESSION['userId']);
+            // Validate Authorization Header
+             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                 return;
+             }
+ 
+             $token = $matches[1];
+ 
+             // Validate Token for User
+             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
+                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 return;
+             }
+
+             $user = $this->user->getUserById($_SESSION['userId']);
     
-                    if ($user['user_id'] != $this->getSenderId())
-                    {
-                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-                        return;
-                    }
-                }
-
-            // // Validate Authorization Header
-            //  $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            //  if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //      echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //      return;
-            //  }
- 
-            //  $token = $matches[1];
- 
-            //  // Validate Token for User
-            //  if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
-            //      echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //      return;
-            //  }
+             if ($user['user_id'] != $this->getSenderId())
+             {
+                 echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                 return;
+             }
 
                 $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
 

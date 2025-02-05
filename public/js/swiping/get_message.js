@@ -16,19 +16,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // Gestion du clic sur les amis pour charger les messages
     document.addEventListener("click", function (event) {
         let link = event.target.closest(".username_chat_friend");
+    
+        // If the clicked element is a link with a valid href (not just '#'), allow navigation
+        if (link && link.getAttribute("href") && link.getAttribute("href") !== "#") {
+            return; // Allow the link to navigate normally
+        }
+    
+        // Otherwise, handle custom logic (e.g., changing the chat)
         if (!link) return;
-
-        event.preventDefault(); // Empêche le changement de page
-        console.log("Trying to change page");
-
+    
+        event.preventDefault(); // Prevent the default behavior for non-navigational links
+        console.log("Trying to change chat");
+    
         let newFriendId = link.getAttribute("data-friend-id");
-        console.log("New friend ID:", newFriendId); 
+        console.log("New friend ID:", newFriendId);
+    
         if (newFriendId !== friendId) {
-            friendId = newFriendId; // Mettre à jour l'ID du destinataire
-            document.getElementById("messages").innerHTML = ""; // Vider les anciens messages
-            fetchMessages(userId, friendId); // Charger les nouveaux messages
+            friendId = newFriendId; // Update the recipient ID
+            fetchMessages(userId, friendId); // Load new messages
         }
     });
+    
 
     // Vérifier si `userId` est défini avant de récupérer les messages
     if (typeof userId !== "undefined" && userId !== null) {
@@ -69,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch('index.php?action=getMessageDataWebsite', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 'Authorization': `Bearer ${token}`,
             },
             body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
@@ -132,14 +140,31 @@ document.addEventListener("DOMContentLoaded", function () {
             let utcDate = new Date(message.chat_date);
             let localOffset = utcDate.getTimezoneOffset();
             let localDate = new Date(utcDate.getTime() - localOffset * 60000);
-            let formattedTime = localDate.toLocaleTimeString();
-    
+
+            // Format for today
+            const isToday = new Date(message.chat_date).toDateString() === new Date().toDateString();
+
+            // Format time
+            let formattedTime = new Date(message.chat_date).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Format full date for other days (MM/DD/YYYY or DD/MM/YYYY based on the locale)
+            let formattedDate;
+            if (!isToday) {
+                // French date format (DD/MM/YYYY)
+                formattedDate = new Date(message.chat_date).toLocaleDateString('fr-FR');
+            } else {
+                // "Today" format
+                formattedDate = `Today ${formattedTime}`;
+            }
+
             // Check if previous message exists and is from the same sender within 5 minutes
             if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
                 let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
                 if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
                     // Display only the message without icon, avatar, and timestamp
-                    //For chat filter: <span class="message-text" style="text-align: ${messagePosition};">${userId.user_hasChatFilter ? chatfilter(renderEmotes(message.chat_message)) : renderEmotes(message.chat_message)}</span>
                     messageContent = `
                     <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${formattedTime}</span>
@@ -152,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p id="username_message" style="text-align: ${userPosition};">
                             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                             <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                            <span class="timestamp ${messagePosition}">${formattedTime}</span>
+                            <span class="timestamp ${messagePosition}">${formattedDate}</span>
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
@@ -166,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p id="username_message" style="text-align: ${userPosition};">
                         <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                         <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                        <span class="timestamp ${messagePosition}">${formattedTime}</span>
+                        <span class="timestamp ${messagePosition}">${formattedDate}</span>
                     </p>
                     <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                         <span class="timestamp-hover">${formattedTime}</span>
@@ -174,6 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </p>
                 `;
             }
+
     
             messageDiv.innerHTML = messageContent;
             messagesContainer.appendChild(messageDiv);
@@ -235,6 +261,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (friend.user_username === currentFriendUsername) {
             return;
         }
+
+        friendIdElement.value = friend.user_id; // Update the hidden input value
+        const usernameFriend = document.getElementById("message_text");
+        usernameFriend.placeholder = `Talk to @${friend.user_username}`;
     
         currentFriendUsername = friend.user_username; // Update the stored friend
     
