@@ -1,44 +1,51 @@
 let userIdElement = document.getElementById("senderId");
 let friendIdElement = document.getElementById("receiverId");
 export const userId = userIdElement ? userIdElement.value : null;
-export const friendId = friendIdElement ? friendIdElement.value : null;
+export let friendId = friendIdElement ? friendIdElement.value : null;
 let currentMessages = []; // Store the current messages
 let isFirstFetch = true; // Flag to track the first fetch
 let friendData = document.getElementById('friendInfo');
 export const chatInterface = document.querySelector('.chat-interface');
 export const messageContainer = document.querySelector('.messages-container');
 import { badWordsList } from './chatFilter.js';
+let currentFriendUsername = null;
 
-document.addEventListener("DOMContentLoaded", function() {
-        
-    if(userId !== null && userId !== undefined)
-        {
-            // Initially fetch messages
-            fetchMessages(userId, friendId);
-            
-            // Optionally, you can set an interval to fetch messages periodically
-            setInterval(() => fetchMessages(userId, friendId), 5000); // Fetch messages every 5 seconds
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Script loaded");
+
+    // Gestion du clic sur les amis pour charger les messages
+    document.addEventListener("click", function (event) {
+        let link = event.target.closest(".username_chat_friend");
+        if (!link) return;
+
+        event.preventDefault(); // Empêche le changement de page
+        console.log("Trying to change page");
+
+        let newFriendId = link.getAttribute("data-friend-id");
+        console.log("New friend ID:", newFriendId); 
+        if (newFriendId !== friendId) {
+            friendId = newFriendId; // Mettre à jour l'ID du destinataire
+            document.getElementById("messages").innerHTML = ""; // Vider les anciens messages
+            fetchMessages(userId, friendId); // Charger les nouveaux messages
         }
-
-    // Set the variable initially
-    setVhVariable();
-    
-    // Update the variable on resize
-    window.addEventListener('resize', setVhVariable);
-
-    // Initial check
-    checkScreenSize();
-
-    // Add event listener for screen resize
-    window.addEventListener('resize', checkScreenSize);
-
-    document.querySelectorAll('.username_chat_friend').forEach(link => {
-        link.addEventListener('click', function(event) {
-            window.open(this.href, '_blank');
-        });
     });
 
-});
+    // Vérifier si `userId` est défini avant de récupérer les messages
+    if (typeof userId !== "undefined" && userId !== null) {
+        fetchMessages(userId, friendId); // Chargement initial
+        setInterval(() => fetchMessages(userId, friendId), 5000); // Rafraîchissement auto toutes les 5s
+    }
+
+    // Initialisation des variables CSS pour le responsive
+    setVhVariable();
+    checkScreenSize();
+
+    // Mettre à jour lors d'un redimensionnement
+    window.addEventListener("resize", () => {
+        setVhVariable();
+        checkScreenSize();
+    });
+})
 
 
     // Show loading indicator
@@ -70,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                showFriendInfo(data.friend);
                 // Compare the fetched messages with the current messages
                 if (data.messages !== null && data.messages !== undefined) {
                     if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
@@ -78,10 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         console.log('No new messages. No update needed.');
                     }
-                }
-                else
-                {
-                    showFriendInfo(data.friend);
                 }
             } else {
                 console.error('Error fetching messages:', data.error);
@@ -224,28 +228,63 @@ document.addEventListener("DOMContentLoaded", function() {
         return replacedMessage;
     }
 
-    // Function to see friend's data
     function showFriendInfo(friend) {
-
+        if (!friend) return;
+    
+        // If the same friend is being passed, do nothing
+        if (friend.user_username === currentFriendUsername) {
+            return;
+        }
+    
+        currentFriendUsername = friend.user_username; // Update the stored friend
+    
         const pictureLink = friend.user_picture ? `upload/${friend.user_picture}` : "images/defaultprofilepicture.jpg";
-
+    
+        // Prepare the basic friend content
         let friendContent = `
-        <p id="friendTop">
-            <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
-            <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
-        </p>
-        <p id="firstToChat">Be the first one to chat <i class="fa-regular fa-comments"></i></p>`;
-
-        if (friendData) {
-            friendData.innerHTML = friendContent;
+            <p id="friendTop">
+                <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
+                <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
+            `;
+    
+        // Add online status or looking-for-game status
+        if (friend.user_isOnline === 1) {
+            if (friend.user_isLooking === 1) {
+                // If the friend is online and looking for someone
+                friendContent += `<span class="looking-game-status"></span>`;
+            } else {
+                // If the friend is just online
+                friendContent += `<span class="online-status"></span>`;
+            }
         } else {
-            console.error("friendData element not found");
+            // If the friend is offline
+            friendContent += `<span class="offline-status"></span>`;
         }
 
+        friendContent += `</p>`; // Close the <p> tag
+    
+        // Ensure the element exists, create it if necessary
+        if (!friendData) {
+            friendData = document.createElement("div");
+            friendData.id = "friendData";
+            document.body.appendChild(friendData); // Adjust parent container if needed
+        }
+
+        friendData.innerHTML = '';
+    
+        friendData.innerHTML = friendContent;
+    
         let messagesContainer = document.getElementById("messages");
+    
+        if (!messagesContainer) {
+            messagesContainer = document.createElement("div");
+            messagesContainer.id = "messages";
+            document.body.appendChild(messagesContainer); // Adjust parent container if needed
+        }
+    
         messagesContainer.innerHTML = '';
         messagesContainer.style.minHeight = 'calc(var(--vh, 1vh) * 60)';
-    };
+    }
 
     // Function to scroll to the bottom of the messages container
     function scrollToBottom() {

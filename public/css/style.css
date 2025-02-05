@@ -1981,6 +1981,7 @@ section.siteMap tr:nth-child(even) {
     }
 
     .online-status {
+      display: inline-block; 
       width: 20px;
       height: 20px;
       border-radius: 50%;
@@ -1990,6 +1991,7 @@ section.siteMap tr:nth-child(even) {
     }
 
     .looking-game-status {
+      display: inline-block; 
       width: 20px;
       height: 20px;
       border-radius: 50%;

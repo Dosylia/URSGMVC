@@ -572,7 +572,10 @@ class ChatMessageController
                     'friend' => [
                         'user_id' => $friend['user_id'],
                         'user_username' => $friend['user_username'],
-                        'user_picture' => $friend['user_picture']
+                        'user_picture' => $friend['user_picture'],
+                        'user_lastRequestTime' => $friend['user_lastRequestTime'],
+                        'user_isOnline' => $friend['user_isOnline'],
+                        'user_isLooking' => $friend['user_isLooking'],
                     ],
                     'user' => [
                         'user_id' => $user['user_id'],

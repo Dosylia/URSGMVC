@@ -41,63 +41,75 @@ function fetchAllFriends(userId) {
 }
 
 // Search and filter friends
-// Search and filter friends
 function searchFriends(query) {
-    const friendListContainer = document.getElementById('friendList');
-    friendListContainer.innerHTML = ''; // Clear the current list
+    const friendListContainer = document.getElementById("friendList");
+    friendListContainer.innerHTML = ""; // Clear the current list
 
-    const filteredFriends = allFriends.filter(friend => 
+    const filteredFriends = allFriends.filter((friend) =>
         friend.friend_username.toLowerCase().includes(query)
     );
 
-    filteredFriends.forEach(friend => {
-        const friendElement = document.createElement('a');
-        friendElement.href = `/persoChat&friend_id=${friend.friend_id}&mark_as_read=true`;
+    filteredFriends.forEach((friend) => {
+        // Create anchor tag with required classes and data attributes
+        const friendElement = document.createElement("a");
+        friendElement.className = "username_chat_friend clickable";
+        friendElement.href = "#"; // Updated to `#` to match your provided structure
+        friendElement.dataset.friendId = friend.friend_id;
 
-        const friendDiv = document.createElement('div');
-        friendDiv.className = 'friend';
+        // Create the outer friend container
+        const friendDiv = document.createElement("div");
+        friendDiv.className = "friend";
         friendDiv.dataset.senderId = friend.friend_id;
 
-        const avatarDiv = document.createElement('div');
-        avatarDiv.className = 'friend-avatar';
+        // Create the avatar container
+        const avatarDiv = document.createElement("div");
+        avatarDiv.className = "friend-avatar";
 
-        const img = document.createElement('img');
-        img.src = friend.friend_picture ? `public/upload/${friend.friend_picture}` : 'public/images/defaultprofilepicture.jpg';
+        const img = document.createElement("img");
+        img.src = friend.friend_picture
+            ? `public/upload/${friend.friend_picture}`
+            : "public/images/defaultprofilepicture.jpg";
         img.alt = `Avatar ${friend.friend_username}`;
         avatarDiv.appendChild(img);
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.className = 'friend-details';
+        // Create the details container
+        const detailsDiv = document.createElement("div");
+        detailsDiv.className = "friend-details";
 
-        // Construct chatNameSpan with username, unread messages container, and online status
-        const chatNameSpan = document.createElement('span');
-        chatNameSpan.className = 'chat-name clickable';
+        // Construct chatNameSpan with username, unread messages, and online status
+        const chatNameSpan = document.createElement("span");
+        chatNameSpan.className = "chat-name clickable";
         chatNameSpan.innerHTML = `
         ${friend.friend_username}
         <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>
         ${
-          friend.friend_online === 1 && friend.friend_isLookingGame === 1 
-            ? '<span class="looking-game-status"></span>' 
-            : friend.friend_online === 1 
-              ? '<span class="online-status"></span>' 
-              : ''
+          friend.friend_online === 1 && friend.friend_isLookingGame === 1
+              ? '<span class="looking-game-status"></span>'
+              : friend.friend_online === 1
+              ? '<span class="online-status"></span>'
+              : ""
         }
         `;
 
-        const gameLogo = document.createElement('img');
-        gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/lol-logo.png' : 'public/images/Valorant.png';
+        const gameLogo = document.createElement("img");
+        gameLogo.src =
+            friend.friend_game === "League of Legends"
+                ? "public/images/lol-logo.png"
+                : "public/images/Valorant.png";
         gameLogo.alt = friend.friend_game;
 
         // Update unread messages count if applicable
         const unreadCount = globalUnreadCounts[friend.friend_id] || 0;
         if (unreadCount > 0) {
-            const unreadMessagesContainer = chatNameSpan.querySelector(`#unread_messages_for_friend_container_${friend.friend_id}`);
-            const span = document.createElement('span');
-            span.className = 'unread-count';
-            span.style.marginLeft = '10px';
+            const unreadMessagesContainer = chatNameSpan.querySelector(
+                `#unread_messages_for_friend_container_${friend.friend_id}`
+            );
+            const span = document.createElement("span");
+            span.className = "unread-count";
+            span.style.marginLeft = "10px";
 
-            const button = document.createElement('button');
-            button.className = 'unread_message';
+            const button = document.createElement("button");
+            button.className = "unread_message";
             button.textContent = unreadCount;
 
             span.appendChild(button);
@@ -114,6 +126,7 @@ function searchFriends(query) {
         friendListContainer.appendChild(friendElement);
     });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", function () {

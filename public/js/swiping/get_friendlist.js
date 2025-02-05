@@ -58,7 +58,9 @@ function renderFriendList(friendList, page) {
 
     paginatedFriends.forEach(friend => {
         const friendElement = document.createElement('a');
-        friendElement.href = `/persoChat&friend_id=${friend.friend_id}&mark_as_read=true`;
+        friendElement.className = "username_chat_friend clickable";
+        friendElement.href = "#"; // Updated to `#` to match your provided structure
+        friendElement.dataset.friendId = friend.friend_id;
 
         const friendDiv = document.createElement('div');
         friendDiv.className = 'friend';
