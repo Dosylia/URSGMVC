@@ -22,7 +22,7 @@ function sendMessageToPhp(senderId, message) {
     const dataToSend = {
         senderId,
         receiverId,
-        message: encodeURIComponent(message),
+        message,
     };
 
     const jsonData = JSON.stringify(dataToSend);

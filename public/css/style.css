@@ -74,9 +74,9 @@
   }
 
   .clickable {
-    padding-bottom: 2px;
     cursor: pointer;
-    border-bottom: 2px solid var(--main--red);
+    border-bottom: 1px solid var(--main--red);
+    margin-bottom: 2px;
   }
 
   .clickable:hover {
@@ -2129,7 +2129,7 @@ section.siteMap tr:nth-child(even) {
     }
   
     .timestamp {
-      font-size: 1.5vh;
+      font-size: 1vh;
     }
   
     .strong_text {
@@ -2164,11 +2164,20 @@ section.siteMap tr:nth-child(even) {
 
     .last-message.inverted .message-text {
       order: 1;
+      background-color: #bcb7b7;
     }
+
+  .dark-mode .last-message.inverted .message-text {
+    background-color: var(--dark-ligher-grey);
+  }
   
     .username_chat_friend {
       text-decoration: none;
       color: black;
+    }
+
+    .username_chat_friend strong{
+      font-size: 1.4vh;
     }
   
     .popup-content {

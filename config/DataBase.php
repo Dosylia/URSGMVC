@@ -17,7 +17,7 @@ class DataBase
     {
         try
         {
-            $this -> bdd = new \PDO('mysql:host='.self::SERVER.';dbname='.self::DB.';charset=utf8', self::USER, self::MDP, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+            $this -> bdd = new \PDO('mysql:host='.self::SERVER.';dbname='.self::DB.';charset=utf8mb4', self::USER, self::MDP, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         }
         catch(\Exception $message)
         {

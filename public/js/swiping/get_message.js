@@ -175,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Display full message with icon, avatar, and timestamp
                     messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
-                            <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                             <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                             <span class="timestamp ${messagePosition}">${formattedDate}</span>
                         </p>
@@ -189,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 // First message from this sender or different sender
                 messageContent = `
                     <p id="username_message" style="text-align: ${userPosition};">
-                        <img class="avatar" src="public/${pictureLink}" alt="Avatar ${messageUser.user_username}">
                         <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
                         <span class="timestamp ${messagePosition}">${formattedDate}</span>
                     </p>
