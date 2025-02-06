@@ -3,10 +3,17 @@ let currentPage = 1;
 const itemsPerPage = 10; 
 let totalFriends = 0;
 let showOnlineOnly = localStorage.getItem('showOnlineFriends') === 'true';
+let refreshMode = false;
 
 // Fetch and render friend list
 function getFriendList(userId, page = 1) {
     const token = localStorage.getItem('masterTokenWebsite');
+
+    if (page !== currentPage || showOnlineOnly) {
+        refreshMode = false;
+        currentPage = page;
+    }
+    
     fetch('/getFriendlistWebsite', {
         method: 'POST',
         headers: {
@@ -18,15 +25,20 @@ function getFriendList(userId, page = 1) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                totalFriends = data.friendlist.length;
-                let filteredFriends = data.friendlist;
+                if (refreshMode) {
+                    updateOnlineStatus(data.friendlist);
+                } else {
+                    refreshMode = true;
+                    totalFriends = data.friendlist.length;
+                    let filteredFriends = data.friendlist;
 
-                if (showOnlineOnly) {
-                    filteredFriends.sort((a, b) => b.friend_online - a.friend_online);
+                    if (showOnlineOnly) {
+                        filteredFriends.sort((a, b) => b.friend_online - a.friend_online);
+                    }
+
+                    renderFriendList(filteredFriends, page);
+                    setupPagination(filteredFriends.length, itemsPerPage);
                 }
-
-                renderFriendList(filteredFriends, page);
-                setupPagination(filteredFriends.length, itemsPerPage);
             } else {
                 console.error('Error fetching friends:', data.error);
             }
@@ -34,6 +46,32 @@ function getFriendList(userId, page = 1) {
         .catch(error => {
             console.error('Fetch error:', error);
         });
+}
+
+function updateOnlineStatus(friendList) {
+    friendList.forEach(friend => {
+        const friendElement = document.querySelector(`[data-friend-id="${friend.friend_id}"]`);
+        if (!friendElement) return;
+        if (friendElement) {
+            const onlineStatus = friendElement.querySelector('.online-status');
+            const lookingForGame = friendElement.querySelector('.looking-game-status');
+
+            // Clear old status
+            if (onlineStatus) onlineStatus.remove();
+            if (lookingForGame) lookingForGame.remove();
+
+            // Update new status
+            if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
+                const newLookingForGame = document.createElement('span');
+                newLookingForGame.className = 'looking-game-status';
+                friendElement.querySelector('.chat-name').appendChild(newLookingForGame);
+            } else if (friend.friend_online === 1) {
+                const newOnlineStatus = document.createElement('span');
+                newOnlineStatus.className = 'online-status';
+                friendElement.querySelector('.chat-name').appendChild(newOnlineStatus);
+            }
+        }
+    });
 }
 
 // Render the friend list dynamically
@@ -137,6 +175,7 @@ function setupPagination(totalItems, itemsPerPage) {
     firstButton.disabled = currentPage === 1;
     firstButton.addEventListener('click', () => {
         currentPage = 1;
+        refreshMode = false;
         getFriendList(userId, currentPage);
     });
     paginationContainer.appendChild(firstButton);
@@ -149,6 +188,7 @@ function setupPagination(totalItems, itemsPerPage) {
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
+            refreshMode = false;
             getFriendList(userId, currentPage);
         }
     });
@@ -167,6 +207,7 @@ function setupPagination(totalItems, itemsPerPage) {
 
         pageButton.addEventListener('click', () => {
             currentPage = i;
+            refreshMode = false;
             getFriendList(userId, currentPage);
         });
 
@@ -181,6 +222,7 @@ function setupPagination(totalItems, itemsPerPage) {
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
             currentPage++;
+            refreshMode = false;
             getFriendList(userId, currentPage);
         }
     });
@@ -193,6 +235,7 @@ function setupPagination(totalItems, itemsPerPage) {
     lastButton.disabled = currentPage === totalPages;
     lastButton.addEventListener('click', () => {
         currentPage = totalPages;
+        refreshMode = false;
         getFriendList(userId, currentPage);
     });
     paginationContainer.appendChild(lastButton);
@@ -213,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showOnlineOnly = toggleOnlineOnly.checked; 
             localStorage.setItem('showOnlineFriends', showOnlineOnly); 
             currentPage = 1; 
+            refreshMode = false;
             getFriendList(userId, currentPage); 
         });
     }
