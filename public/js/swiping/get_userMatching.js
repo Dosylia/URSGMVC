@@ -300,6 +300,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <p class="about-users-title"><strong>Server</strong></p>
                 <p class="about-users-box about-users-selected">
                     ${server ? server.toUpperCase() : "Unknow"}
+                    <a href="/updateLookingForPage" class="updateInterest"><i class="fa-solid fa-filter"></i></a>
                 </p>
             </div>
         `;

@@ -22,6 +22,7 @@ class UserLookingForController
     private $lfGender;
     private $lfKindOfGamer;
     private $lfGame;
+    private $lfFilteredServer;
     private $loLMain1;
     private $loLMain2;
     private $loLMain3;
@@ -130,6 +131,11 @@ class UserLookingForController
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+            $filteredServers = [
+                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+                "Latin America North", "Latin America South", "Oceania", 
+                "Russia", "Turkey", "Japan", "Korea"
+            ];
 
             $current_url = "https://ur-sg.com/updateLookingForPage";
             $template = "views/swiping/update_lookingFor";
@@ -658,6 +664,9 @@ class UserLookingForController
                 $this->setLoLRank($loLRank);
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
+                $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
+                $filteredServerJson = json_encode($filteredServer);
+                $this->setLfFilteredServer($filteredServerJson);
 
                 $user = $this->user->getUserById($_SESSION['userId']);
 
@@ -708,6 +717,7 @@ class UserLookingForController
                     $this->getLoLRank(), 
                     $this->getLoLRole(),
                     $statusChampion,
+                    $this->getLfFilteredServer(),
                     $this->getUserId());
 
 
@@ -753,6 +763,9 @@ class UserLookingForController
                     $this->setValorantRank($valorantRank);
                     $valorantRole = $this->validateInput($_POST["role_valorant"]);
                     $this->setValorantRole($valorantRole);
+                    $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
+                    $filteredServerJson = json_encode($filteredServer);
+                    $this->setLfFilteredServer($filteredServerJson);
 
                     $user = $this->user->getUserById($_SESSION['userId']);
 
@@ -800,6 +813,7 @@ class UserLookingForController
                         $this->getValorantRank(), 
                         $this->getValorantRole(),
                         $statusChampion,
+                        $this->getLfFilteredServer(),
                         $this->getUserId());
 
 
@@ -845,6 +859,21 @@ class UserLookingForController
         return $input;
     }
 
+    public function validateInputJSON($input) 
+    {
+        $input = trim($input);
+    
+        if (is_string($input) && (strpos($input, '[') === 0 || strpos($input, '{') === 0)) {
+            $decodedInput = json_decode($input, true);
+    
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decodedInput;
+            }
+        }
+    
+        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    }
+
     public function getUserId()
     {
         return $this->userId;
@@ -884,6 +913,17 @@ class UserLookingForController
     {
         $this->lfGame = $lfGame;
     }
+
+    public function getLfFilteredServer()
+    {
+        return $this->lfFilteredServer;
+    }
+
+    public function setLfFilteredServer($lfFilteredServer)
+    {
+        $this->lfFilteredServer = $lfFilteredServer;
+    }
+
 
     public function getLoLMain1()
     {

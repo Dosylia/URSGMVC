@@ -1326,7 +1326,29 @@ class UserController
             // }
 
             //Retry without scores 
-            $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit($userId, $user['user_game']);
+
+            // Determine which field to check for filtering
+            if ($user['user_game'] == "League of Legends") {
+                $filteredServer = json_decode($user['lf_filteredServer'], true);
+                $serverColumn = "lol_server";  // Filter by `lol_server`
+            } else {
+                $filteredServer = json_decode($user['lf_filteredServer'], true);
+                $serverColumn = "valorant_server";  // Filter by `valorant_server`
+            }
+            
+            $allServers = [
+                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+                "Latin America North", "Latin America South", "Oceania", 
+                "Russia", "Turkey", "Japan", "Korea"
+            ];
+            
+            // Use all servers if no filters are applied
+            $serverList = empty($filteredServer) ? $allServers : $filteredServer;
+            
+            // Fetch users with filtering
+            $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit($userId, $user['user_game'], $serverList, $serverColumn);
+            
+            
             
             $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {

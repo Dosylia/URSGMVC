@@ -199,7 +199,14 @@
             <input type="hidden" name="game" value="Valorant"> 
         <?php endif; ?>
 
-            <?php if($this->isConnectWebsite()) : ?>
+        <label>Filter servers</label>
+        <p>You'll be seeing only servers if button is red</p>
+
+        <div id="server-container" data-selected-servers='<?= json_encode(explode(",", $lfUser["lf_filteredServer"] ?? "")) ?>'></div>
+
+        <input type="hidden" name="filteredServers" id="filteredServers" value='<?= htmlspecialchars($lfUser["lf_filteredServer"] ?? "[]", ENT_QUOTES, "UTF-8") ?>'>
+
+        <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
         <?php endif ; ?>
 
@@ -211,3 +218,4 @@
 
 <script type="module" src="public/js/swiping/closebutton.js"></script>
 <script src="public/js/swiping/skipSelection.js"></script>
+<script src="public/js/filteredServers.js"></script>

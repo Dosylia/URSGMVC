@@ -413,6 +413,46 @@ section.siteMap tr:nth-child(even) {
     align-items: center;
   }
 
+  .server-btn {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.server-btn.selected {
+    background-color: var(--main--red);
+    color: white;
+}
+.server-btn.unselected {
+    background-color: #6b6666; 
+    color: white;
+}
+
+.updateInterest {
+ width: 30px;
+ height: 30px;
+ background-color: var(--main--red);
+ border-radius: 30px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ text-align: center;
+}
+
+.updateInterest:hover {
+  background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
+ }
+
+.updateInterest i {
+  width: 100%;
+  color: white;
+  font-size: 16px;
+}
+
+
   #picture_verify {
     border-radius: 50%;
     border: none;

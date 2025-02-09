@@ -106,6 +106,7 @@ class UserLookingFor extends DataBase
                                                 `lf_gender`,
                                                 `lf_kindofgamer`,
                                                 `lf_game`,
+                                                `lf_filteredServer`,
                                                 `lf_lolNoChamp`,
                                                 `lf_lolmain1`,
                                                 `lf_lolmain2`,      
@@ -138,7 +139,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForData($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $userId) 
+    public function updateLookingForData($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $filteredServer, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -179,6 +180,11 @@ class UserLookingFor extends DataBase
         $updates[] = "`lf_lolNoChamp` = ?";
         $params[] = $statusChampion;
 
+
+        if (!empty($filteredServer)) {
+            $updates[] = "`lf_filteredServer` = ?";
+            $params[] = $filteredServer;
+        }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;
@@ -197,7 +203,7 @@ class UserLookingFor extends DataBase
         }
     }
 
-    public function updateLookingForDataValorant($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $userId) 
+    public function updateLookingForDataValorant($lfGender, $lfKindOfGamer, $lfGame, $lfMain1, $lfMain2, $lfMain3, $lfRank, $lfRole, $statusChampion, $filteredServer, $userId) 
     {
         $sql = "UPDATE `userlookingfor` SET ";
         $params = [];
@@ -237,6 +243,11 @@ class UserLookingFor extends DataBase
 
         $updates[] = "`lf_valNoChamp` = ?";
         $params[] = $statusChampion;
+
+        if (!empty($filteredServer)) {
+            $updates[] = "lf_filteredServer = ?";
+            $params[] = $filteredServer;
+        }
     
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;
