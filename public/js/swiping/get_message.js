@@ -93,14 +93,16 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 showFriendInfo(data.friend);
-                // Compare the fetched messages with the current messages
                 if (data.messages !== null && data.messages !== undefined) {
                     if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
                         currentMessages = data.messages; // Update the current messages
                         updateMessageContainer(data.messages, data.friend, data.user);
                     } else {
-                        console.log('No new messages. No update needed.');
+                         console.log('No new messages. No update needed.');
                     }
+                } else {
+                    console.log('No messages found.');
+                    currentMessages = []; // Reset the current messages
                 }
             } else {
                 console.error('Error fetching messages:', data.error);
