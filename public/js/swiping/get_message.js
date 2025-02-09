@@ -9,6 +9,7 @@ export const chatInterface = document.querySelector('.chat-interface');
 export const messageContainer = document.querySelector('.messages-container');
 import { badWordsList } from './chatFilter.js';
 let currentFriendUsername = null;
+let firstFriendId = friendId;
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script loaded");
@@ -65,8 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to fetch messages
     export function fetchMessages(userId, friendId) {
         const token = localStorage.getItem('masterTokenWebsite');
-        const firstFriend = document.getElementById('firstFriend') ? 'yes' : 'no';
-        console.log('firstFriend:', firstFriend);
+        const firstFriendInput = document.getElementById('firstFriend');
+        const firstFriend = firstFriendInput.value;
+
+
+        if (firstFriend && friendId !== firstFriendId) {
+            firstFriendInput.value = "no";
+        }
+
         if (isFirstFetch) {
             showLoadingIndicator();
             isFirstFetch = false; // Reset the flag after the first fetch

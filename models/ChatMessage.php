@@ -94,7 +94,7 @@ class ChatMessage extends DataBase
                                                 (chat_receiverId = ? AND chat_senderId = ?)
                                             ORDER BY
                                                 chat_date DESC
-                                            LIMIT 20
+                                            LIMIT 100
                                         ) subquery
                                         ORDER BY
                                             chat_date ASC
