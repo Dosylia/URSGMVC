@@ -49,6 +49,7 @@ class AdminController
             $pendingReports = $this-> admin -> countPendingReports();
             $adminActions = $this-> admin -> getLastAdminActions();
             $dailyActivity = $this-> admin -> dailyActivity();
+            $weeklyActivity = $this-> admin -> weeklyActivity();
             $dailyActivityJson = json_encode($dailyActivity);
 
             $current_url = "https://ur-sg.com/admin";

@@ -42,3 +42,54 @@ new Chart(ctx, {
         }
     }
 });
+
+const weeklyData = JSON.parse(document.getElementById('weeklyData').value);
+console.log("Weekly data", weeklyData);
+
+// Create an array for the last 7 days, initializing with 0 activity count
+const activityDataWeekly = Array(7).fill(0);
+const labelsWeekly = [];
+
+// Get the current date
+const now = new Date();
+
+// Generate labels for the past 7 days
+for (let i = 6; i >= 0; i--) {
+    let date = new Date();
+    date.setDate(now.getDate() - i);
+    labelsWeekly.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+}
+
+// Populate activityData array with activity counts from weeklyData
+weeklyData.forEach(entry => {
+    let entryDate = new Date(entry.date); // Ensure entry.date is a full date
+    let dayIndex = (entryDate.getDay() + 6) % 7; // Align to labels
+    activityDataWeekly[dayIndex] = entry.activity_count;
+});
+
+// Setup the chart
+const ctxWeekly = document.getElementById('weeklyUserActivityGraph').getContext('2d');
+new Chart(ctxWeekly, {
+    type: 'line',
+    data: {
+        labels: labelsWeekly,
+        datasets: [{
+            label: 'Active Users (Last 7 Days)',
+            data: activityDataWeekly,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                title: { display: true, text: 'Day' }
+            },
+            y: {
+                title: { display: true, text: 'Number of Users' }
+            }
+        }
+    }
+});

@@ -82,7 +82,7 @@ class Admin extends DataBase
         $query = $this->bdd->prepare("
                                         SELECT 
                                             HOUR(activity_time) AS hour,
-                                            COUNT(*) AS activity_count
+                                            COUNT(DISTINCT user_id) AS activity_count
                                         FROM 
                                             user_activity_log
                                         WHERE 
@@ -96,6 +96,28 @@ class Admin extends DataBase
         $query->execute();
         $result = $query->fetchAll();
     
+        return $result ? $result : false;
+    }
+
+    public function weeklyActivity()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                DATE(activity_time) AS date, 
+                COUNT(DISTINCT user_id) AS activity_count
+            FROM 
+                user_activity_log
+            WHERE 
+                activity_time >= NOW() - INTERVAL 7 DAY
+            GROUP BY 
+                DATE(activity_time)
+            ORDER BY 
+                date
+        ");
+    
+        $query->execute();
+        $result = $query->fetchAll();
+        
         return $result ? $result : false;
     }
     

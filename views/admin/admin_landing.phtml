@@ -27,6 +27,12 @@
     <input type="hidden" id="hourlyData" value='<?= json_encode($dailyActivity); ?>'>
 </div>
 
+<div class="online-users-graph-container">
+    <h2 style="color: rgba(54, 162, 235, 1);">User Activity This Week</h2>
+    <canvas id="weeklyUserActivityGraph"></canvas>
+    <input type="hidden" id="weeklyData" value='<?= json_encode($weeklyActivity); ?>'>
+</div>
+
   <div class="purchase-container">
     <h2>Total Purchases</h2>
     <p><?= $purchases ?></p>
