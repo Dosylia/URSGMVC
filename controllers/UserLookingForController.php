@@ -665,6 +665,23 @@ class UserLookingForController
                 $loLRole = $this->validateInput($_POST["role_lol"]);
                 $this->setLoLRole($loLRole);
                 $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
+
+                $validRegions = [
+                    "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+                    "Latin America North", "Latin America South", "Oceania", 
+                    "Russia", "Turkey", "Japan", "Korea"
+                ];
+
+                if (!empty($filteredServer)) {
+                    foreach ($filteredServer as $server) {
+                        if (!in_array($server, $validRegions)) {
+                            header("Location: /userProfile?message=Filtered region not valid");
+                            exit();
+                        }
+                    }
+
+                } 
+
                 $filteredServerJson = json_encode($filteredServer);
                 $this->setLfFilteredServer($filteredServerJson);
 

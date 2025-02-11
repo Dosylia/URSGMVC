@@ -66,6 +66,7 @@ class UserController
     private $valorantMain3Lf;
     private $valorantRankLf;
     private $valorantRoleLf;
+    private $lfFilteredServer;
     
     public function __construct()
     {
@@ -699,7 +700,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateToken($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -738,6 +739,80 @@ class UserController
             exit;
         } else {
             $response = array('message' => 'Could not delete picture');
+            echo json_encode($response);
+            exit;
+        }
+    }
+
+    public function deleteBonusPicturePhone()
+    {
+        $response = array('message' => 'Error');
+
+        if (isset($_POST['fileName']) && isset($_POST['userId'])) 
+        {
+            $userId = $this->validateInput($_POST['userId']);
+            $this->setUserId($userId);
+            $filename = $this->validateInput($_POST['fileName']);
+            $this->setFileName($filename);
+
+            $user = $this->user->getUserById($this->getUserId());
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                return;
+            }
+        
+            $userId = (int)$_POST['userId'];
+        
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                return;
+            }
+
+
+            $bonusPictures = $this->user->getBonusPictures($user['user_username']);
+
+            if (!is_array($bonusPictures)) {
+                $bonusPictures = [];
+            }
+
+            if (!in_array($this->getFileName(), $bonusPictures)) {
+                echo json_encode(['success' => false, 'message' => 'Picture not found in user\'s collection']);
+                return;
+            }
+
+            $key = array_search($this->getFileName(), $bonusPictures);
+
+            if ($key !== false) {
+                unset($bonusPictures[$key]);
+            }
+
+            if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
+                $response = array('message' => 'Could not delete picture');
+                echo json_encode($response);
+                exit;
+            }
+
+            $filePath = "public/upload/" . $this->getFileName();
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $response = array('message' => 'Success', 'bonusPictures' => $bonusPictures);
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = array('message' => 'Could not delete picture, invalid data sent');
             echo json_encode($response);
             exit;
         }
@@ -845,6 +920,29 @@ class UserController
             $roleLf = $this->validateInput($data->roleLf);
             $statusChampion = $this->validateInput($data->skipSelection);
             $statusChampionLf = $this->validateInput($data->skipSelectionLf);
+            
+            $validRegions = [
+                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+                "Latin America North", "Latin America South", "Oceania", 
+                "Russia", "Turkey", "Japan", "Korea"
+            ];
+
+            $filteredServer = !empty($data->filteredServerLf) ? $this->validateInputJSON($data->filteredServerLf) : $validRegions;
+
+            if (!empty($filteredServer)) {
+                foreach ($filteredServer as $serverTest) {
+                    if (!in_array($serverTest, $validRegions)) {
+                        echo json_encode(['success' => false, 'error' => 'Filtered region not valid']);
+                        return;
+                    }
+                }
+
+            } else {
+                $filteredServer = $validRegions;
+            }
+
+            $filteredServerJson = json_encode($filteredServer);
+            $this->setLfFilteredServer($filteredServerJson);
     
             $this->setUserId($userId);
             $this->setUsername($username);
@@ -917,6 +1015,7 @@ class UserController
                 $this->getLoLRankLf(), 
                 $this->getLoLRoleLf(),
                 $statusChampionLf,
+                $this->getLfFilteredServer(),
                 $this->getUserId());
 
                 if(($updateLeague || $createLoLUser) && $updateUser && $updateLookingFor)
@@ -952,6 +1051,29 @@ class UserController
             $roleLf = $this->validateInput($data->roleLf);
             $statusChampion = $this->validateInput($data->skipSelection);
             $statusChampionLf = $this->validateInput($data->skipSelectionLf);
+
+            $validRegions = [
+                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+                "Latin America North", "Latin America South", "Oceania", 
+                "Russia", "Turkey", "Japan", "Korea"
+            ];
+            
+            $filteredServer = !empty($data->filteredServerLf) ? $this->validateInputJSON($data->filteredServerLf) : $validRegions;
+
+            if (!empty($filteredServer)) {
+                foreach ($filteredServer as $serverTest) {
+                    if (!in_array($serverTest, $validRegions)) {
+                        echo json_encode(['success' => false, 'error' => 'Filtered region not valid']);
+                        return;
+                    }
+                }
+
+            } else {
+                $filteredServer = $validRegions;
+            }
+
+            $filteredServerJson = json_encode($filteredServer);
+            $this->setLfFilteredServer($filteredServerJson);
     
             $this->setUserId($userId);
             $this->setUsername($username);
@@ -1025,6 +1147,7 @@ class UserController
                 $this->getValorantRankLf(), 
                 $this->getValorantRoleLf(),
                 $statusChampionLf,
+                $this->getLfFilteredServer(),
                 $this->getUserId());
 
                 if(($updateValorant || $createValorantUser) && $updateUser && $updateLookingFor)
@@ -1215,6 +1338,103 @@ class UserController
             echo json_encode(['message' => 'No file uploaded']);
         }
     }   
+
+    public function updateBonusPicturePhone() {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['message' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['username'])) {
+            echo json_encode(['message' => 'Invalid request']);
+            return;
+        }
+    
+        $user = $this->user->getUserByUsername($_POST['username']);
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $user['user_id'])) {
+            echo json_encode(['message' => 'Invalid token']);
+            return;
+        }
+    
+        $targetDir = "public/upload/";
+    
+        // Validate if the file is received
+        if (!isset($_FILES["picture"]) || empty($_FILES["picture"]["name"])) {
+            echo json_encode(['message' => 'No file uploaded']);
+            return;
+        }
+    
+        $originalFileName = basename($_FILES["picture"]["name"]);
+        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+    
+        // Generate a unique file name
+        $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
+        $this->setFileName($uniqueFileName);
+        $targetFilePath = $targetDir . $uniqueFileName;
+    
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
+    
+        if (!in_array($fileExtension, $allowTypes)) {
+            echo json_encode(['message' => 'Invalid file type']);
+            return;
+        }
+    
+        // Move uploaded file
+        if (!move_uploaded_file($_FILES["picture"]["tmp_name"], $targetFilePath)) {
+            echo json_encode(['message' => 'Error uploading file. Picture might be too big.']);
+            return;
+        }
+    
+        // Check for animated GIFs
+        if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+            unlink($targetFilePath); // Delete the uploaded GIF immediately
+            echo json_encode(['message' => 'Animated GIFs are not allowed']);
+            return;
+        }
+    
+        // Resize image
+        $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+        if (!$this->resizeImage($targetFilePath, $resizedFilePath, 500, 500)) {
+            unlink($targetFilePath); // Clean up original if resize fails
+            echo json_encode(['message' => 'Error resizing image']);
+            return;
+        }
+    
+        // Get current bonus pictures
+        $bonusPictures = $this->user->getBonusPictures($_POST['username']);
+    
+        // Ensure it's an array
+        if (!is_array($bonusPictures)) {
+            $bonusPictures = [];
+        }
+    
+        // Enforce max 10 bonus pictures
+        if (count($bonusPictures) >= 10) {
+            unlink($targetFilePath); // Delete new file if limit exceeded
+            echo json_encode(['message' => 'You cannot upload more than 10 pictures.']);
+            return;
+        }
+    
+        // Add new picture to the list
+        $bonusPictures[] = 'resized_' . $this->getFilename();
+    
+        // Update bonus pictures in the database
+        if (!$this->user->updateBonusPictures($_POST['username'], $bonusPictures)) {
+            echo json_encode(['message' => 'Database update failed']);
+            return;
+        }
+    
+        // Delete original uploaded file after resizing
+        unlink($targetFilePath);
+    
+        echo json_encode(['message' => 'Success', 'bonusPictures' => $bonusPictures]);
+    }    
 
     public function resizeImage($sourcePath, $destPath, $newWidth, $newHeight) {
         list($width, $height, $imageType) = getimagesize($sourcePath);
@@ -2123,6 +2343,24 @@ class UserController
         return false;
     }
 
+    public function validateInputJSON($input) 
+    {
+        if (is_string($input)) {
+            $input = trim($input);
+        }
+    
+        if (is_string($input) && (strpos($input, '[') === 0 || strpos($input, '{') === 0)) {
+            $decodedInput = json_decode($input, true);
+    
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decodedInput;
+            }
+        }
+    
+        return is_string($input) ? htmlspecialchars($input, ENT_QUOTES, 'UTF-8') : $input;
+    }
+    
+
 
     public function emptyInputSignup($username, $age, $short_bio) 
     {
@@ -2388,6 +2626,16 @@ class UserController
     public function setLfKindOfGamer($lfKindOfGamer)
     {
         $this->lfKindOfGamer = $lfKindOfGamer;
+    }
+
+    public function getLfFilteredServer()
+    {
+        return $this->lfFilteredServer;
+    }
+
+    public function setLfFilteredServer($lfFilteredServer)
+    {
+        $this->lfFilteredServer = $lfFilteredServer;
     }
 
     public function getLoLMain1Lf()

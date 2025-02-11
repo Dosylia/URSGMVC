@@ -118,13 +118,6 @@
                         </div>
                     </div><br>
                 <?php endif; ?>
-                <?php if (!empty($lolUser['lol_role']) && empty($lolUser['lol_sUsername'])): ?>
-                    <div class="box_league_account">
-                        <div class="box_league_account_main_row">
-                            <p><strong>Server: </strong><?= strtoupper($lolUser['lol_server']) ?></p><br> 
-                        </div>
-                    </div>
-                <?php endif; ?>
                     <?php include 'views/swiping/lol_perso_champions.phtml' ?><br>
             <?php else : ?>
                 <?php if (!empty($valorantUser['valorant_aUsername']) && $valorantUser['valorant_verified'] === 1): ?>

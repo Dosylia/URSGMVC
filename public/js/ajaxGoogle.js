@@ -58,8 +58,11 @@ function handleCredentialResponse(response) {
                 console.log("Server response indicates success:", data);
                 window.location.href = '/signup';
             } else {
-                spanError = document.querySelector('.form-error');
+                const spanError = document.createElement('span');
+                spanError.className = 'form-error';
                 spanError.innerHTML = "Error: " + data.message;
+
+                document.body.prepend(spanError);
             }
         })
         .catch(error => {

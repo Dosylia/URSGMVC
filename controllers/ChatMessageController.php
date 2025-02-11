@@ -757,6 +757,10 @@ class ChatMessageController
                 'sound' => 'default',
                 'title' => $title,
                 'body' => $body,
+                'data' => [
+                    'screen' => 'chat',
+                    'chatId' => $friendId
+                ],
             ];
     
             $headers = [

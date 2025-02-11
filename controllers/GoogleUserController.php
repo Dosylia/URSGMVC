@@ -803,6 +803,7 @@ class GoogleUserController
                             'game' => $user['user_game'],
                             'shortBio' => $user['user_shortBio'],
                             'picture' => $user['user_picture'] ?? null,
+                            'bonusPicture' => $user['user_bonusPicture'] ?? null,
                             'discord' => $user['user_discord'] ?? null,
                             'twitch' => $user['user_twitch'] ?? null,
                             'instagram' => $user['user_instagram'] ?? null,
@@ -852,7 +853,8 @@ class GoogleUserController
                                         'main3Lf' => $lfUser['lf_lolmain3'],
                                         'rankLf' => $lfUser['lf_lolrank'],
                                         'roleLf' => $lfUser['lf_lolrole'],
-                                        'skipSelectionLf' => $lfUser['lf_lolNoChamp']
+                                        'skipSelectionLf' => $lfUser['lf_lolNoChamp'],
+                                        'filteredServerLf' => $lfUser['lf_filteredServer']
                                     );
                         
                                     
@@ -919,7 +921,8 @@ class GoogleUserController
                                         'valmain3Lf' => $lfUser['lf_valmain3'],
                                         'valrankLf' => $lfUser['lf_valrank'],
                                         'valroleLf' => $lfUser['lf_valrole'],
-                                        'skipSelectionLf' => $lfUser['lf_valNoChamp']
+                                        'skipSelectionLf' => $lfUser['lf_valNoChamp'],
+                                        'filteredServerLf' => $lfUser['lf_filteredServer']
                                     );
                         
                                     

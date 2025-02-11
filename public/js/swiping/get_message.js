@@ -154,9 +154,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const isToday = new Date(message.chat_date).toDateString() === new Date().toDateString();
 
             // Format time
-            let formattedTime = new Date(message.chat_date).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
+            let formattedTime = localDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit"
             });
 
             // Format full date for other days (MM/DD/YYYY or DD/MM/YYYY based on the locale)
