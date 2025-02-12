@@ -108,7 +108,8 @@ class Admin extends DataBase
             FROM 
                 user_activity_log
             WHERE 
-                activity_time >= NOW() - INTERVAL 7 DAY
+                activity_time >= CURDATE() - INTERVAL 6 DAY
+                AND activity_time < CURDATE() + INTERVAL 1 DAY
             GROUP BY 
                 DATE(activity_time)
             ORDER BY 
@@ -118,7 +119,7 @@ class Admin extends DataBase
         $query->execute();
         $result = $query->fetchAll();
         
-        return $result ? $result : false;
+        return $result ?: false;
     }
     
 

@@ -44,11 +44,11 @@ new Chart(ctx, {
 });
 
 const weeklyData = JSON.parse(document.getElementById('weeklyData').value);
-console.log("Weekly data", weeklyData);
 
 // Create an array for the last 7 days, initializing with 0 activity count
 const activityDataWeekly = Array(7).fill(0);
 const labelsWeekly = [];
+const dateKeys = []; // Store actual dates (YYYY-MM-DD) for accurate matching
 
 // Get the current date
 const now = new Date();
@@ -57,14 +57,19 @@ const now = new Date();
 for (let i = 6; i >= 0; i--) {
     let date = new Date();
     date.setDate(now.getDate() - i);
-    labelsWeekly.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+    let formattedDate = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    labelsWeekly.push(date.toLocaleDateString('en-US', { weekday: 'short' })); // Display only short weekdays
+    dateKeys.push(formattedDate); // Store full date (YYYY-MM-DD) for accurate matching
 }
 
 // Populate activityData array with activity counts from weeklyData
 weeklyData.forEach(entry => {
-    let entryDate = new Date(entry.date); // Ensure entry.date is a full date
-    let dayIndex = (entryDate.getDay() + 6) % 7; // Align to labels
-    activityDataWeekly[dayIndex] = entry.activity_count;
+    let formattedEntryDate = entry.date.split(' ')[0]; // Extract date without time
+    let dayIndex = dateKeys.indexOf(formattedEntryDate); // Match with stored full dates
+    
+    if (dayIndex !== -1) {
+        activityDataWeekly[dayIndex] = entry.activity_count;
+    }
 });
 
 // Setup the chart
@@ -72,7 +77,7 @@ const ctxWeekly = document.getElementById('weeklyUserActivityGraph').getContext(
 new Chart(ctxWeekly, {
     type: 'line',
     data: {
-        labels: labelsWeekly,
+        labels: labelsWeekly, // Display short day names
         datasets: [{
             label: 'Active Users (Last 7 Days)',
             data: activityDataWeekly,
@@ -93,3 +98,5 @@ new Chart(ctxWeekly, {
         }
     }
 });
+
+

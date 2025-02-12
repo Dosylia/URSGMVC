@@ -345,6 +345,11 @@ class UserController
                 exit();
             }
 
+            if ($this->isUsernameForbidden($this->getUsername())) { 
+                header("location:/signup?message=Username is forbidden");
+                exit();
+            }       
+
             $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
 
             if($createUser)
@@ -2359,9 +2364,24 @@ class UserController
     
         return is_string($input) ? htmlspecialchars($input, ENT_QUOTES, 'UTF-8') : $input;
     }
+
+    public function isUsernameForbidden($username) {
+        require 'bannedUsernames.php';
+        $username = strtolower(trim($username));
     
-
-
+        if (in_array($username, $bannedUsernames)) {
+            return true;
+        }
+    
+        foreach ($bannedUsernames as $banned) {
+            if (preg_match('/' . preg_quote($banned, '/') . '/i', $username)) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
     public function emptyInputSignup($username, $age, $short_bio) 
     {
         $result;
