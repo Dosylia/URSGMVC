@@ -55,7 +55,7 @@
   }
   
   .main_section {
-    background: url('../images/ursg-background-temporary.jpg');
+    background: url('../images/pc_background.webp');
     height: 100vh;
     background-size: 100% 100%;
     color: white;
@@ -65,7 +65,7 @@
   }
 
   .main_section_small {
-    background: url('../images/ursg-background-temporary');
+    background: url('../images/pc_background.webp');
     background-size: 100% 100%;
     color: white;
     display: flex;

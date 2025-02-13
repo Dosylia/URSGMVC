@@ -354,6 +354,13 @@ class UserController
 
             if($createUser)
             {
+                if (!empty($_POST['friendsUsername'])) {
+                    $friendUsername = $_POST['friendsUsername'];
+                    $friend = $this->user->getUserByUsername($friendUsername);
+                    $amount = 1000;
+                    $addCurrency = $this->user->addCurrency($friend['user_id'], $amount);
+                }
+                
                 $user = $this->user->getUserByUsername($this->getUsername());
 
                     if (session_status() == PHP_SESSION_NONE) 

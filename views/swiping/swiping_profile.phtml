@@ -61,6 +61,7 @@
                             <?php if ($user['user_bonusPicture'] === NULL || $user['user_bonusPicture'] === "[]"): ?>
                                 <button class="btn_user_updates" id="opendialog_bonuspicture">ADD PICTURE TO YOUR GALLERY</button>
                             <?php endif; ?>
+                            <button class="btn_user_updates" id="inviteFriend_btn" data-user-username="<?= $user['user_username'] ?>"><i class="fa-solid fa-plus"></i>INVITE A FRIEND</button>
                         </div><br>
                         
                         <div class="user_page_update_row">
