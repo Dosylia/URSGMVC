@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.message === "Success") {
                 this.parentElement.remove();
             } else {
-                console.log(data.message);
+                console.log("Error deleting picture :", data.message);
             }
         });
     });

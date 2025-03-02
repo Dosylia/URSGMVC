@@ -131,33 +131,48 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         if (data.user_bonusPicture && data.user_bonusPicture !== "[]") {
-            const pictures = JSON.parse(data.user_bonusPicture); 
-            console.log('Bonus pictures:', pictures);
-            bonusPictureContainer.style.display = "flex";
+            let pictures;
         
-            // Limit to 2 pictures only
-            pictures.slice(0, 2).forEach(picture => { 
-                const picturePath = `public/upload/${picture}`;
+            try {
+                pictures = JSON.parse(data.user_bonusPicture);
+            } catch (error) {
+                console.error("Error parsing user_bonusPicture:", error);
+                pictures = []; // Force it to be an empty array so it behaves like the else case
+            }
         
-                // Create the wrapper div
-                const pictureWrapper = document.createElement("div");
-                pictureWrapper.classList.add("picture-wrapper-swiping");
+            // Ensure it's an array and has valid pictures
+            if (!Array.isArray(pictures) || pictures.length === 0) {
+                bonusPictureContainer.style.display = "none";
+            } else {
+                console.log('Bonus pictures:', pictures);
+                bonusPictureContainer.style.display = "flex";
         
-                // Create the image element
-                const img = document.createElement("img");
-                img.src = picturePath;
-                img.classList.add("user-picture-swiping");
-                img.alt = "User Picture";
+                // Limit to 2 pictures only
+                pictures.slice(0, 2).forEach(picture => { 
+                    const picturePath = `public/upload/${picture}`;
         
-                // Append image and button to wrapper
-                pictureWrapper.appendChild(img);
+                    // Create the wrapper div
+                    const pictureWrapper = document.createElement("div");
+                    pictureWrapper.classList.add("picture-wrapper-swiping");
         
-                // Append wrapper to the pictures row
-                picturesRow.appendChild(pictureWrapper);
-            });
+                    // Create the image element
+                    const img = document.createElement("img");
+                    img.src = picturePath;
+                    img.classList.add("user-picture-swiping");
+                    img.alt = "User Picture";
+        
+                    // Append image and button to wrapper
+                    pictureWrapper.appendChild(img);
+        
+                    // Append wrapper to the pictures row
+                    picturesRow.appendChild(pictureWrapper);
+                });
+            }
         } else {
             bonusPictureContainer.style.display = "none";
         }
+        
+        
         
 
         reportPicture.src = `${data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg"}`;

@@ -112,6 +112,8 @@ class RiotController
 
                                 $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
 
+                                // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
+
                                 // Save updated summoner data to the database
                                 $this->leagueOfLegends->updateSummonerData(
                                     $userData['gameName'], 
@@ -178,6 +180,18 @@ class RiotController
     public function getSummonerRankedStats($summonerId, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
         return json_decode(file_get_contents($url), true);
+    }
+
+    public function getTopPlayedChamps($puuid, $server, $apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/{$puuid}?api_key={$apiKey}";
+        $response = json_decode(file_get_contents($url), true);
+    
+        if (!$response || empty($response)) {
+            return [];
+        }
+    
+        // Get the top 3 champions
+        return array_slice($response, 0, 3);
     }
 
     public function riotAccountPhone()

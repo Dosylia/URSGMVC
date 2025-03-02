@@ -9,9 +9,13 @@
     <div id="overlay"></div>
     <script type="module" src="public/js/swiping/get_userMatching.js?nocache=<%= Date.now() %>"></script>
 
+    <?php if ($user['user_game'] === 'League of Legends'): ?>
     <span id="restore-game-container">
         <button id="restore-game-btn">Play game</button>
     </span>
+    <?php endif; ?>
+
+
     <div class="minigame-window hidden" id="minigameWindow">
         <div class="exit-button-container">
             <button class="exit-button" aria-label="Close Minigame Window">X</button>

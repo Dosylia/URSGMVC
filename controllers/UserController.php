@@ -358,7 +358,11 @@ class UserController
                     $friendUsername = $_POST['friendsUsername'];
                     $friend = $this->user->getUserByUsername($friendUsername);
                     $amount = 1000;
-                    $addCurrency = $this->user->addCurrency($friend['user_id'], $amount);
+
+                    if ($friend['user_friendsInvited'] < 6) {
+                        $this->user->updateFriendsInvited($friend['user_id']);
+                        $addCurrency = $this->user->addCurrency($friend['user_id'], $amount);
+                    }
                 }
                 
                 $user = $this->user->getUserByUsername($this->getUsername());
@@ -712,7 +716,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateToken($token, $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -1590,7 +1594,7 @@ class UserController
                     // Check if the matched user is not the current user
                     if ($matchedUserId != $userId) {
                         // if ($_SESSION['userId'] == 157) {
-                        //     $matchedUserId = 157;
+                        //     $matchedUserId = 3150;
                         // }
                         $userMatched = $this->user->getUserById($matchedUserId);
             

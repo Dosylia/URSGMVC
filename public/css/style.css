@@ -1700,10 +1700,33 @@ section.siteMap tr:nth-child(even) {
       border-radius: 20px;
       background-color: var(--main--red);
       border: none;
-      padding: 10px;
+      padding: 7px 14px;
       color: white;
       margin-bottom: 5px;
-    }
+      position: relative; 
+      display: inline-flex;
+      align-items: center; 
+      max-width: 100%;
+      word-wrap: break-word;
+      gap: 8px; 
+  }
+  
+  .message-status {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      align-self: flex-end;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+  }
+  
+  .message-status i {
+      font-size: 14px; 
+      color: rgba(255, 255, 255, 0.7);
+  }
+  
+
+  
   
     .message-sender {
       display: flex;

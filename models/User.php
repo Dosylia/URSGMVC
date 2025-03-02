@@ -815,4 +815,18 @@ class User extends DataBase
         
         return $query->execute([$date, $userId]);
     }   
+
+    public function updateFriendsInvited($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET 
+                                            `user_friendsInvited` = `user_friendsInvited` + 1
+                                        WHERE 
+                                            `user_id` = ?
+        ");
+        
+        return $query->execute([$userId]);
+    }   
 }

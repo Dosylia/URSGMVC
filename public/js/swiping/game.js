@@ -54,10 +54,16 @@ function getGameUser(userId, game, tryCount) {
             elements.minigameWindow.style.display = "none";
             console.log(data.message);
         } else {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
+            elements.minigameWindow.style.display = "none";
             console.log(data.message);
         }
     })
     .catch(error => {
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
+        elements.minigameWindow.style.display = "none";
         console.error('Fetch error:', error);
     });
 }

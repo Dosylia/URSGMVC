@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     export function fetchMessages(userId, friendId) {
         const token = localStorage.getItem('masterTokenWebsite');
         const firstFriendInput = document.getElementById('firstFriend');
-        const firstFriend = firstFriendInput.value;
+        const firstFriend = firstFriendInput ? firstFriendInput.value : null;
 
 
         if (firstFriend && friendId !== firstFriendId) {
@@ -143,45 +143,49 @@ document.addEventListener("DOMContentLoaded", function () {
             let messageDiv = document.createElement("div");
             messageDiv.classList.add("message", messageClass);
     
-            // Create message content
-            let messageContent = '';
-
+            // Message Status (for sent messages only)
+            let messageStatus = "";
+            if (isCurrentUser) {
+                messageStatus = message.chat_status === "read" 
+                ? '<i class="fa-solid fa-envelope-circle-check"></i>' 
+                : '<i class="fa-solid fa-envelope"></i>';
+            }
+    
             let utcDate = new Date(message.chat_date);
             let localOffset = utcDate.getTimezoneOffset();
             let localDate = new Date(utcDate.getTime() - localOffset * 60000);
-
+    
             // Format for today
             const isToday = new Date(message.chat_date).toDateString() === new Date().toDateString();
-
+    
             // Format time
             let formattedTime = localDate.toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit"
             });
-
-            // Format full date for other days (MM/DD/YYYY or DD/MM/YYYY based on the locale)
+    
+            // Format full date for other days
             let formattedDate;
             if (!isToday) {
-                // French date format (DD/MM/YYYY)
                 formattedDate = new Date(message.chat_date).toLocaleDateString('fr-FR');
             } else {
-                // "Today" format
                 formattedDate = `Today ${formattedTime}`;
             }
-
+    
             // Check if previous message exists and is from the same sender within 5 minutes
+            let messageContent;
             if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
                 let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
-                if (timeDifference <= 5 * 60 * 1000) { // 5 minutes in milliseconds
-                    // Display only the message without icon, avatar, and timestamp
+                if (timeDifference <= 5 * 60 * 1000) {
                     messageContent = `
                     <p class="last-message" style="text-align: ${messagePosition};">
                         <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                        ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                        </span>
                     </p>
                     `;
                 } else {
-                    // Display full message with icon, avatar, and timestamp
                     messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
                             <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
@@ -189,12 +193,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
+                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                            ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                            </span>
                         </p>
                     `;
                 }
             } else {
-                // First message from this sender or different sender
                 messageContent = `
                     <p id="username_message" style="text-align: ${userPosition};">
                         <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
@@ -202,19 +207,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     </p>
                     <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                         <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}</span>
+                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                        ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                        </span>
                     </p>
                 `;
             }
-
     
             messageDiv.innerHTML = messageContent;
             messagesContainer.appendChild(messageDiv);
     
             // Store the current message as previousMessage for the next iteration
             previousMessage = message;
-
-            
+    
             const lastMessage = messageDiv.querySelector('.last-message');
             lastMessage.classList.add(timestampPosition);
             lastMessage.style.justifyContent = lastMessagePosition;
@@ -222,21 +227,31 @@ document.addEventListener("DOMContentLoaded", function () {
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');
             if (timestampSpan) {
-                timestampSpan.style.display = 'none'; // Initially hide the timestamp
+                timestampSpan.style.display = 'none';
     
                 messageDiv.addEventListener('mouseenter', function() {
-                    timestampSpan.style.display = 'inline-block'; // Show timestamp on hover
+                    timestampSpan.style.display = 'inline-block';
                 });
     
                 messageDiv.addEventListener('mouseleave', function() {
-                    timestampSpan.style.display = 'none'; // Hide timestamp when not hovering
+                    timestampSpan.style.display = 'none';
                 });
             }
         });
     
+        const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
+    
+        if (isMax1018px) {
+            if (chatInterface !== null && window.getComputedStyle(messageContainer).display == 'none') {
+                chatInterface.style.display = 'none';
+                messageContainer.style.display = 'block';
+            }
+        } 
+    
         console.log('Messages container updated. Now scrolling to bottom.');
-        setTimeout(scrollToBottom, 100); // Delay scrolling to ensure container is updated
+        setTimeout(scrollToBottom, 100);
     }
+    
     
     
     // Function to replace emote codes with actual emote images
