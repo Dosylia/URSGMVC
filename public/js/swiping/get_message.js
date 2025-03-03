@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let messageStatus = "";
             if (isCurrentUser) {
                 messageStatus = message.chat_status === "read" 
-                ? '<i class="fa-solid fa-envelope-circle-check"></i>' 
+                ? '<i style="color:rgb(196, 220, 17);" class="fa-solid fa-envelope-circle-check"></i>' 
                 : '<i class="fa-solid fa-envelope"></i>';
             }
     
