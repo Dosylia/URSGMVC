@@ -140,48 +140,50 @@
         <div class="user_box">
             <br><h2 class="title_generalbox">About you</h2><br>
             <?php if ($user['user_game'] == 'League of Legends'): ?> 
-                <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
-                    <div class="box_league_account">
-                        <div class="box_league_account_main_row">
-                        <img 
-                            id="profilepicture_lol" 
-                            data-icon-id="<?= $lolUser['lol_sProfileIcon'] ?>" 
-                            src="public/images/profileicon/7.png" 
-                            alt="icon_league" 
-                            onerror="this.onerror=null; this.src='public/images/profileicon/7.png';"
-                        />
-                            <div class="box_league_account_main_row_column">
-                                <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                <p class="small_text"><?= strtoupper($lolUser['lol_server']) ?></p>
-                                <p class="small_text"> <?= strtoupper($lolUser['lol_sRank']) ?></p>
-                                <p class="small_text">Level : <?= strtoupper($lolUser['lol_sLevel']) ?></p> 
-                            </div>
+                <div class="box_league_account">
+                    <div class="box_league_account_main_row">
+                    <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
+                        <div class="rank-container" style="position: absolute; top: 0px; right: 0px; transform: translateY(-50%);" title="Account binded">
+                            <img src="public/images/ranks/<?= ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0])) ?>.png" alt="<?= $lolUser['lol_sRank']?>" style="display: block; position: relative;"><i class="fa-solid fa-check" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: green;"></i>
                         </div>
-                    </div><br>
-                <?php endif; ?>
-                    <?php include 'views/swiping/lol_perso_champions.phtml' ?><br>
-            <?php else : ?>
-                <?php if (!empty($valorantUser['valorant_aUsername']) && $valorantUser['valorant_verified'] === 1): ?>
-                    <div class="box_league_account">
-                        <div class="box_league_account_main_row">
-                            <img id="profilepicture_lol" src="public/images/profileicon/<?= $valorantUser['valorant_aProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
-                            <div class="box_league_account_main_row_column">
-                                <p id="lolUserText"><strong><?= $valorantUser['valorant_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                <p class="small_text"><?= strtoupper($valorantUser['valorant_server']) ?></p>
-                                <p class="small_text"> <?= strtoupper($valorantUser['valorant_aRank']) ?></p>
-                                <p class="small_text">Level : <?= strtoupper($valorantUser['valorant_aLevel']) ?></p> 
-                            </div>
+                    <?php else : ?>
+                        <div class="rank-container" style="position: absolute; top: 0px; right: 0px; transform: translateY(-50%);" title="Account not binded">
+                            <img src="public/images/ranks/<?= $lolUser['lol_rank'] ?>.png" alt="<?= $lolUser['lol_rank'] ?>" style="display: block; position: relative;"><i class="fa-solid fa-xmark" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: red;"></i>
                         </div>
-                    </div><br>
-                <?php endif; ?>
-                <?php if (!empty($valorantUser['valorant_account']) && empty($valorantUser['valorant_sUsername'])): ?>
-                    <div class="box_league_account">
-                        <div class="box_league_account_main_row">
-                            <p><?= strtoupper($valorantUser['valorant_server']) ?></p> 
+                    <?php endif; ?>
+                        <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
+                            <div class="box_pictureLevel">
+                                <img 
+                                    id="profilepicture_lol" 
+                                    data-icon-id="<?= $lolUser['lol_sProfileIcon'] ?>" 
+                                    src="public/images/profileicon/7.png" 
+                                    alt="icon_league" 
+                                    onerror="this.onerror=null; this.src='public/images/profileicon/7.png';"
+                                />
+                                <p class="small_text" id="lolsLevel"><?= strtoupper($lolUser['lol_sLevel']) ?></p>
+                            </div>
+                        <?php endif; ?>
+                        <div class="box_usernameChampions">
+                        <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                        <?php include 'views/swiping/lol_perso_champions.phtml' ?>
                         </div>
                     </div>
-                <?php endif; ?>
-                    <?php include 'views/swiping/valorant_perso_champions.phtml' ?><br>
+                </div><br>
+            <?php else : ?>
+                <div class="box_league_account">
+                    <div class="box_league_account_main_row">
+                        <?php if (!empty($valorantUser['valorant_aUsername']) && $valorantUser['valorant_verified'] === 1): ?>
+                            <div class="box_pictureLevel">
+                                <img id="profilepicture_lol" src="public/images/profileicon/<?= $valorantUser['valorant_aProfileIcon'] ?>.png" alt="icon_league" onerror="this.onerror=null; this.src='public/images/profileicon/7.png';">
+                                <p class="small_text"><?= strtoupper($valorantUser['valorant_aLevel']) ?></p> 
+                            </div>
+                        <?php endif; ?>
+                        <div class="box_usernameChampions">
+                            <p id="lolUserText"><strong><?= $valorantUser['valorant_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                            <?php include 'views/swiping/valorant_perso_champions.phtml' ?><br>
+                        </div>
+                    </div>
+                </div><br>
             <?php endif; ?>
 
             <div class="about_you_users"><br>
@@ -255,9 +257,11 @@
         <?php if ($user['user_bonusPicture'] !== NULL && $user['user_bonusPicture'] !== "[]"): ?>
             <div class="user_box">
                 <div class="pictures-container">
-                <br><h2 class="title_generalbox">Pictures</h2>
+                    <div class="pictures-title">
+                        <h2 class="title_generalbox">Pictures</h2>
+                        <button class="btn_addPicture" id="opendialog_bonuspicture">Add a picture</button>
+                    </div>
                     <div class="pictures-row">
-                        <button class="btn_user_updates" id="opendialog_bonuspicture">Add a picture</button>
                         <?php 
                         if (!empty($user['user_bonusPicture'])): 
                             $pictures = json_decode($user['user_bonusPicture'], true);

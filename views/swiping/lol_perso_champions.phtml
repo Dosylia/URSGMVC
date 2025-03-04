@@ -222,11 +222,16 @@ $ranks = [
                     </div>
                 <?php endif; ?>
                 <?php if (isset($ranks[$lolUser['lol_rank']])): ?>
-                    <div class="league_of_legends_user_column">
-                        <img class="league_champions_user" src="<?= $ranks[$lolUser['lol_rank']] ?>" alt="<?= $lolUser['lol_rank'] ?>">
-                        <p class="no_display_phone"><?= $lolUser['lol_rank'] ?></p>
-                    </div>
+                <div class="league_of_legends_user_column">
+                <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
+                    <img class="league_champions_user" src="<?= $ranks[ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0]))] ?>" alt="<?= $lolUser['lol_sRank'] ?>">
+                    <p class="no_display_phone"><?= $lolUser['lol_sRank'] ?></p>
+                <?php else : ?>
+                    <img class="league_champions_user" src="<?= $ranks[$lolUser['lol_rank']] ?>" alt="<?= $lolUser['lol_rank'] ?>">
+                    <p class="no_display_phone"><?= $lolUser['lol_rank'] ?></p>
                 <?php endif; ?>
+                </div>
+            <?php endif; ?>
                 <?php if (isset($roles[$lolUser['lol_role']])): ?>
                     <div class="league_of_legends_user_column">
                         <img class="league_champions_user" src="<?= $roles[$lolUser['lol_role']] ?>" alt="<?= $lolUser['lol_role'] ?>">
@@ -258,8 +263,13 @@ $ranks = [
             <?php endif; ?>
             <?php if (isset($ranks[$lolUser['lol_rank']])): ?>
                 <div class="league_of_legends_user_column">
+                <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
+                    <img class="league_champions_user" src="<?= $ranks[ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0]))] ?>" alt="<?= $lolUser['lol_sRank'] ?>">
+                    <p class="no_display_phone"><?= $lolUser['lol_sRank'] ?></p>
+                <?php else : ?>
                     <img class="league_champions_user" src="<?= $ranks[$lolUser['lol_rank']] ?>" alt="<?= $lolUser['lol_rank'] ?>">
                     <p class="no_display_phone"><?= $lolUser['lol_rank'] ?></p>
+                <?php endif; ?>
                 </div>
             <?php endif; ?>
             <?php if (isset($roles[$lolUser['lol_role']])): ?>

@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let userAge = document.getElementById('age_user');
     let sProfileIcon = document.getElementById('profilepicture_lol');
     let sUsername = document.getElementById('lolsUsername');
-    let sRank = document.getElementById('lolsRank');
     let sLevel = document.getElementById('lolsLevel');
-    let sServer = document.getElementById('lolsServer');
     let lolAccount = document.getElementById('lolAccount');
     let gender = document.getElementById('gender');
     let kindOfGamer = document.getElementById('kindOfGamer');
@@ -38,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const submitReportButton = document.getElementById('submit-report');
     const picturesRow = document.querySelector(".pictures-row");
     const bonusPictureContainer = document.getElementById('bonus-picture-container');
+    let hasBindedAccount = false;
 
     function getOwnedItems(userId) {
         fetch('/getOwnedItems', {
@@ -51,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!response.ok) {
                 return response.text().then(text => {
                     console.error('Fetch error:', response.status, text);
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response.status}`);z
                 });
             }
             return response.json();
@@ -117,18 +116,67 @@ document.addEventListener("DOMContentLoaded", function() {
         // Fill the user image
         imageUser.src = data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg";
 
-        // Fill the league of legends data if available
-        if (data.lol_sUsername && data.lol_sUsername.trim()) { // replacing if (data.lol_sUsername?.trim()) not working on mobile
-            document.querySelector('.box_league_account').style.display = 'flex';
+        // Fill the League of Legends data if available
+        const boxLeagueAccount = document.querySelector('.box_league_account');
+        boxLeagueAccount.style.position = "relative"; // Ensure child elements can be positioned absolutely
+        
+        if (data.lol_sUsername && data.lol_sUsername.trim()) { // Ensure it's not empty
+            hasBindedAccount = true;
+            boxLeagueAccount.style.display = 'flex';
+        
             const version = await fetchDdragonVersion();
             sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.lol_sProfileIcon}.png`;
             sUsername.innerText = data.lol_account;
-            sRank.innerText = data.lol_sRank;
-            sLevel.innerText += `Level: ${sanitizeHtlm(data.lol_sLevel)}`;
-            sServer.innerText = data.lol_server;
+            sLevel.innerText = data.lol_sLevel;
         } else {
-            document.querySelector('.box_league_account').style.display = 'none';
+            sProfileIcon.style.display = 'none';
+            sLevel.style.display = 'none';
+            hasBindedAccount = false;
+            boxLeagueAccount.style.display = 'flex';
         }
+
+        const baseRank = hasBindedAccount 
+        ? data.lol_sRank.split(" ")[0].charAt(0).toUpperCase() + data.lol_sRank.split(" ")[0].slice(1).toLowerCase() 
+        : (data.lol_rank || "default");
+    
+
+        if (data.user_game === "League of Legends") {
+            // Set the rank container on the right side
+            const rankContainer = document.createElement("div");
+            rankContainer.classList.add("rank-container");
+            rankContainer.style.position = "absolute";
+            rankContainer.style.top = "0px";
+            rankContainer.style.right = "0px"; 
+            rankContainer.style.transform = "translateY(-50%)";
+            rankContainer.title = hasBindedAccount ? "Account binded" : "Account not binded";
+            
+            const rankImage = document.createElement("img");
+            rankImage.src = `public/images/ranks/${sanitize(baseRank)}.png`;
+            rankImage.alt = hasBindedAccount ? data.lol_sRank : data.lol_rank || "Default Rank";
+            rankImage.style.display = "block";
+            rankImage.style.position = "relative"; // Needed for checkmark placement
+            
+            const rankIcon = document.createElement("i");
+            rankIcon.classList.add("fa-solid", hasBindedAccount ? "fa-check" : "fa-xmark");
+            rankIcon.style.position = "absolute";
+            rankIcon.style.top = "-10px";
+            rankIcon.style.right = "-5px";
+            rankIcon.style.fontSize = "14px";
+            rankIcon.style.color = hasBindedAccount ? "green" : "red";
+            
+            rankContainer.appendChild(rankImage);
+            rankContainer.appendChild(rankIcon);
+            
+            // Replace existing rank display with the new one
+            const existingRankContainer = document.querySelector(".rank-container");
+            if (existingRankContainer) {
+                existingRankContainer.replaceWith(rankContainer);
+            } else {
+                boxLeagueAccount.appendChild(rankContainer);
+            }
+        }
+        
+
 
         if (data.user_bonusPicture && data.user_bonusPicture !== "[]") {
             let pictures;
@@ -342,7 +390,7 @@ document.addEventListener("DOMContentLoaded", function() {
             lolMain1P.innerText = data.lol_main1 || ""; 
             lolMain2P.innerText = data.lol_main2 || ""; 
             lolMain3P.innerText = data.lol_main3 || ""; 
-            lolRankP.innerText = data.lol_rank || "Unranked";
+            lolRankP.innerText = hasBindedAccount ? data.lol_sRank : data.lol_rank || "Unranked ";
             lolRoleP.innerText = data.lol_role || "Unknown";
             lolMain1Pic.src = data.lol_main1 ? `public/images/champions/${sanitize(data.lol_main1)}.png` : ""; // Empty src if no main
             lolMain1Pic.alt = data.lol_main1 || ""; 
@@ -350,12 +398,12 @@ document.addEventListener("DOMContentLoaded", function() {
             lolMain2Pic.alt = data.lol_main2 || ""; 
             lolMain3Pic.src = data.lol_main3 ? `public/images/champions/${sanitize(data.lol_main3)}.png` : ""; // Empty src if no main
             lolMain3Pic.alt = data.lol_main3 || ""; 
-            lolRankPic.src = `public/images/ranks/${sanitize(data.lol_rank || "default")}.png`;
-            lolRankPic.alt = data.lol_rank || "Default Rank";
+            lolRankPic.src = `public/images/ranks/${sanitize(baseRank)}.png`;
+            lolRankPic.alt = baseRank|| "Default Rank";
             lolRolePic.src = `public/images/roles/${sanitize(data.lol_role || "default")}.png`;
             lolRolePic.alt = data.lol_role || "Default Role";
         } else if (data.user_game === "Valorant" && data.valorant_role) {
-            lolAccount.innerText = data.valorant_account || "Unknown Account";
+            // lolAccount.innerText = data.valorant_account || "Unknown Account";
             lolMain1P.innerText = data.valorant_main1 || ""; 
             lolMain2P.innerText = data.valorant_main2 || ""; 
             lolMain3P.innerText = data.valorant_main3 || ""; 
@@ -434,10 +482,10 @@ document.addEventListener("DOMContentLoaded", function() {
         reportDescription.value = "";
         submitReportButton.disabled = false;
         picturesRow.innerHTML = "";
+        hasBindedAccount = false;
         
         // Clear text content
         sUsername.innerText = "";
-        sRank.innerText = "";
         sLevel.innerText = "";
         username.innerText = "";
         userAge.innerText = "";

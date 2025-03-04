@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         restoreGame.style.display = "block";
     }
 
-    restoreGameBtn.addEventListener("click", () => {
+    restoreGameBtn?.addEventListener("click", () => {
         overlay.style.display = "none";
         localStorage.setItem('ignoreGame', 0);
         getGameUser(userId, "League of Legends", tryCount)

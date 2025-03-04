@@ -109,12 +109,17 @@
                 <br><h2 class="title_generalbox">About them</h2><br>
                 <div class="box_league_account" style="display: none;">
                     <div class="box_league_account_main_row">
-                        <img id="profilepicture_lol" alt="icon_league">
-                        <div class="box_league_account_main_row_column">
-                            <p id="lolsUsername"><strong></strong></p>
-                            <p class="small_text" id="lolsServer"></p>
-                            <p class="small_text" id="lolsRank"></p>
+                        <div class="box_pictureLevel">
+                            <img id="profilepicture_lol" alt="icon_league">
                             <p class="small_text" id="lolsLevel"></p>
+                        </div>
+                        <div class="box_usernameChampions">
+                            <p id="lolsUsername"><strong></strong></p>
+                            <?php if ($user['user_game'] === 'League of Legends'): ?>
+                                <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+                            <?php else : ?>
+                                <?php include 'views/swiping/valorant_all_champions.phtml' ?><br>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div><br>
@@ -123,11 +128,7 @@
                 </div>
                 <div class="box_league_account" style="display: none;">
                 </div>
-                <?php if ($user['user_game'] === 'League of Legends'): ?>
-                    <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
-                <?php else : ?>
-                    <?php include 'views/swiping/valorant_all_champions.phtml' ?><br>
-                <?php endif; ?>
+
 
                 <div class="about_you_users"><br>
                     <p id="gender"><span class="font-weight-600">Gender</span>: </p><br>

@@ -28,7 +28,5 @@ document.addEventListener("DOMContentLoaded", () => {
     if (imgElement) {
         const lolProfileIconId = imgElement.getAttribute("data-icon-id");
         updateProfileIcon(lolProfileIconId);
-    } else {
-        console.error("Image element with id 'profilepicture_lol' not found on DOMContentLoaded.");
     }
 });

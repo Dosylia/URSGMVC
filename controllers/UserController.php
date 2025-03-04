@@ -1594,7 +1594,7 @@ class UserController
                     // Check if the matched user is not the current user
                     if ($matchedUserId != $userId) {
                         // if ($_SESSION['userId'] == 157) {
-                        //     $matchedUserId = 3150;
+                        //     $matchedUserId = 157;
                         // }
                         $userMatched = $this->user->getUserById($matchedUserId);
             
@@ -1652,6 +1652,7 @@ class UserController
                                         'valorant_rank' => $userMatched['valorant_rank'],
                                         'valorant_role' => $userMatched['valorant_role'],
                                         'valorant_account' => $userMatched['valorant_account'],
+                                        'valorant_server' => $userMatched['valorant_server'],
                                     ]
                                 ];
                                 break;
