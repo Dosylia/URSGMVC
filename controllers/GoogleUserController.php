@@ -61,6 +61,7 @@ class GoogleUserController
         {
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
         }
+        require 'keys.php';
         $partners = $this -> partners -> getPartners();
         $current_url = "https://ur-sg.com/";
         $template = "views/home";
@@ -606,7 +607,8 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
-                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
+                $RSO = 0;
+                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
     
                 if($createGoogleUser) 
                 {
@@ -989,7 +991,8 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
-                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$this->getGoogleEmail());
+                $RSO = 0;
+                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
     
                 if($createGoogleUser) 
                 {

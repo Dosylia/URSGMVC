@@ -15,7 +15,7 @@ trait SecurityController
             return false;
         }
     }
-
+    
     public function isConnectWebsite()
     {
         if(isset($_SESSION['userId']))

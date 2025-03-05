@@ -1,0 +1,52 @@
+<div class="form_container"> 
+    <form class="form_signup" method="post" action="/basicinfoRiot">
+        <?php if (isset($_GET['error'])) : ?>
+        <p class="errorsForm"><?= $_GET['error'] ?></p>
+        <?php endif; ?>
+
+        <label for="uid">Username</label>
+        <input type="text" id="username" name="username" placeholder="Your username" required> 
+
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+            <option value="" disabled selected>Chose your gender...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non Binary">Non binary</option>
+            <option value="Trans Male">Trans Man</option>
+            <option value="Trans Woman">Trans Woman</option>
+        </select>    
+
+        <label for="age">Age</label>
+        <input type="text" id="age" name="age" placeholder="Your age.." maxlength="2" required>
+
+        <label for="kindofgamer">What kind of gamer are you?</label>
+        <select id="kindofgamer" name="kindofgamer" required>
+            <option value="" disabled selected>Chose what kind you are...</option>
+            <option value="Chill">Chill / Normal games</option>
+            <option value="Competition">Competition / Ranked</option>
+            <option value="Competition and Chill">Competition/Ranked and chill</option>
+        </select>
+
+        <label for="game">Game</label>
+            <p>You can change the game later</p>
+        <select id="game" name="game" required>
+            <option value="" disabled selected>Chose your game...</option>
+            <option value="League of Legends">League of Legends</option>
+            <option value="Valorant">Valorant</option>
+        </select>
+
+        <label for="short_bio">Short bio about you</label>
+        <textarea type="text" id="short_bio" name="short_bio" placeholder="Been playing League since.. etc." required></textarea>
+
+        <?php if($this->isConnectRiot()) : ?>
+            <input type="hidden" name="googleId" value="<?= $googleUser['google_userId'] ?>">  
+        <?php endif ; ?>
+
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+</div>
+
+
+<script type="module" src="public/js/basicinfo.js"></script>

@@ -73,7 +73,7 @@ class GoogleUser extends DataBase
     //     }
     // }
 
-    public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
+    public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName, $RSO, $googleEmail)
     {
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `googleuser`(
@@ -82,9 +82,11 @@ class GoogleUser extends DataBase
                                                 `google_firstName`,            
                                                 `google_lastName`,
                                                 `google_email`,
+                                                `google_createdWithRSO`,
                                                 `google_confirmEmail`
                                             )
                                             VALUES (
+                                                ?,
                                                 ?,
                                                 ?,
                                                 ?,
@@ -94,7 +96,7 @@ class GoogleUser extends DataBase
                                             )
         ");
 
-        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail]);
+        $createGoogleUser = $query -> execute([$googleId,$googleFullName,$googleFirstName,$googleFamilyName, $googleEmail, $RSO]);
 
         if($createGoogleUser)
         {
@@ -333,4 +335,48 @@ class GoogleUser extends DataBase
             return false;
         }
     }
+
+    public function getUserByPuuid($puuid) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `googleuser` as g
+                                        LEFT JOIN
+                                            `user` as u ON g.google_userId = u.google_userId
+                                        LEFT JOIN
+                                            `leagueoflegends` as lol ON u.user_id = lol.user_id
+                                        WHERE
+                                            g.`google_id` = ? 
+                                            OR lol.`lol_sPuuid` = ? 
+        ");
+    
+        $query->execute([$puuid, $puuid]);
+        $puuidTest = $query->fetch();
+    
+        return $puuidTest ?: false;
+    }
+
+    public function getUserByPuuidGoogle($puuid) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `googleuser` as g
+                                        LEFT JOIN
+                                            `user` as u ON g.google_userId = u.google_userId
+                                        LEFT JOIN
+                                            `leagueoflegends` as lol ON u.user_id = lol.user_id
+                                        WHERE
+                                            g.`google_id` = ? 
+        ");
+    
+        $query->execute([$puuid]);
+        $puuidTest = $query->fetch();
+    
+        return $puuidTest ?: false;
+    }
+    
 }

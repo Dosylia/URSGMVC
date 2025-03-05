@@ -94,6 +94,9 @@
             <h2>Sign up/Log in</h2><br><br>
                 <p>When clicking on sign in,<br> you agree to <a href="/legalNotice">our terms of use</a>.</p><br>
                 <script  src="public/js/ajaxGoogle.js?nocache=<%= Date.now() %>"></script>
+                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates">
+                <i class="fa-solid fa-link"></i>Sign up with Riot account</a>
+                <br><br>
                 <div class="social_buttons2">
             <div id="g_id_onload"
                 data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"

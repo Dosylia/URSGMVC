@@ -284,4 +284,31 @@ class LeagueOfLegends extends DataBase
             return false;
         }
     }
+
+    public function getUserByPuuid($puuid) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                *
+                                            FROM
+                                                `leagueoflegends` as lol
+                                            LEFT JOIN
+                                                `user` as u ON lol.user_id = u.user_id
+                                            WHERE
+                                                `lol_sPuuid` = ?
+
+        ");
+
+        $query -> execute([$puuid]);
+        $puuidTest = $query -> fetch();
+
+        if($puuidTest)
+        {
+            return $puuidTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

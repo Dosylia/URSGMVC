@@ -5,16 +5,22 @@ namespace controllers;
 use models\LeagueOfLegends;
 use models\Valorant;
 use models\User;
+use models\GoogleUser;
+use models\UserLookingFor;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use traits\SecurityController;
 
 require 'vendor/autoload.php';
 
 class RiotController
 {
+    use SecurityController;
     private LeagueOfLegends $leagueOfLegends;
     private User $user;
     private Valorant $valorant;
+    private GoogleUser $googleUser;
+    private UserLookingFor $userlookingfor;
     private $tokenEndpoint = 'https://auth.riotgames.com/token';
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 
@@ -24,150 +30,445 @@ class RiotController
         $this->leagueOfLegends = new LeagueOfLegends();
         $this->user = new User();
         $this->valorant = new Valorant();
+        $this -> googleUser = new GoogleUser();
+        $this -> userlookingfor = new userLookingFor();
     }
 
     // Redirect user to Riot's OAuth authorization URL
     public function riotAccount()
     {
-        require_once 'keys.php';
-        // Step 1: Redirect user to Riot's authorization URL
-        if (!isset($_GET['code'])) {
-            header('Location: /userProfile?message=Error with code');
-            exit();
-        } else {
-            // Step 2: Riot redirects back with an authorization code
-            $authCode = $_GET['code'];
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
+        {
+            require_once 'keys.php';
+            // Step 1: Redirect user to Riot's authorization URL
+            if (!isset($_GET['code'])) {
+                header('Location: /userProfile?message=Error with code');
+                exit();
+            } else {
+                // Step 2: Riot redirects back with an authorization code
+                $authCode = $_GET['code'];
 
-            // Step 3: Exchange the authorization code for an access token
-            $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+                // Step 3: Exchange the authorization code for an access token
+                $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
 
-            // Step 4: Fetch user data using the access token
-            if ($accessToken) {
-                $userData = $this->getUserData($accessToken);
-                $user = $this->user->getUserById($_SESSION['userId']);
-                $addPuuidLeague = false;
-                $addPuuidValorant = false;
-                $puuid = $userData['puuid'];
+                // Step 4: Fetch user data using the access token
+                if ($accessToken) {
+                    $userData = $this->getUserData($accessToken);
+                    $user = $this->user->getUserById($_SESSION['userId']);
+                    $addPuuidLeague = false;
+                    $addPuuidValorant = false;
+                    $puuid = $userData['puuid'];
 
-                // Check if puuid is not empty before attempting to bind
-                if ($puuid) {
-                    if ($user['lol_id']) {
-                        $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
-                    }
+                    // Check if puuid is not empty before attempting to bind
+                    if ($puuid) {
+                        $existingUser = $this->googleUser->getUserByPuuidGoogle($puuid);
 
-                    if ($user['valorant_id']) {
-                        $addPuuidValorant = $this->valorant->addPuuid($puuid, $_SESSION['userId']);
-                    }
-
-                    // Check if either addPuuid was successful
-                    if ($addPuuidLeague || $addPuuidValorant) {
-                        if ($addPuuidLeague) {
-                            // Now make a call to get the summoner's profile data
-                            $regionMap = [
-                                "Europe West" => "euw1",
-                                "North America" => "na1",
-                                "Europe Nordic" => "eun1",
-                                "Brazil" => "br1",
-                                "Latin America North" => "la1",
-                                "Latin America South" => "la2",
-                                "Oceania" => "oc1",
-                                "Russia" => "ru1",
-                                "Turkey" => "tr1",
-                                "Japan" => "jp1",
-                                "Korea" => "kr",
-                            ];
-
-                            $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
-
-                            // Fetch the summoner profile to get profileIconId
-                            $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
-
-                            // Now you can access the profileIconId
-                            $profileIconId = $summonerProfile['profileIconId'];
-
-                            // Fetch ranked stats
-                            $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
-
-                            if (isset($summonerRankedStats)) {
-                                // Default to 'Unranked'
-                                $rankAndTier = 'Unranked';
-                                $soloQueueRankAndTier = null;
-                                $flexQueueRankAndTier = null;
-
-                                // Loop through the ranked stats array to find the desired queue types
-                                foreach ($summonerRankedStats as $rankedStats) {
-                                    if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
-                                        $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
-                                    } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
-                                        $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
-                                    }
-                                }
-
-                                // Prioritize solo queue rank, if available
-                                if ($soloQueueRankAndTier !== null) {
-                                    $rankAndTier = $soloQueueRankAndTier;
-                                } elseif ($flexQueueRankAndTier !== null) {
-                                    $rankAndTier = $flexQueueRankAndTier;
-                                }
-
-                                $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
-
-                                // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
-
-                                // Save updated summoner data to the database
-                                $this->leagueOfLegends->updateSummonerData(
-                                    $userData['gameName'], 
-                                    $summonerProfile['id'],
-                                    $puuid,
-                                    $summonerProfile['summonerLevel'], 
-                                    $rankAndTier,
-                                    $profileIconId,
-                                    $fullAccountName,
-                                    $user['user_id'],
-                                );
-                            }
+                        if ($existingUser)
+                        {
+                            header('Location: /userProfile?message=This League of Legends account is already used on URSG.');
+                            exit();
+                        }
+                        if ($user['lol_id']) {
+                            $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
                         }
 
-                        // if ($addPuuidValorant) {
-                        //     // Now make a call to get the Valorant player profile data
-                        //     $valorantProfile = $this->getValorantProfile($userData['puuid'], $apiKey);
-            
-                        //     // Fetch the current act ID
-                        //     $actId = $this->getCurrentActId($apiKey);
-            
-                        //     // Now fetch the rank and profileIconId
-                        //     $valorantLevel = $valorantProfile['accountLevel'] ?? null; // Assuming 'accountLevel' gives the level
-                        //     $valorantRankData = $this->getValorantRank($userData['puuid'], $apiKey, $actId);
-                        //     $valorantRank = $valorantRankData['rank'] ?? 'Unranked'; // Assuming 'rank' provides the rank
-                        //     $profileIconId = $valorantProfile['profileIconId'] ?? null; // Assuming 'profileIconId' is available in profile data
-            
-                        //     // Save Valorant data to the database
-                        //     $this->valorant->updateValorantRiot(
-                        //         $valorantProfile['gameName'], 
-                        //         $valorantRank,
-                        //         $valorantLevel,
-                        //         $profileIconId,
-                        //         $user['user_id']
-                        //     );
-                        // }
+                        if ($user['valorant_id']) {
+                            $addPuuidValorant = $this->valorant->addPuuid($puuid, $_SESSION['userId']);
+                        }
 
-                        header('Location: /userProfile?message=Binded successfully');
-                        exit();
+                        // Check if either addPuuid was successful
+                        if ($addPuuidLeague || $addPuuidValorant) {
+                            if ($addPuuidLeague) {
+                                // Now make a call to get the summoner's profile data
+                                $regionMap = [
+                                    "Europe West" => "euw1",
+                                    "North America" => "na1",
+                                    "Europe Nordic" => "eun1",
+                                    "Brazil" => "br1",
+                                    "Latin America North" => "la1",
+                                    "Latin America South" => "la2",
+                                    "Oceania" => "oc1",
+                                    "Russia" => "ru1",
+                                    "Turkey" => "tr1",
+                                    "Japan" => "jp1",
+                                    "Korea" => "kr",
+                                ];
+
+                                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+
+                                // Fetch the summoner profile to get profileIconId
+                                $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
+
+                                // Now you can access the profileIconId
+                                $profileIconId = $summonerProfile['profileIconId'];
+
+                                // Fetch ranked stats
+                                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+
+                                if (isset($summonerRankedStats)) {
+                                    // Default to 'Unranked'
+                                    $rankAndTier = 'Unranked';
+                                    $soloQueueRankAndTier = null;
+                                    $flexQueueRankAndTier = null;
+
+                                    // Loop through the ranked stats array to find the desired queue types
+                                    foreach ($summonerRankedStats as $rankedStats) {
+                                        if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+                                            $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                        } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+                                            $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                        }
+                                    }
+
+                                    // Prioritize solo queue rank, if available
+                                    if ($soloQueueRankAndTier !== null) {
+                                        $rankAndTier = $soloQueueRankAndTier;
+                                    } elseif ($flexQueueRankAndTier !== null) {
+                                        $rankAndTier = $flexQueueRankAndTier;
+                                    }
+
+                                    $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
+
+                                    // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
+
+                                    // Save updated summoner data to the database
+                                    $this->leagueOfLegends->updateSummonerData(
+                                        $userData['gameName'], 
+                                        $summonerProfile['id'],
+                                        $puuid,
+                                        $summonerProfile['summonerLevel'], 
+                                        $rankAndTier,
+                                        $profileIconId,
+                                        $fullAccountName,
+                                        $user['user_id'],
+                                    );
+                                }
+                            }
+
+                            // if ($addPuuidValorant) {
+                            //     // Now make a call to get the Valorant player profile data
+                            //     $valorantProfile = $this->getValorantProfile($userData['puuid'], $apiKey);
+                
+                            //     // Fetch the current act ID
+                            //     $actId = $this->getCurrentActId($apiKey);
+                
+                            //     // Now fetch the rank and profileIconId
+                            //     $valorantLevel = $valorantProfile['accountLevel'] ?? null; // Assuming 'accountLevel' gives the level
+                            //     $valorantRankData = $this->getValorantRank($userData['puuid'], $apiKey, $actId);
+                            //     $valorantRank = $valorantRankData['rank'] ?? 'Unranked'; // Assuming 'rank' provides the rank
+                            //     $profileIconId = $valorantProfile['profileIconId'] ?? null; // Assuming 'profileIconId' is available in profile data
+                
+                            //     // Save Valorant data to the database
+                            //     $this->valorant->updateValorantRiot(
+                            //         $valorantProfile['gameName'], 
+                            //         $valorantRank,
+                            //         $valorantLevel,
+                            //         $profileIconId,
+                            //         $user['user_id']
+                            //     );
+                            // }
+
+                            header('Location: /userProfile?message=Binded successfully');
+                            exit();
+                        } else {
+                            header('Location: /userProfile?message=Couldnt find Puuid');
+                            exit();
+                        }
                     } else {
-                        header('Location: /userProfile?message=Couldnt find Puuid');
+                        // Handle case where puuid is empty
+                        header('Location: /userProfile?message=No Puuid received'.$accessToken);
                         exit();
                     }
                 } else {
-                    // Handle case where puuid is empty
-                    header('Location: /userProfile?message=No Puuid received'.$accessToken);
+                    error_log('Failed to obtain access token. Authorization code: ' . $authCode);
+                    header('Location: /&message=NO_ACCESS_TOKEN' . $authCode);
                     exit();
                 }
-            } else {
-                error_log('Failed to obtain access token. Authorization code: ' . $authCode);
-                header('Location: /&message=NO_ACCESS_TOKEN' . $authCode);
+            }
+        } else {
+            require_once 'keys.php';
+            // Step 1: Redirect user to Riot's authorization URL
+            if (!isset($_GET['code'])) {
+                header('Location: /?message=Error with code');
                 exit();
+            } else {
+                // Step 2: Riot redirects back with an authorization code
+                $authCode = $_GET['code'];
+
+                // Step 3: Exchange the authorization code for an access token
+                $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+
+                // Step 4: Fetch user data using the access token
+                if ($accessToken) {
+                    $userData = $this->getUserData($accessToken);
+                    $addPuuidLeague = false;
+                    $addPuuidValorant = false;
+                    $puuid = $userData['puuid'];
+
+                    // Check if puuid is not empty before attempting to bind
+                    if ($puuid) {
+
+                        // Check if this puuid exists in the database, and if it's associated with a google account or not
+                        $existingUser = $this->googleUser->getUserByPuuid($puuid);
+
+                        if ($existingUser)
+                        {
+                            if ($existingUser['google_createdWithRSO'] === 1)
+                            {
+                                if (isset($existingUser['google_masterTokenWebsite']) && $existingUser['google_masterTokenWebsite'] !== null && !empty($existingUser['google_masterTokenWebsite'])) {
+                                    $token = $existingUser['google_masterTokenWebsite'];
+                                } else {
+                                    $token = bin2hex(random_bytes(32));
+                                    $createToken = $this->googleUser->storeMasterTokenWebsite($existingUser['google_userId'], $token);
+                                }
+
+                                $_SESSION['google_userId'] = $existingUser['google_userId'];
+                                $_SESSION['google_id'] = $puuid;
+                                $_SESSION['email'] = $existingUser['google_email'];
+                                $_SESSION['full_name'] = $existingUser['google_fullName'];
+                                $_SESSION['google_firstName'] = $existingUser['google_firstName'];
+                                $_SESSION['masterTokenWebsite'] = $token;
+
+                                $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
+
+                                if ($googleUser)
+                                {
+                                    $user = $this->user->getUserByUsername($googleUser['user_username']);
+
+                                    if ($user) 
+                                    {
+                                        $_SESSION['userId'] = $user['user_id'];
+                                        $_SESSION['username'] = $user['user_username'];
+                                        $_SESSION['gender'] = $user['user_gender'];
+                                        $_SESSION['age'] = $user['user_age'];
+                                        $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
+                                        $_SESSION['game'] = $user['user_game'];
+
+                                        if ($user['user_game'] == 'League of Legends') {
+                                            $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
+
+                                            if ($lolUser)
+                                            {
+                                                $_SESSION['lol_id'] = $lolUser['lol_id'];
+                                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+                                                if ($lfUser)
+                                                {
+                                                    $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                                    header('Location: /swiping?message=Connected successfully.');
+                                                    exit();
+                                                }
+                                                else 
+                                                {
+                                                    header('Location: /signup?message=Create your Looking for account.');
+                                                    exit();
+                                                }
+                                            }
+                                            else 
+                                            {
+                                                header('Location: /signup?message=Create your LoL account.');
+                                                exit();
+                                            }
+                                        }
+                                        else 
+                                        {
+                                            $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
+
+                                            if ($valorantUser)
+                                            {
+
+                                                $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
+                                
+                                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                                                if ($lfUser)
+                                                {
+                                                    $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                                    header('Location: /swiping?message=Connected successfully.');
+                                                    exit();
+                                                }
+                                                else 
+                                                {
+                                                    header('Location: /signup?message=Create your Looking for account.');
+                                                    exit();
+                                                }
+
+                                            }
+                                            else 
+                                            {
+                                                header('Location: /signup?message=Create your Valorant account.');
+                                                exit();
+                                            }
+
+                                        }
+
+                                    }
+                                    else 
+                                    {
+                                        header('Location: /signup?message=Create your account.');
+                                        exit();
+                                    }
+                                }
+                                else 
+                                {
+                                    header('Location: /signup?message=Create your account.');
+                                    exit();
+                                }
+
+                            }
+                            else
+                            {
+                                header('Location: /?message=This League of Legends account is already used on URSG.');
+                                exit();
+                            }
+
+                        }
+                        else 
+                        {
+                            $_SESSION['riot_id'] = $puuid;
+                            $fakeEmail = "riot_{$puuid}@fake.riot";
+                            // Create a new account
+                            $RSO = 1;
+                            $fullName = $userData['gameName'];
+                            $firstName = $userData['gameName'];
+                            $googleFamilyName = $userData['gameName'];
+                            $createGoogleUserRiot = $this->googleUser->createGoogleUser($puuid, $fullName, $firstName, $googleFamilyName,  $RSO, $fakeEmail);
+
+                            if ($createGoogleUserRiot)
+                            {
+                                require 'keys.php';
+                
+                                $lifetime = 7 * 24 * 60 * 60;
+                
+                                session_destroy();
+                
+                                session_set_cookie_params($lifetime);
+                
+                                if (session_status() == PHP_SESSION_NONE) {
+                                    session_start();
+                                }
+            
+                                // MASTER TOKEN SYSTEM
+                                $token = bin2hex(random_bytes(32));
+                                $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserRiot, $token);
+            
+                                if ($createToken) {
+                                    $_SESSION['masterTokenWebsite'] = $token;
+                                }
+                                
+                                if (!isset($_SESSION['googleId'])) {
+                                    $_SESSION['google_userId'] = $createGoogleUserRiot;
+                                    $_SESSION['google_id'] = $puuid;
+                                    $_SESSION['email'] = $fakeEmail;
+                                }
+
+                                header('Location: /signup?message=Account created');
+                                exit();
+
+                            }
+
+                        }
+
+                        if ($user['lol_id']) {
+                            $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
+                        }
+
+                        if ($user['valorant_id']) {
+                            $addPuuidValorant = $this->valorant->addPuuid($puuid, $_SESSION['userId']);
+                        }
+
+                        // Check if either addPuuid was successful
+                        if ($addPuuidLeague || $addPuuidValorant) {
+                            if ($addPuuidLeague) {
+                                // Now make a call to get the summoner's profile data
+                                $regionMap = [
+                                    "Europe West" => "euw1",
+                                    "North America" => "na1",
+                                    "Europe Nordic" => "eun1",
+                                    "Brazil" => "br1",
+                                    "Latin America North" => "la1",
+                                    "Latin America South" => "la2",
+                                    "Oceania" => "oc1",
+                                    "Russia" => "ru1",
+                                    "Turkey" => "tr1",
+                                    "Japan" => "jp1",
+                                    "Korea" => "kr",
+                                ];
+
+                                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+
+                                // Fetch the summoner profile to get profileIconId
+                                $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
+
+                                // Now you can access the profileIconId
+                                $profileIconId = $summonerProfile['profileIconId'];
+
+                                // Fetch ranked stats
+                                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+
+                                if (isset($summonerRankedStats)) {
+                                    // Default to 'Unranked'
+                                    $rankAndTier = 'Unranked';
+                                    $soloQueueRankAndTier = null;
+                                    $flexQueueRankAndTier = null;
+
+                                    // Loop through the ranked stats array to find the desired queue types
+                                    foreach ($summonerRankedStats as $rankedStats) {
+                                        if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+                                            $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                        } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+                                            $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                        }
+                                    }
+
+                                    // Prioritize solo queue rank, if available
+                                    if ($soloQueueRankAndTier !== null) {
+                                        $rankAndTier = $soloQueueRankAndTier;
+                                    } elseif ($flexQueueRankAndTier !== null) {
+                                        $rankAndTier = $flexQueueRankAndTier;
+                                    }
+
+                                    $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
+
+                                    // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
+
+                                    // Save updated summoner data to the database
+                                    $this->leagueOfLegends->updateSummonerData(
+                                        $userData['gameName'], 
+                                        $summonerProfile['id'],
+                                        $puuid,
+                                        $summonerProfile['summonerLevel'], 
+                                        $rankAndTier,
+                                        $profileIconId,
+                                        $fullAccountName,
+                                        $user['user_id'],
+                                    );
+                                }
+                            }
+
+                            header('Location: /userProfile?message=Binded successfully');
+                            exit();
+                        } else {
+                            header('Location: /userProfile?message=Couldnt find Puuid');
+                            exit();
+                        }
+                    } else {
+                        // Handle case where puuid is empty
+                        header('Location: /userProfile?message=No Puuid received'.$accessToken);
+                        exit();
+                    }
+                } else {
+                    error_log('Failed to obtain access token. Authorization code: ' . $authCode);
+                    header('Location: /&message=NO_ACCESS_TOKEN' . $authCode);
+                    exit();
+                }
             }
         }
+        
     }
 
     // Fetch the summoner profile details
