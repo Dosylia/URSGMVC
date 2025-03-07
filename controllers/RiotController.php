@@ -233,6 +233,8 @@ class RiotController
                                 $_SESSION['full_name'] = $existingUser['google_fullName'];
                                 $_SESSION['google_firstName'] = $existingUser['google_firstName'];
                                 $_SESSION['masterTokenWebsite'] = $token;
+                                $_SESSION['tagLine'] = $userData['tagLine'];
+                                $_SESSION['full_name'] = $userData['gameName'];
 
                                 $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
 
@@ -364,6 +366,8 @@ class RiotController
                                     $_SESSION['google_userId'] = $createGoogleUserRiot;
                                     $_SESSION['google_id'] = $puuid;
                                     $_SESSION['email'] = $fakeEmail;
+                                    $_SESSION['tagLine'] = $userData['tagLine'];
+                                    $_SESSION['full_name'] = $fullName;
                                 }
 
                                 header('Location: /signup?message=Account created');
@@ -371,90 +375,6 @@ class RiotController
 
                             }
 
-                        }
-
-                        if ($user['lol_id']) {
-                            $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
-                        }
-
-                        if ($user['valorant_id']) {
-                            $addPuuidValorant = $this->valorant->addPuuid($puuid, $_SESSION['userId']);
-                        }
-
-                        // Check if either addPuuid was successful
-                        if ($addPuuidLeague || $addPuuidValorant) {
-                            if ($addPuuidLeague) {
-                                // Now make a call to get the summoner's profile data
-                                $regionMap = [
-                                    "Europe West" => "euw1",
-                                    "North America" => "na1",
-                                    "Europe Nordic" => "eun1",
-                                    "Brazil" => "br1",
-                                    "Latin America North" => "la1",
-                                    "Latin America South" => "la2",
-                                    "Oceania" => "oc1",
-                                    "Russia" => "ru1",
-                                    "Turkey" => "tr1",
-                                    "Japan" => "jp1",
-                                    "Korea" => "kr",
-                                ];
-
-                                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
-
-                                // Fetch the summoner profile to get profileIconId
-                                $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
-
-                                // Now you can access the profileIconId
-                                $profileIconId = $summonerProfile['profileIconId'];
-
-                                // Fetch ranked stats
-                                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
-
-                                if (isset($summonerRankedStats)) {
-                                    // Default to 'Unranked'
-                                    $rankAndTier = 'Unranked';
-                                    $soloQueueRankAndTier = null;
-                                    $flexQueueRankAndTier = null;
-
-                                    // Loop through the ranked stats array to find the desired queue types
-                                    foreach ($summonerRankedStats as $rankedStats) {
-                                        if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
-                                            $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
-                                        } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
-                                            $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
-                                        }
-                                    }
-
-                                    // Prioritize solo queue rank, if available
-                                    if ($soloQueueRankAndTier !== null) {
-                                        $rankAndTier = $soloQueueRankAndTier;
-                                    } elseif ($flexQueueRankAndTier !== null) {
-                                        $rankAndTier = $flexQueueRankAndTier;
-                                    }
-
-                                    $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
-
-                                    // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
-
-                                    // Save updated summoner data to the database
-                                    $this->leagueOfLegends->updateSummonerData(
-                                        $userData['gameName'], 
-                                        $summonerProfile['id'],
-                                        $puuid,
-                                        $summonerProfile['summonerLevel'], 
-                                        $rankAndTier,
-                                        $profileIconId,
-                                        $fullAccountName,
-                                        $user['user_id'],
-                                    );
-                                }
-                            }
-
-                            header('Location: /userProfile?message=Binded successfully');
-                            exit();
-                        } else {
-                            header('Location: /userProfile?message=Couldnt find Puuid');
-                            exit();
                         }
                     } else {
                         // Handle case where puuid is empty

@@ -1267,7 +1267,7 @@ class GoogleUserController
         require "views/layoutSwiping_noheader.phtml";
     }
 
-    public function deleteAccountRequest()
+    public function deleteGoogleAccount()
     {
         if (isset($_POST['submit']))
         {
@@ -1364,6 +1364,50 @@ class GoogleUserController
         } else {
             header("location:/?message=Invalid request");
             exit();
+        }
+    }
+
+    public function deleteRiotAccount() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
+        {
+            $user = $this->user->getUserById($_SESSION['userId']);
+            if ($user['google_createdWithRSO'] === 1) 
+            {
+                $deleteAccount = $this->googleUser->deleteRiotAccount($_SESSION['google_id']);
+
+                if ($deleteAccount)
+                {
+                    session_unset();
+                    session_destroy();
+                    if (isset($_COOKIE['googleId'])) {
+                        setcookie('googleId', "", time() - 42000, COOKIEPATH);
+                        unset($_COOKIE['googleId']);
+                    }
+                    header("location:/?message=Account deleted");
+                    exit();
+                }
+                else
+                {
+                    header("location:/deleteAccount?message=Could not delete account");
+                    exit();
+                }
+            }
+            else
+            {
+                header("location:/deleteAccount?message=This account is not a Riot account");
+                exit(); 
+            }
+        }
+        else 
+        {
+            header("location:/deleteAccount?message=You need to be online to delete a Riot account");
+            exit(); 
         }
     }
 

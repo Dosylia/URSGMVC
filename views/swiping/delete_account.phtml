@@ -1,25 +1,39 @@
 <div class="form_container"> 
-    <button id="closeButton" type="button">X</button>
-    <form class="form_signup" method="post" action="/deleteAccountRequest">
+    <div class="deleteAccount_ctn">
+        <button id="closeButton" type="button">X</button>
+        <h1>Delete your account</h1>
+        <p>Choose the account you want to delete</p>
+        <div class="delete_selecter">
+            <button class="btn_user_updates" id="deleteGoogle_btn"><i class="fa-brands fa-google"></i></i>Google account</button>
+            <button class="btn_user_updates" id="deleteRiot_btn"><i class="fa-solid fa-hand-fist"></i></i>Riot account</button>
+        </div>
+        <div id="deleteGoogle_div">
+            <form class="form_signup" method="post" action="/deleteGoogleAccount"> <!-- Delete Google account -->
 
-        <?php if (isset($_GET['error'])) : ?>
-        <p class="errorsForm"><?= $_GET['error'] ?></p>
-        <?php endif; ?>
+                <?php if (isset($_GET['error'])) : ?>
+                <p class="errorsForm"><?= $_GET['error'] ?></p>
+                <?php endif; ?>
 
-        <label for="email">Google email of the account you with registred with</label>
-        <p>You will receive an email to confirm your identity and your choice.</p>
-        <input type="email" id="email" name="email" placeholder="JohnDoe@gmail.com" required>
+                <label for="email">Google email of the account you with registred with</label>
+                <p>You will receive an email to confirm your identity and your choice.</p>
+                <input type="email" id="email" name="email" placeholder="JohnDoe@gmail.com" required>
 
-        <input name="submit" id="send-button" type="submit" value="Send">
-    </form>
-    <img class="picture_with_form" src="public/images/Ahri.png" alt="Ahri from League of legends">
+                <input name="submit" id="send-button" type="submit" value="Send">
+            </form>
+        </div>
+        <div id="deleteRiot_div"> <!-- Delete Riot account -->
+            <form class="form_signup" method="post" action="/deleteRiotAccount">
+
+            <?php if (isset($_GET['error'])) : ?>
+            <p class="errorsForm"><?= $_GET['error'] ?></p>
+            <?php endif; ?>
+
+            <label>Confirm you want to delete your account</label>
+            <input name="submit" id="send-button" type="submit" value="Confirm">
+            </form>
+        </div>
+        <img class="picture_with_form" src="public/images/Ahri.png" alt="Ahri from League of legends">
+    </div>
 </div>
 
-<script>
-    const buttonclose = document.getElementById('closeButton');
-
-    buttonclose.addEventListener('click', (event) => {
-        event.preventDefault();
-        window.location.href = '/';
-    });
-</script>
+<script src="public/js/swiping/deleteAccount.js"></script>

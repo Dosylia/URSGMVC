@@ -60,4 +60,13 @@
     <script src="public/js/swiping/get_currency.js?nocache=<%= Date.now() %>"></script>
 </body>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      let token = <?php echo json_encode($_SESSION['masterTokenWebsite'] ?? null); ?>;
+      if (token) {
+          localStorage.setItem('masterTokenWebsite', token);
+      }
+  });
+</script>
+
 </html>

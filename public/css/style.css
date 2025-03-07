@@ -3618,6 +3618,47 @@ justify-content: center;
   background-color: var(--ligher--grey);
 }
 
+/* PAGE DELETE ACCOUNT */
+
+#deleteGoogle_div {
+  display: none;
+  width: 100%;
+}
+
+#deleteRiot_div {
+  display: none;
+  width: 100%;
+}
+
+.delete_selecter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.deleteAccount_ctn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.deleteAccount_ctn h1 {
+  font-size: 3vh;
+  font-family: 'Geologica', sans-serif;
+  color: #cb5242;
+  padding-left: 20px;
+  text-shadow: 0.5px 0.5px 1px black;
+  margin-bottom: 15px;
+}
+
+.deleteAccount_ctn p {
+  font-size: 1.5vh;
+  margin-bottom: 15px;
+}
+
 /* PAGE LEADERBOARD */
 
 .leaderboard-section {
@@ -3780,6 +3821,14 @@ justify-content: center;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
+}
+
+.delete-option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
 }
 
 .setting-option i {

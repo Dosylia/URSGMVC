@@ -171,7 +171,8 @@ class User extends DataBase
                                             lf.*,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_lastRequestTime) <= 30) AS user_isOnline,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
-                                            g.google_email
+                                            g.google_email,
+                                            g.google_createdWithRSO
                                         FROM
                                             `user` AS u
                                         LEFT JOIN

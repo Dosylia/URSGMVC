@@ -208,6 +208,27 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function deleteRiotAccount($puuid) 
+    {
+        $query = $this->bdd->prepare("
+                                        DELETE FROM
+                                            `googleuser`
+                                        WHERE
+                                            `google_id` = ?
+        ");
+
+        $deleteAccountTest = $query->execute([$puuid]);
+
+        if($deleteAccountTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function storeMasterToken($googleUserId, $token)
     {
         $query = $this->bdd->prepare("

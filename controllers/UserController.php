@@ -380,7 +380,6 @@ class UserController
                         $_SESSION['age'] = $user['user_age'];
                         $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                         $_SESSION['game'] = $user['user_game'];
-
     
                 if($user['user_game'] === "League of Legends" || $user['user_game'] === "LoL and Valorant") 
                 { 

@@ -698,6 +698,87 @@ class LeagueOfLegendsController
                         exit();
                     }
 
+                    $user = $this->user->getUserById($this->getUserId());
+
+                    if ($user['google_createdWithRSO'] === 1)
+                    {
+                        require_once 'keys.php';
+                        $regionMap = [
+                            "Europe West" => "euw1",
+                            "North America" => "na1",
+                            "Europe Nordic" => "eun1",
+                            "Brazil" => "br1",
+                            "Latin America North" => "la1",
+                            "Latin America South" => "la2",
+                            "Oceania" => "oc1",
+                            "Russia" => "ru1",
+                            "Turkey" => "tr1",
+                            "Japan" => "jp1",
+                            "Korea" => "kr",
+                        ];
+
+                        $selectedRegionValue = $regionMap[$this->getLoLServer()] ?? null;
+
+                        $puuid = $_SESSION['google_id'];
+
+                        // Fetch the summoner profile to get profileIconId
+                        $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
+
+                        // Now you can access the profileIconId
+                        $profileIconId = $summonerProfile['profileIconId'];
+
+                        // Fetch ranked stats
+                        $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+
+                        if (isset($summonerRankedStats)) {
+                            // Default to 'Unranked'
+                            $rankAndTier = 'Unranked';
+                            $soloQueueRankAndTier = null;
+                            $flexQueueRankAndTier = null;
+
+                            // Loop through the ranked stats array to find the desired queue types
+                            foreach ($summonerRankedStats as $rankedStats) {
+                                if ($rankedStats['queueType'] === 'RANKED_SOLO_5x5') {
+                                    $soloQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                } elseif ($rankedStats['queueType'] === 'RANKED_FLEX_SR') {
+                                    $flexQueueRankAndTier = $rankedStats['tier'] . ' ' . $rankedStats['rank'];
+                                }
+                            }
+
+                            // Prioritize solo queue rank, if available
+                            if ($soloQueueRankAndTier !== null) {
+                                $rankAndTier = $soloQueueRankAndTier;
+                            } elseif ($flexQueueRankAndTier !== null) {
+                                $rankAndTier = $flexQueueRankAndTier;
+                            }
+
+                            $fullAccountName = $_SESSION['full_name'] . '#' . $_SESSION['tagLine']; 
+
+                            // Save updated summoner data to the database
+                            $bindAccount = $this->leagueOfLegends->updateSummonerData(
+                                $_SESSION['full_name'], 
+                                $summonerProfile['id'],
+                                $puuid,
+                                $summonerProfile['summonerLevel'], 
+                                $rankAndTier,
+                                $profileIconId,
+                                $fullAccountName,
+                                $this->getUserId(),
+                            );
+
+                            if ($bindAccount)
+                            {
+                                header("location:/lookingforuserlol?message=Binded LoL account");
+                                exit();
+                            }
+                            else
+                            {
+                                header("location:/lookingforuserlol?message=Couldnt Bind LoL account");
+                                exit();
+                            }
+                        }
+                    }
+
                 header("location:/lookingforuserlol");
                 exit();
             }
