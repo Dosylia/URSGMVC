@@ -88,6 +88,114 @@ class FriendRequestController
         }
     }
 
+    public function getAcceptedFriendRequestWebsite(): void
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $acceptedFriendRequest = $this->friendrequest->getAcceptedFriendRequest($this->getUserId());
+
+            if ($acceptedFriendRequest) {
+                $data = [
+                    'success' => true,
+                    'acceptedFriendRequest' => $acceptedFriendRequest,
+                ];
+                echo json_encode($data);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
+    public function updateNotificationFriendRequestAcceptedWebsite(): void
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $frId = $_POST['frId'];
+            $this->setUserId((int)$userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $updateNotification = $this->friendrequest->updateNotificationFriendRequestAccepted($frId);
+
+            if ($updateNotification) {
+                echo json_encode(['success' => true, 'message' => 'Accepted notification updated']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Could not update notification']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        }
+    }
+
+    public function updateNotificationFriendRequestPendingWebsite(): void
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $frId = $_POST['frId'];
+            $this->setUserId((int)$userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $updateNotification = $this->friendrequest->updateNotificationFriendRequestPending($frId);
+
+            if ($updateNotification) {
+                echo json_encode(['success' => true, 'message' => 'Pending notification updated']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Could not update notification']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        }
+    }
+
     public function getFriendlistWebsite(): void
     {
         // Validate Authorization Header
@@ -886,46 +994,47 @@ class FriendRequestController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
-
+    
             // Validate Authorization Header
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
+    
             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
                 return;
             }
-
+    
             $token = $matches[1];
-
+    
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
-
+    
             $lastActivity = $this->user->selectLastActivity($userId);
             $currentTime = time();
             $shouldLogActivity = false;
-            
+    
             if ($lastActivity) {
                 $lastActivityTime = strtotime($lastActivity['activity_time']);
                 $timeDifference = $currentTime - $lastActivityTime;
-            
+    
                 if ($timeDifference > 3600) {
                     $shouldLogActivity = true;
                 }
             } else {
                 $shouldLogActivity = true;
             }
-            
+    
             if ($shouldLogActivity) {
                 $this->user->logUserActivity($userId); 
             }
-
-            $pendingCount = $this->friendrequest->countFriendRequest($this->getUserId());
-
+    
+            // Fetch pending friend requests
+            $pendingRequests = $this->friendrequest->getPendingFriendRequests($userId); // Updated to fetch details
+    
             $lastRequestTime = $this->user->getLastRequestTime($userId);
-
+    
             if ($currentTime - $lastRequestTime > 20) {
                 $amount = 2;
                 $user = $this->user->getUserById($userId);
@@ -935,18 +1044,19 @@ class FriendRequestController
                 }
                 $addCurrency = $this->user->addCurrency($userId, $amount);
                 $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
-
+    
                 if ($addCurrency) {
                     $this->user->updateLastRequestTime($userId);
                 }
-            }    
-
-            if ($pendingCount !== false) {
+            }
+    
+            if ($pendingRequests) {
+                // Return full pending request data
                 $data = [
                     'success' => true,
-                    'pendingCount' => ['pendingFriendRequest' => $pendingCount]
+                    'pendingRequests' => $pendingRequests // Full details of pending requests
                 ];
-
+    
                 echo json_encode($data);
             } else {
                 echo json_encode(['success' => false, 'error' => 'No friend requests found']);
@@ -955,6 +1065,7 @@ class FriendRequestController
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
         }
     }
+    
 
     public function deleteFriendRequestAfterWeek()
     {

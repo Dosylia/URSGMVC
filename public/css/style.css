@@ -3249,6 +3249,91 @@ justify-content: center;
   right: 0%;
 }
 
+#notification-center-ctn {
+  position: absolute;
+  bottom: 0%;
+  left: 0%;
+}
+
+.fa-bell {
+  font-size: 24px !important;
+  cursor: pointer;
+  position: relative;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 50%;
+  display: none; /* Hidden by default */
+}
+
+.notif-modal {
+  position: absolute;
+  left: -70px;
+  top: 100%; /* Ensures the modal appears below the bell */
+  width: 250px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  color: black;
+  text-align: center;
+}
+
+
+.dark-mode .notif-modal {
+  background: var(--dark-ligher-grey);
+  color: white;
+}
+
+.notif-modal.hidden {
+  display: none;
+}
+
+.notif-title {
+  color: var(--main--red);
+  font-size: 1.5rem;
+}
+
+.notif-item {
+  padding: 15px 8px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background: rgba(240, 240, 240, 0.7);
+  cursor: pointer;
+}
+
+.dark-mode .notif-item:hover {
+  background: rgba(240, 240, 240, 0.3);
+}
+
+.notif-modal .close-btn {
+  margin-left: 10px;
+  color: var(--main--red) !important;
+  cursor: pointer;
+  font-size: 25px;
+  transition: 0.2s;
+}
+
+.notif-modal .close-btn:hover {
+  color: rgb(67, 0, 0);
+  transform: scale(1.1);
+}
 
 #open_menu_profile {
   position: relative;

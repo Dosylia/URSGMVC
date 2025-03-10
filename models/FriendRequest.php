@@ -39,6 +39,37 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function getPendingFriendRequests($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            fr.fr_id,
+                                            fr.fr_senderId,
+                                            fr.fr_receiverId,
+                                            u.user_username
+                                        FROM
+                                            `friendrequest` AS fr
+                                        INNER JOIN
+                                            `user` AS u ON u.user_id = fr.fr_senderId
+                                        WHERE
+                                            `fr_receiverId` = ?
+                                        AND
+                                            `fr_status` = 'pending'
+                                        AND
+                                            `fr_notifReadPending` = 0
+        ");
+
+        $query->execute([$userId]);
+        $pendingRequests = $query->fetchAll();
+
+        if ($pendingRequests) {
+            return $pendingRequests;
+        } else {
+            return false;
+        }
+    }
+
+
     public function getUserIdByFrId($frId)
     {
         $query = $this->bdd->prepare("
@@ -200,6 +231,97 @@ class FriendRequest extends DataBase
             return false;
         }
     }
+
+    public function getAcceptedFriendRequest($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        SELECT
+                                            fr.fr_id,
+                                            fr.fr_senderId,
+                                            fr.fr_receiverId,
+                                            fr.fr_date,
+                                            fr.fr_status,
+                                            fr.fr_notifReadAccepted,
+                                            u.user_gender,
+                                            u.user_age,
+                                            u.user_username,
+                                            u.user_id,
+                                            u.user_picture
+                                        FROM
+                                            `friendrequest` AS fr
+                                        INNER JOIN
+                                            `user` AS u
+                                        ON 
+                                            fr.fr_senderId = u.user_id
+                                        WHERE
+                                            fr.fr_receiverId = ? 
+                                        AND
+                                            fr.fr_status  = 'accepted'
+                                        AND
+                                            fr.fr_notifReadAccepted = 0
+                                        ORDER BY
+                                            fr.fr_date DESC
+        ");
+
+        $query -> execute([$userId]);
+        $friendRequestTest = $query -> fetchAll();
+
+        if($friendRequestTest)
+        {
+            return $friendRequestTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function updateNotificationFriendRequestAccepted($friendRequestId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_notifReadAccepted` = 1
+                                        WHERE
+                                            `fr_id` = ? 
+        ");
+
+        $updateNotificationTest = $query -> execute([$friendRequestId]);
+
+        if($updateNotificationTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function updateNotificationFriendRequestPending($friendRequestId)
+    {
+        $query = $this -> bdd -> prepare("
+                                        UPDATE
+                                            `friendrequest`
+                                        SET
+                                            `fr_notifReadPending` = 1
+                                        WHERE
+                                            `fr_id` = ? 
+        ");
+
+        $updateNotificationTest = $query -> execute([$friendRequestId]);
+
+        if($updateNotificationTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     
 
     public function acceptFriendRequest($frId) 
