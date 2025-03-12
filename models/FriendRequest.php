@@ -252,9 +252,9 @@ class FriendRequest extends DataBase
                                         INNER JOIN
                                             `user` AS u
                                         ON 
-                                            fr.fr_senderId = u.user_id
+                                            fr.fr_receiverId = u.user_id
                                         WHERE
-                                            fr.fr_receiverId = ? 
+                                            fr.fr_senderId = ? 
                                         AND
                                             fr.fr_status  = 'accepted'
                                         AND

@@ -1725,7 +1725,115 @@ section.siteMap tr:nth-child(even) {
       padding: 10px;
       border-radius: 50px;
       max-width: 60%;
+      position: relative;
     }
+
+    #reply-preview {
+      display: none;
+      position: absolute;
+      top: -100%; 
+      left: 50%;
+      transform: translate(-50%, -10px); 
+      background: #b2a0a0; 
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .replied-message {
+      background: #b2a0a0; 
+      color: white;
+      border: none;
+      border-radius: 20px;
+    }
+
+    .replied-message.inverted {
+      background-color: var(--main--red);
+    }
+
+    .dark-mode .replied-message.inverted {
+      background-color: var(--main--red);
+    }
+
+    .dark-mode .replied-message {
+      background: #565151;
+    }
+
+    .hover-menu {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      margin: 0 5px;
+      position: relative;
+      z-index: 1002;
+    }
+
+    .hover-menu .menu-button {
+      position: relative;
+      z-index: 1002;
+    }
+
+    .hover-options {
+      display: none; /* Initially hidden */
+      position: absolute;
+      top: 100%; /* Position below the hover menu */
+      left: 0;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 150px;
+      z-index: 1001;
+      margin-top: 5px;
+      padding: 5px 0;
+    }
+
+    .dark-mode .hover-options {
+      background-color: var(--dark-ligher-grey);
+    }
+    
+    /* Individual Option Styling */
+    .hover-options button {
+      width: 100%;
+      padding: 10px;
+      text-align: left;
+      border: none;
+      background-color: transparent;
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      border-radius: 4px;
+    }
+
+    .dark-mode .hover-options button {
+      color: white;
+    }
+    
+    /* Hover Effect on Buttons */
+    .hover-options button:hover {
+      background-color: #f1f1f1;
+      color: #007bff;
+    }
+    
+    /* Option Divider */
+    .hover-options button + button {
+      border-top: 1px solid #eee;
+    }
+    
+    .message-to-user .hover-menu { 
+      margin-left: 5px; 
+    }
+    
+    .message-from-user .hover-menu { 
+      margin-right: 5px; 
+    }
+
+    .dark-mode #reply-preview {
+      background-color: #565151;
+    }
+    
   
     #username_message {
       padding-top: 20px;
@@ -1845,6 +1953,7 @@ section.siteMap tr:nth-child(even) {
       margin-top: 10px;
       text-align: center;
       width: 100%;
+      position: relative;
     }
   
     .messages-container {
@@ -2289,6 +2398,10 @@ section.siteMap tr:nth-child(even) {
     .last-message.inverted .message-text {
       order: 1;
       background-color: #bcb7b7;
+    }
+
+    .last-message.inverted .hover-menu {
+      order: 3;
     }
 
   .dark-mode .last-message.inverted .message-text {

@@ -308,6 +308,8 @@ class ChatMessageController
             $this->setReceiverId($data->receiverId);
             $this->setMessage($this->validateInput($data->message));
 
+            $replyToChatId = $data->replyToChatId ?? null;
+
             // Validate Authorization Header
              $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
@@ -339,7 +341,7 @@ class ChatMessageController
                     return;
                 }
     
-            $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
+            $insertMessage = $this->chatmessage->insertMessageWebsite($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $replyToChatId, $status);
     
             if ($insertMessage) {
                 $userId = $this->getSenderId();
@@ -352,6 +354,41 @@ class ChatMessageController
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+        }
+    }
+
+    public function deleteMessageWebsite(): void
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $chatId = $_POST['chatId'];
+            $this->setUserId((int)$userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $deleteMessage = $this->chatmessage->deleteMessageUser($chatId);
+
+            if ($deleteMessage) {
+                echo json_encode(['success' => true, 'message' => 'Pending notification updated']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Could not update notification']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -757,10 +794,6 @@ class ChatMessageController
                 'sound' => 'default',
                 'title' => $title,
                 'body' => $body,
-                'data' => [
-                    'screen' => 'chat',
-                    'chatId' => $friendId
-                ],
             ];
     
             $headers = [

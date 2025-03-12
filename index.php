@@ -137,6 +137,7 @@ $actionMap = [
     'getUnreadMessagePhone' => [ChatMessageController::class, 'getUnreadMessagePhone'],
     'getUnreadMessageWebsite' => [ChatMessageController::class, 'getUnreadMessageWebsite'],
     'markMessageAsReadWebsite' => [ChatMessageController::class, 'markMessageAsReadWebsite'],
+    'deleteMessageWebsite' => [ChatMessageController::class, 'deleteMessageWebsite'],
     'getAcceptedFriendRequestWebsite' => [FriendRequestController::class, 'getAcceptedFriendRequestWebsite'],
     'updateNotificationFriendRequestAcceptedWebsite' => [FriendRequestController::class, 'updateNotificationFriendRequestAcceptedWebsite'],
     'updateNotificationFriendRequestPendingWebsite' => [FriendRequestController::class, 'updateNotificationFriendRequestPendingWebsite'],

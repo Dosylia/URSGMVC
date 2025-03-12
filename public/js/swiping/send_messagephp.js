@@ -9,7 +9,7 @@ let btnSubmit;
 let btnDesign;
 let isActionAllowed = true;
 
-function sendMessageToPhp(senderId, message) {
+function sendMessageToPhp(senderId, message, replyToChatId) {
     let friendIdElement = document.getElementById("receiverId");
     const receiverId = friendIdElement ? friendIdElement.value : null;
     // If wanna convert time directly before sending it
@@ -23,6 +23,7 @@ function sendMessageToPhp(senderId, message) {
         senderId,
         receiverId,
         message,
+        replyToChatId,
     };
 
     const jsonData = JSON.stringify(dataToSend);
@@ -45,6 +46,10 @@ function sendMessageToPhp(senderId, message) {
         console.log('Success:', data);
         messageInput.value = '';
         // After successfully sending message, fetch updated messages
+        let replyPreviewContainer = document.getElementById("reply-preview");
+        replyPreviewContainer.innerHTML = '';
+        replyPreviewContainer.style.display = 'none';
+        messageInput.removeAttribute('data-reply-to');
         fetchMessages(userId, receiverId);
     })
     .catch(error => {
@@ -119,7 +124,9 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        sendMessageToPhp(senderId, message);
+        const replyToChatId = messageInput.dataset.replyTo || null;
+
+        sendMessageToPhp(senderId, message, replyToChatId);
 
         setTimeout(() => {
             isActionAllowed = true;

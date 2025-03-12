@@ -80,6 +80,59 @@ class ChatMessage extends DataBase
 
     }
 
+    public function deleteMessageUser($chatId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE `chatmessage`
+                                            SET `chat_message` = 'This message has been deleted'
+                                            WHERE `chat_id` = ?
+        ");
+    
+        $updateMessageTest = $query -> execute([$chatId]);
+    
+        if($updateMessageTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function insertMessageWebsite($senderId, $receiverId, $message, $replyToChatId, $status) 
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `chatmessage`(
+                                                `chat_senderId`,
+                                                `chat_receiverId`,                                    
+                                                `chat_message`,
+                                                `chat_replyTo`,
+                                                `chat_status`      
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?
+                                            )
+                                        ");
+
+        $insertMessageTest = $query -> execute([$senderId, $receiverId, $message, $replyToChatId, $status]);
+
+        if($insertMessageTest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
     public function getMessage($userId, $friendId)
     {
         $query = $this -> bdd -> prepare("

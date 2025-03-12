@@ -114,6 +114,7 @@
                             </div>
                             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
+                            <span id="reply-preview"></span>
                             <input id="message_text" maxlength="500" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
                             <div>
                                 <button id="btnDesign" type="button" class="send-message-button">

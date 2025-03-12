@@ -10,10 +10,11 @@ export const messageContainer = document.querySelector('.messages-container');
 import { badWordsList } from './chatFilter.js';
 let currentFriendUsername = null;
 let firstFriendId = friendId;
+let replyPreviewContainer = document.getElementById("reply-preview");
+let chatInput = document.getElementById("message_text");
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script loaded");
-
     // Gestion du clic sur les amis pour charger les messages
     document.addEventListener("click", function (event) {
         let link = event.target.closest(".username_chat_friend");
@@ -34,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
         if (newFriendId !== friendId) {
             friendId = newFriendId; // Update the recipient ID
+            replyPreviewContainer.style.display = "none"; // Hide the reply preview
+            chatInput.dataset.replyTo = ""; // Clear the reply context
             fetchMessages(userId, friendId); // Load new messages
         }
     });
@@ -174,17 +177,116 @@ document.addEventListener("DOMContentLoaded", function () {
     
             // Check if previous message exists and is from the same sender within 5 minutes
             let messageContent;
-            if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
-                let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
-                if (timeDifference <= 5 * 60 * 1000) {
-                    messageContent = `
-                    <p class="last-message" style="text-align: ${messagePosition};">
-                        <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
-                        ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
-                        </span>
-                    </p>
-                    `;
+
+            if (message.chat_replyTo) {
+                let originalMessage = messages.find(m => m.chat_id == message.chat_replyTo);
+                if (originalMessage) {
+                    if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
+                        let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
+                        if (timeDifference <= 5 * 60 * 1000) {
+                            messageContent = `
+                            <p class="last-message" style="text-align: ${messagePosition}; padding-top: 20px; padding-bottom: 5px; position: relative; z-index: 950;">
+                                <span class="timestamp-hover">${formattedTime}</span>
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                </span>
+                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: 5px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;
+                                    ">
+                                        ${originalMessage.chat_message}
+                                </span>
+                            </p>
+                            `;
+                        } else {
+                            messageContent = `
+                                <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
+                                    <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                                    <span class="timestamp ${messagePosition}">${formattedDate}</span>
+                                </p>
+                                <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
+                                    <span class="timestamp-hover">${formattedTime}</span>
+                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                    ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                    </span>
+                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: -10px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;
+                                    ">
+                                        ${originalMessage.chat_message}
+                                    </span>
+                                </p>
+                            `;
+                        }
+                    } else {
+                        messageContent = `
+                                <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
+                                    <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}">
+                                        <strong class="strong_text">${messageUser.user_username}</strong>
+                                    </a>
+                                    <span class="timestamp ${messagePosition}">${formattedDate}</span>
+                                </p>
+                                <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
+                                    <span class="timestamp-hover">${formattedTime}</span>
+                                    <span class="message-text" style="text-align: ${messagePosition};">
+                                        ${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                        ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                    </span>
+                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: -10px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;
+                                    ">
+                                        ${originalMessage.chat_message}
+                                    </span>
+                                </p>
+
+                        `;
+                    }
+                } 
+            } else {
+                if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
+                    let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
+                    if (timeDifference <= 5 * 60 * 1000) {
+                        messageContent = `
+                        <p class="last-message" style="text-align: ${messagePosition};">
+                            <span class="timestamp-hover">${formattedTime}</span>
+                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                            ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                            </span>
+                        </p>
+                        `;
+                    } else {
+                        messageContent = `
+                            <p id="username_message" style="text-align: ${userPosition};">
+                                <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                                <span class="timestamp ${messagePosition}">${formattedDate}</span>
+                            </p>
+                            <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
+                                <span class="timestamp-hover">${formattedTime}</span>
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                </span>
+                            </p>
+                        `;
+                    }
                 } else {
                     messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
@@ -199,22 +301,53 @@ document.addEventListener("DOMContentLoaded", function () {
                         </p>
                     `;
                 }
-            } else {
-                messageContent = `
-                    <p id="username_message" style="text-align: ${userPosition};">
-                        <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
-                        <span class="timestamp ${messagePosition}">${formattedDate}</span>
-                    </p>
-                    <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
-                        <span class="timestamp-hover">${formattedTime}</span>
-                        <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
-                        ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
-                        </span>
-                    </p>
-                `;
             }
-    
+
             messageDiv.innerHTML = messageContent;
+
+     // **Create Hover Menu**
+     let hoverMenu = document.createElement("div");
+     hoverMenu.classList.add("hover-menu");
+     hoverMenu.innerHTML = `<span class="menu-button">...</span>`;
+
+     let options = document.createElement("div");
+     options.classList.add("hover-options");
+     options.style.display = "none"; // Initially hidden
+
+    // Toggle menu when clicking the three dots
+    hoverMenu.querySelector('.menu-button').addEventListener("click", (event) => {
+        event.stopPropagation(); // Prevent the click from closing immediately
+        options.style.display = options.style.display === "none" ? "block" : "none";
+    });
+
+    // Close menu when clicking anywhere outside
+    document.addEventListener("click", () => {
+        options.style.display = "none";
+    });
+
+    // Reply Button
+    let replyButton = document.createElement("button");
+    replyButton.textContent = "Reply";
+    replyButton.type = "button";
+    replyButton.addEventListener("click", () => replyToMessage(message.chat_id, message.chat_message, messageUser.user_username));
+    options.appendChild(replyButton);
+
+    // Delete Button (Only for Current User)
+    if (isCurrentUser) {
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteMessage(message.chat_id, messageUser.user_id));
+        options.appendChild(deleteButton);
+    }
+
+     hoverMenu.appendChild(options);
+
+     // **Show/Hide on Hover**
+     hoverMenu.style.display = "none";
+     messageDiv.addEventListener('mouseenter', () => hoverMenu.style.display = "block");
+     messageDiv.addEventListener('mouseleave', () => hoverMenu.style.display = "none");
+
+
             messagesContainer.appendChild(messageDiv);
     
             // Store the current message as previousMessage for the next iteration
@@ -226,9 +359,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');
+            timestampSpan.parentNode.insertBefore(hoverMenu, timestampSpan);
             if (timestampSpan) {
                 timestampSpan.style.display = 'none';
-    
                 messageDiv.addEventListener('mouseenter', function() {
                     timestampSpan.style.display = 'inline-block';
                 });
@@ -251,7 +384,37 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('Messages container updated. Now scrolling to bottom.');
         setTimeout(scrollToBottom, 100);
     }
+
+    function replyToMessage(chatId, messageText, senderName) {
+        replyPreviewContainer.style.display = "block";
     
+        replyPreviewContainer.innerHTML = `
+            <div class="reply-preview-content">
+                <strong>${senderName}:</strong> ${messageText}
+                <button type="button" id="cancel-reply-btn">✖</button>
+            </div>
+        `;
+        
+        // Set a hidden field or state variable to track reply context
+        chatInput.dataset.replyTo = chatId;
+    
+        // Attach event listener to cancel button
+        let cancelReplyBtn = document.getElementById("cancel-reply-btn");
+        if (cancelReplyBtn) {
+            cancelReplyBtn.addEventListener("click", cancelReply);
+        }
+    
+        // Set focus on the chat input field
+        if (chatInput) {
+            chatInput.focus();
+        }
+    }
+    
+    // Function to cancel reply mode
+    function cancelReply() {
+        replyPreviewContainer.style.display = "none";
+        chatInput.dataset.replyTo = ""; // Clear reply context
+    }
     
     
     // Function to replace emote codes with actual emote images
@@ -274,6 +437,29 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     
         return replacedMessage;
+    }
+
+    function deleteMessage(chatId, userId) {
+        const token = localStorage.getItem('masterTokenWebsite');
+        fetch('/deleteMessageWebsite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `userId=${encodeURIComponent(userId)}&chatId=${encodeURIComponent(chatId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                fetchMessages(userId, friendId); // Reload messages after deletion
+            } else {
+                console.error('Error deleting message:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error (accepted requests):', error);
+        });
     }
 
     function showFriendInfo(friend) {
