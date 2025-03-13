@@ -181,6 +181,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (message.chat_replyTo) {
                 let originalMessage = messages.find(m => m.chat_id == message.chat_replyTo);
                 if (originalMessage) {
+                    const truncatedMessage = originalMessage.chat_message.length > 50 
+                    ? originalMessage.chat_message.substring(0, 50) + "..." 
+                    : originalMessage.chat_message;
                     if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
                         let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
                         if (timeDifference <= 5 * 60 * 1000) {
@@ -200,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${originalMessage.chat_message}
+                                        ${truncatedMessage}
                                 </span>
                             </p>
                             `;
@@ -225,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${originalMessage.chat_message}
+                                        ${truncatedMessage}
                                     </span>
                                 </p>
                             `;
@@ -254,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${originalMessage.chat_message}
+                                        ${truncatedMessage}
                                     </span>
                                 </p>
 
@@ -354,8 +357,10 @@ document.addEventListener("DOMContentLoaded", function () {
             previousMessage = message;
     
             const lastMessage = messageDiv.querySelector('.last-message');
-            lastMessage.classList.add(timestampPosition);
-            lastMessage.style.justifyContent = lastMessagePosition;
+            if (lastMessage) {
+                lastMessage.classList.add(timestampPosition);
+                lastMessage.style.justifyContent = lastMessagePosition;
+            }
     
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');
@@ -387,6 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function replyToMessage(chatId, messageText, senderName) {
         replyPreviewContainer.style.display = "block";
+        const truncatedMessage = messageText.length > 50 ? messageText.substring(0, 50) + "..." : messageText;
     
         replyPreviewContainer.innerHTML = `
             <div class="reply-preview-content">
@@ -428,7 +434,8 @@ document.addEventListener("DOMContentLoaded", function () {
             ':cat-liked:': '<img src="public/images/emotes/cat-liked.png" alt="cat-liked" class="emote">',
             ':cat-sus:': '<img src="public/images/emotes/cat-sus.png" alt="cat-sus" class="emote">',
             ':cat-bruh:': '<img src="public/images/emotes/cat-bruh.png" alt="cat-bruh" class="emote">',
-            ':cat-licking:': '<img src="public/images/emotes/cat-licking.png" alt="cat-licking" class="emote">'
+            ':cat-licking:': '<img src="public/images/emotes/cat-licking.png" alt="cat-licking" class="emote">',
+            ':cat-laugh:': '<img src="public/images/emotes/cat-laugh.png" alt="cat-laugh" class="emote">'
         };
     
         const replacedMessage = message.replace(/:\w+(-\w+)*:/g, function(match) {

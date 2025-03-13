@@ -997,6 +997,7 @@ section.siteMap tr:nth-child(even) {
     border-radius: 50%; 
     word-wrap: break-word;
     display: block;
+    border: 10px solid var(--main--red);
 }
 
 .frame_around_picture {
@@ -1772,6 +1773,11 @@ section.siteMap tr:nth-child(even) {
     .hover-menu .menu-button {
       position: relative;
       z-index: 1002;
+      font-size: 20px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 40px;
     }
 
     .hover-options {
@@ -1827,7 +1833,7 @@ section.siteMap tr:nth-child(even) {
     }
     
     .message-from-user .hover-menu { 
-      margin-right: 5px; 
+      margin-right: 20px; 
     }
 
     .dark-mode #reply-preview {
@@ -1849,7 +1855,7 @@ section.siteMap tr:nth-child(even) {
       position: relative; 
       display: inline-flex;
       align-items: center; 
-      max-width: 100%;
+      max-width: 70%;
       word-wrap: break-word;
       gap: 8px; 
   }
@@ -2117,7 +2123,7 @@ section.siteMap tr:nth-child(even) {
       border: 1px solid #ccc;
       padding: 5px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      z-index: 10;
+      z-index: 1050;
   }
   
   .emote {
@@ -3368,6 +3374,15 @@ justify-content: center;
   left: 0%;
 }
 
+.clear-all-btn {
+  padding: 5px 7px;
+  background: var(--main--red);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+}
+
 .fa-bell {
   font-size: 24px !important;
   cursor: pointer;
@@ -3414,6 +3429,8 @@ justify-content: center;
 .notif-title {
   color: var(--main--red);
   font-size: 1.5rem;
+  display: flex;
+  justify-content: space-around;
 }
 
 .notif-item {

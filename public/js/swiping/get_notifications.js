@@ -11,7 +11,6 @@ let lastNotifCountPending = 0;
 let lastNotifContentPending = [];
 let AllNotifications = [];
 
-// Fonction pour récupérer les demandes d'ami en attente
 function fetchFriendRequest(userId) {
     fetch('index.php?action=getFriendRequestWebsite', {
         method: 'POST',
@@ -23,24 +22,23 @@ function fetchFriendRequest(userId) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success && data.pendingRequests && data.pendingRequests.length > 0) {
-            const pendingRequests = data.pendingRequests;
-            const newNotifCount = pendingRequests.length;
-            if (newNotifCount !== lastNotifCountPending || !arraysEqualPending(pendingRequests, lastNotifContentPending)) {
-                fillNotificationCenter(pendingRequests, 'pending', userId);
-                lastNotifCountPending = newNotifCount; // Update last count
-                lastNotifContentPending = pendingRequests; // Update last content
-            }
+        if (data.success && data.pendingRequests) {
+            // Filter out existing pending notifications
+            AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');
+            // Add new pending notifications with type
+            const pendingWithType = data.pendingRequests.map(notif => ({ ...notif, type: 'pending' }));
+            AllNotifications.push(...pendingWithType);
+            lastNotifCountPending = data.pendingRequests.length;
+            lastNotifContentPending = data.pendingRequests;
         } else {
-            console.log('No friend requests found');
-            fillNotificationCenter([], 'pending'); // **Clear UI when no pending requests exist**
+            // Remove all pending notifications
+            AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');
             lastNotifCountPending = 0;
-            lastNotifContentPending = []; // Clear last content
+            lastNotifContentPending = [];
         }
+        fillNotificationCenter(); // Re-render all notifications
     })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
+    .catch(error => console.error('Fetch error:', error));
 }
 
 function fetchAcceptedFriendRequest(userId) {
@@ -55,26 +53,21 @@ function fetchAcceptedFriendRequest(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.acceptedFriendRequest) {
-            const acceptedRequests = data.acceptedFriendRequest;
-            const newNotifCount = acceptedRequests.length;
-
-            // Only update UI if the count or content has changed
-            if (newNotifCount !== lastNotifCount || !arraysEqual(acceptedRequests, lastNotifContent)) {
-                fillNotificationCenter(acceptedRequests, 'accepted', userId);
-                lastNotifCount = newNotifCount; // Update last count
-                lastNotifContent = acceptedRequests; // Update last content
-            }
+            // Filter out existing accepted notifications
+            AllNotifications = AllNotifications.filter(notif => notif.type !== 'accepted');
+            const acceptedWithType = data.acceptedFriendRequest.map(notif => ({ ...notif, type: 'accepted' }));
+            AllNotifications.push(...acceptedWithType);
+            lastNotifCount = data.acceptedFriendRequest.length;
+            lastNotifContent = data.acceptedFriendRequest;
         } else {
-            if (lastNotifCount !== 0) {
-                fillNotificationCenter([], 'accepted'); // Clear UI if no accepted friend requests
-                lastNotifCount = 0;
-                lastNotifContent = []; // Clear last content
-            }
+            // Remove all accepted notifications
+            AllNotifications = AllNotifications.filter(notif => notif.type !== 'accepted');
+            lastNotifCount = 0;
+            lastNotifContent = [];
         }
+        fillNotificationCenter(); // Re-render all notifications
     })
-    .catch(error => {
-        console.error('Fetch error (accepted requests):', error);
-    });
+    .catch(error => console.error('Fetch error:', error));
 }
 
 // Helper function to compare two arrays of objects (deep comparison)
@@ -90,151 +83,120 @@ function arraysEqual(arr1, arr2) {
     return true;
 }
 
-function arraysEqualPending(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i].fr_id !== arr2[i].fr_id || arr1[i].user_username !== arr2[i].user_username) {
-            return false;
-        }
-    }
-    return true;
-}
+function fillNotificationCenter() {
+    const modal = document.getElementById('notif-modal');
 
-function fillNotificationCenter(notifications, type, userId) {
-    console.log('Notifications:', notifications);
-
-    const container = document.getElementById('notification-center-ctn');
-    
-    // Check if the bell icon already exists
-    let bellIcon = document.getElementById('notification-bell');
-    let notifBadge = document.getElementById('notif-badge');
-    
-    // If bell icon does not exist, create it and the notification badge
-    if (!bellIcon) {
-        bellIcon = document.createElement('i');
-        bellIcon.className = 'fa-solid fa-bell';
-        bellIcon.id = 'notification-bell';
-
-        notifBadge = document.createElement('span');
-        notifBadge.className = 'notif-badge';
-        notifBadge.id = 'notif-badge';
-
-        container.appendChild(bellIcon);
-        container.appendChild(notifBadge);
-    }
-
-    // Check if the modal already exists, if not, create it
-    let modal = document.getElementById('notif-modal');
+    // If the modal doesn't exist yet, create it once
     if (!modal) {
-        modal = document.createElement('div');
-        modal.className = 'notif-modal hidden';
-        modal.id = 'notif-modal';
-
-        // **Add a title to the modal**
-        const modalTitle = document.createElement('h3');
-        modalTitle.className = 'notif-title';
-        modalTitle.textContent = 'Notifications Center'; // You can change this title
-        modal.appendChild(modalTitle);
-
-        container.appendChild(modal);
-    } else {
-        // Ensure the title is present (prevents duplication)
-        let modalTitle = modal.querySelector('.notif-title');
-        if (!modalTitle) {
-            modalTitle = document.createElement('h3');
-            modalTitle.className = 'notif-title';
-            modalTitle.textContent = 'Notifications Center';
-            modal.prepend(modalTitle);
-        }
+        createNotificationModal();
     }
 
-    // Add notifications that are not already in the AllNotifications array
-    notifications.forEach(notification => {
-        // Check if notification already exists in AllNotifications based on fr_id
-        const exists = AllNotifications.some(existingNotif => existingNotif.fr_id === notification.fr_id);
+    const modalContent = document.getElementById('notif-modal-content');
+    modalContent.innerHTML = ''; // Clear existing notifications
 
-        if (!exists) {
-            // Add new notification to the array
-            AllNotifications.push(notification);
+    AllNotifications.forEach(notification => {
+        const notifItem = document.createElement('div');
+        notifItem.className = 'notif-item';
+        notifItem.id = `notif-${notification.fr_id}`;
 
-            // Create notification item
-            const notifItem = document.createElement('div');
-            notifItem.className = 'notif-item';
-            notifItem.id = `notif-${notification.fr_id}`; // Unique ID
+        let notifText = `${notification.user_username} `;
+        notifText += notification.type === 'pending' 
+            ? 'sent you a friend request' 
+            : 'accepted your friend request';
 
-            // Determine the notification text based on type
-            let notifText;
-            if (type === 'pending') {
-                notifText = `${notification.user_username} sent you a friend request`;
-            } else if (type === 'accepted') {
-                notifText = `${notification.user_username} accepted your friend request`;
-            } else {
-                notifText = `You have a new notification`;
-            }
+        const notifTextElement = document.createElement('span');
+        notifTextElement.textContent = notifText;
 
-            const notifTextElement = document.createElement('span');
-            notifTextElement.textContent = notifText;
+        const closeButton = document.createElement('i');
+        closeButton.className = 'fa-solid fa-times close-btn';
+        closeButton.dataset.frId = notification.fr_id;
+        closeButton.dataset.userId = userIdHeader;
+        closeButton.dataset.type = notification.type;
 
-            // Close button ❌ for notifications
-            const closeButton = document.createElement('i');
-            closeButton.className = 'fa-solid fa-times close-btn';
-            closeButton.dataset.frId = notification.fr_id;
-            closeButton.dataset.userId = userId;
-            closeButton.dataset.type = type;
-
-            // Append text and close button to the notification item
-            notifItem.appendChild(notifTextElement);
-            notifItem.appendChild(closeButton);
-
-            modal.appendChild(notifItem);
-        }
+        notifItem.appendChild(notifTextElement);
+        notifItem.appendChild(closeButton);
+        modalContent.appendChild(notifItem);
     });
 
-    // Update the badge count
-    notifBadge.textContent = AllNotifications.length;
-    notifBadge.style.display = AllNotifications.length > 0 ? 'inline-block' : 'none';
+    updateNotificationUI();
+}
 
-    // Add event listener to toggle modal visibility
-    if (!bellIcon.dataset.listenerAttached) {
-        bellIcon.addEventListener('click', function () {
-            console.log('Opening modal');
-            modal.classList.toggle('hidden');
-        });
-        bellIcon.dataset.listenerAttached = 'true'; // Mark as having a listener
-    }
+// Create modal once and append it to the container
+function createNotificationModal() {
+    const container = document.getElementById('notification-center-ctn');
+    
+    const modal = document.createElement('div');
+    modal.className = 'notif-modal hidden';
+    modal.id = 'notif-modal';
 
+    const modalTitle = document.createElement('h3');
+    modalTitle.className = 'notif-title';
+    modalTitle.textContent = 'Notifications';
 
-    // Add event listener for all close buttons (using event delegation)
-    document.addEventListener('click', function (event) {
+    const clearAllButton = document.createElement('button');
+    clearAllButton.textContent = 'Clear All';
+    clearAllButton.className = 'clear-all-btn';
+    clearAllButton.addEventListener('click', clearAllNotifications);
+    
+    modalTitle.appendChild(clearAllButton);
+    modal.appendChild(modalTitle);
+
+    const modalContent = document.createElement('div');
+    modalContent.id = 'notif-modal-content';
+    modal.appendChild(modalContent);
+
+    container.appendChild(modal);
+
+    // Attach event listener once for close buttons
+    modal.addEventListener('click', function(event) {
         if (event.target.classList.contains('close-btn')) {
-            const frId = event.target.dataset.frId;
-            const userId = event.target.dataset.userId;
-            const typeBtn = event.target.dataset.type;
-    
-            // Prevent multiple calls for the same notification
-            event.stopImmediatePropagation(); // Prevents further propagation of the event
-    
-            if (typeBtn === 'pending') {
-                console.log("Type", typeBtn);
-                updateNotificationFriendRequestPending(frId, userId); 
-            } else if (typeBtn === 'accepted') {
-                console.log("Type", typeBtn);
-                updateNotificationFriendRequestAccepted(frId, userId); 
-            } else {
-                console.log('Unknown notification type');
-            }
-    
-            // Remove the notification from the array after dismissal
-            const notifIndex = AllNotifications.findIndex(existingNotif => existingNotif.fr_id === frId);
-            if (notifIndex !== -1) {
-                AllNotifications.splice(notifIndex, 1); 
-            }
-    
-            // Update the notification badge count
-            notifBadge.textContent = AllNotifications.length;
-            notifBadge.style.display = AllNotifications.length > 0 ? 'inline-block' : 'none';
+            handleNotificationClose(event.target);
+        }
+    });
+}
+
+// Function to handle notification close actions
+function handleNotificationClose(target) {
+    const frId = target.dataset.frId;
+    const userId = target.dataset.userId;
+    const typeBtn = target.dataset.type;
+
+    if (typeBtn === 'pending') {
+        console.log("Type", typeBtn);
+        updateNotificationFriendRequestPending(frId, userId);
+    } else if (typeBtn === 'accepted') {
+        console.log("Type", typeBtn);
+        updateNotificationFriendRequestAccepted(frId, userId);
+    } else {
+        console.log('Unknown notification type');
+    }
+}
+
+function updateNotificationUI() {
+    const notifBadge = document.getElementById('notif-badge');
+    const notifBell = document.getElementById('notification-bell');
+
+    if (AllNotifications.length > 0) {
+        notifBadge.textContent = AllNotifications.length;
+        notifBadge.style.display = 'inline-block';
+        notifBell.style.display = 'inline-block';
+    } else {
+        notifBadge.style.display = 'none';
+        notifBell.style.display = 'none';
+        document.getElementById('notif-modal').classList.add('hidden');
+    }
+}
+
+
+function clearAllNotifications() {
+    const notificationsToClear = [...AllNotifications];
+    notificationsToClear.forEach(notification => {
+        const { fr_id, type } = notification;
+        const userId = userIdHeader;
+        if (type === 'pending') {
+            updateNotificationFriendRequestPending(fr_id, userId, type);
+        } else if (type === 'accepted') {
+            updateNotificationFriendRequestAccepted(fr_id, userId, type);
         }
     });
 }
@@ -554,18 +516,26 @@ function fetchUpdates() {
     fetchUnreadMessage(userIdHeader);
 }
 
-// Démarrer les mises à jour périodiques au chargement de la page
 document.addEventListener("DOMContentLoaded", function() {
     fetchUpdates();
-    setTimeout(fetchUpdates, 1000)
-    setInterval(fetchUpdates, 20000); // Rafraîchir toutes les 20 secondes (20000 ms)
+    setTimeout(fetchUpdates, 1000);
+    setInterval(fetchUpdates, 20000); // Refresh every 20 seconds
+
+    document.getElementById('notification-bell').addEventListener('click', function(event) {
+        const modal = document.getElementById('notif-modal');
+        if (modal) {
+            modal.classList.toggle('hidden');
+        }
+        event.stopPropagation(); // Prevent closing immediately
+    });
 
     document.addEventListener('click', function(event) {
         const modal = document.getElementById('notif-modal');
         const bell = document.getElementById('notification-bell');
-    
-        if (!modal.contains(event.target) && !bell.contains(event.target)) {
+
+        if (modal && !modal.contains(event.target) && !bell.contains(event.target)) {
             modal.classList.add('hidden');
         }
     });
 });
+

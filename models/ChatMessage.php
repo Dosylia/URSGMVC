@@ -133,6 +133,30 @@ class ChatMessage extends DataBase
 
     }
 
+    public function getMessageById($chatId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                *
+                                            FROM
+                                                `chatmessage`
+                                            WHERE
+                                                `chat_id` = ?
+        ");
+
+        $query -> execute([$chatId]);
+        $getMessageTest = $query -> fetch();
+
+        if($getMessageTest)
+        {
+            return $getMessageTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function getMessage($userId, $friendId)
     {
         $query = $this -> bdd -> prepare("

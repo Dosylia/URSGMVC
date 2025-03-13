@@ -340,6 +340,16 @@ class ChatMessageController
                     echo json_encode(['success' => false, 'error' => 'You are not friends with this user']);
                     return;
                 }
+
+                if ($replyToChatId !== null) {
+                    $originalMessage = $this->chatmessage->getMessageById($replyToChatId);
+                
+                    if (!$originalMessage || 
+                        ($originalMessage['chat_senderId'] != $this->getReceiverId() && $originalMessage['chat_receiverId'] != $this->getReceiverId())) {
+                        echo json_encode(['success' => false, 'error' => 'Invalid message reference']);
+                        return;
+                    }
+                }
     
             $insertMessage = $this->chatmessage->insertMessageWebsite($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $replyToChatId, $status);
     
