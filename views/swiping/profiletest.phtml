@@ -1,0 +1,69 @@
+<section id="user-container"> <!--Flex column -->
+    <div id="user-top-container"> <!--Flex column -->
+        <?php if  (($user['user_isVip']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
+            <span id="badge-container">
+                <?php if ($user['user_isVip']) : ?>
+                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                <?php endif; ?>
+                <?php if ($user['user_isPartner']) : ?>
+                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                <?php endif; ?>  
+                <?php if ($user['user_isCertified']) : ?>
+                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                <?php endif; ?>  
+            </span>
+        <?php endif; ?>
+        <span id="edit-profile-container"><i class="fa-solid fa-pen-to-square"></i>Edit Profile</span>
+        <div id="user-top-content"> <!--Flex column -->
+            <div id="profile-picture-container">
+                <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                    <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                <?php else :?>
+                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                <?php endif; ?>
+                
+                <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+                    <?php
+                    $profilePictures = array_filter($ownedItems, function($item) {
+                        return $item['items_category'] === 'profile Picture';
+                    });
+                    ?>
+                    <?php if (count($profilePictures) > 0) : ?>
+                        <?php foreach ($profilePictures as $item) : ?>
+                            <?php if ($item['userItems_isUsed'] === 1) : ?>
+                                <img class="frame_around_picture" src="public/images/store/<?= str_replace('.jpg', '.png', $item['items_picture']) ?>" alt="<?= $item['items_name'] ?>">
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+
+            <div id="user-info"> <!--Flex row -->
+                <h2><?= ucfirst($user['user_username']) ?></h2>
+                <p>,<?= ucfirst($user['user_age']) ?></p>
+            </div>
+    </div>
+    <div id="user-bottom-container"> <!--Flex column -->
+        <nav id="user-bottom-nav"> <!--Flex row with JS -->
+            <button type="button" id="aboutme-btn" class="focused">About me</button>
+            <button type="button" id="pictures-btn">Pictures</button>
+            <button type="button" id="socials-btn">Socials</button>
+            <button type="button" id="requests-btn">Requests</button>
+        </nav>
+        <hr id="hr-user-bottom-nav">
+        <div id="aboutme-container"> <!--Flex row with -->
+            <h3>About me</h3>
+        </div>
+        <div id="pictures-container"> <!--Flex row with -->
+            <h3>Pictures</h3>
+        </div>
+        <div id="socials-container"> <!--Flex row with -->
+            <h3>Socials</h3>
+        </div>
+        <div id="requests-container"> <!--Flex row with -->
+            <h3>Requests</h3>
+        </div>
+    </div>
+</section>
+
+<script src="public/js/swiping/profile_nav.js"></script>

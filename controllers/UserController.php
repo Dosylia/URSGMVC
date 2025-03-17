@@ -596,6 +596,65 @@ class UserController
 
     }
 
+    public function profileTest() {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
+        {
+            if (isset($_GET['username']))
+            {
+                if($_GET['username'] !== $_SESSION['username']) 
+                {
+                    $username = $_GET['username'];
+                    header("Location: /anotherUser&username=" . $username);
+                    exit();                    
+                }
+            }
+
+            // Get important datas
+            require_once 'keys.php';
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            if ($user['user_game'] == "League of Legends")
+            {
+                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            }
+            else 
+            {
+                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+            }
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+
+            $current_url = "https://ur-sg.com/userProfile";
+            $template = "views/swiping/profiletest";
+            $page_title = "URSG - Profile";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            if (isset($_GET['username']))
+            {
+                if($_GET['username'] !== $_SESSION['username']) 
+                {
+                    $username = $_GET['username'];
+                    header("Location: /anotherUser&username=" . $username);
+                    exit();                    
+                }
+            }
+            else 
+            {
+                header("Location: /");
+                exit();
+            }
+        }
+    }
+
     public function addBonusPicture() {
         $targetDir = "public/upload/";
         $originalFileName = basename($_FILES["file"]["name"]);

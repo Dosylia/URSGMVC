@@ -185,6 +185,7 @@ $actionMap = [
     'userTest' => [UserController::class, 'pageUserProfileTest'],
     'addBonusPicture' => [UserController::class, 'addBonusPicture'],
     'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
+    'profileTest' => [UserController::class, 'profileTest'],
 ];
 
 $action = "home";
