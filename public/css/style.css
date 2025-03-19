@@ -2,8 +2,8 @@
     --dark-grey: #151416;
     --dark-ligher-grey: #302e31;
     --ligher--grey: #4f4b52;
-    --main--red: rgb(231, 64, 87);
-    --dark--red: rgb(152, 12, 31);
+    --main--red: #e74057;
+    --dark--red: #980c1f;
     --white: rgb(255, 255, 255);
   }
 
@@ -94,6 +94,7 @@
   border: none;
   height: 1000px;
   margin: 20px auto;
+  height: 100%;
 }
 
 .dark-mode #user-container {
@@ -136,6 +137,8 @@
   align-items: center;
   gap: 20px;
   min-height: 500px;
+  max-height: 100%;
+  margin-bottom: 20px;
 }
 
 #user-info {
@@ -160,6 +163,9 @@
   display: flex;
   flex-direction: column; 
   gap: 5px;
+  min-height: 500px;
+  max-height: 100%;
+  position: relative;
 }
 
 #profile-picture-container {
@@ -171,7 +177,7 @@
   display: flex;
   gap: 7%;
   width: 90%;
-  margin-left: 30px;
+  margin-left: 5%;
 }
 
 #user-bottom-nav button {
@@ -180,6 +186,17 @@
   background: none;
   font-size: 20px;
   cursor: pointer;
+}
+
+#user-bottom-nav button:hover {
+  color: var(--main--red);
+}
+
+#aboutme-container,
+#pictures-container,
+#socials-container,
+#requests-container {
+    display: none;
 }
 
 #user-bottom-nav button.focused {
@@ -203,6 +220,85 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
+}
+
+.btn_newPicture {
+  background: linear-gradient(135deg, var(--main--red), #8e2730); 
+  border-radius: 11px;
+  width: 500px;
+  min-height: 50px;
+  height: fit-content;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: "Open Sans", sans-serif; 
+  text-align: center;
+  border: none;
+  text-shadow: 0.2px 0.2px 0.5px black;
+  transition: transform 2s;
+  font-size: 0.8rem;
+  padding: 0 10px;
+  box-sizing: border-box;
+  width: 100px;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+}
+
+.btn_newPicture:hover {
+  background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
+}
+
+.bonusPicture_ctn {
+  width: 100%;
+}
+
+.bonusPicture_row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 60px;
+  width: 100%;
+  margin-bottom: 20px
+}
+
+.bonusPicture_wrapper {
+  position: relative;
+  width: 30%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.bonusPicture_delete {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  width: 40px;
+}
+
+.user_bonuspicture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* LOADING INDICATOR */
+
+#loading-indicator img {
+  width: 50px;
+  height: 50px;
 }
 
 
@@ -1538,6 +1634,15 @@ section.siteMap tr:nth-child(even) {
   margin-top: 20px;
 }
 
+.pictures-rowTest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  align-items: center;
+}
+
 /* Styling for each picture wrapper */
 .picture-wrapper, .picture-wrapper-swiping {
   position: relative;
@@ -1651,7 +1756,7 @@ section.siteMap tr:nth-child(even) {
   width: 100px;
 }
 
-.btn_addPicture:hover {
+.btn_addPicture:hover, .btn_addPictureTest:hover {
   background: linear-gradient(135deg, var(--dark-ligher-grey), rgba(88, 86, 86, 0.9));
   transform: scale(1.05);
   cursor: pointer;
@@ -5849,6 +5954,12 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 1150px) {
+
+  .btn_newPicture {
+    font-size: 0.8rem;
+    width: 100px;
+  }
+
   .user_page_main_content {
     padding: 0;
     width: 100%;
@@ -5859,12 +5970,6 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 1018px) {
-
-  .minigame-window {
-    width: 70%;
-    gap: 15px;
-    padding: 15px;
-  }
 
   .minigame-window .guess-text-title {
     font-size: 32px;
@@ -6365,6 +6470,12 @@ justify-content: center;
 }
 
 @media (max-width: 768px) {
+
+  .btn_newPicture {
+    min-height: 40px;
+    padding: 0 5px;
+  }
+
   .minigame-window {
     width: 70%;
     gap: 10px;
@@ -6752,6 +6863,25 @@ justify-content: center;
     border-radius: 20px;
   }
 
+  #user-bottom-nav button {
+    font-size: 13px;
+  }
+
+  #user-bottom-nav {
+    gap: 4%;
+    margin-left: 10px;
+  }
+
+  #edit-profile-container {
+    right: 20px;
+    gap: 5px;
+    font-size: 20px;
+  }
+
+  #badge-container {
+    left: 20px;
+  }
+
 }
 
 
@@ -6779,6 +6909,10 @@ justify-content: center;
 
   .about-users-box .about-users-selected {
     font-size: 1.2vh;
+  }
+
+  .btn_newPicture {
+    top: 50px;
   }
     
 }
@@ -6839,6 +6973,10 @@ justify-content: center;
     height: fit-content;
     text-align: center;
     width: unset;
+  }
+
+  .btn_newPicture {
+    top: 55px;
   }
     
 }

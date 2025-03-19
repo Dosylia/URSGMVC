@@ -30,7 +30,11 @@
                         <button id="looking-for-button">Change status to : Looking for a game</button>
                     <?php endif; ?>
 
-                    <div class="friend-list" id="friendList">
+                    <div id="loading-indicator" style="display: none; text-align: center;">
+                            <img src="public/images/loading.svg" alt="Loading..." />
+                    </div>
+
+                    <div class="friend-list" id="friendList" style="display: none;">
                         <?php foreach($getFriendlist as $friend) : ?>
                             <?php
                                 if ($user['user_id'] == $friend['sender_id']) {

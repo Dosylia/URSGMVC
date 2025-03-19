@@ -51,19 +51,119 @@
             <button type="button" id="requests-btn">Requests</button>
         </nav>
         <hr id="hr-user-bottom-nav">
+        <div id="loading-indicator" style="display: none; text-align: center;">
+            <img src="public/images/loading.svg" alt="Loading..." />
+        </div>
         <div id="aboutme-container"> <!--Flex row with -->
             <h3>About me</h3>
         </div>
         <div id="pictures-container"> <!--Flex row with -->
-            <h3>Pictures</h3>
+            <?php if ($user['user_bonusPicture'] !== NULL && $user['user_bonusPicture'] !== "[]"): ?>
+                <div class="bonusPicture_ctn">
+                        <button class="btn_newPicture" id="opendialog_bonuspicture">Add a picture</button>
+                    <div class="bonusPicture_row">
+                        <?php 
+                        if (!empty($user['user_bonusPicture'])): 
+                            $pictures = json_decode($user['user_bonusPicture'], true);
+                            if (!empty($pictures)): 
+                                foreach ($pictures as $picture): 
+                                    $picturePath = "public/upload/" . htmlspecialchars($picture);
+                        ?>
+                                    <div class="bonusPicture_wrapper">
+                                        <img src="<?= $picturePath ?>" class="user_bonuspicture" alt="User Picture">
+                                        <button class="bonusPicture_delete" data-filename="<?= htmlspecialchars($picture) ?>">&times;</button>
+                                    </div>
+                        <?php 
+                                endforeach; 
+                            endif;
+                        endif; 
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <dialog id="favDialogBonusPicture">
+                <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
+                    <p class="title_generalbox">Add a profile picture or update it</p>
+                    <p>Accepted format : JPG, JPEG and PNG</p>
+                    <div class="file-input-container">
+                        <input type="file" id="file" name="file" class="file-input">
+                        <label for="file" class="file-label">Choose a file</label>
+                        <span id="file-name" class="file-name">No file selected</span>
+                    </div>
+                    <input type="submit" name="submit" value="Upload" id="send-button">
+                </form>
+                <button id="closeButton_user_picture_bonus">X</button>
+            </dialog>
         </div>
         <div id="socials-container"> <!--Flex row with -->
-            <h3>Socials</h3>
+        <div class="user_page_update_row">
+                <?php if (!empty($user['user_twitter'])): ?>  
+                    <a target="_blank" href="https://twitter.com/<?= $user['user_twitter'] ?>">
+                    <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
+                <?php endif; ?>   
+                
+                <?php if (!empty($user['user_discord'])): ?>  
+                    <div class="user_page_discord">
+                        <img class="social_picture" id="discord_picture" src="public/images/discord_user.png" alt="discord_user">
+                        <p id="hidden_p">Discord : <?= $user['user_discord'] ?></p>
+                    </div>
+                <?php endif; ?>   
+                
+                <?php if (!empty($user['user_instagram'])): ?>
+                    <a target="_blank" href="https://www.instagram.com/<?= $user['user_instagram'] ?>">
+                    <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
+                <?php endif; ?>   
+
+                <?php if (!empty($user['user_twitch'])): ?>
+                    <a target="_blank" href="https://www.twitch.tv/<?= $user['user_twitch'] ?>">
+                    <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
+                <?php endif; ?>    
+                
+                <?php if (!empty($user['user_bluesky'])): ?>  
+                    <a target="_blank" href="https://bsky.app/profile/<?= $user['user_bluesky'] ?>">
+                    <img class="social_picture" src="public/images/bluesky_user.png" alt="bluesky_user"></a>
+                <?php endif; ?> 
+            </div>
         </div>
         <div id="requests-container"> <!--Flex row with -->
-            <h3>Requests</h3>
+            <?php if(!empty($friendRequest)) :?>
+            <div id="friendRequestData" style="display: none;">
+                <?= json_encode($friendRequest); ?>
+            </div>
+                <span id="friendrequest-backend"></span>
+                    <?php foreach ($friendRequest as $request) :?>
+                        <div class="friend_request_ctn" data-fr-id="<?= $request['fr_id'] ?>">
+                            <p>
+                                <a target="_blank" href="/anotherUser&username=<?= urlencode($request['user_username']) ?>">
+                                <?php if (isset($request['user_picture']) && $request['user_picture'] !== null): ?>
+                                    <img id="image_users_small" src="public/upload/<?= $request['user_picture'] ?>" alt="Picture of <?= $request['user_username'] ?>" />  
+                                <?php else :?>
+                                    <img id="image_users_small" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                                <?php endif; ?>
+                                    <span class="clickable"><?= $request['user_username'] ?>, <?= $request['user_age'] ?>, <?= $request['user_gender'] ?></span>
+                                </a>   
+                            </p><br>
+                            <div class="friend_request_ctn_btn">
+                            <a href="#" class="accept_friend_button" 
+                                data-fr-id="<?= $request['fr_id'] ?>" 
+                                data-user-id="<?= $user['user_id'] ?>" 
+                                data-status="accepted">
+                                <button>Accept</button>
+                            </a>
+                            <a href="#" class="refuse_friend_button" 
+                                data-fr-id="<?= $request['fr_id'] ?>"
+                                data-user-id="<?= $user['user_id'] ?>"  
+                                data-status="rejected">
+                                <button>Refuse</button>
+                            </a>
+                            </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
 
 <script src="public/js/swiping/profile_nav.js"></script>
+<script src="public/js/swiping/friendrequest.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/swiping/bonusPictures.js?nocache=<%= Date.now() %>"></script>

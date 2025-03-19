@@ -75,91 +75,119 @@ function updateOnlineStatus(friendList) {
 }
 
 // Render the friend list dynamically
-function renderFriendList(friendList, page) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, friendList.length);
-    const paginatedFriends = friendList.slice(startIndex, endIndex);
-
+async function renderFriendList(friendList, page) {
+    const loadingIndicator = document.getElementById('loading-indicator');
     const friendListContainer = document.getElementById('friendList');
-    friendListContainer.innerHTML = '';
 
-    if (paginatedFriends.length > 0) {
-        const firstFriend = paginatedFriends[0];
-        const lookingForButton = document.getElementById('looking-for-button');
-
-        if (firstFriend.friend_isLookingGameUser === 1) {
-            lookingForButton.style.background = "linear-gradient(45deg, #4CAF50, #66bb6a)";
-        } else {
-            lookingForButton.style.background = "linear-gradient(135deg, #722084, #b026cf)";
-        }
+    // Show loading indicator
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'block';
     }
 
-    paginatedFriends.forEach(friend => {
-        const friendElement = document.createElement('a');
-        friendElement.className = "username_chat_friend clickable";
-        friendElement.href = "#"; // Updated to `#` to match your provided structure
-        friendElement.dataset.friendId = friend.friend_id;
+    try {
+        // Simulating a delay (remove this in actual code)
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        const friendDiv = document.createElement('div');
-        friendDiv.className = 'friend';
-        friendDiv.dataset.senderId = friend.friend_id;
+        // Clear friend list
+        friendListContainer.innerHTML = '';
 
-        const avatarDiv = document.createElement('div');
-        avatarDiv.className = 'friend-avatar';
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, friendList.length);
+        const paginatedFriends = friendList.slice(startIndex, endIndex);
 
-        const img = document.createElement('img');
-        img.src = friend.friend_picture ? `public/upload/${friend.friend_picture}` : 'public/images/defaultprofilepicture.jpg';
-        img.alt = `Avatar ${friend.friend_username}`;
-        img.loading = 'lazy';
-        avatarDiv.appendChild(img);
+        if (paginatedFriends.length > 0) {
+            const firstFriend = paginatedFriends[0];
+            const lookingForButton = document.getElementById('looking-for-button');
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.className = 'friend-details';
-
-        const chatNameSpan = document.createElement('span');
-        chatNameSpan.className = 'chat-name clickable';
-        chatNameSpan.innerHTML = `${friend.friend_username} <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>`;
-
-        if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
-            const lookingForGame = document.createElement('span');
-            lookingForGame.className = 'looking-game-status';
-            chatNameSpan.appendChild(lookingForGame);
-        } else if (friend.friend_online === 1) {
-            const onlineStatus = document.createElement('span');
-            onlineStatus.className = 'online-status';
-            chatNameSpan.appendChild(onlineStatus);
+            if (firstFriend.friend_isLookingGameUser === 1) {
+                lookingForButton.style.background = "linear-gradient(45deg, #4CAF50, #66bb6a)";
+            } else {
+                lookingForButton.style.background = "linear-gradient(135deg, #722084, #b026cf)";
+            }
         }
 
-        const gameLogo = document.createElement('img');
-        gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/lol-logo.png' : 'public/images/Valorant.png';
-        gameLogo.alt = friend.friend_game;
+        paginatedFriends.forEach(friend => {
+            const friendElement = document.createElement('a');
+            friendElement.className = "username_chat_friend clickable";
+            friendElement.href = "#";
+            friendElement.dataset.friendId = friend.friend_id;
 
-        detailsDiv.appendChild(chatNameSpan);
-        detailsDiv.appendChild(gameLogo);
+            const friendDiv = document.createElement('div');
+            friendDiv.className = 'friend';
+            friendDiv.dataset.senderId = friend.friend_id;
 
-        friendDiv.appendChild(avatarDiv);
-        friendDiv.appendChild(detailsDiv);
-        friendElement.appendChild(friendDiv);
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'friend-avatar';
 
-        friendListContainer.appendChild(friendElement);
+            const img = document.createElement('img');
+            img.src = friend.friend_picture ? `public/upload/${friend.friend_picture}` : 'public/images/defaultprofilepicture.jpg';
+            img.alt = `Avatar ${friend.friend_username}`;
+            img.loading = 'lazy';
+            avatarDiv.appendChild(img);
 
-        // Update unread counts for this friend
-        const unreadCount = globalUnreadCounts[friend.friend_id] || 0;
-        const friendContainer = document.getElementById(`unread_messages_for_friend_container_${friend.friend_id}`);
-        if (unreadCount > 0 && friendContainer) {
-            const span = document.createElement('span');
-            span.className = 'unread-count';
-            span.style.marginLeft = '10px';
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'friend-details';
 
-            const button = document.createElement('button');
-            button.className = 'unread_message';
-            button.textContent = unreadCount;
+            const chatNameSpan = document.createElement('span');
+            chatNameSpan.className = 'chat-name clickable';
+            chatNameSpan.innerHTML = `${friend.friend_username} <span id="unread_messages_for_friend_container_${friend.friend_id}"></span>`;
 
-            span.appendChild(button);
-            friendContainer.appendChild(span);
+            if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
+                const lookingForGame = document.createElement('span');
+                lookingForGame.className = 'looking-game-status';
+                chatNameSpan.appendChild(lookingForGame);
+            } else if (friend.friend_online === 1) {
+                const onlineStatus = document.createElement('span');
+                onlineStatus.className = 'online-status';
+                chatNameSpan.appendChild(onlineStatus);
+            }
+
+            const gameLogo = document.createElement('img');
+            gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/lol-logo.png' : 'public/images/Valorant.png';
+            gameLogo.alt = friend.friend_game;
+
+            detailsDiv.appendChild(chatNameSpan);
+            detailsDiv.appendChild(gameLogo);
+
+            friendDiv.appendChild(avatarDiv);
+            friendDiv.appendChild(detailsDiv);
+            friendElement.appendChild(friendDiv);
+
+            friendListContainer.appendChild(friendElement);
+            friendListContainer.style.display = 'block';
+
+            // Update unread counts for this friend
+            const unreadCount = globalUnreadCounts[friend.friend_id] || 0;
+            const friendContainer = document.getElementById(`unread_messages_for_friend_container_${friend.friend_id}`);
+            if (unreadCount > 0 && friendContainer) {
+                const span = document.createElement('span');
+                span.className = 'unread-count';
+                span.style.marginLeft = '10px';
+
+                const button = document.createElement('button');
+                button.className = 'unread_message';
+                button.textContent = unreadCount;
+
+                span.appendChild(button);
+                friendContainer.appendChild(span);
+            }
+        });
+
+        // Hide loading indicator after successful rendering
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
         }
-    });
+    } catch (error) {
+        console.error("Error loading friend list:", error);
+
+        // If something went wrong, keep the loading indicator visible
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+            friendListContainer.style.display = 'block';
+        }
+    }
 }
+
 
 
 // Set up pagination

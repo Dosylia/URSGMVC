@@ -1,6 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll("#user-bottom-nav button");
-    const sections = document.querySelectorAll("#user-bottom-container > div:not(:first-child)"); // Excludes nav and hr
+    const sections = document.querySelectorAll("#aboutme-container, #pictures-container, #socials-container, #requests-container");
+    const loadingIndicator = document.getElementById("loading-indicator");
+
+    // Initially hide all sections
+    sections.forEach(section => section.style.display = "none");
+
+    // Show loading indicator
+    loadingIndicator.style.display = "block";
+
+    // Simulate content loading (replace with actual loading logic if needed)
+    setTimeout(() => {
+        loadingIndicator.style.display = "none"; // Hide loading indicator
+        document.getElementById("aboutme-container").style.display = "flex"; // Show default section
+    }, 1000); // Adjust timing if necessary
 
     buttons.forEach(button => {
         button.addEventListener("click", () => {
@@ -18,8 +31,5 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById(sectionId).style.display = "flex";
         });
     });
-
-    // Initialize: Show only the first section by default
-    sections.forEach(section => section.style.display = "none");
-    document.getElementById("aboutme-container").style.display = "flex";
 });
+
