@@ -10,6 +10,7 @@ let lastNotifContent = [];
 let lastNotifCountPending = 0;
 let lastNotifContentPending = [];
 let AllNotifications = [];
+const requestBtn = document.getElementById('requests-btn');
 
 function fetchFriendRequest(userId) {
     fetch('index.php?action=getFriendRequestWebsite', {
@@ -30,6 +31,19 @@ function fetchFriendRequest(userId) {
             AllNotifications.push(...pendingWithType);
             lastNotifCountPending = data.pendingRequests.length;
             lastNotifContentPending = data.pendingRequests;
+            if (requestBtn) {
+                let notificationBadgeProfile = document.querySelector('#requests-badge');
+                if (!notificationBadgeProfile) {
+                    notificationBadgeProfile = document.createElement('span');
+                    notificationBadgeProfile.id = 'requests-badge';
+                    notificationBadgeProfile.classList.add('notif-badge-profile');
+                    notificationBadgeProfile.textContent = lastNotifCountPending;
+                    requestBtn.style.position = 'relative';
+                    requestBtn.appendChild(notificationBadgeProfile);
+                } else {
+                    notificationBadgeProfile.textContent = lastNotifCountPending;
+                }
+            }
         } else {
             // Remove all pending notifications
             AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');

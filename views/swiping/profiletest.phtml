@@ -55,12 +55,12 @@
             <img src="public/images/loading.svg" alt="Loading..." />
         </div>
         <div id="aboutme-container"> <!--Flex row with -->
-            <h3>About me</h3>
+        <button class="btn_updateProfile">Bind Riot account</button>
         </div>
         <div id="pictures-container"> <!--Flex row with -->
             <?php if ($user['user_bonusPicture'] !== NULL && $user['user_bonusPicture'] !== "[]"): ?>
                 <div class="bonusPicture_ctn">
-                        <button class="btn_newPicture" id="opendialog_bonuspicture">Add a picture</button>
+                        <button class="btn_updateProfile" id="opendialog_bonuspicture">Add a picture</button>
                     <div class="bonusPicture_row">
                         <?php 
                         if (!empty($user['user_bonusPicture'])): 
@@ -95,34 +95,47 @@
                 <button id="closeButton_user_picture_bonus">X</button>
             </dialog>
         </div>
-        <div id="socials-container"> <!--Flex row with -->
-        <div class="user_page_update_row">
-                <?php if (!empty($user['user_twitter'])): ?>  
-                    <a target="_blank" href="https://twitter.com/<?= $user['user_twitter'] ?>">
-                    <img class="social_picture" src="public/images/twitter_user.png" alt="twitter_user"></a>
-                <?php endif; ?>   
-                
-                <?php if (!empty($user['user_discord'])): ?>  
-                    <div class="user_page_discord">
-                        <img class="social_picture" id="discord_picture" src="public/images/discord_user.png" alt="discord_user">
-                        <p id="hidden_p">Discord : <?= $user['user_discord'] ?></p>
-                    </div>
-                <?php endif; ?>   
-                
-                <?php if (!empty($user['user_instagram'])): ?>
-                    <a target="_blank" href="https://www.instagram.com/<?= $user['user_instagram'] ?>">
-                    <img class="social_picture" src="public/images/instagram_user.png" alt="instagram_user"></a>  
-                <?php endif; ?>   
+        <div id="socials-container">
+            <?php 
+            // Define social platforms and their URLs
+            $socials = [
+                'twitter' => 'https://twitter.com/',
+                'discord' => 'https://discord.com/users/',
+                'instagram' => 'https://www.instagram.com/',
+                'twitch' => 'https://www.twitch.tv/',
+                'bluesky' => 'https://bsky.app/profile/'
+            ];
 
-                <?php if (!empty($user['user_twitch'])): ?>
-                    <a target="_blank" href="https://www.twitch.tv/<?= $user['user_twitch'] ?>">
-                    <img class="social_picture" src="public/images/twitch_user.png" alt="twitch_user"></a>  
-                <?php endif; ?>    
-                
-                <?php if (!empty($user['user_bluesky'])): ?>  
-                    <a target="_blank" href="https://bsky.app/profile/<?= $user['user_bluesky'] ?>">
-                    <img class="social_picture" src="public/images/bluesky_user.png" alt="bluesky_user"></a>
-                <?php endif; ?> 
+            foreach ($socials as $key => $url) :
+                $username = $user["user_$key"] ?? '';
+                $imgSrc = "public/images/{$key}_user.png";
+            ?>
+                <div class="social-container-column" data-platform="<?= $key ?>">
+                    <?php if (!empty($username)): ?>  
+                        <div class="social-container-right">
+                            <a target="_blank" href="<?= $url . htmlspecialchars($username) ?>">
+                                <img class="social_picture" src="<?= $imgSrc ?>" alt="<?= $key ?>_user">
+                                <p><?= htmlspecialchars($username) ?></p>
+                            </a>
+                            <i class="fa-solid fa-up-right-from-square"></i>
+                        </div>
+                        <div class="social-container-left">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <i class="fa-solid fa-link-slash"></i>
+                        </div>
+                    <?php else: ?>
+                        <div class="social-container-right">
+                            <img class="social_picture" src="<?= $imgSrc ?>" alt="<?= $key ?>_user">
+                            <p class="shadow">UNKNOWN</p>
+                        </div>
+                        <div class="social-container-left">
+                            <i class="fa-solid fa-link"></i> <!-- Link icon -->
+                        </div>
+                    <?php endif; ?>
+                </div>  
+            <?php endforeach; ?>
+            <div class="coming-soon">
+                <p>COMING SOON</p>
             </div>
         </div>
         <div id="requests-container"> <!--Flex row with -->
@@ -167,3 +180,4 @@
 <script src="public/js/swiping/profile_nav.js"></script>
 <script src="public/js/swiping/friendrequest.js?nocache=<%= Date.now() %>"></script>
 <script src="public/js/swiping/bonusPictures.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/swiping/socialLinks.js?nocache=<%= Date.now() %>"></script>

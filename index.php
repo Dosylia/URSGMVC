@@ -92,6 +92,7 @@ $actionMap = [
     'settings' => [UserController::class, 'pageSettings'],
     'updateLookingFor' => [UserLookingForController::class, 'updateLookingFor'],
     'updateSocial' => [UserController::class, 'updateSocial'],
+    'updateSocialsWebsite' => [UserController::class, 'updateSocialsWebsite'],
     'updateSocialPhone' => [UserController::class, 'updateSocialPhone'],
     'updatePicture' => [UserController::class, 'updatePicture'],
     'updatePicturePhone' => [UserController::class, 'updatePicturePhone'],

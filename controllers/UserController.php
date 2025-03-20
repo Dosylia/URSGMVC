@@ -441,6 +441,70 @@ class UserController
 
     }
 
+    public function updateSocialsWebsite()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['param']))
+        {
+            $data = json_decode($_POST['param']);
+
+            if (isset($data->discord) && isset($data->userId) && isset($data->twitter) && isset($data->instagram) && isset($data->twitch) && isset($data->bluesky))
+            {
+                $userId = $this->validateInput($data->userId);
+                $this->setUserId($userId);
+                $discord = $this->validateInput($data->discord);
+                $this->setDiscord($discord);
+                $twitter = $this->validateInput($data->twitter);
+                $this->setTwitter($twitter);
+                $instagram = $this->validateInput($data->instagram);
+                $this->setInstagram($instagram);
+                $twitch = $this->validateInput($data->twitch);
+                $this->setTwitch($twitch);
+                $bluesky = $this->validateInput($data->bluesky);
+                $this->setBluesky($bluesky);
+
+                $user = $this->user->getUserById($this->getUserId());
+
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                    return;
+                }
+            
+                $token = $matches[1];
+            
+                // Validate Token for User
+                if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                    return;
+                }
+
+                $updateSocial = $this->user->updateSocial2($user['user_username'],  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch(), $this->getBluesky());
+
+
+                if ($updateSocial)
+                {
+                    $response = array('message' => 'Success');
+                    echo json_encode($response);
+                    exit();  
+                }
+                else
+                {
+                    $response = array('message' => 'Token not valid');
+                    echo json_encode($response);
+                    exit();
+                }
+            } else {
+                $response = array('message' => 'Could not update user');
+                echo json_encode($response);
+                exit();
+            }
+
+        }
+
+    }
+
     public function updateSocialPhone()
     {
         if (isset($_POST['userData'])) // DATA SENT BY AJAX

@@ -47,7 +47,7 @@ function updateFriend(frId, userId, status) {
 
 // Render friend requests for the current page
 function renderFriendRequests() {
-    const friendRequestBox = document.querySelector('.friendrequest_box');
+    const friendRequestBox = document.querySelector('#requests-container');
 
     if (friendRequests.length === 0) {
         friendRequestBox.innerHTML = '';
@@ -61,7 +61,6 @@ function renderFriendRequests() {
 
     // Render the friend requests with buttons
     friendRequestBox.innerHTML = `
-        <h2 class="title_generalbox">Friend requests</h2><br>
         <span id="friendrequest-backend"></span>
         ${requestsToDisplay
             .map(
