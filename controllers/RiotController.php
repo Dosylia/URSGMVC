@@ -104,6 +104,11 @@ class RiotController
                                 // Fetch the summoner profile to get profileIconId
                                 $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
 
+                                if ($summonerProfile === null) {
+                                    header('Location: /userProfile?message=Your League of Legends region does not match the account.');
+                                    exit();
+                                }
+
                                 // Now you can access the profileIconId
                                 $profileIconId = $summonerProfile['profileIconId'];
 

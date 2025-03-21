@@ -89,10 +89,10 @@
 
             <label for="server">Select your server</label>
             <select id="server" name="server">
-                <option value="<?= $lolUser['lol_server'] ?>" ><?= $lolUser['lol_server'] ?></option>
+                <option value="<?= $lolUser['lol_server'] ?>"><?= $lol_servers[$lolUser['lol_server']] ?? $lolUser['lol_server'] ?></option>
                 <?php foreach ($lol_servers as $server_key => $server_name) : ?>
-                    <?php if ($server_name !== $lolUser['lol_server']) : ?>
-                        <option value="<?= $server_name ?>"><?= $server_name ?></option>
+                    <?php if ($server_key !== $lolUser['lol_server']) : ?>
+                        <option value="<?= $server_key ?>"><?= $server_name ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
