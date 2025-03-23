@@ -111,19 +111,53 @@
 #badge-container {
   position: absolute;
   top: 20px;
-  left: 50px;
+  right: 50px;
 }
 
 #edit-profile-container {
   position: absolute;
   top: 20px;
-  right: 50px;
+  left: 0;
   display: flex;
   gap: 5px;
   color: black;
   font-size: 20px;
   font-family: 'Geologica', sans-serif;
   cursor: pointer;
+  flex-direction: column;
+}
+
+.btn_user_updates_profile {
+  width: 150px;
+  margin: 0 10px;
+  background: linear-gradient(135deg, var(--main--red), #8e2730);
+  border-radius: 11px;
+  min-height: 50px;
+  height: fit-content;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
+  border: none;
+  text-shadow: 0.2px 0.2px 0.5px black;
+  transition: transform 2s;
+  font-size: 0.8rem;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.btn_updateProfilePicture {
+  position: absolute;
+  top: -50px;
+  right: -30px;
+  color: var(--main--red);
+  cursor: pointer;
+  font-size: 40px;
+  background: none;
+  border: none;
 }
 
 .dark-mode #edit-profile-container {
@@ -323,9 +357,153 @@
 
 #aboutme-container {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  width: 100%;
+  margin: 60px auto 0;
+  flex-direction: column;
+  box-sizing: border-box;
 }
+
+.aboutme-match {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 80%;
+  justify-content: space-between;
+  position: relative;
+}
+
+.aboutme-match.champions-row {
+  width: 90%;
+}
+
+.aboutme-match .profile {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.aboutme-match .profile .profile-level{
+  position: absolute;
+  bottom: 2px;
+  z-index: 5000;
+  font-size: 20px;
+  background: rgba(59, 47, 49, 0.7);
+  width: 100px;
+  text-align: center;
+}
+
+.aboutme-match .profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.aboutme-match .icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: absolute;
+}
+
+.aboutme-match .icons.you {
+  top: 0;
+  left: 110px;
+}
+
+.aboutme-match .icons.mate {
+  top: 0;
+  right: 110px;
+}
+
+.aboutme-match .icons img {
+  width: 40px;
+  height: 40px;
+}
+
+.aboutme-match .match-divider {
+  flex-grow: 1;
+  height: 1px;
+  border-top: 3px dashed #aaa;
+  position: relative;
+  padding: 0 5px;
+}
+
+.aboutme-match .match-divider::before,
+.aboutme-match .match-divider::after {
+  content: "●"; 
+  position: absolute;
+  top: -6px;
+  color: #aaa;
+  font-size: 25px;
+}
+
+.aboutme-match .match-divider::before {
+  left: -8px;
+  top: -18px;
+}
+
+.aboutme-match .match-divider::after {
+  right: -8px;
+  top: -18px;
+}
+
+.aboutme-match .profile-mate {
+  background-color: #c89b3e;
+  color: white;
+  font-size: 50px;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.aboutme-match .champions {
+  display: flex;
+  gap: 5px;
+  margin-top: 30px;
+}
+
+.aboutme-match .champions img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.aboutme-match .champions.you img {
+  border: 3px solid var(--main--red);
+}
+
+.aboutme-match .champions.mate img {
+  border: 3px solid #c89b3e;
+}
+
+.aboutme-match .champions .lol-account {
+  color: white;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+}
+
+.other-data-profile {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
 
 .btn_updateProfile {
   background: linear-gradient(135deg, var(--main--red), #8e2730); 
@@ -861,6 +1039,115 @@ section.siteMap tr:nth-child(even) {
       width: 100%;
       resize: vertical;
   }
+
+  /* UPDATED CHAMPION SELECTION */
+
+  .shadow {
+    filter: brightness(0.6); 
+}
+
+#champion-picker {
+    margin-top: 50px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+#champion-picker .champions-picker-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#champion-picker .champions-picker-column img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 5px solid var(--main--red);
+    cursor: pointer;
+}
+
+#champion-picker .champions-picker-column {
+    font-size: 1.5rem;
+    font-family: 'Geologica', sans-serif;
+    font-weight: 500;
+}
+
+#champion-picker #skipSelection-btn {
+    background-color: var(--main--red);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 1.5rem;
+    font-family: 'Geologica', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.champion-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.champion-modal .modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90%;
+  position: relative;
+}
+
+.dark-mode .champion-modal .modal-content {
+  background-color: var(--dark-ligher-grey);
+}
+
+.champion-modal .modal-content  .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: var(--main--red);
+}
+
+.champion-modal .modal-content  .champion-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.champion-modal .modal-content .champion-list img {
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+}
+
+.champion-modal .modal-content .champion-search {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 50px;
+  font-size: 20px;
+}
   
   #selected-champions1,
   #selected-champions2,
@@ -1631,6 +1918,7 @@ section.siteMap tr:nth-child(even) {
     justify-content: center;
     gap: 5px;
     width: fit-content;
+    margin: 10px 0;
   }
 
   .about-uses-title {
@@ -6209,6 +6497,11 @@ justify-content: center;
 
 @media only screen and (max-width: 900px) {
 
+  .notif-modal {
+    position: absolute;
+    left: -200px;
+  }
+
   #user-container {
     width: 95%;
   }
@@ -6599,12 +6892,24 @@ justify-content: center;
   }
 
   .about-users-box {
-    width: 90%;
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    gap: 10px;
+  }
+
+  .about-users-box p {
+    font-size: 1vh;
   }
 
 }
 
 @media (max-width: 768px) {
+
+  #champion-picker {
+    flex-direction: column;
+}
 
   .btn_updateProfile {
     min-height: 40px;
@@ -6692,6 +6997,11 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+  #user-top-content {
+    min-height: 300px;
+    margin-bottom: 0;
+  }
 
   .user_page_main_content-swiping {
     padding: 0;
@@ -6815,6 +7125,39 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    #notification-bell {
+      font-size: 10px !important;
+    }
+
+    .aboutme-match .profile {
+      width: 70px;
+      height: 70px;
+    }
+
+
+    .aboutme-match .icons.you {
+      top: 100px;
+      left: 40px;
+    }
+
+    .aboutme-match .icons.mate {
+      top: 100px;
+      right: 40px;
+    }
+
+    .aboutme-match .champions img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .aboutme-match .champions {
+      flex-direction: column;
+    }
+
+    .aboutme-match .icons {
+      flex-direction: column;
+    }
 
     .frame_around_picture {
       top: -20px;

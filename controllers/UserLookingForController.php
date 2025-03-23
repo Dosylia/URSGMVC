@@ -121,9 +121,31 @@ class UserLookingForController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            if($user['user_game'] === "League of Legends") {
+                $defaultChampions = [
+                    'lf_lolmain1' => 'KaiSa',
+                    'lf_lolmain2' => 'Ezreal',
+                    'lf_lolmain3' => 'Jhin'
+                ];
+        
+                    // Check if the values are empty, and use the fallback if needed
+                    $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
+                    $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
+                    $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
+            } else {
+                $defaultChampions = [
+                    'lf_valmain1' => 'Viper',
+                    'lf_valmain2' => 'Omen',
+                    'lf_valmain3' => 'Sova'
+                ];
+        
+                // Check if the values are empty, and use the fallback if needed
+                $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
+                $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
+                $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
+            }
 
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
@@ -161,9 +183,33 @@ class UserLookingForController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            if($user['user_game'] === "League of Legends") {
+                $defaultChampions = [
+                    'lf_lolmain1' => 'KaiSa',
+                    'lf_lolmain2' => 'Ezreal',
+                    'lf_lolmain3' => 'Jhin'
+                ];
+        
+                    // Check if the values are empty, and use the fallback if needed
+                    $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
+                    $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
+                    $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
+            } else {
+                $defaultChampions = [
+                    'lf_valmain1' => 'Viper',
+                    'lf_valmain2' => 'Omen',
+                    'lf_valmain3' => 'Sova'
+                ];
+        
+                // Check if the values are empty, and use the fallback if needed
+                $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
+                $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
+                $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
+            }
+
+
             $title = "What are you looking for?";
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];

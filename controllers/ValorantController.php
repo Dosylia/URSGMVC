@@ -74,9 +74,18 @@ class ValorantController
 
           // Get important datas
           $user = $this-> user -> getUserByUsername($_SESSION['username']);
-          $allUsers = $this-> user -> getAllUsers();
-          $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
           $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+
+          $defaultChampions = [
+            'valorant_main1' => 'Viper',
+            'valorant_main2' => 'Omen',
+            'valorant_main3' => 'Sova'
+        ];
+
+        // Check if the values are empty, and use the fallback if needed
+        $valorantMain1 = !empty($valorantUser['valorant_main1']) ? $valorantUser['valorant_main1'] : $defaultChampions['valorant_main1'];
+        $valorantMain2 = !empty($valorantUser['valorant_main2']) ? $valorantUser['valorant_main2'] : $defaultChampions['valorant_main2'];
+        $valorantMain3 = !empty($valorantUser['valorant_main3']) ? $valorantUser['valorant_main3'] : $defaultChampions['valorant_main3'];
 
             
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
@@ -85,7 +94,7 @@ class ValorantController
 
             $current_url = "https://ur-sg.com/updateValorantPage";
             $template = "views/swiping/update_valorant";
-            $page_title = "URSG - Profile";
+            $page_title = "URSG - Update Valorant";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -102,14 +111,25 @@ class ValorantController
 
             // Get important datas
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+
+            $defaultChampions = [
+                'valorant_main1' => 'Viper',
+                'valorant_main2' => 'Omen',
+                'valorant_main3' => 'Sova'
+            ];
+    
+            // Check if the values are empty, and use the fallback if needed
+            $valorantMain1 = !empty($valorantUser['valorant_main1']) ? $valorantUser['valorant_main1'] : $defaultChampions['valorant_main1'];
+            $valorantMain2 = !empty($valorantUser['valorant_main2']) ? $valorantUser['valorant_main2'] : $defaultChampions['valorant_main2'];
+            $valorantMain3 = !empty($valorantUser['valorant_main3']) ? $valorantUser['valorant_main3'] : $defaultChampions['valorant_main3'];
+            
+                
             $valorant_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
             $current_url = "https://ur-sg.com/updateValorantAccount";
             $template = "views/swiping/update_valorantAccount";
-            $page_title = "URSG - Bind league account";
+            $page_title = "URSG - Update Valorant account";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -341,10 +361,11 @@ class ValorantController
             //     header("location:/userProfile?message=Not allowed");
             //     exit();
             // }
-
-            if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
-                header("location:/userProfile?message=Each agents must be unique");
-                exit();
+            if ($statusChampion == "0") {
+                if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
+                    header("location:/userProfile?message=Each agents must be unique");
+                    exit();
+                }
             }
 
             $updateValorant = $this->valorant->updateValorantData(

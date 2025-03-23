@@ -859,6 +859,7 @@ class UserController
 
             if ($key !== false) {
                 unset($bonusPictures[$key]);
+                $bonusPictures = array_values($bonusPictures);
             }
 
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
@@ -933,6 +934,7 @@ class UserController
 
             if ($key !== false) {
                 unset($bonusPictures[$key]);
+                $bonusPictures = array_values($bonusPictures);
             }
 
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {

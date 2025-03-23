@@ -24,49 +24,54 @@
             <option value="Competition and Chill">Competition/Ranked and chill</option>
         </select>
 
-        <div class="checkbox-container">
-            <label for="skipSelection">Skip champion selection</label>
-            <input type="checkbox" id="skipSelection" name="skipSelection" value="1">
+        <div id="champion-picker">
+            <div class="champions-picker-column">
+                <img src="public/images/champions/Kaisa.png" alt="Kai'Sa" class="champion-picker-img picker-main1">
+                <p id="main1-name">Main 1</p>
+            </div>
+            <div class="champions-picker-column">
+                <img src="public/images/champions/Ezreal.png" alt="Ezreal" class="champion-picker-img picker-main2">
+                <p id="main2-name">Main 2</p>
+            </div>
+            <div class="champions-picker-column">
+                <img src="public/images/champions/Jhin.png" alt="Jhin" class="champion-picker-img picker-main3">
+                <p id="main3-name">Main 3</p>
+            </div>
+            <div class="champions-picker-column">
+                <button type="button" id="skipSelection-btn">Skip</button>
+            </div>
+            <input type="hidden" id="main1" name="main1" value="" class="notranslate champion-picker-input">
+            <input type="hidden" id="main2" name="main2" value="" class="notranslate champion-picker-input">
+            <input type="hidden" id="main3" name="main3" value="" class="notranslate champion-picker-input">
+            <input type="hidden" id="skipSelection" name="skipSelection" value="0" data-page="create">
         </div>
-        
-        <div id="championSelection">
-            <h2>Pick 3 mains you would like to play with</h2>
-                <label for="main1">Main 1</label>
-                <button type="button" id="btnMain1">Select main 1</button>
-                <div id="popupMain1">
-                        <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main1Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
 
-                <input type="hidden" id="main1" name="main1" value="" class="notranslate">
-
-                <label for="main2">Main 2</label>
-                <button type="button" id="btnMain2">Select main 2</button>
-                <div id="popupMain2">
-                        <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main2Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
-
-                <input type="hidden" id="main2" name="main2" value="" class="notranslate">
-
-                <label for="main3">Main 3</label>
-                <button type="button" id="btnMain3">Select main 3</button>
-                <div id="popupMain3">
-                        <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main3Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
-
-                <input type="hidden" id="main3" name="main3" value="" class="notranslate">
-
-
-                    <script src="public/js/champions.js"></script>
+        <!-- Champion Selection Modals -->
+        <div id="modal-main1" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+                <div id="champion-list-main1" class="champion-list"></div>
+            </div>
         </div>
+
+        <div id="modal-main2" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+                <div id="champion-list-main2" class="champion-list"></div>
+            </div>
+        </div>
+
+        <div id="modal-main3" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+                <div id="champion-list-main3" class="champion-list"></div>
+            </div>
+        </div>
+
+        <script src="public/js/champions-picker.js"></script>
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">

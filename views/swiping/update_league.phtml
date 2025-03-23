@@ -6,58 +6,54 @@
         <p class="errorsForm"><?= $_GET['error'] ?></p>
         <?php endif; ?>
 
-        <div class="checkbox-container">
-            <label for="skipSelection">Skip champion selection</label>
-            <input type="checkbox" id="skipSelection" name="skipSelection" value="<?= $lolUser['lol_noChamp'] ?>">
+    <div id="champion-picker">
+        <div class="champions-picker-column">
+            <img src="public/images/champions/<?= $lolMain1 ?>.png" alt="<?= $lolMain1 ?>" class="champion-picker-img picker-main1">
+            <p id="main1-name"><?= $lolMain1 ?></p>
         </div>
-
-        <div id="championSelection">
-            <h2>Pick your 3 mains</h2>
-                <label for="main1" class="label-container">Main 1</label>
-                <button type="button" id="btnMain1">Select main 1</button>
-                <?php if(!empty($lolUser['lol_main1'])) : ?>
-                    <img id="main1Pic" src="public/images/champions/<?= trim($lolUser['lol_main1']) ?>.png" alt="<?= trim($lolUser['lol_main1']) ?>">
-                <?php endif; ?>
-                <div id="popupMain1">
-                        <input type="text" id="search1" autocomplete="no-autofill" value="<?= $lolUser['lol_main1'] ?>" class="notranslate">
-                        <ul class="main1Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
-
-                <input type="hidden" id="main1" name="main1" value="<?= $lolUser['lol_main1'] ?>" class="notranslate">
-
-                <label for="main2" class="label-container">Main 2</label>
-                <button type="button" id="btnMain2">Select main 2</button>
-                <?php if(!empty($lolUser['lol_main2'])) : ?>
-                    <img id="main2Pic" src="public/images/champions/<?= trim($lolUser['lol_main2']) ?>.png" alt="<?= trim($lolUser['lol_main2']) ?>">
-                <?php endif; ?>
-                <div id="popupMain2">
-                        <input type="text" id="search2" autocomplete="no-autofill" value="<?= $lolUser['lol_main2'] ?>" class="notranslate">
-                        <ul class="main2Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
-
-                <input type="hidden" id="main2" name="main2" value="<?= $lolUser['lol_main2'] ?>" class="notranslate">
-
-                <label for="main3" class="label-container">Main 3</label>
-                <button type="button" id="btnMain3">Select main 3</button>
-                <?php if(!empty($lolUser['lol_main3'])) : ?>
-                    <img id="main3Pic" src="public/images/champions/<?= trim($lolUser['lol_main3']) ?>.png" alt="<?= trim($lolUser['lol_main3']) ?>">
-                <?php endif; ?>
-                <div id="popupMain3">
-                        <input type="text" id="search3" autocomplete="no-autofill" value="<?= $lolUser['lol_main3'] ?>" class="notranslate">
-                        <ul class="main3Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
-                </div>
-
-                <input type="hidden" id="main3" name="main3" value="<?= $lolUser['lol_main3'] ?>" class="notranslate">
-
-
-                    <script src="public/js/champions.js"></script>
+        <div class="champions-picker-column">
+            <img src="public/images/champions/<?= $lolMain2 ?>.png" alt="<?= $lolMain2 ?>" class="champion-picker-img picker-main2">
+            <p id="main2-name"><?= $lolMain2 ?></p>
         </div>
+        <div class="champions-picker-column">
+            <img src="public/images/champions/<?= $lolMain3 ?>.png" alt="<?= $lolMain3 ?>" class="champion-picker-img picker-main3">
+            <p id="main3-name"><?= $lolMain3 ?></p>
+        </div>
+        <div class="champions-picker-column">
+            <button id="skipSelection-btn">Skip</button>
+        </div>
+        <input type="hidden" id="main1" name="main1" value="<?= $lolUser['lol_main1'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="main2" name="main2" value="<?= $lolUser['lol_main2'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="main3" name="main3" value="<?= $lolUser['lol_main3'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lolUser['lol_noChamp'] ?>">
+    </div>
+
+    <!-- Champion Selection Modals -->
+    <div id="modal-main1" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+            <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+            <div id="champion-list-main1" class="champion-list"></div>
+        </div>
+    </div>
+
+    <div id="modal-main2" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+            <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+            <div id="champion-list-main2" class="champion-list"></div>
+        </div>
+    </div>
+
+    <div id="modal-main3" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+            <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+            <div id="champion-list-main3" class="champion-list"></div>
+        </div>
+    </div>
+
+    <script src="public/js/champions-picker.js"></script>
 
             <label for="rank_lol">Your rank</label>
             <select id="rank_lol" name="rank_lol">
@@ -107,4 +103,3 @@
 </div>
 
 <script type="module" src="public/js/swiping/closebutton.js"></script>
-<script src="public/js/swiping/skipSelection.js"></script>

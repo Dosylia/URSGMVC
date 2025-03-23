@@ -29,49 +29,55 @@
 
         <?php if($user['user_game'] == "League of Legends") :?>
 
-        <div class="checkbox-container">
-            <label for="skipSelection">Skip champion selection</label>
-            <input type="checkbox" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_lolNoChamp'] ?>">
-        </div>
-
-        <div id="championSelection">
-            <h2>Pick 3 mains you would like to play with</h2>
-                <label for="main1" class="label-container">Main 1</label>
-                <button type="button" id="btnMain1">Select main 1</button>
-                <div id="popupMain1">
-                        <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main1Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
+            <div id="champion-picker">
+                <div class="champions-picker-column">
+                    <img src="public/images/champions/<?= $lolMain1 ?>.png" alt="<?= $lolMain1 ?>" class="champion-picker-img picker-main1">
+                    <p id="main1-name"><?= $lolMain1 ?></p>
                 </div>
-
-                <input type="hidden" id="main1" name="main1" value="" class="notranslate">
-
-                <label for="main2" class="label-container">Main 2</label>
-                <button type="button" id="btnMain2">Select main 2</button>
-                <div id="popupMain2">
-                        <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main2Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
+                <div class="champions-picker-column">
+                    <img src="public/images/champions/<?= $lolMain2 ?>.png" alt="<?= $lolMain2 ?>" class="champion-picker-img picker-main2">
+                    <p id="main2-name"><?= $lolMain2 ?></p>
                 </div>
-
-                <input type="hidden" id="main2" name="main2" value="" class="notranslate">
-
-                <label for="main3" class="label-container">Main 3</label>
-                <button type="button" id="btnMain3">Select main 3</button>
-                <div id="popupMain3">
-                        <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main3Ul">
-                            <?php include 'views/signup/options_champion_league.phtml' ?>
-                        <ul>
+                <div class="champions-picker-column">
+                    <img src="public/images/champions/<?= $lolMain3 ?>.png" alt="<?= $lolMain3 ?>" class="champion-picker-img picker-main3">
+                    <p id="main3-name"><?= $lolMain3 ?></p>
                 </div>
-
-                <input type="hidden" id="main3" name="main3" value="" class="notranslate">
-
-
-                    <script src="public/js/champions.js"></script>
+                <div class="champions-picker-column">
+                    <button id="skipSelection-btn">Skip</button>
+                </div>
+                <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_lolmain1'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_lolmain2'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_lolmain3'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_lolNoChamp'] ?>" data-page="create">
             </div>
+
+            <!-- Champion Selection Modals -->
+            <div id="modal-main1" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+                    <div id="champion-list-main1" class="champion-list"></div>
+                </div>
+            </div>
+
+            <div id="modal-main2" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+                    <div id="champion-list-main2" class="champion-list"></div>
+                </div>
+            </div>
+
+            <div id="modal-main3" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+                    <div id="champion-list-main3" class="champion-list"></div>
+                </div>
+            </div>
+
+            <script src="public/js/champions-picker.js"></script>
+
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">
@@ -112,48 +118,53 @@
             <input type="hidden" name="game" value="League of Legends"> 
         <?php else : ?>
 
-            <div class="checkbox-container">
-                <label for="skipSelection">Skip agent selection</label>
-                <input type="checkbox" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_valNoChamp'] ?>">
+            <div id="champion-picker">
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/<?= $valorantMain1 ?>_icon.webp" alt="<?= $valorantMain1 ?>" class="champion-picker-img picker-main1">
+                    <p id="main1-name"><?= $valorantMain1 ?></p>
+                </div>
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/<?= $valorantMain2 ?>_icon.webp" alt="<?= $valorantMain2 ?>" class="champion-picker-img picker-main2">
+                    <p id="main2-name"><?= $valorantMain2 ?></p>
+                </div>
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/<?= $valorantMain3 ?>_icon.webp" alt="<?= $valorantMain3 ?>" class="champion-picker-img picker-main3">
+                    <p id="main3-name"><?= $valorantMain3 ?></p>
+                </div>
+                <div class="champions-picker-column">
+                    <button id="skipSelection-btn">Skip</button>
+                </div>
+                <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_valmain1'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_valmain2'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_valmain3'] ?>" class="notranslate champion-picker-input">
+                <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_valNoChamp'] ?>" data-page="create">
             </div>
 
-            <div id="championSelection">
-                <h2>Pick 3 mains you would like to play with</h2>
-                <label for="main1" class="label-container">Main 1</label>
-                <button type="button" id="btnMain1">Select main 1</button>
-                <div id="popupMain1">
-                        <input type="text" id="search1" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main1Ul">
-                            <?php include 'views/signup/options_champion_valorant.phtml' ?>
-                        <ul>
+            <script src="public/js/champions-picker-valorant.js"></script>
+
+            <!-- Champion Selection Modals -->
+            <div id="modal-main1" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+                    <div id="champion-list-main1" class="champion-list"></div>
                 </div>
+            </div>
 
-                <input type="hidden" id="main1" name="main1" value="" class="notranslate">
-
-                <label for="main2" class="label-container">Main 2</label>
-                <button type="button" id="btnMain2">Select main 2</button>
-                <div id="popupMain2">
-                        <input type="text" id="search2" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main2Ul">
-                            <?php include 'views/signup/options_champion_valorant.phtml' ?>
-                        <ul>
+            <div id="modal-main2" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+                    <div id="champion-list-main2" class="champion-list"></div>
                 </div>
+            </div>
 
-                <input type="hidden" id="main2" name="main2" value="" class="notranslate">
-
-                <label for="main3" class="label-container">Main 3</label>
-                <button type="button" id="btnMain3">Select main 3</button>
-                <div id="popupMain3">
-                        <input type="text" id="search3" autocomplete="no-autofill" placeholder="Search..." class="notranslate">
-                        <ul class="main3Ul">
-                            <?php include 'views/signup/options_champion_valorant.phtml' ?>
-                        <ul>
+            <div id="modal-main3" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+                    <div id="champion-list-main3" class="champion-list"></div>
                 </div>
-
-                <input type="hidden" id="main3" name="main3" value="" class="notranslate">
-
-
-                    <script src="public/js/champions.js"></script>
             </div>
 
             <label for="rank_valorant">Rank you are looking for</label>

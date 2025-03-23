@@ -1,17 +1,22 @@
 const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
-const cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
+let cancelButtonSocialLinks;
+if (favDialogSocialLinks !== null && favDialogSocialLinks !== undefined) {
+  cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
+}
 const fileInputProfile = document.getElementById('fileProfile');
 const fileNameProfile = document.getElementById('file-nameProfile');
 const placeholderMessage = document.getElementById('placeholder-message');
 
-showButtonSocialLinks.addEventListener('click', () => {
-  openDialogSocialLinks();
-});
-
-cancelButtonSocialLinks.addEventListener('click', () => {
-  closeDialogSocialLinks();
-});
+if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
+  showButtonSocialLinks.addEventListener('click', () => {
+    openDialogSocialLinks();
+  });
+  
+  cancelButtonSocialLinks.addEventListener('click', () => {
+    closeDialogSocialLinks();
+  });
+}
 
 function openDialogSocialLinks() {
   favDialogSocialLinks.style.display = 'flex';
@@ -29,10 +34,14 @@ const cancelButtonPicture = favDialogPicture.querySelector('#closeButton_user_pi
 
 showButtonPicture.addEventListener('click', () => {
   openDialogPicture();
+  console.log('Opening picture dialog');
+  favDialogPicture.style.display = 'block';
 });
 
 cancelButtonPicture.addEventListener('click', () => {
   closeDialogPicture();
+  favDialogPicture.style.display = 'none';
+  console.log('Closing picture dialog');
 });
 
 function openDialogPicture() {

@@ -74,10 +74,18 @@ class LeagueOfLegendsController
 
           // Get important datas
           $user = $this-> user -> getUserByUsername($_SESSION['username']);
-          $allUsers = $this-> user -> getAllUsers();
-          $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
           $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
 
+          $defaultChampions = [
+            'lol_main1' => 'KaiSa',
+            'lol_main2' => 'Ezreal',
+            'lol_main3' => 'Jhin'
+        ];
+
+            // Check if the values are empty, and use the fallback if needed
+            $lolMain1 = !empty($lolUser['lol_main1']) ? $lolUser['lol_main1'] : $defaultChampions['lol_main1'];
+            $lolMain2 = !empty($lolUser['lol_main2']) ? $lolUser['lol_main2'] : $defaultChampions['lol_main2'];
+            $lolMain3 = !empty($lolUser['lol_main3']) ? $lolUser['lol_main3'] : $defaultChampions['lol_main3'];
             
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
@@ -918,9 +926,13 @@ class LeagueOfLegendsController
                 $statusChampion = $this->validateInput($_POST["skipSelection"]);
             }
 
-            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
-                header("location:/userProfile?message=Each champion must be unique");
-                exit();
+            if ($statusChampion == "0") 
+            {
+                if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
+                    header("location:/userProfile?message=Each champion must be unique");
+                    exit();
+                }
+
             }
 
             $updateLeague = $this->leagueOfLegends->updateLeagueData(
