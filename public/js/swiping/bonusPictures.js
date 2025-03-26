@@ -34,7 +34,7 @@ function closeDialogBonusPicture() {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-  document.querySelectorAll(".delete-picture").forEach(button => {
+  document.querySelectorAll(".bonusPicture_delete").forEach(button => {
     button.addEventListener("click", function () {
         let fileName = this.getAttribute("data-filename");
 

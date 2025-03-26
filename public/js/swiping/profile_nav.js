@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll("#user-bottom-nav button");
     const sections = document.querySelectorAll("#aboutme-container, #pictures-container, #socials-container, #requests-container");
     const loadingIndicator = document.getElementById("loading-indicator");
-
+    
     // Initially hide all sections
     sections.forEach(section => section.style.display = "none");
 

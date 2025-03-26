@@ -2,7 +2,7 @@
     --dark-grey: #151416;
     --dark-ligher-grey: #302e31;
     --ligher--grey: #4f4b52;
-    --main--red: #e74057;
+    --main--red: rgb(231, 64, 87);
     --dark--red: #980c1f;
     --white: rgb(255, 255, 255);
   }
@@ -109,50 +109,94 @@
 }
 
 #badge-container {
-  position: absolute;
-  top: 20px;
-  right: 50px;
+  margin-top: 30PX;
 }
 
 #edit-profile-container {
   position: absolute;
-  top: 20px;
-  left: 0;
+  top: 40px;
+  right: 0;
   display: flex;
+  flex-direction: column;
   gap: 5px;
   color: black;
   font-size: 20px;
   font-family: 'Geologica', sans-serif;
   cursor: pointer;
-  flex-direction: column;
+  z-index: 9999; 
 }
 
+#burger-menu {
+  font-size: 30px;
+  cursor: pointer;
+  padding: 10px;
+  display: none; 
+}
+
+#menu-links {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  border: none;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
+  z-index: 10000; 
+}
+
+.dark-mode e#menu-links {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+#menu-links.active {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+
 .btn_user_updates_profile {
-  width: 150px;
-  margin: 0 10px;
-  background: linear-gradient(135deg, var(--main--red), #8e2730);
-  border-radius: 11px;
+  width: 100%;
   min-height: 50px;
-  height: fit-content;
   color: #ffffff;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-weight: bold;
   font-family: "Open Sans", sans-serif;
   text-align: center;
   border: none;
   text-shadow: 0.2px 0.2px 0.5px black;
-  transition: transform 2s;
   font-size: 0.8rem;
-  padding: 0 10px;
+  padding: 15px;
   box-sizing: border-box;
+  border-bottom: 1px solid #ccc;
+  background-color: var(--main--red);
+  border-radius: 11px 0 0 11px;
+  cursor: pointer;
+  position: relative;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.btn_user_updates_profile i {
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.btn_user_updates_profile .menu-text {
+  display: inline;
+}
+
+.btn_user_updates_profile:hover {
+  background: var(--ligher--grey);
 }
 
 .btn_updateProfilePicture {
   position: absolute;
   top: -50px;
-  right: -30px;
+  right: -50px;
   color: var(--main--red);
   cursor: pointer;
   font-size: 40px;
@@ -469,6 +513,10 @@
   justify-content: center;
   align-items: center;
 }
+
+/* .aboutme-match .champions {
+  min-width: 50%; 
+} */
 
 .aboutme-match .champions {
   display: flex;
@@ -2353,6 +2401,110 @@ section.siteMap tr:nth-child(even) {
       position: relative;
     }
 
+    .discord-link {
+      color: black !important; 
+      font-weight: bold;
+      text-decoration: none;
+      padding: 5px 10px;
+      background-color: white; /* Dark background to match Discord theme */
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .dark-mode .discord-link {
+    background-color: #36393f; /* Dark background to match Discord theme */
+    color: white !important; 
+}
+  
+  .discord-link:hover {
+      background-color: #5865f2; /* Lighter blue on hover */
+      transform: scale(1.05); /* Slight zoom effect */
+      color: white !important;
+  }
+
+  #discord-create {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  #discord-create i {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin-right: 5px;
+  }
+
+  .dark-mode   #discord-create i {
+   color: white;
+  }
+
+  #confirmationModalDiscord {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  /* Basic Modal Styles */
+#confirmationModalDiscord .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#confirmationModalDiscord .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+}
+
+.dark-mode #confirmationModalDiscord .modal-content {
+  background: var(--dark-grey);
+  color: white;
+}
+
+#confirmationModalDiscord .modal-footer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+#confirmationModalDiscord .btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#confirmationModalDiscord .btn-primary {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+#confirmationModalDiscord .btn:hover {
+  opacity: 0.8;
+}
+
+#confirmationModalDiscord .btn-primary:hover {
+  background-color: #45a049; /* Darker green */
+}
+
     #reply-preview {
       display: none;
       position: absolute;
@@ -2783,7 +2935,7 @@ section.siteMap tr:nth-child(even) {
       border-radius: 50px;
     }
   
-    #profilepicture_lol {
+    .box_pictureLevel #profilepicture_lol {
       width: 50px;
       height: 50px;
       border-radius: 50px;
@@ -6907,6 +7059,40 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  
+  .btn_user_updates_profile::before {
+    content: attr(data-text); 
+    position: absolute;
+    right: 100%; 
+    top: 50%;
+    transform: translateY(-50%); 
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+.btn_user_updates_profile:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+  #menu-links {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    width: 50px;
+  }
+
+  .btn_user_updates_profile .menu-text {
+    display: none;
+  }
+
   #champion-picker {
     flex-direction: column;
 }
@@ -6998,9 +7184,25 @@ justify-content: center;
 
 @media only screen and (max-width: 600px) {
 
+  #menu-links {
+    width: 30px;
+  }
+
+  .btn_updateProfilePicture {
+    font-size: 30px;
+    top: -30px;
+  right: -50px;
+  }
+
   #user-top-content {
     min-height: 300px;
     margin-bottom: 0;
+  }
+
+  .btn_user_updates_profile {
+    width: unset;
+    min-height: unset;
+    padding: 5px;
   }
 
   .user_page_main_content-swiping {
@@ -7125,6 +7327,11 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    #badge-container {
+      margin-top: 0px;
+    }
+    
 
     #notification-bell {
       font-size: 10px !important;
@@ -7351,9 +7558,13 @@ justify-content: center;
   }
 
   #edit-profile-container {
-    right: 20px;
+    top: 0px;
     gap: 5px;
     font-size: 15px;
+  }
+
+  .btn_user_updates_profile i {
+    font-size: 17px;
   }
 
   #badge-container {
@@ -7364,6 +7575,28 @@ justify-content: center;
 
 
 @media only screen and (max-width: 500px) {
+
+  .social-container-column {
+    padding: 5px 20px;
+    height: unset;
+  }
+
+  .social-container-column a {
+    font-size: 1em;
+  }
+
+  .social-container-column img {
+    height: 40px;
+    width: auto;
+  }
+
+  .social-container-column p.shadow {
+    font-size: 1em;
+  }
+
+  .social-container-column i {
+    font-size: 1em;
+  }
 
   .about-users-containers {
     width: 100%;

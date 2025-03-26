@@ -1,27 +1,27 @@
 <section id="user-container"> <!--Flex column -->
     <div id="user-top-container"> <!--Flex column -->
-        <?php if  (($user['user_isVip']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
-            <span id="badge-container">
-                <?php if ($user['user_isVip']) : ?>
-                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+        <div id="edit-profile-container">
+            <div id="menu-links">
+                <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile">
+                    <i class="fa-solid fa-pen"></i> <span class="menu-text">Update Profile</span>
+                </a> 
+                <?php if ($user['user_game'] !== 'Valorant'): ?> 
+                    <a href="/updateLeaguePage" class="btn_user_updates_profile" data-text="Update League">
+                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text">Update League</span>
+                    </a>
+                <?php else : ?>
+                    <a href="/updateValorantPage" class="btn_user_updates_profile" data-text="Update Valorant">
+                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text">Update Valorant</span>
+                    </a> 
                 <?php endif; ?>
-                <?php if ($user['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
-                <?php endif; ?>  
-                <?php if ($user['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
-                <?php endif; ?>  
-            </span>
-        <?php endif; ?>
-        <span id="edit-profile-container">
-        <a href="/updateProfilePage" class="btn_user_updates_profile"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
-        <?php if ($user['user_game'] !== 'Valorant'): ?> 
-            <a href="/updateLeaguePage" class="btn_user_updates_profile"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a>
-        <?php else : ?>
-            <a href="/updateValorantPage" class="btn_user_updates_profile"><i class="fa-solid fa-gamepad"></i>UPDATE VALORANT</a> 
-        <?php endif; ?>
-        <a href="/updateLookingForPage" class="btn_user_updates_profile"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a>
-        </span>
+                <a href="/updateLookingForPage" class="btn_user_updates_profile" data-text="Update Interests">
+                    <i class="fa-solid fa-heart"></i> <span class="menu-text">Update Interests</span>
+                </a>
+                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates_profile" data-text="Bind Riot">
+                    <i class="fa-solid fa-hand-fist"></i> <span class="menu-text">Bind Riot</span>
+                </a>
+            </div>
+        </div>
         <div id="user-top-content"> <!--Flex column -->
             <div id="profile-picture-container">
                 <button class="btn_updateProfilePicture" id="opendialog_update_picture"><i class="fa-solid fa-image"></i></button>
@@ -51,6 +51,19 @@
                 <h2><?= ucfirst($user['user_username']) ?></h2>
                 <p>,<?= ucfirst($user['user_age']) ?></p>
             </div>
+            <?php if  (($user['user_isVip']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
+            <span id="badge-container">
+                <?php if ($user['user_isVip']) : ?>
+                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                <?php endif; ?>
+                <?php if ($user['user_isPartner']) : ?>
+                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                <?php endif; ?>  
+                <?php if ($user['user_isCertified']) : ?>
+                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                <?php endif; ?>  
+            </span>
+        <?php endif; ?>
     </div>
     <div id="user-bottom-container"> <!--Flex column -->
         <nav id="user-bottom-nav"> <!--Flex row with JS -->
@@ -64,15 +77,19 @@
             <img src="public/images/loading.svg" alt="Loading..." />
         </div>
         <div id="aboutme-container"> <!--Flex row with -->
-            <button class="btn_updateProfile">Bind Riot account</button>
             <div class="aboutme-match">
-                <!-- Left Player -->
+            <?php if ($user['user_game'] == 'League of Legends'): ?> 
                 <div class="profile">
-                    <img src="http://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
+                    <?php if ($lolUser['lol_verified'] === 1): ?>
+                        <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="http://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
+                    <?php else : ?>
+                        <img src="http://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
+                    <?php endif; ?>
                     <?php if ($lolUser['lol_verified'] === 1): ?>
                         <p class="profile-level"><?= $lolUser['lol_sLevel']?></p>
                     <?php endif; ?>
                 </div>
+
                 <div class="icons you">
                 <img src="public/images/ranks/<?= str_replace(' ', '', $lolUser['lol_rank']) ?>.png" alt="Rank">
                 <img src="public/images/roles/<?= str_replace(' ', '', $lolUser['lol_role']) ?>.png" alt="Role">
@@ -93,22 +110,61 @@
 
             <!-- Champions Row -->
             <div class="aboutme-match champions-row">
-                <div class="champions you">
+                <div class="champions you" style="<?= $lolUser['lol_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
                     <?php if ($lolUser['lol_verified'] === 1): ?>
                         <div class="lol-account">
-                        <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                            <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                         </div>
                     <?php endif; ?>
                     <img src="public/images/champions/<?= $lolUser['lol_main1']?>.png" alt="Champion">
                     <img src="public/images/champions/<?= $lolUser['lol_main2']?>.png" alt="Champion">
                     <img src="public/images/champions/<?= $lolUser['lol_main3']?>.png" alt="Champion">
                 </div>
-                <div class="champions mate">
+
+                <div class="champions mate" style="<?= $lfUser['lf_lolNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
                     <img src="public/images/champions/<?= $lfUser['lf_lolmain1']?>.png" alt="Champion">
                     <img src="public/images/champions/<?= $lfUser['lf_lolmain2']?>.png" alt="Champion">
                     <img src="public/images/champions/<?= $lfUser['lf_lolmain3']?>.png" alt="Champion">
                 </div>
             </div>
+            <?php else : ?> <!-- Valorant -->
+                <div class="profile">
+                        <img src="http://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
+                </div>
+                <div class="icons you">
+                <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $valorantUser['valorant_rank']) ?>.png" alt="Rank">
+                <img src="public/images/valorant_roles/<?= str_replace(' ', '', $valorantUser['valorant_role']) ?>.png" alt="Role">
+                </div>
+
+                <!-- Dotted Line -->
+                <div class="match-divider"></div>
+
+                <!-- Right Player -->
+                <div class="icons mate">
+                <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $lfUser['lf_valrank']) ?>.png" alt="Rank">
+                <img src="public/images/valorant_roles/<?= str_replace(' ', '', $lfUser['lf_valrole']) ?>.png" alt="Role">
+                </div>
+                <div class="profile profile-mate">
+                    ?
+                </div>
+            </div>
+
+            <!-- Champions Row -->
+            <div class="aboutme-match champions-row">
+                <div class="champions you" style="<?= $lolUser['valorant_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main1']?>_icon.webp" alt="Champion">
+                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main2']?>_icon.webp" alt="Champion">
+                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main3']?>_icon.webp" alt="Champion">
+                </div>
+
+                <div class="champions mate" style="<?= $lfUser['lf_valNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                    <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain1']?>_icon.webp" alt="Champion">
+                    <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain2']?>_icon.webp" alt="Champion">
+                    <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain3']?>_icon.webp" alt="Champion">
+                </div>
+            </div>
+            <?php endif; ?>
+                <!-- Left Player -->
             <div class="other-data-profile">
                 <div class="about_you_users"><br>
                     <div class=""top-part-about style="flex-direction: column;">
@@ -416,3 +472,4 @@
 <script src="public/js/swiping/socialLinks.js?nocache=<%= Date.now() %>"></script>
 <script src="public/js/swiping/gender-icon.js"></script>
 <script src="public/js/swiping/copy_username.js"></script>
+<script src="public/js/swiping/profile_updateRiotPic.js?nocache=<%= Date.now() %>"></script>

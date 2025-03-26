@@ -9,7 +9,7 @@ let btnSubmit;
 let btnDesign;
 let isActionAllowed = true;
 
-function sendMessageToPhp(senderId, message, replyToChatId) {
+window.sendMessageToPhp = function(senderId, message, replyToChatId) {
     let friendIdElement = document.getElementById("receiverId");
     const receiverId = friendIdElement ? friendIdElement.value : null;
     // If wanna convert time directly before sending it

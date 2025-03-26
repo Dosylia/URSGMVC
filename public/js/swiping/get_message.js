@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("New friend ID:", newFriendId);
     
         if (newFriendId !== friendId) {
+            const modalDiscord = document.getElementById('confirmationModalDiscord');
+            modalDiscord.style.display = 'none'; // Hide the modal
             friendId = newFriendId; // Update the recipient ID
             replyPreviewContainer.style.display = "none"; // Hide the reply preview
             chatInput.dataset.replyTo = ""; // Clear the reply context
@@ -306,6 +308,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
+            messageContent = messageContent.replace(/https:\/\/discord\.gg\/[a-zA-Z0-9]+/g, function(url) {
+                return `<a href="${url}" target="_blank" class="discord-link">Click to join</a>`;
+            });
+            
             messageDiv.innerHTML = messageContent;
 
      // **Create Hover Menu**

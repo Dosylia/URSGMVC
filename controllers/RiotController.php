@@ -142,7 +142,7 @@ class RiotController
                                     // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
 
                                     // Save updated summoner data to the database
-                                    $this->leagueOfLegends->updateSummonerData(
+                                    $updateSummoner = $this->leagueOfLegends->updateSummonerData(
                                         $userData['gameName'], 
                                         $summonerProfile['id'],
                                         $puuid,
@@ -152,6 +152,11 @@ class RiotController
                                         $fullAccountName,
                                         $user['user_id'],
                                     );
+
+                                    if (!$updateSummoner) {
+                                        header('Location: /userProfile?message=Couldnt bind account');
+                                        exit();
+                                    }
                                 }
                             }
 

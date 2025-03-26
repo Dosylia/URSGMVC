@@ -101,6 +101,16 @@
                     </div>
 
                     <div class="reply-box">
+                        <div id="confirmationModalDiscord" class="modal" style="display: none;">
+                            <div class="modal-content">
+                                <h4>Confirm Channel Creation</h4>
+                                <p>You'll create a temporary voice channel on our discord server and invite this person to join you. Are you sure?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <span id="cancelBtn" class="btn">Cancel</span>
+                                <span id="confirmBtn" class="btn btn-primary">Confirm</span>
+                            </div>
+                        </div>
                         <form method="POST" id="myForm">
                             <div class="emote-picker">
                                 <button type="button" id="toggleEmotePicker"><i class="fa-solid fa-cat"></i></button>
@@ -117,6 +127,7 @@
                                     <img src="public/images/emotes/cat-laugh.png" alt=":cat-laugh:" class="emote">
                                 </div>
                             </div>
+                            <span id="discord-create"><i class="fa-brands fa-discord"></i></span>
                             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
                             <span id="reply-preview"></span>
@@ -133,6 +144,7 @@
             <script type="module" src="public/js/swiping/perso_chat.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_friendlist.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_message.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/discord.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/send_messagephp.js?nocache=<%= Date.now() %>"></script>
             <script type="module" src="public/js/swiping/get_lookingFor.js?nocache=<%= Date.now() %>"></script>
         </div>

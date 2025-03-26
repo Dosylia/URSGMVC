@@ -244,6 +244,7 @@ function handleSkipSelection() {
     if (skipInput.value === '0') {
         // Activate "Skip Mode": Clear champions and darken images
         pickerImages.forEach(img => img.classList.add('shadow'));
+        pickerImages.forEach(img => img.style.border = "5px solid #e74057");
         pickerInputs.forEach(input => {
             if (input.value) {
                 selectedChampions.delete(input.value);

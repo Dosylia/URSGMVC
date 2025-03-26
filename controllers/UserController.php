@@ -1915,6 +1915,7 @@ class UserController
                 }
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
+                $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 if ($anotherUser) 
                 {
                     if ($anotherUser['user_game'] == "League of Legends")
