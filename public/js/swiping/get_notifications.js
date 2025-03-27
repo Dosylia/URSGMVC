@@ -130,6 +130,28 @@ function fillNotificationCenter() {
         notifItem.appendChild(notifTextElement);
         notifItem.appendChild(closeButton);
         modalContent.appendChild(notifItem);
+
+        // Add click event listener for redirection
+        notifItem.addEventListener('click', () => {
+            if (notification.type === 'accepted') {
+                document.getElementById(`notif-${notification.fr_id}`)?.remove();
+
+                // Prepare data
+                const dataDelete = {
+                    dataset: {
+                        frId: notification.fr_id,
+                        userId: notification.fr_senderId,
+                        type: "accepted"
+                    }
+                };
+        
+                // Handle the backend update
+                handleNotificationClose(dataDelete);
+                window.location.href = `/persoChat?friend_id=${notification.fr_receiverId}`;
+            } else if (notification.type === 'pending') {
+                window.location.href = `/userProfile`;
+            }
+        });
     });
 
     updateNotificationUI();

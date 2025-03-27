@@ -104,13 +104,13 @@ class Discord extends DataBase
     public function getExpiredChannels()
     {
         $query = $this->bdd->prepare("
-            SELECT `channel_id`
-            FROM `temporary_channels`
-            WHERE `expiry_time` > ?
+        SELECT `channel_id`
+        FROM `temporary_channels`
+        WHERE DATE_ADD(`created_at`, INTERVAL 1 HOUR) < NOW()
         ");
-    
-        $query->execute([time()]);
-        $nonExpiredChannels = $query->fetchAll();
-        return $nonExpiredChannels;
+        
+        $query->execute();
+        $expiredChannels = $query->fetchAll();
+        return $expiredChannels;
     }
 }

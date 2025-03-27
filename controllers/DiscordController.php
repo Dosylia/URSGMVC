@@ -106,12 +106,19 @@ class DiscordController
 
     public function deleteExpiredChannels() {
         require_once 'keys.php';
-        $botToken = $discordToken; 
+        $botToken = $discordToken;
         $channels = $this->discord->getExpiredChannels();
+        $guildId = $discordServerId; // Replace with your actual guild ID
     
         foreach ($channels as $channel) {
-            $url = "https://discord.com/api/v10/channels/{$channel['channel_id']}";
-            
+            // Ensure 'channel_id' is set in the channel array
+            if (!isset($channel['channel_id'])) {
+                error_log("No channel_id found for channel in the expired channels list.");
+                continue; // Skip this iteration if there's no channel_id
+            }
+    
+            // Fetch the guild widget to check members in the channel
+            $url = "https://discord.com/api/v10/guilds/{$guildId}/widget.json";
             $headers = [
                 "Authorization: Bot {$botToken}",
                 "Content-Type: application/json"
@@ -119,17 +126,69 @@ class DiscordController
     
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    
             $response = curl_exec($ch);
             curl_close($ch);
     
-            // Remove channel from the database
-            $this->discord->removeTemporaryChannel($channel['channel_id']);
+            // Debug: var_dump the response from the widget API
+            var_dump($response);
+    
+            // Check if the response is valid
+            if (!$response) {
+                error_log("Error fetching widget for guild {$guildId}");
+                continue;
+            }
+    
+            $widgetData = json_decode($response, true);
+
+    
+            // Check if the members array exists and is not empty
+            if (!isset($widgetData['members']) || empty($widgetData['members'])) {
+                error_log("No members found in the widget data for guild {$guildId}");
+                continue;
+            }
+    
+            // Check if the channel_id exists in the widget data
+            $channelHasMembers = false;
+            foreach ($widgetData['members'] as $member) {
+                // Debug: var_dump each member
+                var_dump($member);
+    
+                // Ensure 'channel_id' is set for each member before comparing
+                if (isset($member['channel_id']) && $member['channel_id'] == $channel['channel_id']) {
+                    $channelHasMembers = true;
+                    break;
+                }
+            }
+    
+            if ($channelHasMembers) {
+                // If there are members in the channel, skip deletion
+                error_log("Channel {$channel['channel_id']} has members and cannot be deleted.");
+            } else {
+                // If no members are in the channel, proceed with the deletion
+                $url = "https://discord.com/api/v10/channels/{$channel['channel_id']}";
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                $deleteResponse = curl_exec($ch);
+                curl_close($ch);
+    
+                // Debug: var_dump the response from the delete request
+                var_dump($deleteResponse);
+    
+                if ($deleteResponse) {
+                    // Remove channel from the database if deletion is successful
+                    $this->discord->removeTemporaryChannel($channel['channel_id']);
+                    error_log("Channel {$channel['channel_id']} deleted successfully.");
+                } else {
+                    error_log("Error deleting channel {$channel['channel_id']}.");
+                }
+            }
         }
-    }
+    }      
 
     private function makeDiscordRequest($url, $data, $botToken) {
         $headers = [
