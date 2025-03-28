@@ -12,7 +12,6 @@ let currentFriendUsername = null;
 let firstFriendId = friendId;
 let replyPreviewContainer = document.getElementById("reply-preview");
 let chatInput = document.getElementById("message_text");
-
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script loaded");
     // Gestion du clic sur les amis pour charger les messages

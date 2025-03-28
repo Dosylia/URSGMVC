@@ -127,7 +127,6 @@
                                     <img src="public/images/emotes/cat-laugh.png" alt=":cat-laugh:" class="emote">
                                 </div>
                             </div>
-                            <span id="discord-create"><i class="fa-brands fa-discord"></i></span>
                             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
                             <span id="reply-preview"></span>
@@ -137,16 +136,17 @@
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </button>
                             </div>
+                            <span id="discord-create"><i class="fa-brands fa-discord"></i></span>
                             <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
                         </form>
                     </div>
                 </div>
-            <script type="module" src="public/js/swiping/perso_chat.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/get_friendlist.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/get_message.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/discord.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/send_messagephp.js?nocache=<%= Date.now() %>"></script>
-            <script type="module" src="public/js/swiping/get_lookingFor.js?nocache=<%= Date.now() %>"></script>
+            <script type="module" src="public/js/swiping/perso_chat.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/get_friendlist.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/get_message.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/discord.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/send_messagephp.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/get_lookingFor.js?<?= time(); ?>"></script>
         </div>
     <?php endif; ?>
 </div>

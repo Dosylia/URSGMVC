@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <script src="public/js/champions-picker.js"></script>
+        <script src="public/js/champions-picker.js?<?= time(); ?>"></script>
 
             <label for="rank_lol">Rank you are looking for</label>
             <select id="rank_lol" name="rank_lol">
@@ -92,7 +92,7 @@
 
             <div id="selected-ranks-lol"></div>
 
-            <script src="public/js/ranks.js"></script>
+            <script src="public/js/ranks.js?<?= time(); ?>"></script>
 
             <label for="role_lol">Role you are looking for</label>
             <select id="role_lol" name="role_lol">
@@ -108,7 +108,7 @@
 
             <div id="selected-roles"></div>
 
-            <script src="public/js/roles.js"></script>
+            <script src="public/js/roles.js?<?= time(); ?>"></script>
 
             <input type="hidden" name="game" value="League of Legends"> 
 
@@ -121,5 +121,5 @@
 <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
 </div>
 
-<script type="module" src="public/js/leagueoflegendsinfo.js"></script>
+<script type="module" src="public/js/leagueoflegendsinfo.js?<?= time(); ?>"></script>
 

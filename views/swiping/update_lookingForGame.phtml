@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <script src="public/js/champions-picker.js"></script>
+            <script src="public/js/champions-picker.js?<?= time(); ?>"></script>
 
 
             <label for="rank_lol">Rank you are looking for</label>
@@ -98,7 +98,7 @@
 
             <div id="selected-ranks-lol"></div>
 
-            <script src="public/js/ranks.js"></script>
+            <script src="public/js/ranks.js?<?= time(); ?>"></script>
 
             <label for="role_lol">Role you are looking for</label>
             <select id="role_lol" name="role_lol">
@@ -113,7 +113,7 @@
 
             <div id="selected-roles"></div>
 
-            <script src="public/js/roles.js"></script>
+            <script src="public/js/roles.js?<?= time(); ?>"></script>
 
             <input type="hidden" name="game" value="League of Legends"> 
         <?php else : ?>
@@ -185,7 +185,7 @@
 
             <div id="selected-ranks-valorant"></div>
 
-            <script src="public/js/ranks-valorant.js"></script>
+            <script src="public/js/ranks-valorant.js?<?= time(); ?>"></script>
 
             <label for="role_valorant">Role you are looking for</label>
             <select id="role_valorant" name="role_valorant">
@@ -200,7 +200,7 @@
 
             <div id="selected-roles-valorant"></div>
 
-            <script src="public/js/roles-valorant.js"></script>
+            <script src="public/js/roles-valorant.js?<?= time(); ?>"></script>
 
             <input type="hidden" name="game" value="Valorant"> 
         <?php endif; ?>
@@ -215,5 +215,5 @@
 </div>
 
 
-<script type="module" src="public/js/swiping/closebutton.js"></script>
-<script src="public/js/swiping/skipSelection.js"></script>
+<script type="module" src="public/js/swiping/closebutton.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/skipSelection.js?<?= time(); ?>"></script>

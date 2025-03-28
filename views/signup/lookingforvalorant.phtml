@@ -42,7 +42,7 @@
             <input type="hidden" id="main1" name="main1" value="" class="notranslate champion-picker-input">
             <input type="hidden" id="main2" name="main2" value="" class="notranslate champion-picker-input">
             <input type="hidden" id="main3" name="main3" value="" class="notranslate champion-picker-input">
-            <input type="hidden" id="skipSelection" name="skipSelection" value="0">
+            <input type="hidden" id="skipSelection" name="skipSelection" value="0" data-page="create">
         </div>
 
         <!-- Champion Selection Modals -->
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <input type="hidden" id="skipSelection" name="skipSelection" value="0" data-page="create">
+        <script src="public/js/champions-picker-valorant.js?<?= time(); ?>"></script>
 
             <label for="rank_valorant">Rank you are looking for</label>
             <select id="rank_valorant" name="rank_valorant">
@@ -90,7 +90,7 @@
 
             <div id="selected-ranks-valorant"></div>
 
-            <script src="public/js/ranks-valorant.js"></script>
+            <script src="public/js/ranks-valorant.js?<?= time(); ?>"></script>
 
             <label for="role_valorant">Role you are looking for</label>
             <select id="role_valorant" name="role_valorant">
@@ -104,7 +104,7 @@
 
             <div id="selected-roles-valorant"></div>
 
-            <script src="public/js/roles-valorant.js"></script>
+            <script src="public/js/roles-valorant.js?<?= time(); ?>"></script>
 
             <input type="hidden" name="game" value="Valorant"> 
 
@@ -117,5 +117,5 @@
     <img class="picture_with_form" src="public/images/jett.png" alt="Jett from Valorant">
 </div>
 
-<script type="module" src="public/js/valorantinfo.js"></script>
+<script type="module" src="public/js/valorantinfo.js?<?= time(); ?>"></script>
 

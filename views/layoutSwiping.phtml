@@ -4,7 +4,7 @@
 <?php else : ?>
     <body>
 <?php endif; ?>
-<script src="public/js/swiping/notifications_system.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/swiping/notifications_system.js?<?= time(); ?>"></script>
 
 <input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
 <input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
@@ -66,9 +66,9 @@
         <?php require $template . ".phtml"; ?>
         <span class="notification-span"></span>
     </main>
-    <script src="public/js/swiping/swiping_menu.js"></script>
-    <script src="public/js/swiping/get_notifications.js?nocache=<%= Date.now() %>"></script>  
-    <script src="public/js/swiping/get_currency.js?nocache=<%= Date.now() %>"></script>
+    <script src="public/js/swiping/swiping_menu.js?<?= time(); ?>"></script>
+    <script src="public/js/swiping/get_notifications.js?<?= time(); ?>"></script>  
+    <script src="public/js/swiping/get_currency.js?<?= time(); ?>"></script>
 </body>
 
 <script>

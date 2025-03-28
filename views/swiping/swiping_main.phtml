@@ -165,6 +165,6 @@
     </section>
 <?php endif; ?>
 
-<script src="public/js/swiping/report.js?nocache=<%= Date.now() %>"></script>
-<script type="module" src="public/js/swiping/game.js?nocache=<%= Date.now() %>"></script>
+<script src="public/js/swiping/report.js?<?= time(); ?>"></script>
+<script type="module" src="public/js/swiping/game.js?<?= time(); ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
