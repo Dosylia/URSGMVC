@@ -621,6 +621,8 @@ class ChatMessageController
                         'user_lastRequestTime' => $friend['user_lastRequestTime'],
                         'user_isOnline' => $friend['user_isOnline'],
                         'user_isLooking' => $friend['user_isLooking'],
+                        'lol_verified' => $friend['lol_verified'],
+                        'lol_account' => $friend['lol_account']
                     ],
                     'user' => [
                         'user_id' => $user['user_id'],

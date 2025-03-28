@@ -492,11 +492,14 @@ document.addEventListener("DOMContentLoaded", function () {
     
         // Prepare the basic friend content
         let friendContent = `
-            <p id="friendTop">
-                <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
-                <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
+            <div id="friendTop">
+                <span style="width: 80%;">
+                    <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
+                    <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
+                </span>
+                ${friend.lol_verified === 1 ? `<span class="friend-details-top"><img src="public/images/lol-logo.png" alt="League of Legends"><p>${friend.lol_account}</p></span>` : ''}
             `;
-    
+
         // Add online status or looking-for-game status
         if (friend.user_isOnline === 1) {
             if (friend.user_isLooking === 1) {
@@ -511,7 +514,7 @@ document.addEventListener("DOMContentLoaded", function () {
             friendContent += `<span class="offline-status"></span>`;
         }
 
-        friendContent += `</p>`; // Close the <p> tag
+        friendContent += `</div>`; // Close the <p> tag
     
         // Ensure the element exists, create it if necessary
         if (!friendData) {

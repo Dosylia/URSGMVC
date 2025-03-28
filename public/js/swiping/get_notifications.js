@@ -132,7 +132,7 @@ function fillNotificationCenter() {
         modalContent.appendChild(notifItem);
 
         // Add click event listener for redirection
-        notifItem.addEventListener('click', () => {
+        notifTextElement.addEventListener('click', () => {
             if (notification.type === 'accepted') {
                 document.getElementById(`notif-${notification.fr_id}`)?.remove();
 

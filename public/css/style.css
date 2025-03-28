@@ -2982,11 +2982,29 @@ section.siteMap tr:nth-child(even) {
       margin-right: 10px;
     }
 
+    .friend-details-top {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .friend-details-top p{
+      font-size: 0.8em;
+      font-weight: 600;
+    }
+
+
     .friend-details img {
       width: 50px;
       height: 50px;
       border-radius: 50%;
       margin-right: 10px;
+    }
+
+    .friend-details-top img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
     }
 
     .friend-details {
@@ -3050,6 +3068,15 @@ section.siteMap tr:nth-child(even) {
       padding: 10px;
       border: 1px solid rgb(219, 207, 207);
       border-radius: 20px;
+      color: black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .dark-mode #friendTop {
+      color: white;
     }
 
     .message-to-user 
@@ -7059,6 +7086,16 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  #friendTop {
+    flex-direction: column;
+    align-items: unset;
+    }
+
+  #friendTop .online-status {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
   
   .btn_user_updates_profile::before {
     content: attr(data-text); 
