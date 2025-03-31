@@ -1751,6 +1751,7 @@ class UserController
                                         'lol_sRank' => $userMatched['lol_sRank'],
                                         'lol_sProfileIcon' => $userMatched['lol_sProfileIcon'],
                                         'lol_server' => $userMatched['lol_server'],
+                                        'lol_noChamp' => $userMatched['lol_noChamp'],
                                     ]
                                 ];
                                 break;
@@ -1777,6 +1778,7 @@ class UserController
                                         'valorant_role' => $userMatched['valorant_role'],
                                         'valorant_account' => $userMatched['valorant_account'],
                                         'valorant_server' => $userMatched['valorant_server'],
+                                        'valorant_noChamp' => $userMatched['valorant_noChamp'],
                                     ]
                                 ];
                                 break;

@@ -4,28 +4,22 @@ document.addEventListener("DOMContentLoaded", function() {
     let imageUser = document.getElementById('image_users');
     let username = document.getElementById('user_page_username');
     let userAge = document.getElementById('age_user');
-    let sProfileIcon = document.getElementById('profilepicture_lol');
     let sUsername = document.getElementById('lolsUsername');
-    let sLevel = document.getElementById('lolsLevel');
-    let lolAccount = document.getElementById('lolAccount');
-    let gender = document.getElementById('gender');
-    let kindOfGamer = document.getElementById('kindOfGamer');
+    let lolAccount = document.getElementById('lolsUsername');
+    let gender = document.getElementById('swiping_gender');
+    let kindOfGamer = document.getElementById('swiping_kindOfGamer');
     let shortBio = document.getElementById('shortBio');
     let receiverId = document.getElementById('receiverId');
     let lolMain1Pic = document.getElementById('lolMain1Pic');
-    let lolMain1P = document.getElementById('lolMain1P');
     let lolMain2Pic = document.getElementById('lolMain2Pic');
-    let lolMain2P = document.getElementById('lolMain2P');
     let lolMain3Pic = document.getElementById('lolMain3Pic');
-    let lolMain3P = document.getElementById('lolMain3P');
-    let lolRankPic = document.getElementById('lolRankPic');
     let lolRankP = document.getElementById('lolRankP');
-    let lolRolePic = document.getElementById('lolRolePic');
     let lolRoleP = document.getElementById('lolRoleP');
     const btnSwipeYes = document.getElementById('swipe_yes');
     const btnSwipeNo = document.getElementById('swipe_no');
     const swipeArea = document.getElementById('swipe-area');
-    const frameSwiping = document.querySelector('.frame-swiping')
+    const frameSwiping = document.querySelector('.frame-swiping');
+    const championContainer = document.querySelector('.swiping_champions');
     let profileFrames = null;
     const token = localStorage.getItem('masterTokenWebsite');
     const ErrorSpan = document.querySelector('.report-feedback');
@@ -112,71 +106,23 @@ document.addEventListener("DOMContentLoaded", function() {
     async function fillData(data) {
 
         clearData();
-        document.querySelector('.user_page').style.display = 'flex';
+        document.querySelector('.swiping-ctn').style.display = 'flex';
         // Fill the user image
         imageUser.src = data.user_picture ? `public/upload/${data.user_picture}` : "public/images/defaultprofilepicture.jpg";
-
-        // Fill the League of Legends data if available
-        const boxLeagueAccount = document.querySelector('.box_league_account');
-        boxLeagueAccount.style.position = "relative"; // Ensure child elements can be positioned absolutely
         
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // Ensure it's not empty
             hasBindedAccount = true;
-            boxLeagueAccount.style.display = 'flex';
         
             const version = await fetchDdragonVersion();
-            sProfileIcon.src = `http://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.lol_sProfileIcon}.png`;
             sUsername.innerText = data.lol_account;
-            sLevel.innerText = data.lol_sLevel;
         } else {
-            sProfileIcon.style.display = 'none';
-            sLevel.style.display = 'none';
+            sUsername.innerText = "UNKNOW";
             hasBindedAccount = false;
-            boxLeagueAccount.style.display = 'flex';
         }
 
         const baseRank = hasBindedAccount 
         ? data.lol_sRank.split(" ")[0].charAt(0).toUpperCase() + data.lol_sRank.split(" ")[0].slice(1).toLowerCase() 
         : (data.lol_rank || "default");
-    
-
-        if (data.user_game === "League of Legends") {
-            // Set the rank container on the right side
-            const rankContainer = document.createElement("div");
-            rankContainer.classList.add("rank-container");
-            rankContainer.style.position = "absolute";
-            rankContainer.style.top = "0px";
-            rankContainer.style.right = "0px"; 
-            rankContainer.style.transform = "translateY(-50%)";
-            rankContainer.title = hasBindedAccount ? "Account binded" : "Account not binded";
-            
-            const rankImage = document.createElement("img");
-            rankImage.src = `public/images/ranks/${sanitize(baseRank)}.png`;
-            rankImage.alt = hasBindedAccount ? data.lol_sRank : data.lol_rank || "Default Rank";
-            rankImage.style.display = "block";
-            rankImage.style.position = "relative"; // Needed for checkmark placement
-            
-            const rankIcon = document.createElement("i");
-            rankIcon.classList.add("fa-solid", hasBindedAccount ? "fa-check" : "fa-xmark");
-            rankIcon.style.position = "absolute";
-            rankIcon.style.top = "-10px";
-            rankIcon.style.right = "-5px";
-            rankIcon.style.fontSize = "14px";
-            rankIcon.style.color = hasBindedAccount ? "green" : "red";
-            
-            rankContainer.appendChild(rankImage);
-            rankContainer.appendChild(rankIcon);
-            
-            // Replace existing rank display with the new one
-            const existingRankContainer = document.querySelector(".rank-container");
-            if (existingRankContainer) {
-                existingRankContainer.replaceWith(rankContainer);
-            } else {
-                boxLeagueAccount.appendChild(rankContainer);
-            }
-        }
-        
-
 
         if (data.user_bonusPicture && data.user_bonusPicture !== "[]") {
             let pictures;
@@ -240,188 +186,101 @@ document.addEventListener("DOMContentLoaded", function() {
         // Map user gender to corresponding image classes
         const isDarkMode = document.body.classList.contains('dark-mode');
 
-        // Define the image suffix based on dark mode
-        const imageSuffix = isDarkMode ? "-white" : "";
+        gender.innerText = data.user_gender;
+
+        let queuesHtml = ""; // Initialize queuesHtml variable
+
+        const newWrapper = document.createElement("div");
+        newWrapper.id = "swiping_kindOfGamer";
+        newWrapper.style.display = "flex";
+        newWrapper.style.gap = "10px";
+        newWrapper.style.flexWrap = "wrap";
+
         
-        // Gender Section with images
-        let genderHtml = `
-            <div class="gender about-users-containers">
-                <p class="about-users-title"><strong>Gender</strong></p>
-                <p class="about-users-box">
-        `;
-        
-        // Map user gender to corresponding image classes
-        switch (data.user_gender) {
-            case 'Female':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
-                `;
-                break;
-            case 'Male':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
-                `;
-                break;
-            case 'Non Binary':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-selected">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
-                `;
-                break;
-            case 'Trans':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-selected">
-                `;
-                break;
-            case 'Trans Man':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/trans-man.png" alt="Trans Man" class="about-users-selected">
-                `;
-                break;
-            case 'Trans Woman':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/trans-woman.png" alt="Trans Woman" class="about-users-selected">
-                `;
-                break;
-            case 'Male and Female':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
-                `;
-                break;
-            case 'All':
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-selected">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-selected">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-selected">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-selected">
-                `;
-                break;
-            default:
-                genderHtml += `
-                    <img src="public/images/male${imageSuffix}.png" alt="Male" class="about-users-low-opacity">
-                    <img src="public/images/femenine${imageSuffix}.png" alt="Female" class="about-users-low-opacity">
-                    <img src="public/images/non-binary${imageSuffix}.png" alt="Non-binary" class="about-users-low-opacity">
-                    <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity">
-                `;
-                break;
-        }
-        
-        genderHtml += `</p></div>`;
-        
-        // Queues Section (as previously shown)
-        let queuesHtml = `
-            <div class="queues about-users-containers">
-                <p class="about-users-title"><strong>Queues</strong></p>
-                <div class="about-users-box">
-        `;
-        
+        // Generate new spans
         switch (data.user_kindOfGamer) {
             case 'Chill':
-                queuesHtml += `
-                    <p class="about-users-selected">Chill</p>
-                    <p class="about-users-low-opacity">Competition</p>
+                newWrapper.innerHTML = `
+                    <span class="swiping_filters_others swiping_filters_row">Aram</span>
+                    <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
                 `;
                 break;
             case 'Competition':
-                queuesHtml += `
-                    <p class="about-users-low-opacity">Chill</p>
-                    <p class="about-users-selected">Competition</p>
+                newWrapper.innerHTML = `
+                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
                 `;
                 break;
             default:
-                queuesHtml += `
-                    <p class="about-users-selected">Chill</p>
-                    <p class="about-users-selected">Competition</p>
+                newWrapper.innerHTML = `
+                    <span class="swiping_filters_others swiping_filters_row">Aram</span>
+                    <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
                 `;
                 break;
         }
-        queuesHtml += `</div></div>`;
         
-        // Server Section (new part based on game)
-        let serverHtml = `
-            <div style="margin-bottom: 10px;" class="server about-users-containers">
-                <p class="about-users-title"><strong>Server</strong></p>
-                <p class="about-users-box about-users-selected">
-                    ${server ? server.toUpperCase() : "Unknow"}
-                    <a href="/updateLookingForPage" class="updateInterest"><i class="fa-solid fa-filter"></i></a>
-                </p>
-            </div>
-        `;
-        
-        // Bio Section
-        let bioHtml = `
-            <div class="about-users-bio">
-                <p class="about-users-box-bio">${data.user_shortBio ? sanitizeHtlm(decodeHtmlEntities(data.user_shortBio)) : "No bio available."}</p>
-            </div>
-        `;
-        
-        // Add all sections to the container
-        aboutYouUsers.innerHTML = `
-            <div class="top-part-about">
-                ${genderHtml}
-                ${queuesHtml}
-                ${serverHtml}
-            </div>
-                ${bioHtml}
-        `;
+        // Replace the old container with the new one
+        kindOfGamer.replaceWith(newWrapper);
+
+        shortBio.innerHTML = sanitizeHtlm(data.user_shortBio) || "No description available";
+
         
         receiverId.value = data.user_id;
         if (data.user_game === "League of Legends" && data.lol_role) {
-            lolMain1P.innerText = data.lol_main1 || ""; 
-            lolMain2P.innerText = data.lol_main2 || ""; 
-            lolMain3P.innerText = data.lol_main3 || ""; 
             lolRankP.innerText = hasBindedAccount ? data.lol_sRank : data.lol_rank || "Unranked ";
+            lolRoleP.innerText = data.lol_role;
             lolRoleP.innerText = data.lol_role || "Unknown";
-            lolMain1Pic.src = data.lol_main1 ? `public/images/champions/${sanitize(data.lol_main1)}.png` : ""; // Empty src if no main
-            lolMain1Pic.alt = data.lol_main1 || ""; 
-            lolMain2Pic.src = data.lol_main2 ? `public/images/champions/${sanitize(data.lol_main2)}.png` : ""; // Empty src if no main
-            lolMain2Pic.alt = data.lol_main2 || ""; 
-            lolMain3Pic.src = data.lol_main3 ? `public/images/champions/${sanitize(data.lol_main3)}.png` : ""; // Empty src if no main
-            lolMain3Pic.alt = data.lol_main3 || ""; 
-            lolRankPic.src = `public/images/ranks/${sanitize(baseRank)}.png`;
-            lolRankPic.alt = baseRank|| "Default Rank";
-            lolRolePic.src = `public/images/roles/${sanitize(data.lol_role || "default")}.png`;
-            lolRolePic.alt = data.lol_role || "Default Role";
+            if (data.lol_noChamp === 1) {
+                championContainer.style.display = 'none';
+            } else {
+                lolMain1Pic.src = data.lol_main1 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main1)}_0.jpg` : ""; // Empty src if no main
+                lolMain1Pic.alt = data.lol_main1 || ""; 
+                lolMain2Pic.src = data.lol_main2 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main2)}_0.jpg` : ""; // Empty src if no main
+                lolMain2Pic.alt = data.lol_main2 || ""; 
+                lolMain3Pic.src = data.lol_main3 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main3)}_0.jpg` : ""; // Empty src if no main
+                lolMain3Pic.alt = data.lol_main3 || ""; 
+                championContainer.style.display = 'flex';
+            }
         } else if (data.user_game === "Valorant" && data.valorant_role) {
             // lolAccount.innerText = data.valorant_account || "Unknown Account";
-            lolMain1P.innerText = data.valorant_main1 || ""; 
-            lolMain2P.innerText = data.valorant_main2 || ""; 
-            lolMain3P.innerText = data.valorant_main3 || ""; 
-            lolRankP.innerText = data.valorant_rank || "Unranked";
-            lolRoleP.innerText = data.valorant_role || "Unknown";
-            lolMain1Pic.src = data.valorant_main1 ? `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp` : ""; // Empty src if no main
-            lolMain1Pic.alt = data.valorant_main1 || ""; 
-            lolMain2Pic.src = data.valorant_main2 ? `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp` : ""; // Empty src if no main
-            lolMain2Pic.alt = data.valorant_main2 || ""; 
-            lolMain3Pic.src = data.valorant_main3 ? `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp` : ""; // Empty src if no main
-            lolMain3Pic.alt = data.valorant_main3 || ""; 
-            lolRankPic.src = `public/images/valorant_ranks/${sanitize(data.valorant_rank || "default")}.png`;
-            lolRankPic.alt = data.valorant_rank || "Default Rank";
-            lolRolePic.src = `public/images/valorant_roles/${sanitize(data.valorant_role || "default")}.webp`;
-            lolRolePic.alt = data.valorant_role || "Default Role";
+            lolRankP.innerText = data.valorant_rank;
+            lolRoleP.innerText = data.lol_role;
+            if (data.valorant_noChamp === 1) {
+                championContainer.style.display = 'none';
+            } else {
+                lolMain1Pic.src = data.valorant_main1 ? `public/images/valorant_champions/${sanitize(data.valorant_main1)}_icon.webp` : ""; // Empty src if no main
+                lolMain1Pic.alt = data.valorant_main1 || ""; 
+                lolMain2Pic.src = data.valorant_main2 ? `public/images/valorant_champions/${sanitize(data.valorant_main2)}_icon.webp` : ""; // Empty src if no main
+                lolMain2Pic.alt = data.valorant_main2 || ""; 
+                lolMain3Pic.src = data.valorant_main3 ? `public/images/valorant_champions/${sanitize(data.valorant_main3)}_icon.webp` : ""; // Empty src if no main
+                lolMain3Pic.alt = data.valorant_main3 || ""; 
+                championContainer.style.display = 'flex';
+            }
         }
+
+
+        if (data.user_game === "League of Legends") {
+            // Ensure the rank container has relative positioning
+            lolRankP.style.position = "relative";
         
+            // Check if rankIcon already exists to avoid duplicates
+            let existingIcon = lolRankP.querySelector(".rank-icon");
+            if (!existingIcon) {
+                const rankIcon = document.createElement("i");
+                rankIcon.classList.add("fa-solid", "rank-icon", hasBindedAccount ? "fa-check" : "fa-xmark");
+                rankIcon.style.position = "absolute";
+                rankIcon.style.top = "-10px";
+                rankIcon.style.right = "-10px";
+                rankIcon.style.fontSize = "14px";
+                rankIcon.style.color = hasBindedAccount ? "green" : "red";
         
+                lolRankP.appendChild(rankIcon);
+            } else {
+                // Update the existing icon if already present
+                existingIcon.className = `fa-solid rank-icon ${hasBindedAccount ? "fa-check" : "fa-xmark"}`;
+                existingIcon.style.color = hasBindedAccount ? "green" : "red";
+            }
+        }
 
         if (data.user_isVip === 1) {
             const spanBadge = document.createElement('span');
@@ -465,13 +324,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function clearData() {
         // Hide elements that might be shown based on conditions
-        document.querySelector('.box_league_account').style.display = 'none';
+        document.querySelector('.swiping_champions').style.display = 'none';
     
         // Clear image sources and alt text
         imageUser.src = "public/images/defaultprofilepicture.jpg";
         imageUser.alt = "Default profile picture";
-        sProfileIcon.src = "";
-        sProfileIcon.alt = "";
         frameSwiping.src = "";
         badgeContainer.innerHTML = "";
         frameSwiping.style.opacity = '0';
@@ -483,39 +340,30 @@ document.addEventListener("DOMContentLoaded", function() {
         submitReportButton.disabled = false;
         picturesRow.innerHTML = "";
         hasBindedAccount = false;
+        championContainer.style.display = 'flex';
         
         // Clear text content
         sUsername.innerText = "";
-        sLevel.innerText = "";
         username.innerText = "";
         userAge.innerText = "";
         lolAccount.innerText = "";
-        gender.innerHTML = "<strong>Gender:</strong> "; 
-        kindOfGamer.innerHTML = "<strong>Kind of Gamer:</strong> "; 
-        shortBio.innerHTML = "<strong>ShortBio:</strong>"; 
+        gender.innerHTML = ""; 
+        kindOfGamer.innerHTML = " "; 
+        shortBio.innerHTML = ""; 
         receiverId.value = "";
     
         // Clear the League of Legends data
-        lolMain1P.innerText = "";
-        lolMain2P.innerText = "";
-        lolMain3P.innerText = "";
-        lolRankP.innerText = "";
-        lolRoleP.innerText = "";
         lolMain1Pic.src = "";
         lolMain1Pic.alt = "";
         lolMain2Pic.src = "";
         lolMain2Pic.alt = "";
         lolMain3Pic.src = "";
         lolMain3Pic.alt = "";
-        lolRankPic.src = "";
-        lolRankPic.alt = "";
-        lolRolePic.src = "";
-        lolRolePic.alt = "";
     }
 
     // Function to show the no more profiles message
     function showNoMoreProfiles() {
-        document.querySelector('.user_page').style.display = 'none';
+        document.querySelector('.swiping-ctn').style.display = 'none';
         document.querySelector('.noUserToSee').style.display = 'flex';
     }
 

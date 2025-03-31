@@ -25,9 +25,10 @@ function fetchFriendRequest(userId) {
     .then(data => {
         if (data.success && data.pendingRequests) {
             // Filter out existing pending notifications
-            AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');
-            // Add new pending notifications with type
-            const pendingWithType = data.pendingRequests.map(notif => ({ ...notif, type: 'pending' }));
+            AllNotifications = AllNotifications.filter(request => request.type !== 'pending');
+            const pendingWithType = data.pendingRequests
+            .filter(notif => notif.fr_notifReadPending === 0)
+            .map(notif => ({ ...notif, type: 'pending' }));
             AllNotifications.push(...pendingWithType);
             lastNotifCountPending = data.pendingRequests.length;
             lastNotifContentPending = data.pendingRequests;
@@ -37,7 +38,7 @@ function fetchFriendRequest(userId) {
                     notificationBadgeProfile = document.createElement('span');
                     notificationBadgeProfile.id = 'requests-badge';
                     notificationBadgeProfile.classList.add('notif-badge-profile');
-                    notificationBadgeProfile.textContent = lastNotifCountPending;
+                    notificationBadgeProfile.textContent = data.pendingRequests.length;
                     requestBtn.style.position = 'relative';
                     requestBtn.appendChild(notificationBadgeProfile);
                 } else {

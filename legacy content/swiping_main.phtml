@@ -1,7 +1,13 @@
 <?php if ($user): ?>
+        <!-- <script>
+            window.user = ; // $userData -> Add that back as Php variable
+            window.usersAll = ; // $usersAllData -> Add that back as Php variable
+        </script>
+
+    <script type="module" src="public/js/algo.js"></script> -->
 
     <div id="overlay"></div>
-    <script type="module" src="public/js/swiping/get_userMatching.js?<?= time(); ?>"></script>
+    <script type="module" src="public/js/swiping/get_userMatching.js?nocache=<%= Date.now() %>"></script>
 
     <?php if ($user['user_game'] === 'League of Legends'): ?>
     <span id="restore-game-container">
@@ -60,8 +66,8 @@
         <button class="submit-button">Submit</button>
     </div>
 
-    <section class="swiping-ctn" id="swipe-area">
-    <div id="report-modal" class="modal report-modal-hidden">
+    <section class="user_page" id="swipe-area" style="display: none; position: relative;">
+        <div id="report-modal" class="modal report-modal-hidden">
             <div class="modal-content">
                 <span id="close-modal" class="close">&times;</span>
                 <h2>Report User</h2>
@@ -79,61 +85,57 @@
                 <button id="submit-report">Report</button>
             </div>
         </div>
-        <div class="swiping-top"> <!-- Display row -->
-            <div class="user_page_picture">
+        <div class="user_page_main_content_row swiping_row">
+            <button id="report-button"><img src="public/images/hammer.png" alt="report an user"></button>
+            <span class="report-feedback"></span>
+            <span class="badge-container-swiping"></span>
+            <div class="main_box-swiping-main">
+                <div class="user_page_picture">
                     <div class="profile-picture-container">
                     <img class="frame_around_picture frame-swiping" src="">
                         <img id="image_users" alt="" />
                     </div>
                 </div>
-            <div class="swiping-user-info"> <!-- Display column -->
-                <div class="swiping-buttons"> <!-- Buttons (report, filter) Display row -->
-                    <div>
-                        <button class="swiping-buttons-filter" id="open-filter-modal" type="button">Filter <i class="fa-solid fa-filter"></i></button>
-                        <img src="public/images/report.svg" id="report-button" alt="report an user">
-                    </div>
-                    <span class="badge-container-swiping"></span>
+
+                <div class="user_page_update_name">
+                    <span id="user_page_username"></span>
+                    <span id="age_user"></span>
                 </div>
-                <div class="swiping-username-age"> <!-- Username age Display row -->
-                    <span id="user_page_username">Dosylia</span>
-                    <span id="age_user">26</span>
-                </div>
-                <div class="swiping-game-info"> <!-- Game info Display row -->
-                    <div class="swiping-game-column"> <!-- Riot ID Display column -->
-                        <span class="swiping-grey">Riot ID</span>
-                        <span id="lolsUsername" class="swiping-normal">Miss Novation#EUW</span>
-                    </div>
-                    <div class="swiping-game-column"> <!-- Rank Display column -->
-                        <span class="swiping-grey">Rank</span>
-                        <span id="lolRankP" class="swiping-normal">Unranked</span>
-                    </div>
-                    <div class="swiping-game-column"> <!-- Role Display column -->
-                        <span class="swiping-grey">Role</span>
-                        <span id="lolRoleP" class="swiping-normal">Ad Carry</span>
-                    </div>
-                </div>                
             </div>
-        </div> <!-- Top div : Picture, filter open modal, report, username -->
-        <div class="swiping-middle"> <!-- Display column -->
-            <span class="swiping_champions"> <!-- Display row, champions -->
-                <img id="lolMain1Pic" src="" alt="League of Legends" class="swiping-champions-picture">
-                <img id="lolMain2Pic" src="" alt="League of Legends" class="swiping-champions-picture">
-                <img id="lolMain3Pic" src="" alt="League of Legends" class="swiping-champions-picture">
-            </span>
-            <div class="swiping_filters"> <!-- Display row, filters -->
-                <span class="swiping_filters_server swiping_filters_row" id="swiping_server" >Europe West</span>
-                <span class="swiping_filters_others swiping_filters_row" id="swiping_gender"></span>
-                <span id="swiping_kindOfGamer"></span>
-            </div> 
-            <span id="shortBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare massa id eleifend cursus</span>
-        </div> <!-- Champions, filters, Bio -->
-        <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
-        <input id="receiverId" type="hidden" name="receiver_id">
-        <div class="row_buttons_swipe">
-                <button id="swipe_no" class="button_swiping" name="swipe_no"><i class="fa-solid fa-xmark"></i></button>
-                <button id="swipe_yes" class="button_swiping" name="swipe_yes"><i class="fa-solid fa-heart"></i></button>
-            </div> <!-- Buttons -->
-            <span class="report-feedback"></span>
+        </div>
+
+        <div class="user_page_main_content-swiping">
+            <div class="user_box">
+                <br><h2 class="title_generalbox">About them</h2><br>
+                <div class="box_league_account" style="display: none;">
+                    <div class="box_league_account_main_row">
+                        <div class="box_pictureLevel">
+                            <img id="profilepicture_lol" alt="icon_league">
+                            <p class="small_text" id="lolsLevel"></p>
+                        </div>
+                        <div class="box_usernameChampions">
+                            <p id="lolsUsername"><strong></strong></p>
+                            <?php if ($user['user_game'] === 'League of Legends'): ?>
+                                <?php include 'views/swiping/lol_all_champions.phtml' ?><br>
+                            <?php else : ?>
+                                <?php include 'views/swiping/valorant_all_champions.phtml' ?><br>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div><br>
+                <div class="box_league_account_main_row">
+                        <p id="lolAccount"></p>
+                </div>
+                <div class="box_league_account" style="display: none;">
+                </div>
+
+
+                <div class="about_you_users"><br>
+                    <p id="gender"><span class="font-weight-600">Gender</span>: </p><br>
+                    <p id="kindOfGamer"><span class="font-weight-600">Kind of gamer</span>: </p><br>
+                    <p id="shortBio"><span class="font-weight-600">Their bio</span>: </p><br>
+                </div>
+            </div>
             <div class="user_box" id="bonus-picture-container">
                 <div class="pictures-container-swiping">
                 <br><h2 class="title_generalbox">Pictures</h2>
@@ -144,8 +146,15 @@
                     </div>
                 </div>
             </div>
-    </section>
+        </div>
 
+            <input type="hidden" name="sender_id" value="<?= $_SESSION['userId'] ?>">
+            <input id="receiverId" type="hidden" name="receiver_id">
+            <div class="row_buttons_swipe">
+                <button id="swipe_no" class="button_swiping" name="swipe_no"><i class="fa-solid fa-xmark"></i></button>
+                <button id="swipe_yes" class="button_swiping" name="swipe_yes"><i class="fa-solid fa-heart"></i></button>
+            </div>
+    </section>
 
     <section class="noUserToSee" style="display: none;">
         <img src="public/images/vayne_emote.png" alt="jhinshrug">

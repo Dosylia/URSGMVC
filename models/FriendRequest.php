@@ -46,6 +46,7 @@ class FriendRequest extends DataBase
                                             fr.fr_id,
                                             fr.fr_senderId,
                                             fr.fr_receiverId,
+                                            fr_notifReadPending,
                                             u.user_username
                                         FROM
                                             `friendrequest` AS fr
@@ -55,8 +56,6 @@ class FriendRequest extends DataBase
                                             `fr_receiverId` = ?
                                         AND
                                             `fr_status` = 'pending'
-                                        AND
-                                            `fr_notifReadPending` = 0
         ");
 
         $query->execute([$userId]);
