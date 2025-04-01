@@ -1688,26 +1688,84 @@ class UserController
             //Retry without scores 
 
             // Determine which field to check for filtering
-            if ($user['user_game'] == "League of Legends") {
-                $filteredServer = json_decode($user['lf_filteredServer'], true);
-                $serverColumn = "lol_server";  // Filter by `lol_server`
-            } else {
-                $filteredServer = json_decode($user['lf_filteredServer'], true);
-                $serverColumn = "valorant_server";  // Filter by `valorant_server`
-            }
-            
-            $allServers = [
-                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
-                "Latin America North", "Latin America South", "Oceania", 
-                "Russia", "Turkey", "Japan", "Korea"
-            ];
-            
-            // Use all servers if no filters are applied
+            $postServer = isset($_POST['server']) ? json_decode($_POST['server'], true) : [];
+            $filteredServer = !empty($postServer) ? $postServer : json_decode($user['lf_filteredServer'], true);
+    
+            // Determine server column based on game
+            $serverColumn = ($user['user_game'] == "League of Legends") ? "lol_server" : "valorant_server";
+    
+            // Define all servers if no filters
+            $allServers = ["Europe West", "North America", "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia", "Turkey", "Japan", "Korea"];
             $serverList = empty($filteredServer) ? $allServers : $filteredServer;
+    
+            // Process gender filter
+            $filteredGender = $_POST['gender'] ?? '';
+            $genderConditions = [];
+            if ($filteredGender && $filteredGender !== 'All') {
+                switch ($filteredGender) {
+                    case 'Male':
+                        $genderConditions = ['Male'];
+                        break;
+                    case 'Female':
+                        $genderConditions = ['Female'];
+                        break;
+                    case 'Trans':
+                        $genderConditions = ['Trans Woman', 'Trans Man'];
+                        break;
+                    case 'Non binary':
+                        $genderConditions = ['Non Binary'];
+                        break;
+                    case 'Male and Female':
+                        $genderConditions = ['Male', 'Female'];
+                        break;
+                }
+            }
+    
+            $filteredGameMode = $_POST['gamemode'] ?? '';
+            $gameModeCondition = null;
             
-            // Fetch users with filtering
-            $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit($userId, $user['user_game'], $serverList, $serverColumn);
-            
+            if (is_array($filteredGameMode)) {
+                // If gamemode is an array, handle each item individually
+                $gameModeConditions = [];
+                foreach ($filteredGameMode as $mode) {
+                    if ($mode !== 'All') {
+                        switch ($mode) {
+                            case 'Aram':
+                            case 'Normal Draft':
+                                $gameModeConditions[] = 'Chill';
+                                break;
+                            case 'Ranked':
+                                $gameModeConditions[] = 'Competition';
+                                break;
+                        }
+                    }
+                }
+                // If there are multiple conditions, you can join them with an OR condition
+                $gameModeCondition = implode(' OR ', $gameModeConditions);
+            } else {
+                // If gamemode is a string
+                if ($filteredGameMode && $filteredGameMode !== 'All') {
+                    switch ($filteredGameMode) {
+                        case 'Aram':
+                        case 'Normal Draft':
+                            $gameModeCondition = 'Chill';
+                            break;
+                        case 'Ranked':
+                            $gameModeCondition = 'Competition';
+                            break;
+                    }
+                }
+            }
+    
+            // Fetch users with applied filters
+            $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit(
+                $userId,
+                $user['user_game'],
+                $serverList,
+                $genderConditions,
+                $gameModeCondition
+            );
+    
             
             
             $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
@@ -1717,7 +1775,7 @@ class UserController
             
                     // Check if the matched user is not the current user
                     if ($matchedUserId != $userId) {
-                        // if ($_SESSION['userId'] == 157) {
+                        // if ($_SESSION['userId'] == 158) {
                         //     $matchedUserId = 157;
                         // }
                         $userMatched = $this->user->getUserById($matchedUserId);

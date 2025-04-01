@@ -289,54 +289,54 @@ class User extends DataBase
         return $users ?: false;
     }
 
-    public function getAllUsersExceptFriendsLimit($userId, $game, $serverList)
+    public function getAllUsersExceptFriendsLimit($userId, $game, $serverList, $genderConditions = [], $gameModeCondition = null)
     {
-        $placeholders = implode(',', array_fill(0, count($serverList), '?'));
-    
-        // Determine the correct server column and table alias
+        $serverPlaceholders = implode(',', array_fill(0, count($serverList), '?'));
         $serverColumn = ($game == "League of Legends") ? "l.lol_server" : "v.valorant_server";
     
+        // Base WHERE clauses
+        $whereClauses = [
+            "u.user_game = ?",
+            "u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
+            "$serverColumn IN ($serverPlaceholders)",
+            "NOT EXISTS (SELECT 1 FROM friendrequest AS fr1 WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id)",
+            "NOT EXISTS (SELECT 1 FROM friendrequest AS fr2 WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id)",
+            "NOT EXISTS (SELECT 1 FROM block AS b1 WHERE b1.block_senderId = ? AND b1.block_receiverId = u.user_id)",
+            "NOT EXISTS (SELECT 1 FROM block AS b2 WHERE b2.block_receiverId = ? AND b2.block_senderId = u.user_id)"
+        ];
+    
+        $params = array_merge(
+            [$game],
+            $serverList,
+            [$userId, $userId, $userId, $userId]
+        );
+    
+        // Add gender conditions
+        if (!empty($genderConditions)) {
+            $genderPlaceholders = implode(',', array_fill(0, count($genderConditions), '?'));
+            $whereClauses[] = "u.user_gender IN ($genderPlaceholders)";
+            $params = array_merge($params, $genderConditions);
+        }
+    
+        // Add gamemode condition
+        if ($gameModeCondition !== null) {
+            $whereClauses[] = "u.user_kindOfGamer = ?";
+            $params[] = $gameModeCondition;
+        }
+    
+        // Build final query
         $query = $this->bdd->prepare("
-            SELECT
-                u.*, 
-                l.*, 
-                v.*, 
-                lf.*
-            FROM
-                `user` AS u
-            LEFT JOIN
-                `leagueoflegends` AS l ON u.user_id = l.user_id
-            LEFT JOIN
-                `valorant` AS v ON u.user_id = v.user_id
-            INNER JOIN
-                `userlookingfor` AS lf ON u.user_id = lf.user_id
-            WHERE
-                u.user_game = ?
-                AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-                AND $serverColumn IN ($placeholders)  -- Corrected to reference the right table
-                AND NOT EXISTS (
-                    SELECT 1 FROM `friendrequest` AS fr1 
-                    WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id
-                )
-                AND NOT EXISTS (
-                    SELECT 1 FROM `friendrequest` AS fr2 
-                    WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id
-                )
-                AND NOT EXISTS (
-                    SELECT 1 FROM `block` AS b1 
-                    WHERE b1.block_senderId = ? AND b1.block_receiverId = u.user_id
-                )
-                AND NOT EXISTS (
-                    SELECT 1 FROM `block` AS b2 
-                    WHERE b2.block_receiverId = ? AND b2.block_senderId = u.user_id
-                )
+            SELECT u.*, l.*, v.*, lf.*
+            FROM user AS u
+            LEFT JOIN leagueoflegends AS l ON u.user_id = l.user_id
+            LEFT JOIN valorant AS v ON u.user_id = v.user_id
+            INNER JOIN userlookingfor AS lf ON u.user_id = lf.user_id
+            WHERE " . implode(' AND ', $whereClauses) . "
             ORDER BY RAND()
             LIMIT 5;
         ");
     
-        // Execute query with parameters
-        $query->execute(array_merge([$game], $serverList, [$userId, $userId, $userId, $userId]));
-    
+        $query->execute($params);
         $users = $query->fetchAll();
     
         return $users ?: false;

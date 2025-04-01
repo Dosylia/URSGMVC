@@ -31,6 +31,103 @@ document.addEventListener("DOMContentLoaded", function() {
     const picturesRow = document.querySelector(".pictures-row");
     const bonusPictureContainer = document.getElementById('bonus-picture-container');
     let hasBindedAccount = false;
+    const championNameFixes = {
+        'Dr.Mundo': 'DrMundo',
+        'LeBlanc': 'Leblanc',
+        'KhaZix': 'Khazix',
+        'KaiSa': 'Kaisa',
+        'VelKoz': 'Velkoz',
+        'ChoGath': 'Chogath',
+        'RekSai': 'RekSai',
+        "Ksante": 'KSante'
+    };
+
+    document.getElementById("open-filter-modal-no-users")?.addEventListener("click", function() {
+        document.getElementById("filter-modal-no-users").style.display = "flex";
+      });
+      
+      // Add event listener for the new modal's close button
+      document.getElementById("close-modal-filter-no-users")?.addEventListener("click", function() {
+        document.getElementById("filter-modal-no-users").style.display = "none";
+      });
+      
+
+    document.getElementById("open-filter-modal").addEventListener("click", function() {
+        document.getElementById("filter-modal").style.display = "flex";
+    });
+    
+    document.getElementById("close-modal-filter").addEventListener("click", function() {
+        document.getElementById("filter-modal").style.display = "none";
+    });
+    
+    document.querySelectorAll(".filter-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const category = this.getAttribute("data-filter");
+            const modal = this.closest(".modal"); // Get the correct modal
+    
+            if (category === "server") {
+                this.classList.toggle("server-active");
+                let selectedServers = Array.from(modal.querySelectorAll(".filter-btn.server-active"))
+                    .map(btn => btn.getAttribute("data-value"));
+                localStorage.setItem("server", JSON.stringify(selectedServers));
+            } else if (category === "gamemode") {
+                this.classList.toggle("gamemode-active");
+                let selectedGamemode = Array.from(modal.querySelectorAll(".filter-btn.gamemode-active"))
+                    .map(btn => btn.getAttribute("data-value"));
+                localStorage.setItem("gamemode", JSON.stringify(selectedGamemode));
+            } else {
+                modal.querySelectorAll(`.filter-btn[data-filter='${category}']`).forEach(btn => btn.classList.remove("active"));
+                this.classList.add("active");
+                localStorage.setItem(category, this.getAttribute("data-value"));
+            }
+        });
+    });
+    
+    // Update for both modals
+    document.querySelectorAll("#update-filter, #update-filter-no-users").forEach(btn => {
+        btn.addEventListener("click", function() {
+            this.closest(".modal").style.display = "none";
+            fetchMatchingUser(userId);
+        });
+    });
+    
+    restoreFilters();
+    
+    // Restore saved filters from localStorage
+    function restoreFilters() {
+        const modals = [
+            document.getElementById("filter-modal"),
+            document.getElementById("filter-modal-no-users")
+        ];
+    
+        modals.forEach(modal => {
+            if (!modal) return;
+            
+            // Server filters
+            const serverFilters = JSON.parse(localStorage.getItem("server")) || [];
+            serverFilters.forEach(value => {
+                const button = modal.querySelector(`.filter-btn[data-filter='server'][data-value='${value}']`);
+                if (button) button.classList.add("server-active");
+            });
+    
+            // Gamemode filters
+            const gamemodeFilters = JSON.parse(localStorage.getItem("gamemode")) || [];
+            gamemodeFilters.forEach(value => {
+                const button = modal.querySelector(`.filter-btn[data-filter='gamemode'][data-value='${value}']`);
+                if (button) button.classList.add("gamemode-active");
+            });
+    
+            // Gender filter
+            ["gender"].forEach(category => {
+                const savedValue = localStorage.getItem(category);
+                if (savedValue) {
+                    const button = modal.querySelector(`.filter-btn[data-filter='${category}'][data-value='${savedValue}']`);
+                    if (button) button.classList.add("active");
+                }
+            });
+        });
+    }
+    
 
     function getOwnedItems(userId) {
         fetch('/getOwnedItems', {
@@ -72,13 +169,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to fetch matching user data
     function fetchMatchingUser(userId) {
+        const server = localStorage.getItem("server") || "";
+        const gender = localStorage.getItem("gender") || "";
+        const gamemode = localStorage.getItem("gamemode") || "";
         fetch('/getUserMatching', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `Bearer ${token}`,
             },
-            body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1`
+            body: `userId=${encodeURIComponent(userId)}&isNotReactNative=1&server=${server}&gender=${gender}&gamemode=${gamemode}`
         })
         .then(response => {
             if (!response.ok) {
@@ -91,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(data => {
             if (data.success && data.user) {
+                document.querySelector('.noUserToSee').style.display = 'none';
                 getOwnedItems(data.user.user_id);
                 fillData(data.user);
             } else {
@@ -112,8 +213,6 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // Ensure it's not empty
             hasBindedAccount = true;
-        
-            const version = await fetchDdragonVersion();
             sUsername.innerText = data.lol_account;
         } else {
             sUsername.innerText = "UNKNOW";
@@ -196,14 +295,19 @@ document.addEventListener("DOMContentLoaded", function() {
         newWrapper.style.gap = "10px";
         newWrapper.style.flexWrap = "wrap";
 
-        
         // Generate new spans
         switch (data.user_kindOfGamer) {
             case 'Chill':
-                newWrapper.innerHTML = `
-                    <span class="swiping_filters_others swiping_filters_row">Aram</span>
-                    <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
-                `;
+                if (data.user_game !== 'Valorant') {
+                    newWrapper.innerHTML = `
+                        <span class="swiping_filters_others swiping_filters_row">Aram</span>
+                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                    `;
+                } else {
+                    newWrapper.innerHTML = `
+                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                    `;
+                }
                 break;
             case 'Competition':
                 newWrapper.innerHTML = `
@@ -211,18 +315,33 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
                 break;
             default:
-                newWrapper.innerHTML = `
-                    <span class="swiping_filters_others swiping_filters_row">Aram</span>
-                    <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
-                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
-                `;
+                if (data.user_game !== 'Valorant') {
+                    newWrapper.innerHTML = `
+                        <span class="swiping_filters_others swiping_filters_row">Aram</span>
+                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                    `;
+                } else {
+                    newWrapper.innerHTML = `
+                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                    `;
+                }
                 break;
         }
-        
+
+        if (data.user_game === 'Valorant') {
+            // Remove the Aram button
+            const aramButton = document.querySelector('button[data-value="Aram"]');
+            if (aramButton) {
+                aramButton.remove();
+            }
+        }
+                
         // Replace the old container with the new one
         kindOfGamer.replaceWith(newWrapper);
 
-        shortBio.innerHTML = sanitizeHtlm(data.user_shortBio) || "No description available";
+        shortBio.innerHTML = sanitizeHtlm(decodeHtmlEntities(data.user_shortBio)) || "No description available";
 
         
         receiverId.value = data.user_id;
@@ -233,18 +352,20 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.lol_noChamp === 1) {
                 championContainer.style.display = 'none';
             } else {
-                lolMain1Pic.src = data.lol_main1 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main1)}_0.jpg` : ""; // Empty src if no main
+                lolMain1Pic.src = data.lol_main1 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(sanitize(data.lol_main1))}_0.jpg` : ""; 
                 lolMain1Pic.alt = data.lol_main1 || ""; 
-                lolMain2Pic.src = data.lol_main2 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main2)}_0.jpg` : ""; // Empty src if no main
+                
+                lolMain2Pic.src = data.lol_main2 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(sanitize(data.lol_main2))}_0.jpg` : ""; 
                 lolMain2Pic.alt = data.lol_main2 || ""; 
-                lolMain3Pic.src = data.lol_main3 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitize(data.lol_main3)}_0.jpg` : ""; // Empty src if no main
-                lolMain3Pic.alt = data.lol_main3 || ""; 
+                
+                lolMain3Pic.src = data.lol_main3 ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(sanitize(data.lol_main3))}_0.jpg` : ""; 
+                lolMain3Pic.alt = data.lol_main3 || "";
                 championContainer.style.display = 'flex';
             }
         } else if (data.user_game === "Valorant" && data.valorant_role) {
             // lolAccount.innerText = data.valorant_account || "Unknown Account";
             lolRankP.innerText = data.valorant_rank;
-            lolRoleP.innerText = data.lol_role;
+            lolRoleP.innerText = data.valorant_role;
             if (data.valorant_noChamp === 1) {
                 championContainer.style.display = 'none';
             } else {
@@ -256,6 +377,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 lolMain3Pic.alt = data.valorant_main3 || ""; 
                 championContainer.style.display = 'flex';
             }
+        }
+
+        const hasPictures = bonusPictureContainer.style.display === 'flex';
+        const hasChampions = championContainer.style.display === 'flex';
+        const viewToggle = document.getElementById('view-toggle');
+        const toggleButtons = document.querySelectorAll('.view-toggle-btn');
+    
+        // Reset toggle state
+        viewToggle.style.display = 'none';
+        toggleButtons.forEach(btn => btn.classList.remove('active'));
+    
+        if (hasPictures && hasChampions) {
+            viewToggle.style.display = 'flex';
+            // Set initial view to pictures
+            bonusPictureContainer.style.display = 'none';
+            championContainer.style.display = 'flex';
+            toggleButtons[0].classList.add('active');
+            // Add event listener
+            viewToggle.removeEventListener('click', handleViewToggle);
+            viewToggle.addEventListener('click', handleViewToggle);
         }
 
 
@@ -283,43 +424,61 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         if (data.user_isVip === 1) {
-            const spanBadge = document.createElement('span');
-            spanBadge.classList.add('vip-badge');
-            spanBadge.title = 'Premium Badge';
-        
-            const vipBadge = document.createElement('img');
-            vipBadge.src = '/public/images/premium-badge.png';
-            vipBadge.alt = 'Premium Badge';
-        
-            spanBadge.appendChild(vipBadge); 
-            badgeContainer.appendChild(spanBadge); 
+            addBadge(badgeContainer, 'Premium Badge', '/public/images/premium-badge.png', 'Premium', '#e84056');
         }
         
         if (data.user_isPartner === 1) {
-            const spanBadge = document.createElement('span');
-            spanBadge.classList.add('vip-badge');
-            spanBadge.title = 'Partner Badge';
-        
-            const partnerBadge = document.createElement('img');
-            partnerBadge.src = '/public/images/partner-badge.png';
-            partnerBadge.alt = 'Partner Badge';
-        
-            spanBadge.appendChild(partnerBadge);
-            badgeContainer.appendChild(spanBadge); 
+            addBadge(badgeContainer, 'Partner Badge', '/public/images/partner-badge.png', 'Partner', '#c89b3e');
         }
         
         if (data.user_isCertified === 1) {
-            const spanBadge = document.createElement('span');
-            spanBadge.classList.add('vip-badge');
-            spanBadge.title = 'Certified Badge';
+            addBadge(badgeContainer, 'Certified Badge', '/public/images/certified-badge.png', 'Certified', '#6BBEEB');
+        }   
+
+    }
+
+    function handleViewToggle(event) {
+        const button = event.target.closest('.view-toggle-btn');
+        if (!button) return;
+    
+        const view = button.dataset.view;
+        const isPictures = view === 'pictures';
+        const toggleButtons = document.querySelectorAll('.view-toggle-btn');
+        const bonusPictureContainer = document.getElementById('bonus-picture-container');
+        const championContainer = document.querySelector('.swiping_champions');
+    
+        toggleButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    
+        bonusPictureContainer.style.display = isPictures ? 'flex' : 'none';
+        championContainer.style.display = isPictures ? 'none' : 'flex';
+    }
+
+    function addBadge(container, title, imgSrc, text, color) {
+        const spanBadge = document.createElement('span');
+        spanBadge.classList.add('badge');
+        spanBadge.title = title;
+        spanBadge.style.border = `1px solid ${color}`;
+        spanBadge.style.color = color;
+        spanBadge.style.padding = '4px 8px';
+        spanBadge.style.borderRadius = '4px';
+        spanBadge.style.display = 'flex';
+        spanBadge.style.alignItems = 'center';
+        spanBadge.style.gap = '5px';
         
-            const certifiedBadge = document.createElement('img');
-            certifiedBadge.src = '/public/images/certified-badge.png';
-            certifiedBadge.alt = 'Certified Badge';
+        const badgeIcon = document.createElement('img');
+        badgeIcon.src = imgSrc;
+        badgeIcon.alt = title;
+        badgeIcon.style.width = '16px';
+        badgeIcon.style.height = '16px';
         
-            spanBadge.appendChild(certifiedBadge);
-            badgeContainer.appendChild(spanBadge);
-        }
+        const badgeText = document.createElement('span');
+        badgeText.textContent = text;
+        badgeText.style.color = color;
+        
+        spanBadge.appendChild(badgeIcon);
+        spanBadge.appendChild(badgeText);
+        container.appendChild(spanBadge);
     }
 
     function clearData() {
@@ -359,12 +518,26 @@ document.addEventListener("DOMContentLoaded", function() {
         lolMain2Pic.alt = "";
         lolMain3Pic.src = "";
         lolMain3Pic.alt = "";
+
+        const viewToggle = document.getElementById('view-toggle');
+        if (viewToggle) {
+            viewToggle.style.display = 'none';
+        }
+        document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        bonusPictureContainer.style.display = 'none';
+        championContainer.style.display = 'none';
     }
 
     // Function to show the no more profiles message
     function showNoMoreProfiles() {
         document.querySelector('.swiping-ctn').style.display = 'none';
         document.querySelector('.noUserToSee').style.display = 'flex';
+    }
+
+    function sanitizeChampionName(championName) {
+        return championNameFixes[championName] || championName; // Return the fixed name if exists, else return the original
     }
 
     // Sanitize function

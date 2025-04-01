@@ -2,7 +2,7 @@
     --dark-grey: #151416;
     --dark-ligher-grey: #302e31;
     --ligher--grey: #4f4b52;
-    --main--red: #e74057;
+    --main--red: #e84056;
     --dark--red: #980c1f;
     --white: rgb(255, 255, 255);
   }
@@ -643,7 +643,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 30px;
   font-family: 'Geologica', sans-serif; 
   color: black; 
 }
@@ -668,9 +668,9 @@
 
 .swiping-buttons {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  gap: 20px;
 }
 
 .swiping-buttons div {
@@ -694,19 +694,15 @@
 .dark-mode .swiping-buttons-filter {
   background-color: rgba(42, 40, 40, 0.5);
   border: 1px solid rgb(97, 96, 96);
-  color: var(--main--red);
-  text-transform: uppercase;
-  border-radius: 5px;
-  padding: 5px 20px;
-  cursor: pointer;
-  font-size: 1em;
-  display: flex;
-  gap: 10px;
 }
 
 .swiping-buttons img {
   width: 25px;
   height: 25px;
+}
+
+.swiping-buttons button p {
+  color: var(--main--red);
 }
 
 .swiping-username-age {
@@ -762,7 +758,7 @@ font-size: 0.7em;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 25px;
 }
 
 .swiping-middle #shortBio {
@@ -785,7 +781,7 @@ font-size: 0.7em;
   border: 4px solid var(--main--red);
   border-radius: 20px;
   height: auto;
-  width: 300px;
+  width: 200px;
   object-fit: cover;
 }
 
@@ -824,19 +820,105 @@ font-size: 0.7em;
   color: #E0AD66 !important;
 }
 
-.swiping_filters_row i,
-.swiping_filters_row img {
+
+
+#filter-modal .swiping_filters_row i,
+#filter-modal .swiping_filters_row img,
+#filter-modal-no-users .swiping_filters_row i,
+#filter-modal-no-users .swiping_filters_row img {
     height: 20px;
     display: flex;
     align-items: center;
 }
 
-.swiping_filters_row i {
+#filter-modal .swiping_filters_row i, #filter-modal-no-users .swiping_filters_row i {
   font-size: 20px; 
   line-height: 20px; 
 }
 
+#filter-modal .filter-options, #filter-modal-no-users .filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 
+#filter-modal .filter-btn, #filter-modal-no-users .filter-btn {
+  background: white;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.dark-mode #filter-modal .filter-btn, .dark-mode #filter-modal-no-users .filter-btn {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+#filter-modal .filter-btn.active, #filter-modal-no-users .filter-btn.active {
+  background: #E0AD66;
+  color: white;
+}
+
+#filter-modal .filter-btn.server-active, #filter-modal-no-users .filter-btn.server-active {
+  background: var(--main--red);
+  color: white;
+}
+
+#filter-modal .filter-btn.gamemode-active, #filter-modal-no-users .filter-btn.gamemode-active {
+  background: #E0AD66;
+  color: white;
+}
+
+#filter-modal #update-filter, #filter-modal-no-users #update-filter-no-users {
+  background: var(--main--red);
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+#filter-modal h2, #filter-modal-no-users h2 {
+  margin: 20px 0;
+}
+
+#picture-selector {
+  width: 100%;
+}
+
+#view-toggle {
+  display: none;
+  gap: 10px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(166, 14, 35, 0.5);
+  padding-bottom: 10px;
+  justify-content: center;
+}
+
+.view-toggle-btn {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: rgba(166, 14, 35, 0.5);
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.view-toggle-btn.active {
+  color: var(--main--red);
+  font-weight: 700;
+}
 
 /* SCROLL BAR */
 
@@ -1613,6 +1695,7 @@ section.siteMap tr:nth-child(even) {
       font-size: 4vh;
       padding: 30px;
       text-align: center;
+      gap: 20px;
     }
 
     .google_needed p, .noUserToSee p {
@@ -1881,7 +1964,7 @@ section.siteMap tr:nth-child(even) {
   #user_page_username {
     font-family: 'Geologica', sans-serif;
     font-size: 5vw;
-
+    margin-left: 10px;
   }
 
   .user_page_update {
@@ -1925,7 +2008,7 @@ section.siteMap tr:nth-child(even) {
 
     /* Report Modal */
   
-  #report-modal .modal-content {
+  #report-modal .modal-content, #filter-modal .modal-content, #filter-modal-no-users .modal-content {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -1939,6 +2022,15 @@ section.siteMap tr:nth-child(even) {
       color: black;
       text-align: center;
   }
+
+  #filter-modal .modal-content, #filter-modal-no-users .modal-content {
+    background-color: #e0dbdb;
+
+  }
+
+  #filter-modal, #filter-modal-no-users {
+    display: none;
+}
 
   .report-textarea {
     text-align: left;
@@ -1977,7 +2069,7 @@ section.siteMap tr:nth-child(even) {
     color: white;
 }
 
-  .dark-mode #report-modal .modal-content {
+  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, #filter-modal-no-users .modal-content {
     background-color: var(--dark-ligher-grey);
     color: white;
 }
@@ -1988,6 +2080,16 @@ section.siteMap tr:nth-child(even) {
 }
 
   #report-modal .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: var(--main--red);
+      font-size: 40px;
+      font-weight: 800;
+      cursor: pointer;
+  }
+
+  #filter-modal .close, #filter-modal-no-users .close {
       position: absolute;
       top: 10px;
       right: 15px;
@@ -2259,9 +2361,8 @@ section.siteMap tr:nth-child(even) {
 .pictures-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Space between pictures */
+  gap: 20px;
   justify-content: flex-start;
-  margin-top: 20px;
 }
 
 .pictures-rowTest {
@@ -2298,9 +2399,8 @@ section.siteMap tr:nth-child(even) {
 .user-picture-swiping {
   object-fit: cover; 
   border-radius: 8px;
-  width: 100%;
-  height: 100%;
   max-width: 400px;
+  border: 5px solid var(--main--red);
 }
 
 #bonus-picture-container {
@@ -4948,7 +5048,7 @@ justify-content: center;
   border-radius: 20px;
 }
 
-#user-container #badge-container img {
+#user-container #badge-container img, .badge-container-swiping img{
   width: 30px;
   height: 30px;
 }
@@ -5691,12 +5791,12 @@ justify-content: center;
 
 #restore-game-btn {
   background-color: #C89B3E;
-  font-size: 2em;
+  font-size: 1.5em;
   color: white;
   font-weight: bold;
   border: none;
   border-radius: 30px;
-  padding: 5px 20px;
+  padding: 5px 10px;
   cursor: pointer;
 }
 
@@ -6752,13 +6852,23 @@ justify-content: center;
 
     .swiping_champions img {
       width: 200px;
+      height: auto;
     }
 }
 
 @media only screen and (max-width: 1018px) {
 
   .swiping-game-info {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .swiping-user-info {
+    justify-content: center;
+    align-items: center;
   }
 
   .swiping-game-info > :not(:last-child) {
@@ -6885,6 +6995,10 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 900px) {
+
+  .swiping-ctn #bonus-picture-container {
+    display: none;
+  }
 
   .swiping-ctn {
    width: 80%;
@@ -7293,8 +7407,22 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  /* .swiping-middle {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 95%;
+    margin: auto;
+    gap: 15px;
+  }
+
+  .swiping_champions {
+    width: unset;
+    gap: 5px;
+  } */
+
   .swiping_champions img {
     width: 90px;
+    height: auto;
   }
 
   #friendTop {
@@ -7432,8 +7560,28 @@ justify-content: center;
 
 @media only screen and (max-width: 600px) {
 
+    .swiping-ctn {
+      width: 100%;
+      max-width: unset;
+    }
+
+  .swiping-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .swiping_champions img {
-    width: 70px;
+    width: 60px;
+    height: auto;
+  }
+
+  .swiping_filters_row {
+    gap: 5px;
+    padding: 3px 10px;
+  }
+
+  .swiping-middle {
+    gap: 15px;
   }
 
   #menu-links {
@@ -7477,6 +7625,7 @@ justify-content: center;
 
   .badge-container-swiping img {
     width: 20px;
+    height: 20px;
   }
 
   .partner {
@@ -7571,6 +7720,18 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    .swiping-buttons {
+      position: absolute;
+      top: 0;
+      right: 5px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .swiping-buttons button p {
+      display: none;
+    }
 
     #badge-container {
       margin-top: 0px;
@@ -7770,10 +7931,6 @@ justify-content: center;
     gap: 20px;
   }
 
-  .vip-badge img {
-    width: 20px;
-  }
-
   .badge-container {
     display: flex;
     justify-content: center;
@@ -7809,10 +7966,11 @@ justify-content: center;
   }
 
   #image_users {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
+    margin-left: 15px;
     border-radius: 1000px;
-    border: 5px solid var(--main--red);
+    border: 1px solid var(--main--red);
   }
 
   #user_page_username {
@@ -7851,10 +8009,32 @@ justify-content: center;
     font-size: 1em;
   }
 
+  .swiping-ctn {
+    margin: 10px auto;
+  }
+
+  .user-picture-swiping {
+    width: 150px;
+    height: 150px;
+  }
+
 }
 
 
 @media only screen and (max-width: 500px) {
+
+  #swipe_yes, #swipe_no {
+    width: 50px;
+    height: 50px;
+  }
+
+  #swipe_no i, #swipe_yes i {
+    font-size: 2rem;
+  }
+
+  .row_buttons_swipe {
+    gap: 30px;
+  }
 
   .social-container-column {
     padding: 5px 20px;
@@ -7886,10 +8066,6 @@ justify-content: center;
     gap: 10px;
   }
 
-  .vip-badge img {
-    width: 15px;
-  }
-
   #join_piltover, #join_zaun {
     padding: 4px 8px;
     margin: 10px;
@@ -7910,6 +8086,16 @@ justify-content: center;
 
 
 @media only screen and (max-width: 400px) {
+
+  #restore-game-btn {
+    font-size: 15px;
+    padding: 5px 10px;
+  }
+
+  .user-picture-swiping {
+    width: 75px;
+    height: 75px;
+  }
 
   .box_league_account_main_row {
     flex-direction: column;
@@ -7942,14 +8128,22 @@ justify-content: center;
         padding: 10px;
       }
 
+      .badge span {
+        display: inline;
+      }
+
 }
 
 @media only screen and (max-width: 350px) {
 
+  .badge span {
+    display: none;
+  }
+
   #image_users {
-    width: 150px;
-    height: 150px;
-    border-radius: 1000px;
+    width: 75px;
+    height: 75px;
+    margin-left: 15px;
   }
 
   .frame_around_picture {
