@@ -1721,29 +1721,28 @@ class UserController
                 }
             }
     
-            $filteredGameMode = $_POST['gamemode'] ?? '';
-            $gameModeCondition = null;
+            $postGameMode = isset($_POST['gamemode']) ? json_decode($_POST['gamemode'], true) : [];
+            $filteredGameMode = !empty($postGameMode) ? $postGameMode : [];
             
             if (is_array($filteredGameMode)) {
-                // If gamemode is an array, handle each item individually
-                $gameModeConditions = [];
                 foreach ($filteredGameMode as $mode) {
                     if ($mode !== 'All') {
                         switch ($mode) {
                             case 'Aram':
                             case 'Normal Draft':
-                                $gameModeConditions[] = 'Chill';
+                                $gameModeCondition[] = 'Chill';
                                 break;
                             case 'Ranked':
-                                $gameModeConditions[] = 'Competition';
+                                $gameModeCondition[] = 'Competition';
                                 break;
                         }
                     }
                 }
-                // If there are multiple conditions, you can join them with an OR condition
-                $gameModeCondition = implode(' OR ', $gameModeConditions);
+                // Remove duplicates and handle empty cases
+                $gameModeCondition = array_unique($gameModeCondition);
+                $gameModeCondition = !empty($gameModeCondition) ? $gameModeCondition : null;
             } else {
-                // If gamemode is a string
+                // Handle single string value (if not using array)
                 if ($filteredGameMode && $filteredGameMode !== 'All') {
                     switch ($filteredGameMode) {
                         case 'Aram':
@@ -1753,10 +1752,14 @@ class UserController
                         case 'Ranked':
                             $gameModeCondition = 'Competition';
                             break;
+                        default:
+                            $gameModeCondition = null;
                     }
+                } else {
+                    $gameModeCondition = null;
                 }
-            }
-    
+            }      
+            
             // Fetch users with applied filters
             $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit(
                 $userId,
@@ -1765,9 +1768,7 @@ class UserController
                 $genderConditions,
                 $gameModeCondition
             );
-    
-            
-            
+                
             $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {
                 foreach ($usersAfterMatching as $match) {

@@ -369,8 +369,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
             // Add hover behavior for timestamp
             let timestampSpan = messageDiv.querySelector('.timestamp-hover');
-            timestampSpan.parentNode.insertBefore(hoverMenu, timestampSpan);
             if (timestampSpan) {
+                timestampSpan.parentNode.insertBefore(hoverMenu, timestampSpan);
                 timestampSpan.style.display = 'none';
                 messageDiv.addEventListener('mouseenter', function() {
                     timestampSpan.style.display = 'inline-block';

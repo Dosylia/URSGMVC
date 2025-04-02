@@ -318,10 +318,15 @@ class User extends DataBase
             $params = array_merge($params, $genderConditions);
         }
     
-        // Add gamemode condition
         if ($gameModeCondition !== null) {
-            $whereClauses[] = "u.user_kindOfGamer = ?";
-            $params[] = $gameModeCondition;
+            if (is_array($gameModeCondition)) {
+                $placeholders = implode(',', array_fill(0, count($gameModeCondition), '?'));
+                $whereClauses[] = "u.user_kindOfGamer IN ($placeholders)";
+                $params = array_merge($params, $gameModeCondition);
+            } else {
+                $whereClauses[] = "u.user_kindOfGamer = ?";
+                $params[] = $gameModeCondition;
+            }
         }
     
         // Build final query

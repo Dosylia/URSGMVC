@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let sUsername = document.getElementById('lolsUsername');
     let lolAccount = document.getElementById('lolsUsername');
     let gender = document.getElementById('swiping_gender');
+    let server = document.getElementById('swiping_server');
     let kindOfGamer = document.getElementById('swiping_kindOfGamer');
     let shortBio = document.getElementById('shortBio');
     let receiverId = document.getElementById('receiverId');
@@ -277,17 +278,8 @@ document.addEventListener("DOMContentLoaded", function() {
         btnSwipeNo.disabled = false;
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
-        const game = data.user_game; // For example, "League of Legends" or "Valorant"
-        const server = game === "League of Legends" ? data.lol_server : data.valorant_server;
-        
-        const aboutYouUsers = document.querySelector('.about_you_users'); // The container element
-        
-        // Map user gender to corresponding image classes
-        const isDarkMode = document.body.classList.contains('dark-mode');
 
         gender.innerText = data.user_gender;
-
-        let queuesHtml = ""; // Initialize queuesHtml variable
 
         const newWrapper = document.createElement("div");
         newWrapper.id = "swiping_kindOfGamer";
@@ -338,8 +330,12 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
                 
-        // Replace the old container with the new one
-        kindOfGamer.replaceWith(newWrapper);
+        const oldWrapper = document.getElementById("swiping_kindOfGamer");
+        if (oldWrapper) {
+            oldWrapper.replaceWith(newWrapper); // Replace existing wrapper
+        } else {
+            kindOfGamer.appendChild(newWrapper); // If first time, just append
+        }
 
         shortBio.innerHTML = sanitizeHtlm(decodeHtmlEntities(data.user_shortBio)) || "No description available";
 
@@ -349,6 +345,7 @@ document.addEventListener("DOMContentLoaded", function() {
             lolRankP.innerText = hasBindedAccount ? data.lol_sRank : data.lol_rank || "Unranked ";
             lolRoleP.innerText = data.lol_role;
             lolRoleP.innerText = data.lol_role || "Unknown";
+            server.innerText = data.lol_server;
             if (data.lol_noChamp === 1) {
                 championContainer.style.display = 'none';
             } else {
@@ -366,6 +363,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // lolAccount.innerText = data.valorant_account || "Unknown Account";
             lolRankP.innerText = data.valorant_rank;
             lolRoleP.innerText = data.valorant_role;
+            server.innerText = data.valorant_server;
             if (data.valorant_noChamp === 1) {
                 championContainer.style.display = 'none';
             } else {
@@ -507,6 +505,7 @@ document.addEventListener("DOMContentLoaded", function() {
         userAge.innerText = "";
         lolAccount.innerText = "";
         gender.innerHTML = ""; 
+        server.innerHTML = "";
         kindOfGamer.innerHTML = " "; 
         shortBio.innerHTML = ""; 
         receiverId.value = "";
