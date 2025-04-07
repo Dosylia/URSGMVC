@@ -544,6 +544,32 @@ class UserController
 
     }
 
+    public function personalityTestPage()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        )
+        {
+
+            // Get important datas
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            $current_url = "https://ur-sg.com/personalityTest";
+            $template = "views/swiping/personality_test";
+            $page_title = "URSG - What kind of League player";
+            require "views/layoutSwiping.phtml";
+        } 
+        else
+        {
+            $current_url = "https://ur-sg.com/personalityTest";
+            $template = "views/swiping/personality_test";
+            $page_title = "URSG - What kind of League player";
+            require "views/layoutSwiping_noheader.phtml";
+        }        
+    }
+
     public function updateProfile()
     {
         if (isset($_POST['submit']))
@@ -1725,6 +1751,7 @@ class UserController
             $filteredGameMode = !empty($postGameMode) ? $postGameMode : [];
             
             if (is_array($filteredGameMode)) {
+                $gameModeCondition = [];
                 foreach ($filteredGameMode as $mode) {
                     if ($mode !== 'All') {
                         switch ($mode) {
@@ -1753,10 +1780,10 @@ class UserController
                             $gameModeCondition = 'Competition';
                             break;
                         default:
-                            $gameModeCondition = null;
+                            $gameModeCondition = "Competition and Chill";
                     }
                 } else {
-                    $gameModeCondition = null;
+                    $gameModeCondition = "Competition and Chill";
                 }
             }      
             

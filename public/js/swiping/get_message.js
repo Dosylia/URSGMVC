@@ -264,7 +264,82 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         `;
                     }
-                } 
+                } else {
+                    if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
+                        let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
+                        if (timeDifference <= 5 * 60 * 1000) {
+                            messageContent = `
+                            <p class="last-message" style="text-align: ${messagePosition}; position: relative;">
+                                <span class="timestamp-hover">${formattedTime}</span>
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                </span>
+                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: -10px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;">
+                                    [Message unavailable]
+                                </span>
+                            </p>
+                            `;
+                        } else {
+                            // Build message with sender info and timestamp
+                            messageContent = `
+                                <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
+                                    <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                                    <span class="timestamp ${messagePosition}">${formattedDate}</span>
+                                </p>
+                                <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
+                                    <span class="timestamp-hover">${formattedTime}</span>
+                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                    ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                    </span>
+                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: -10px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;">
+                                        [Message unavailable]
+                                    </span>
+                                </p>
+                            `;
+                        }
+                    } else {
+                        // Build message with sender info
+                        messageContent = `
+                            <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
+                                <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(messageUser.user_username)}"><strong class="strong_text">${messageUser.user_username}</strong></a>
+                                <span class="timestamp ${messagePosition}">${formattedDate}</span>
+                            </p>
+                            <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
+                                <span class="timestamp-hover">${formattedTime}</span>
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
+                                </span>
+                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                        top: -10px; 
+                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        font-size: 0.9em; 
+                                        z-index: 999; 
+                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        word-wrap: break-word; 
+                                        max-width: 100%;
+                                        padding: 0 10px;">
+                                    [Message unavailable]
+                                </span>
+                            </p>
+                        `;
+                    }                    
+                }
             } else {
                 if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
                     let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);

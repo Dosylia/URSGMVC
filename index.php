@@ -188,6 +188,7 @@ $actionMap = [
     'addBonusPicture' => [UserController::class, 'addBonusPicture'],
     'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
     'profileTest' => [UserController::class, 'profileTest'],
+    'personalityTest' => [UserController::class, 'personalityTestPage'],
     'createChannel' => [DiscordController::class, 'createChannel'],
     'discordData' => [DiscordController::class, 'discordData'],
     'deleteExpiredChannels' => [DiscordController::class, 'deleteExpiredChannels'],

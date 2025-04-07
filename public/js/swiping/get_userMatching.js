@@ -279,7 +279,33 @@ document.addEventListener("DOMContentLoaded", function() {
         username.innerText = data.user_username;
         userAge.innerText = data.user_age;
 
-        gender.innerText = data.user_gender;
+        let genderOption = ""; 
+
+        switch(data.user_gender) {
+            case "Male":
+               genderOption = `<i class="fa-solid fa-mars"></i> Male`;
+                break;
+            case "Female":
+                genderOption = `<i class="fa-solid fa-venus"></i> Female`;
+                break;
+            case "Non binary":
+                genderOption = `<i class="fa-solid fa-genderless"></i> Non binary`;
+                break;
+            case "Trans Male":
+                genderOption = `<i class="fa-solid fa-transgender"></i> Trans  (FtM)`;
+                break;
+            case "Trans Female":
+                genderOption = `<i class="fa-solid fa-transgender"></i> Trans  (MtF)`;
+                break;
+            case "Trans":
+                genderOption = `<i class="fa-solid fa-transgender"></i> Trans`;
+                break;
+            default:
+                genderOption = `<i class="fa-solid fa-genderless"></i> Unknown`;
+                break;
+        }
+
+        gender.innerHTML = genderOption;
 
         const newWrapper = document.createElement("div");
         newWrapper.id = "swiping_kindOfGamer";
@@ -292,8 +318,8 @@ document.addEventListener("DOMContentLoaded", function() {
             case 'Chill':
                 if (data.user_game !== 'Valorant') {
                     newWrapper.innerHTML = `
-                        <span class="swiping_filters_others swiping_filters_row">Aram</span>
-                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</span>
                     `;
                 } else {
                     newWrapper.innerHTML = `
@@ -302,16 +328,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 break;
             case 'Competition':
+                if (data.user_game !== 'Valorant') {
                 newWrapper.innerHTML = `
-                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                    <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</span>
                 `;
+                } else {
+                    newWrapper.innerHTML = `
+                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                `;                    
+                }
                 break;
             default:
                 if (data.user_game !== 'Valorant') {
                     newWrapper.innerHTML = `
-                        <span class="swiping_filters_others swiping_filters_row">Aram</span>
-                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
-                        <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</span>
                     `;
                 } else {
                     newWrapper.innerHTML = `

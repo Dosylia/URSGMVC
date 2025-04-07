@@ -1,0 +1,21 @@
+<section class="lol-quiz">
+    <h1>What Kind of League of Legends Player Are You?</h1>
+  <div id="quiz-container"></div>
+
+  <!-- Navigation -->
+  <div id="navigation" class="navigation">
+    <button id="backBtn">Back</button>
+    <button id="nextBtn">Next</button>
+    <button id="confirmBtn" class="hidden">Confirm</button>
+  </div>
+
+  <!-- Result -->
+  <div id="result" class="hidden">
+    <h2 id="result-title"></h2>
+    <p id="result-description"></p>
+    <canvas id="result-chart" width="300" height="300"></canvas>
+  </div>
+</section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="public/js/swiping/personality_test.js?<?= time(); ?>"></script>

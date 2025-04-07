@@ -920,6 +920,96 @@ font-size: 0.7em;
   font-weight: 700;
 }
 
+/* END OF SWIPING PAGE */
+
+/* PERSONALITY TEST */
+
+.lol-quiz {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: linear-gradient(to right, #1f1c2c, #928dab);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.lol-quiz .question {
+  display: none;
+  margin-bottom: 2rem;
+}
+
+.lol-quiz .question h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px #000;
+}
+
+.lol-quiz .question button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #ffffff10;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.lol-quiz .question button:hover,
+.lol-quiz .question button.selected {
+  background-color: #ffffff30;
+}
+
+.lol-quiz .navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lol-quiz .navigation button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #29274c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.lol-quiz .navigation button:hover {
+  background-color: #3d3a69;
+}
+
+.lol-quiz #result {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.lol-quiz #result-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.lol-quiz #result-description {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.lol-quiz canvas {
+  margin: auto;
+}
+
+
+/* END OF PERSONALITY TEST */
+
 /* SCROLL BAR */
 
 ::-webkit-scrollbar {

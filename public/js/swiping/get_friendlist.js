@@ -176,6 +176,7 @@ async function renderFriendList(friendList, page) {
         // Hide loading indicator after successful rendering
         if (loadingIndicator) {
             loadingIndicator.style.display = 'none';
+            loadingIndicator.remove();
         }
     } catch (error) {
         console.error("Error loading friend list:", error);
