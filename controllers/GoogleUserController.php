@@ -52,22 +52,32 @@ class GoogleUserController
 
     public function homePage() 
     {
-        if($this->isConnectGoogle())
-        {
-            $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            header("location:/swiping");
+            exit();
+        } else {
+            if($this->isConnectGoogle())
+            {
+                $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
+            }
+    
+            if($this->isConnectWebsite())
+            {
+                $user = $this-> user -> getUserByUsername($_SESSION['username']);
+            }
+            require 'keys.php';
+            $partners = $this -> partners -> getPartners();
+            $current_url = "https://ur-sg.com/";
+            $template = "views/home";
+            $title = "JOIN NOW";
+            $page_title = "URSG - Home";
+            require "views/layoutHome.phtml";
         }
-
-        if($this->isConnectWebsite())
-        {
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-        }
-        require 'keys.php';
-        $partners = $this -> partners -> getPartners();
-        $current_url = "https://ur-sg.com/";
-        $template = "views/home";
-        $title = "JOIN NOW";
-        $page_title = "URSG - Home";
-        require "views/layoutHome.phtml";
     }
 
     private function getSocialNetworkLogo($social)

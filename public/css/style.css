@@ -804,6 +804,11 @@ font-size: 0.7em;
   border-radius: 5PX;
 }
 
+.swiping_filters_row img {
+  width: 20px;
+  height: 20px;
+}
+
 .swiping_filters_server {
   color: var(--main--red) !important;
   text-transform: uppercase;

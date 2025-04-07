@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     `;
                 } else {
                     newWrapper.innerHTML = `
-                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> Normal Draft</span>
                     `;
                 }
                 break;
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
                 } else {
                     newWrapper.innerHTML = `
-                    <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                    <span class="swiping_filters_others swiping_filters_row"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> Ranked</span>
                 `;                    
                 }
                 break;
@@ -347,8 +347,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     `;
                 } else {
                     newWrapper.innerHTML = `
-                        <span class="swiping_filters_others swiping_filters_row">Normal Draft</span>
-                        <span class="swiping_filters_others swiping_filters_row">Ranked</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> Normal Draft</span>
+                        <span class="swiping_filters_others swiping_filters_row"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> Ranked</span>
                     `;
                 }
                 break;
