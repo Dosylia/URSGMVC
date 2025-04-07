@@ -14,7 +14,7 @@ const updateProfileIcon = async (icon) => {
         const version = await fetchDdragonVersion();
         const imgElement = document.getElementById("profilepicture_lol");
         if (imgElement) {
-            imgElement.src = `http://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${icon}.png`;
+            imgElement.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${icon}.png`;
         } else {
             console.error("Image element with id 'profilepicture_lol' not found.");
         }
