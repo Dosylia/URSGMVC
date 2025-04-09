@@ -71,7 +71,7 @@
     <script src="public/js/swiping/get_currency.js?<?= time(); ?>"></script>
 </body>
 
-<script>
+<script nonce="TAJKETR">
   document.addEventListener("DOMContentLoaded", function() {
       let token = <?php echo json_encode($_SESSION['masterTokenWebsite'] ?? null); ?>;
       if (token) {

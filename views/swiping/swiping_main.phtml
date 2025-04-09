@@ -82,39 +82,45 @@
         <div id="filter-modal" class="modal">
             <div class="modal-content" data-modal-type="filter">
                 <span id="close-modal-filter" class="close">&times;</span>
-                
-                <h2>SERVER</h2>
+                <h2>FILTER</h2>
+                <hr class="separator-filters">
+                <h3>SERVER</h3>
                 <div class="filter-options" id="server-options">
-                    <button class="filter-btn" data-filter="server" data-value="Europe West">EUW</button>
-                    <button class="filter-btn" data-filter="server" data-value="North America">NA</button>
-                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">EUNE</button>
-                    <button class="filter-btn" data-filter="server" data-value="Brazil">BR</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America North">LAN</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America South">LAS</button>
-                    <button class="filter-btn" data-filter="server" data-value="Oceania">OCE</button>
-                    <button class="filter-btn" data-filter="server" data-value="Russia">RU</button>
-                    <button class="filter-btn" data-filter="server" data-value="Turkey">TR</button>
-                    <button class="filter-btn" data-filter="server" data-value="Japan">JP</button>
-                    <button class="filter-btn" data-filter="server" data-value="Korea">KR</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe West">Europe West</button>
+                    <button class="filter-btn" data-filter="server" data-value="North America">North America</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">Europe Nordic & East</button>
+                    <button class="filter-btn" data-filter="server" data-value="Brazil">Brazil</button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America North">Latin America North</button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America South">Latin America South</button>
+                    <button class="filter-btn" data-filter="server" data-value="Oceania">Oceania</button>
+                    <button class="filter-btn" data-filter="server" data-value="Russia">Russia</button>
+                    <button class="filter-btn" data-filter="server" data-value="Turkey">Turkey</button>
+                    <button class="filter-btn" data-filter="server" data-value="Japan">Japan</button>
+                    <button class="filter-btn" data-filter="server" data-value="Korea">Korea</button>
                 </div>
                 
-                <h2>GENDER</h2>
+                <h3>GENDER</h3>
                 <div class="filter-options" id="gender-options">
-                    <button class="filter-btn" data-filter="gender" data-value="Male">Male</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Female">Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans">Trans</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Non Binary">Non binary</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Male and Female">Male and Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="All">All</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> Male</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> Female</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> Trans (FtM)</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> Trans (MtF)</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> Non binary</button>
                 </div>
                 
-                <h2>GAMEMODE</h2>
+                <h3>GAMEMODE</h3>
                 <div class="filter-options" id="gamemode-options">
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft">Normal Draft</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Aram">Aram</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked">Ranked</button>
+                <?php if ($user['user_game'] === 'League of Legends'): ?>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</button>
+                <?php else : ?>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode">
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode">Ranked</button>
+                <?php endif; ?>
                 </div>
                 
+                <hr class="separator-filters">
                 <button id="update-filter">Confirm</button>
             </div>
         </div>
@@ -128,7 +134,9 @@
             <div class="swiping-user-info"> <!-- Display column -->
                 <div class="swiping-buttons"> <!-- Buttons (report, filter) Display row -->
                     <button class="swiping-buttons-filter" id="open-filter-modal" type="button"><p>Filter</p><i class="fa-solid fa-filter"></i></button>
-                    <img src="public/images/report.svg" id="report-button" alt="report an user">
+                    <button class="swiping-buttons-report" id="report-button" type="button">
+                        <img src="public/images/report.svg" alt="Report an user">
+                    </button>
                 </div>
                 <div class="swiping-username-age"> <!-- Username age Display row -->
                     <span id="user_page_username"></span>
@@ -191,9 +199,9 @@
 
     <section class="noUserToSee" style="display: none;">
         <img src="public/images/vayne_emote.png" alt="jhinshrug">
-        <h2>You have seen all available profiles.</h2>
+        <h2 style="margin: 20px 0;">You have seen all available profiles.</h2>
         <div class="swiping-buttons"> <!-- Buttons (report, filter) Display row -->
-        <button class="swiping-buttons-filter" id="open-filter-modal-no-users" type="button">
+        <button class="swiping-buttons-filter" id="open-filter-modal-no-users" type="button" style="margin-bottom: 20px;">
             <p>Change filter</p><i class="fa-solid fa-filter"></i>
         </button>
         </div>
@@ -204,38 +212,46 @@
         <div id="filter-modal-no-users" class="modal">
             <div class="modal-content" data-modal-type="filter">
                 <span id="close-modal-filter-no-users" class="close">&times;</span>
+                <h2>FILTER</h2>
+                <hr class="separator-filters">
                 
-                <h2>SERVER</h2>
+                <h3>SERVER</h3>
                 <div class="filter-options" id="server-options">
-                    <button class="filter-btn" data-filter="server" data-value="Europe West">EUW</button>
-                    <button class="filter-btn" data-filter="server" data-value="North America">NA</button>
-                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">EUNE</button>
-                    <button class="filter-btn" data-filter="server" data-value="Brazil">BR</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America North">LAN</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America South">LAS</button>
-                    <button class="filter-btn" data-filter="server" data-value="Oceania">OCE</button>
-                    <button class="filter-btn" data-filter="server" data-value="Russia">RU</button>
-                    <button class="filter-btn" data-filter="server" data-value="Turkey">TR</button>
-                    <button class="filter-btn" data-filter="server" data-value="Japan">JP</button>
-                    <button class="filter-btn" data-filter="server" data-value="Korea">KR</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe West">Europe West</button>
+                    <button class="filter-btn" data-filter="server" data-value="North America">North America</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">Europe Nordic & East</button>
+                    <button class="filter-btn" data-filter="server" data-value="Brazil">Brazil</button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America North">Latin America North</button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America South">Latin America South</button>
+                    <button class="filter-btn" data-filter="server" data-value="Oceania">Oceania</button>
+                    <button class="filter-btn" data-filter="server" data-value="Russia">Russia</button>
+                    <button class="filter-btn" data-filter="server" data-value="Turkey">Turkey</button>
+                    <button class="filter-btn" data-filter="server" data-value="Japan">Japan</button>
+                    <button class="filter-btn" data-filter="server" data-value="Korea">Korea</button>
                 </div>
                 
-                <h2>GENDER</h2>
+                <h3>GENDER</h3>
                 <div class="filter-options" id="gender-options">
-                    <button class="filter-btn" data-filter="gender" data-value="Male">Male</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Female">Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans">Trans</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Non Binary">Non binary</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Male and Female">Male and Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="All">All</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> Male</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> Female</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> Trans (FtM)</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> Trans (MtF)</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> Non binary</button>
                 </div>
                 
-                <h2>GAMEMODE</h2>
+                <h3>GAMEMODE</h3>
                 <div class="filter-options" id="gamemode-options">
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft">Normal Draft</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Aram">Aram</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked">Ranked</button>
+                <?php if ($user['user_game'] === 'League of Legends'): ?>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</button>
+                <?php else : ?>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode">
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode">Ranked</button>
+                <?php endif; ?>
                 </div>
+
+                <hr class="separator-filters">
                 
                 <button id="update-filter-no-users">Confirm</button>
             </div>

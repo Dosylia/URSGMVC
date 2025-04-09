@@ -701,6 +701,28 @@
   height: 25px;
 }
 
+.swiping-buttons-report {
+  background-color: rgba(240, 233, 233, 0.5);
+  border: 1px solid rgb(97, 96, 96);
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 100%;
+}
+
+.swiping-buttons-report img {
+  width: 20px;
+  height: 20px;
+}
+
+.dark-mode .swiping-buttons-report {
+  background-color: rgba(42, 40, 40, 0.5);
+  border: 1px solid rgb(97, 96, 96);
+}
+
 .swiping-buttons button p {
   color: var(--main--red);
 }
@@ -849,51 +871,87 @@ font-size: 0.7em;
 }
 
 #filter-modal .filter-btn, #filter-modal-no-users .filter-btn {
-  background: white;
-  color: black;
-  border: none;
-  padding: 10px 15px;
+  color: var(--ligher--grey);
+  border: 1px solid var(--ligher--grey);
+  background: rgb(248, 246, 246);
+  padding: 2px 5px;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-content: center;
+  gap: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#filter-modal .filter-btn img, #filter-modal-no-users .filter-btn img{
+  width: 20px;
+  height: 20px;
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+#filter-modal .filter-btn.gamemode-active img,
+#filter-modal-no-users .filter-btn.gamemode-active img,
+#filter-modal .filter-btn.gender-active img,
+#filter-modal-no-users .filter-btn.gender-active img,
+#filter-modal .filter-btn.server-active img,
+#filter-modal-no-users .filter-btn.server-active img {
+  filter: none;
+}
+
+#filter-modal .separator-filters, #filter-modal-no-users .separator-filters {
+  margin: 20px 0;
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--main--red), transparent);
+  border: none;
 }
 
 .dark-mode #filter-modal .filter-btn, .dark-mode #filter-modal-no-users .filter-btn {
   background: #333;
-  color: white;
-  border: none;
-  padding: 10px 15px;
+  color: var(--ligher--grey);
+  border: 1px solid var(--ligher--grey);
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: unset;
 }
 
 
 #filter-modal .filter-btn.active, #filter-modal-no-users .filter-btn.active {
-  background: #E0AD66;
-  color: white;
+  color: #E0AD66;
+}
+
+#filter-modal .filter-btn[data-filter="server"] {
+  text-transform: uppercase;
 }
 
 #filter-modal .filter-btn.server-active, #filter-modal-no-users .filter-btn.server-active {
-  background: var(--main--red);
-  color: white;
+  color: var(--main--red);
 }
 
-#filter-modal .filter-btn.gamemode-active, #filter-modal-no-users .filter-btn.gamemode-active {
-  background: #E0AD66;
-  color: white;
+#filter-modal .filter-btn.gamemode-active, #filter-modal-no-users .filter-btn.gamemode-active, #filter-modal .filter-btn.gender-active, #filter-modal-no-users .filter-btn.gender-active {
+  color:  #E0AD66;
 }
 
 #filter-modal #update-filter, #filter-modal-no-users #update-filter-no-users {
   background: var(--main--red);
   color: white;
-  padding: 10px;
+  padding: 10px 50px;
   border: none;
   cursor: pointer;
-  margin-top: 15px;
+  border-radius: 5px;
+  text-transform: uppercase;
 }
 
 #filter-modal h2, #filter-modal-no-users h2 {
+  margin: 10px 0;
+  font-size: 2em;
+  color: var(--main--red);
+}
+
+#filter-modal h3, #filter-modal-no-users h3 {
   margin: 20px 0;
 }
+
 
 #picture-selector {
   width: 100%;
@@ -1788,7 +1846,6 @@ section.siteMap tr:nth-child(even) {
     .google_needed h2, .noUserToSee h2 {
       font-family: 'Libre Franklin', sans-serif;
       font-size: 4vh;
-      padding: 30px;
       text-align: center;
       gap: 20px;
     }
@@ -2103,7 +2160,7 @@ section.siteMap tr:nth-child(even) {
 
     /* Report Modal */
   
-  #report-modal .modal-content, #filter-modal .modal-content, #filter-modal-no-users .modal-content {
+  #report-modal .modal-content {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -2119,13 +2176,24 @@ section.siteMap tr:nth-child(even) {
   }
 
   #filter-modal .modal-content, #filter-modal-no-users .modal-content {
-    background-color: #e0dbdb;
-
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 90%;
+    max-width: 500px;
+    min-width: 300px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    color: black;
+    text-align: center;
+    z-index: 500000;
   }
 
   #filter-modal, #filter-modal-no-users {
     display: none;
-}
+  }
 
   .report-textarea {
     text-align: left;
@@ -2164,7 +2232,7 @@ section.siteMap tr:nth-child(even) {
     color: white;
 }
 
-  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, #filter-modal-no-users .modal-content {
+  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content {
     background-color: var(--dark-ligher-grey);
     color: white;
 }

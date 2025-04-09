@@ -1696,22 +1696,6 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $user = $this->user->getUserById($userId);
-            // $usersAfterMatching = $this->matchingscore->getMatchingScore($userId);
-            // $userFriendRequest = $this->friendrequest->skipUserSwipping($_SESSION['userId']); Fonction already done in previous one
-
-            // if (isset($_POST['isNotReactNative'])) {
-            //     if (isset($_SESSION)) {
-            //         $user = $this->user->getUserById($_SESSION['userId']);
-    
-            //         if ($user['user_id'] != $this->getUserId())
-            //         {
-            //             echo json_encode(['success' => false, 'error' => 'Request not allowed']);
-            //             return;
-            //         }
-            //     }
-            // }
-
-            //Retry without scores 
 
             // Determine which field to check for filtering
             $postServer = isset($_POST['server']) ? json_decode($_POST['server'], true) : [];
@@ -1723,29 +1707,67 @@ class UserController
             // Define all servers if no filters
             $allServers = ["Europe West", "North America", "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia", "Turkey", "Japan", "Korea"];
             $serverList = empty($filteredServer) ? $allServers : $filteredServer;
-    
-            // Process gender filter
-            $filteredGender = $_POST['gender'] ?? '';
-            $genderConditions = [];
-            if ($filteredGender && $filteredGender !== 'All') {
-                switch ($filteredGender) {
+
+            $postGender = isset($_POST['gender']) ? json_decode($_POST['gender'], true) : [];
+            $filteredGender = !empty($postGender) ? $postGender : [];
+            
+            if (is_array($filteredGender)) {
+                $genderConditions = [];
+                foreach ($filteredGender as $gender) {
+                    switch ($gender) {
+                        case 'Male':
+                            $genderConditions[] = 'Male';
+                            break;
+                        case 'Female':
+                            $genderConditions[] = 'Female';
+                            break;
+                        case 'Trans Female':
+                            $genderConditions[] = 'Trans Female';
+                            $genderConditions[] = 'Trans';
+                            break;
+                        case 'Trans Male':
+                            $genderConditions[] = 'Trans Male';
+                            $genderConditions[] = 'Trans';
+                            break;
+                        case 'Non Binary':
+                            $genderConditions[] = 'Non Binary';
+                            $genderConditions[] = 'Non binary';
+                            break;
+                        default:
+                            $genderConditions[] = 'All';
+                            break;
+                    }
+                }
+                // Remove duplicates and handle empty cases
+                $genderConditions = array_unique($genderConditions);
+                $genderConditions = !empty($genderConditions) ? $genderConditions : null;
+            } else {
+                // Handle single string value (if not using array)
+                switch ($gender) {
                     case 'Male':
-                        $genderConditions = ['Male'];
+                        $genderConditions[] = 'Male';
                         break;
                     case 'Female':
-                        $genderConditions = ['Female'];
+                        $genderConditions[] = 'Female';
                         break;
-                    case 'Trans':
-                        $genderConditions = ['Trans Woman', 'Trans Man'];
+                    case 'Trans Female':
+                        $genderConditions[] = 'Trans Female';
+                        break;
+                    case 'Trans Male':
+                        $genderConditions[] = 'Trans Male';
+                        break;
+                    case 'Non Binary':
+                        $genderConditions[] = 'Non Binary';
+                        $genderConditions[] = 'Non binary';
                         break;
                     case 'Non binary':
-                        $genderConditions = ['Non Binary'];
+                        $genderConditions[] = 'Non Binary';
                         break;
-                    case 'Male and Female':
-                        $genderConditions = ['Male', 'Female'];
+                    default:
+                        $genderConditions[] = 'All';
                         break;
                 }
-            }
+            } 
     
             $postGameMode = isset($_POST['gamemode']) ? json_decode($_POST['gamemode'], true) : [];
             $filteredGameMode = !empty($postGameMode) ? $postGameMode : [];
@@ -2003,9 +2025,9 @@ class UserController
                 }
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
-                $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 if ($anotherUser) 
                 {
+                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
@@ -2015,7 +2037,6 @@ class UserController
                         $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
                     }
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-                    
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -2037,6 +2058,7 @@ class UserController
             {
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
+                $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 if ($anotherUser)
                 {
                     if ($anotherUser['user_game'] == "League of Legends")

@@ -44,17 +44,23 @@ document.addEventListener("DOMContentLoaded", function() {
     // Open the modal when the report button is clicked
     reportButton.addEventListener('click', function() {
         modal.classList.remove('report-modal-hidden');
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
     });
 
     // Close modal when 'x' is clicked
     closeModal.addEventListener('click', function() {
         modal.classList.add('report-modal-hidden');
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
     });
 
     // Close modal if clicking outside the modal content
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
             modal.classList.add('report-modal-hidden');
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
         }
     });
 

@@ -45,50 +45,60 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("open-filter-modal-no-users")?.addEventListener("click", function() {
         document.getElementById("filter-modal-no-users").style.display = "flex";
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
       });
       
       // Add event listener for the new modal's close button
       document.getElementById("close-modal-filter-no-users")?.addEventListener("click", function() {
         document.getElementById("filter-modal-no-users").style.display = "none";
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
       });
       
 
     document.getElementById("open-filter-modal").addEventListener("click", function() {
         document.getElementById("filter-modal").style.display = "flex";
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
     });
     
     document.getElementById("close-modal-filter").addEventListener("click", function() {
         document.getElementById("filter-modal").style.display = "none";
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
     });
     
     document.querySelectorAll(".filter-btn").forEach(button => {
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             const category = this.getAttribute("data-filter");
-            const modal = this.closest(".modal"); // Get the correct modal
+            const value = this.getAttribute("data-value");
     
-            if (category === "server") {
-                this.classList.toggle("server-active");
-                let selectedServers = Array.from(modal.querySelectorAll(".filter-btn.server-active"))
-                    .map(btn => btn.getAttribute("data-value"));
-                localStorage.setItem("server", JSON.stringify(selectedServers));
-            } else if (category === "gamemode") {
-                this.classList.toggle("gamemode-active");
-                let selectedGamemode = Array.from(modal.querySelectorAll(".filter-btn.gamemode-active"))
-                    .map(btn => btn.getAttribute("data-value"));
-                localStorage.setItem("gamemode", JSON.stringify(selectedGamemode));
-            } else {
-                modal.querySelectorAll(`.filter-btn[data-filter='${category}']`).forEach(btn => btn.classList.remove("active"));
-                this.classList.add("active");
-                localStorage.setItem(category, this.getAttribute("data-value"));
-            }
+            // Toggle the class on all matching buttons in both modals
+            document.querySelectorAll(`.filter-btn[data-filter="${category}"][data-value="${value}"]`)
+                .forEach(btn => btn.classList.toggle(`${category}-active`));
+    
+            // Get all active buttons across both modals, ensure no duplicates
+            const activeButtons = document.querySelectorAll(`.filter-btn.${category}-active`);
+            const selectedValues = Array.from(
+                new Set(
+                    Array.from(activeButtons).map(btn => btn.getAttribute("data-value"))
+                )
+            );
+    
+            // Store in localStorage
+            localStorage.setItem(category, JSON.stringify(selectedValues));
         });
     });
+    
     
     // Update for both modals
     document.querySelectorAll("#update-filter, #update-filter-no-users").forEach(btn => {
         btn.addEventListener("click", function() {
             this.closest(".modal").style.display = "none";
             fetchMatchingUser(userId);
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
         });
     });
     
@@ -119,12 +129,16 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     
             // Gender filter
-            ["gender"].forEach(category => {
-                const savedValue = localStorage.getItem(category);
-                if (savedValue) {
-                    const button = modal.querySelector(`.filter-btn[data-filter='${category}'][data-value='${savedValue}']`);
-                    if (button) button.classList.add("active");
-                }
+            let genderFilters;
+            try {
+                const stored = JSON.parse(localStorage.getItem("gender"));
+                genderFilters = Array.isArray(stored) ? stored : [];
+              } catch (e) {
+                genderFilters = [];
+              }
+            genderFilters.forEach(value => {
+                const button = modal.querySelector(`.filter-btn[data-filter='gender'][data-value='${value}']`);
+                if (button) button.classList.add("gender-active");
             });
         });
     }
@@ -288,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function() {
             case "Female":
                 genderOption = `<i class="fa-solid fa-venus"></i> Female`;
                 break;
-            case "Non binary":
+            case "Non Binary":
                 genderOption = `<i class="fa-solid fa-genderless"></i> Non binary`;
                 break;
             case "Trans Male":
