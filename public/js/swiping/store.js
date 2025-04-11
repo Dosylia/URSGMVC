@@ -2,10 +2,10 @@
 const buyButtons = document.querySelectorAll(".buy-button");
 const categoryFilter = document.getElementById('category-filter');
 const itemCards = document.querySelectorAll('.item-card');
-const token = localStorage.getItem('masterTokenWebsite');
 
 // FUNCTIONS
 function buyItem(itemId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite');
     console.log(`Buying item ID: ${itemId}, userId: ${userId}`);
 
     const dataToSend = {
@@ -45,6 +45,7 @@ function buyItem(itemId, userId) {
 }
 
 function buyRole(itemId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite');
     console.log(`Buying role ID: ${itemId}, userId: ${userId}`);
     
     const dataToSend = {

@@ -835,4 +835,46 @@ class User extends DataBase
         
         return $query->execute([$userId]);
     }   
+
+    public function updatePermission($userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_notificationPermission` = 1
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updatePermissionTest = $query -> execute([$userId]);
+
+        if ($updatePermissionTest) {
+        return true;
+        } else {
+        return false;
+        }
+    }
+
+    public function saveSubscription($userId, $endpoint, $p256dh, $auth) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_notificationEndPoint` = ?,
+                                                `user_notificationP256dh` = ?,
+                                                `user_notificationAuth` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $saveSubscriptionTest = $query -> execute([$endpoint, $p256dh, $auth, $userId]);
+
+        if ($saveSubscriptionTest) {
+        return true;
+        } else {
+        return false;
+        }
+    }
 }

@@ -6,8 +6,11 @@ use models\ChatMessage;
 use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
-
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\Subscription;
 use traits\SecurityController;
+
+require 'vendor/autoload.php';
 
 class ChatMessageController
 {
@@ -290,6 +293,15 @@ class ChatMessageController
     
         if ($insertMessage) {
             $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
+            $friend = $this->user->getUserById($this->getReceiverId());
+            $sendNotificationsBrowser = false;
+
+            if ($friend['user_notificationPermission'] == 1) {
+                $endPoint = $friend['user_notificationEndPoint'];
+                $p256dh = $friend['user_notificationP256dh'];
+                $auth = $friend['user_notificationAuth'];
+                $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $this->getMessage(), $user['user_username']);
+            }
             echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to send message']);
@@ -357,8 +369,18 @@ class ChatMessageController
                 $userId = $this->getSenderId();
 
                 $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
+                $friend = $this->user->getUserById($this->getReceiverId());
+                $sendNotificationsBrowser = false;
+
+                if ($friend['user_notificationPermission'] == 1) {
+                    $endPoint = $friend['user_notificationEndPoint'];
+                    $p256dh = $friend['user_notificationP256dh'];
+                    $auth = $friend['user_notificationAuth'];
+                    $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $this->getMessage(), $user['user_username']);
+                }
+
     
-                echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications, 'sendNotificationsBrowser' => $sendNotificationsBrowser]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }
@@ -366,6 +388,55 @@ class ChatMessageController
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
     }
+
+    public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) {
+        require 'keys.php';
+    
+        $subscription = \Minishlink\WebPush\Subscription::create([
+            'endpoint' => $endPoint,
+            'keys' => [
+                'p256dh' => $p256dh,
+                'auth' => $auth
+            ]
+        ]);
+    
+        $payload = json_encode([
+            'title' => 'New Message from ' . $senderName,
+            'body' => $message,
+            'icon' => 'public/images/ursg_round_logo.png', // Optional
+        ]);
+    
+        try {
+            $webPush = new \Minishlink\WebPush\WebPush([
+                'VAPID' => [
+                    'publicKey' => $webPushPublicKey,
+                    'privateKey' => $webPushPrivateKey,
+                    'subject' => 'https://nostalgic-jennings.217-154-5-6.plesk.page'
+                ]
+            ]);
+    
+            // Queue the notification
+            $webPush->queueNotification($subscription, $payload);
+    
+            // Process and get the results
+            foreach ($webPush->flush() as $report) {
+                if ($report->isSuccess()) {
+                    error_log('Push Notification sent successfully to: ' . $endPoint);
+                    return true;
+                } else {
+                    error_log('Push Notification failed for: ' . $endPoint);
+                    error_log('Reason: ' . $report->getReason());
+                    return false;
+                }
+            }
+    
+            return false; // If flush returned nothing
+        } catch (\Exception $e) {
+            error_log('Error sending push notification: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
 
     public function deleteMessageWebsite(): void
     {

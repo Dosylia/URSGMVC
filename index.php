@@ -185,13 +185,14 @@ $actionMap = [
     'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
     'userTest' => [UserController::class, 'pageUserProfileTest'],
-    'addBonusPicture' => [UserController::class, 'addBonusPicture'],
     'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
     'profileTest' => [UserController::class, 'profileTest'],
     'personalityTest' => [UserController::class, 'personalityTestPage'],
     'createChannel' => [DiscordController::class, 'createChannel'],
     'discordData' => [DiscordController::class, 'discordData'],
     'deleteExpiredChannels' => [DiscordController::class, 'deleteExpiredChannels'],
+    'updateNotificationPermission' => [UserController::class, 'updateNotificationPermission'],
+    'saveNotificationSubscription' => [UserController::class, 'saveNotificationSubscription'],
 ];
 
 $action = "home";

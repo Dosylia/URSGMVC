@@ -521,6 +521,101 @@ function updateUnreadMessagesForFriends(unreadCounts) {
     });
 }
 
+function addNotificationPermission(userId) {
+    console.log('Adding notification permission...');
+    if ('Notification' in window && navigator.serviceWorker) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                console.log('Notification permission granted.');
+                // Optionally save this info
+                localStorage.setItem('notification_permission', 'granted');
+                const token = localStorage.getItem('masterTokenWebsite');
+
+                // Step 1: Send notification permission update
+                fetch('/updateNotificationPermission', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: `userId=${encodeURIComponent(parseInt(userId))}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Notification permission updated successfully.');
+
+                            // Step 2: Register service worker and subscribe to push notifications
+                            return registerServiceWorker(userId); // Pass userId to sendSubscriptionToBackend inside registerServiceWorker
+                        } else {
+                            console.error('Error updating status:', data.error);
+                            throw new Error('Failed to update notification permission.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                localStorage.setItem('notification_permission', 'denied');
+            }
+        });
+    }
+}
+
+// Register service worker, subscribe to push notifications, and send subscription to backend
+function registerServiceWorker(userId) {
+    return navigator.serviceWorker.register('service-worker.js')
+        .then(registration => {
+            console.log('Service Worker registered:', registration);
+
+            // Subscribe to push notifications
+            return registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: 'BMFWjnjjjer6XUJjuY9RxF_TvRP0Ke6kNNH13oo9lUCRnEYP6ddbpdQ91RD50JexpI8E7THMftePX89bzssMj5Q' // Replace with your public VAPID key
+            });
+        })
+        .then(subscription => {
+            // Step 3: Call sendSubscriptionToBackend inside registerServiceWorker
+            return sendSubscriptionToBackend(subscription, userId); 
+        })
+        .catch(error => {
+            console.error('Service Worker registration or subscription failed:', error);
+            throw error; // Ensure the error is propagated for handling in the main flow
+        });
+}
+
+// Send the subscription object to the backend
+function sendSubscriptionToBackend(subscription, userId) {
+    const token = localStorage.getItem('masterTokenWebsite');
+    // Stringify the subscription object
+    const subscriptionJSON = JSON.stringify(subscription.toJSON());
+    // Use URLSearchParams for proper encoding
+    const body = new URLSearchParams();
+    body.append('param', subscriptionJSON);
+    body.append('userId', userId);
+
+    return fetch('/saveNotificationSubscription', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`
+        },
+        body: body
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Subscription saved:', data);
+        } else {
+            console.log('Subscription failed:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error saving subscription:', error);
+        throw error;
+    });
+}
+
 
 
 // Fonction pour remplir les demandes d'ami en attente
@@ -558,11 +653,34 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(fetchUpdates, 1000);
     setInterval(fetchUpdates, 20000); // Refresh every 20 seconds
 
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('https://ur-sg.com/service-worker.js', {
+                scope: 'https://ur-sg.com'
+            })
+            .then(function(registration) {
+                console.log('✅ Service Worker registered with scope:', registration.scope);
+            }).catch(function(error) {
+                console.error('❌ Service Worker registration failed:', error);
+            });
+    }
+
     document.getElementById('notification-bell').addEventListener('click', function(event) {
         const modal = document.getElementById('notif-modal');
         if (modal) {
             modal.classList.toggle('hidden');
         }
+
+        // Check if permissions already granted, if yes ignore function
+        const localPermission = localStorage.getItem('notification_permission');
+        const browserPermission = Notification.permission;
+        
+        if (browserPermission !== 'granted' && localPermission !== 'granted') {
+            addNotificationPermission(userId);
+        } else {
+            console.log('Notification permission already granted.');
+            registerServiceWorker(userId);
+        }
+
         event.stopPropagation(); // Prevent closing immediately
     });
 

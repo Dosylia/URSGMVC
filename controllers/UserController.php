@@ -1691,6 +1691,100 @@ class UserController
         }
     }
 
+    public function updateNotificationPermission(): void
+    {
+        if (isset($_POST['userId'])) {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $updatePermission = $this->user->updatePermission($_POST['userId']);
+
+        if ($updatePermission) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
+        }
+    
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
+    // PHP controller method to handle saving the subscription
+    public function saveNotificationSubscription() 
+    {
+        // Step 1: Check authentication
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+        $token = $matches[1];
+    
+        // Step 2: Retrieve and validate POST parameters
+        $param = $_POST['param'] ?? null;
+        $userId = $_POST['userId'] ?? null;
+    
+        if (!$param || !$userId) {
+            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            return;
+        }
+    
+        // Step 3: Decode subscription data
+        $subscriptionData = json_decode($param, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            return;
+        }
+    
+        // Step 4: Validate subscription structure
+        if (!isset($subscriptionData['endpoint'], $subscriptionData['keys']['p256dh'], $subscriptionData['keys']['auth'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid subscription data']);
+            return;
+        }
+    
+        // Step 5: Extract subscription details
+        $endpoint = $subscriptionData['endpoint'];
+        $p256dh = $subscriptionData['keys']['p256dh'];
+        $auth = $subscriptionData['keys']['auth'];
+    
+        // Step 6: Validate token
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token', 'userId' => $userId]);
+            return;
+        }
+    
+        // Step 7: Save the subscription
+        $saveSubscription = $this->user->saveSubscription($userId, $endpoint, $p256dh, $auth);
+    
+        if ($saveSubscription) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to save subscription']);
+        }
+    }
+
+
     public function getUserMatching()
     {
         if (isset($_POST['userId'])) {
