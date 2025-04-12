@@ -24,5 +24,6 @@ https://ur-sg.com/
 
 ## How to Contribute
 
-Contact me on my portfolio : https://www.dosylia.com/
-
+Contact me on my portfolio : https://www.dosylia.com/  
+Or you can help with the development of the project by reporting [issues](https://github.com/Dosylia/URSGMVC/issues) or forking the project and creating [pull requests](https://github.com/Dosylia/URSGMVC/pulls).  
+Feedback can also be posted in the [URSG Discord server](https://discord.gg/Bfpkws74V3)!
