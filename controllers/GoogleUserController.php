@@ -1421,6 +1421,34 @@ class GoogleUserController
         }
     }
 
+    public function unsubscribeMails() 
+    {
+        if (isset($_GET['email']) && isset($_GET['googleUserId']))
+        {
+            $email = $_GET['email'];
+            $googleUserId = $_GET['googleUserId'];
+
+            $user = $this->googleUser->getUserByEmail($email);
+
+            if ($user['google_userId'] != $googleUserId) {
+                header("location:/termsOfService?message=Invalid request");
+                exit();
+            }
+
+            $unsubscribe = $this->googleUser->unsubscribeMails($email);
+            if ($unsubscribe) {
+                header("location:/termsOfService?message=Unsubscribed from mails");
+                exit();
+            } else {
+                header("location:/termsOfService?message=Could not unsubscribe");
+                exit();
+            }
+        } else {
+            header("location:/termsOfService?message=Invalid request");
+            exit();
+        }
+    }
+
     public function validateInput($input) 
     {
         $input = trim($input);

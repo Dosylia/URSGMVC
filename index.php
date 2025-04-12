@@ -163,6 +163,7 @@ $actionMap = [
     'updateFriendWebsite' => [FriendRequestController::class, 'updateFriendWebsite'],
     'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],
     'notFound' => [GoogleUserController::class, 'notFoundPage'],
+    'unsubscribeMails' => [GoogleUserController::class, 'unsubscribeMails'],
     'reportUserWebsite' => [UserController::class, 'reportUserWebsite'],
     'reportUserPhone' => [UserController::class, 'reportUserPhone'],
     'userIsLookingForGameWebsite' => [UserController::class, 'userIsLookingForGameWebsite'],

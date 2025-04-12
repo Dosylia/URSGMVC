@@ -44,6 +44,26 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function unsubscribeMails($email)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `googleuser`
+                                        SET 
+                                            `google_unsubscribeMails` = 1
+                                        WHERE 
+                                            `google_email` = ?
+        ");
+    
+        $unsubscribeMails = $query->execute([$email]);
+        
+        if ($unsubscribeMails) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // public function createGoogleUser($googleId,$googleFullName,$googleFirstName,$googleFamilyName,$googleEmail)
     // {
     //     $query = $this -> bdd -> prepare("
@@ -141,7 +161,8 @@ class GoogleUser extends DataBase
         $query = $this -> bdd -> prepare ("
                                             SELECT
                                                 u.`user_id`,
-                                                u.`user_username`
+                                                u.`user_username`,
+                                                g.`google_userId`
                                             FROM
                                                 `googleuser` AS g
                                             INNER JOIN
