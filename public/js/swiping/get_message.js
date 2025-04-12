@@ -96,15 +96,17 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showFriendInfo(data.friend);
                 if (data.messages !== null && data.messages !== undefined) {
                     if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
                         currentMessages = data.messages; // Update the current messages
-                        updateMessageContainer(data.messages, data.friend, data.user);
+                        showFriendInfo(data.friend).then(() => {
+                            updateMessageContainer(data.messages, data.friend, data.user);
+                        });
                     } else {
                          console.log('No new messages. No update needed.');
                     }
                 } else {
+                    showFriendInfo(data.friend);
                     console.log('No messages found.');
                     currentMessages = []; // Reset the current messages
                 }
@@ -119,6 +121,30 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => fetchMessages(userId, friendId), 5000);
         });
     }
+
+    function getGameStatusLoL(friendId) {
+        return fetch('/getGameStatusLoL', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `friendId=${encodeURIComponent(friendId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                return data; // ✅ Return the actual game data here
+            } else {
+                console.log('Error fetching game status:', data.error);
+                return null;
+            }
+        })
+        .catch(error => {
+            console.log('Fetch error:', error);
+            return null;
+        });
+    }
+    
 
     // Function to update message container
     function updateMessageContainer(messages, friend, user) {
@@ -549,23 +575,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function showFriendInfo(friend) {
+    async function showFriendInfo(friend) {
         if (!friend) return;
-    
-        // If the same friend is being passed, do nothing
+        
         if (friend.user_username === currentFriendUsername) {
             return;
         }
-
-        friendIdElement.value = friend.user_id; // Update the hidden input value
+    
+        friendIdElement.value = friend.user_id;
         const usernameFriend = document.getElementById("message_text");
         usernameFriend.placeholder = `Talk to @${friend.user_username}`;
-    
-        currentFriendUsername = friend.user_username; // Update the stored friend
+        
+        currentFriendUsername = friend.user_username;
     
         const pictureLink = friend.user_picture ? `upload/${friend.user_picture}` : "images/defaultprofilepicture.jpg";
     
-        // Prepare the basic friend content
+        let friendGameStatus = false;
+        let friendLeagueStatus = null;
+        let gamemode = '';
+    
+        if (friend.lol_verified === 1) {
+            friendLeagueStatus = await getGameStatusLoL(friend.user_id);
+            if (friendLeagueStatus) {
+                friendGameStatus = true;
+                if (friendLeagueStatus.gameMode === 'CHERRY') {
+                    gamemode = 'ARENA';
+                } else {
+                    gamemode = friendLeagueStatus.gameMode;
+                }
+            }
+        }
+    
         let friendContent = `
             <div id="friendTop">
                 <span style="width: 80%;">
@@ -573,32 +613,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}"><strong class="strong_text">${friend.user_username}</strong></a>
                 </span>
                 ${friend.lol_verified === 1 ? `<span class="friend-details-top"><img src="public/images/lol-logo.png" alt="League of Legends"><p>${friend.lol_account}</p></span>` : ''}
-            `;
-
-        // Add online status or looking-for-game status
+                ${friendGameStatus ? `<span class="ingame-status">🎮 Playing ${friendLeagueStatus.champion} (${gamemode})</span>` : ''}
+        `;
+    
         if (friend.user_isOnline === 1) {
-            if (friend.user_isLooking === 1) {
-                // If the friend is online and looking for someone
-                friendContent += `<span class="looking-game-status"></span>`;
-            } else {
-                // If the friend is just online
-                friendContent += `<span class="online-status"></span>`;
-            }
+            friendContent += friend.user_isLooking === 1
+                ? `<span class="looking-game-status"></span>`
+                : `<span class="online-status"></span>`;
         } else {
-            // If the friend is offline
             friendContent += `<span class="offline-status"></span>`;
         }
-
-        friendContent += `</div>`; // Close the <p> tag
     
-        // Ensure the element exists, create it if necessary
+        friendContent += `</div>`;
+    
         if (!friendData) {
             friendData = document.createElement("div");
             friendData.id = "friendData";
-            document.body.appendChild(friendData); // Adjust parent container if needed
+            document.body.appendChild(friendData);
         }
-
-        friendData.innerHTML = '';
     
         friendData.innerHTML = friendContent;
     
@@ -607,12 +639,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!messagesContainer) {
             messagesContainer = document.createElement("div");
             messagesContainer.id = "messages";
-            document.body.appendChild(messagesContainer); // Adjust parent container if needed
+            document.body.appendChild(messagesContainer);
         }
     
         messagesContainer.innerHTML = '';
         messagesContainer.style.minHeight = 'calc(var(--vh, 1vh) * 60)';
     }
+    
 
     // Function to scroll to the bottom of the messages container
     function scrollToBottom() {

@@ -877,4 +877,44 @@ class User extends DataBase
         return false;
         }
     }
+
+    public function addPartner($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_isPartner` = 1
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addPartnerTest = $query -> execute([$userId]);
+
+        if ($addPartnerTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function removePartner($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_isPartner` = 0
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $removePartnerTest = $query -> execute([$userId]);
+
+        if ($removePartnerTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

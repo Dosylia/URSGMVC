@@ -158,4 +158,41 @@ class Items extends DataBase
 
     }
 
+    public function addItemToUserAsPartner($userId, $itemId)
+    {
+        $query = $this->bdd->prepare("
+                                        INSERT INTO
+                                            `user_items`
+                                        (
+                                            userItems_userId,
+                                            userItems_itemId,
+                                            userItems_boughtAt,
+                                            userItems_isUsed,
+                                            userItems_givenAsPartner
+                                        )
+                                        VALUES
+                                        (
+                                            ?,
+                                            ?,
+                                            NOW(),
+                                            0,
+                                            1
+                                        )
+        ");
+    
+        $query->execute([$userId, $itemId]);
+    }
+
+    public function removePartnerItems($userId) 
+    {
+        $query = $this->bdd->prepare("
+                                        DELETE FROM
+                                            `user_items`
+                                        WHERE
+                                            `userItems_userId` = ? AND `userItems_givenAsPartner` = 1
+        ");
+    
+        $query->execute([$userId]);
+    }
+
 }

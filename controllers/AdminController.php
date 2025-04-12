@@ -7,6 +7,7 @@ use models\FriendRequest;
 use models\User;
 use models\GoogleUser;
 use models\ChatMessage;
+use models\Items;
 
 use traits\SecurityController;
 
@@ -19,6 +20,7 @@ class AdminController
     private GoogleUser $googleUser;
     private ChatMessage $chatmessage;
     private Admin $admin;
+    private Items $items;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class AdminController
         $this -> googleUser = new GoogleUser();
         $this->chatmessage = new ChatMessage();
         $this->admin = new Admin();
+        $this->items = new Items();
     }
 
     public function adminLandingPage(): void
@@ -659,6 +662,107 @@ class AdminController
             else
             {
                 header("Location: /adminReports?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminRemovePartner() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToRemove = $this->user->getUserById($_POST['user_id']);
+                $removePartner = $this->user->removePartner($userToRemove['user_id']);
+
+                if ($removePartner)
+                {
+                    // Remove all items in store that partner doesn't own
+                    $this->items->removePartnerItems($_POST['user_id']);
+
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Removed partner");
+                    header("Location: /adminUsers?message=Partner removed successfully");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error removing partner");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Invalid request");
+                exit();
+            }
+        } 
+        else
+        {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminAddPartner()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf() &&
+            $this->isAdmin()
+        )
+        {
+            if (isset($_POST['user_id']))
+            {
+                $userToAdd = $this->user->getUserById($_POST['user_id']);
+                $addPartner = $this->user->addPartner($userToAdd['user_id']);
+
+                if ($addPartner)
+                {
+
+                    // Add all items in store that partner doesn't own
+                    $ownedItems = $this->items->getOwnedItems($_POST['user_id']); // should return an array of item IDs the user owns
+                    $allItems = $this->items->getItems(); // should return all items (with their IDs)
+
+                    if (empty($ownedItems)) {
+                        foreach ($allItems as $item) {
+                            $this->items->addItemToUserAsPartner($_POST['user_id'], $item['items_id']);
+                        }
+                    } else {
+                        foreach ($allItems as $item) {
+                            if (!in_array($item['items_id'], $ownedItems)) {
+                                $this->items->addItemToUserAsPartner($_POST['user_id'], $item['items_id']);
+                            }
+                        }
+                    }
+
+
+                    $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Added partner");
+                    header("Location: /adminUsers?message=Partner added successfully");
+                    exit();
+                }
+                else
+                {
+                    header("Location: /adminUsers?message=Error adding partner");
+                    exit();
+                }
+            }
+            else
+            {
+                header("Location: /adminUsers?message=Invalid request");
                 exit();
             }
         } 

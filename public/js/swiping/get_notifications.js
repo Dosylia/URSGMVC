@@ -676,6 +676,10 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (browserPermission !== 'granted' && localPermission !== 'granted') {
             addNotificationPermission(userId);
+        } else if (browserPermission === 'granted' && localPermission !== 'granted'){
+            addNotificationPermission(userId);
+        } else if (browserPermission !== 'granted' && localPermission === 'granted'){
+            addNotificationPermission(userId);
         } else {
             console.log('Notification permission already granted.');
             registerServiceWorker(userId);

@@ -6286,7 +6286,7 @@ justify-content: center;
   background-color: var(--main--red);
 }
 
-#banUserModal, #censorBioModal, #censorPictureModal, #requestBanModal, #censorBothModal, #dismissModal {
+#banUserModal, #censorBioModal, #censorPictureModal, #requestBanModal, #censorBothModal, #dismissModal, #addPartnerModal, #removePartnerModal {
   width: 50%;
   height: auto;
   background-color: white;
@@ -6307,7 +6307,7 @@ justify-content: center;
   box-sizing: border-box;
 }
 
-.dark-mode #banUserModal, .dark-mode #censorBioModal, .dark-mode #censorPictureModal, .dark-mode #requestBanModal, .dark-mode #censorBothModal, .dark-mode #dismissModal {
+.dark-mode #banUserModal, .dark-mode #censorBioModal, .dark-mode #censorPictureModal, .dark-mode #requestBanModal, .dark-mode #censorBothModal, .dark-mode #dismissModal, .dark-mode #addPartnerModal, .dark-mode #removePartnerModal {
   background-color: var(--dark-ligher-grey);
   color: white;
 }

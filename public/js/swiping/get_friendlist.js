@@ -48,6 +48,28 @@ function getFriendList(userId, page = 1) {
         });
 }
 
+function getGameStatusLoL(friendId) {
+    fetch('/getGameStatusLoL', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `friendId=${encodeURIComponent(friendId)}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Game status:', data.status);
+                return data;
+            } else {
+                console.error('Error fetching game status:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
+
 function updateOnlineStatus(friendList) {
     friendList.forEach(friend => {
         const friendElement = document.querySelector(`[data-friend-id="${friend.friend_id}"]`);
@@ -107,6 +129,12 @@ async function renderFriendList(friendList, page) {
         }
 
         paginatedFriends.forEach(friend => {
+            const friendLeagueStatus = getGameStatusLoL(friend.friend_id);
+
+            if (friendLeagueStatus) {
+                console.log('Friend League Status:', friendLeagueStatus);
+            }
+
             const friendElement = document.createElement('a');
             friendElement.className = "username_chat_friend clickable";
             friendElement.href = "#";

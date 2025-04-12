@@ -649,8 +649,6 @@ class ChatMessageController
         if (isset($_POST['userId']) && isset($_POST['friendId'])) {
             $this->setUserId($_POST['userId']);
             $this->setFriendId((int) $_POST['friendId']);
-
-            $user = $this->user->getUserById($_SESSION['userId']);
    
              // Validate Authorization Header
              $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
@@ -665,12 +663,6 @@ class ChatMessageController
              // Validate Token for User
              if (!$this->validateTokenWebsite($token, $this->getUserId())) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                 return;
-             }
-
-             if ($user['user_id'] != $this->getUserId())
-             {
-                 echo json_encode(['success' => false, 'error' => 'Request not allowed']);
                  return;
              }
 

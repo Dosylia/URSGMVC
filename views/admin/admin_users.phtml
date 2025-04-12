@@ -9,6 +9,26 @@
                 <button id="banUserNo" class="admin-form-btn-no">No</button>
             </div>
         </span>
+        <span id="addPartnerModal" style="display: none;">
+            <h2 id="addPartneTitle">Are you sure you want to add this user as partner?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='adminAddPartner'>
+                    <input type="hidden" id="userIdAddPartner" name='user_id' value="">
+                    <button type="submit" id="addPartnerYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="addPartnerNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
+        <span id="removePartnerModal" style="display: none;">
+            <h2 id="removePartneTitle">Are you sure you want to remove this user as partner?</h2>
+            <div class="modal-buttons-admin">
+                <form method='POST' action='adminRemovePartner'>
+                    <input type="hidden" id="userIdRemovePartner" name='user_id' value="">
+                    <button type="submit" id="removePartnerYes" class="admin-form-btn-yes">Yes</button>
+                </form>
+                <button id="removePartnerNo" class="admin-form-btn-no">No</button>
+            </div>
+        </span>
     <?php endif; ?>
         <span id="censorBioModal" style="display: none;">
             <h2 id="censorBioTitle">Are you sure you want to censor this user's bio?</h2>
@@ -94,6 +114,8 @@
                     <div class='actions'>
                         <?php if ($this->isAdmin()) : ?>
                             <button class='delete censorBioYes' onclick="openConfirmationPopupBanUser('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Ban</button>
+                            <button class='delete addPartner' onclick="openConfirmationPopupAddPartner('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Add Partner</button>
+                            <button class='delete removePartner' onclick="openConfirmationPopupRemovePartner('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Remove Partner</button>
                         <?php endif; ?>
                         <?php if ($this->isModerator()) : ?>
                             <button class="censorBioButton" onclick="openConfirmationPopupCensorBio('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Censor Bio</button>

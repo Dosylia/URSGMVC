@@ -401,6 +401,91 @@ class RiotController
         
     }
 
+    public function getGameStatusLoL()
+    {
+        if (isset($_POST['friendId']))
+        {
+            $friendId = $_POST['friendId'];
+            $user = $this->user->getUserById($friendId);
+
+            if ($user['lol_verified']) 
+            {
+                require_once 'keys.php';
+                $regionMap = [
+                    "Europe West" => "euw1",
+                    "North America" => "na1",
+                    "Europe Nordic" => "eun1",
+                    "Brazil" => "br1",
+                    "Latin America North" => "la1",
+                    "Latin America South" => "la2",
+                    "Oceania" => "oc1",
+                    "Russia" => "ru1",
+                    "Turkey" => "tr1",
+                    "Japan" => "jp1",
+                    "Korea" => "kr",
+                ];
+
+                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+
+                $gameStatus = $this->getGameStatus($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
+
+                if ($gameStatus && isset($gameStatus['gameId'])) {
+                    $playerChampionId = null;
+                    $playerData = null;
+
+                    foreach ($gameStatus['participants'] as $participant) {
+                        if ($participant['puuid'] === $user['lol_sPuuid']) {
+                            $playerChampionId = $participant['championId'];
+                            $playerData = $participant; // Save full data in case you want more info later
+                            break;
+                        }
+                    }
+
+                    $versionJson = file_get_contents("https://ddragon.leagueoflegends.com/api/versions.json");
+                    $latestVersion = json_decode($versionJson, true)[0];
+
+                    $championJson = file_get_contents("https://ddragon.leagueoflegends.com/cdn/{$latestVersion}/data/en_US/champion.json");
+                    $championData = json_decode($championJson, true)['data'];
+
+                    $championName = $this->getChampionNameById($playerChampionId, $championData);
+
+                    $response = [
+                        'success' => true,
+                        'gameId' => $gameStatus['gameId'],
+                        'region' => $selectedRegionValue,
+                        'gameMode' => $gameStatus['gameMode'],
+                        'mapId' => $gameStatus['mapId'],
+                        'champion' => $championName,
+                    ];
+                } else {
+                    $response = ['success' => false, 'error' => 'No active game found'];
+                }
+            }
+            echo json_encode($response);
+            return;
+        }
+        else
+        {
+            echo json_encode(['success' => false, 'error' => 'Wrong request']);
+            return;
+        }
+    }
+
+    public function getChampionNameById($championId, $championData) 
+    {
+        foreach ($championData as $champion) {
+            if ((int)$champion['key'] === (int)$championId) {
+                return $champion['name']; 
+            }
+        }
+        return null; // ✅ only return null if nothing matched
+    }
+
+    public function getGameStatus($puuid, $server, $apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{$puuid}?api_key={$apiKey}";
+        return json_decode(file_get_contents($url), true);
+    }
+
     // Fetch the summoner profile details
     public function getSummonerProfile($puuid, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$puuid}?api_key={$apiKey}";

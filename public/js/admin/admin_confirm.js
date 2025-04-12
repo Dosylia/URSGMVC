@@ -2,6 +2,18 @@ document.addEventListener("DOMContentLoaded", function () {
     banUserNo = document.getElementById("banUserNo");
     censorBioNo = document.getElementById("censorBioNo");
     censorPictureNo = document.getElementById("censorPictureNo");
+    removePartnerNo = document.getElementById("removePartnerNo");
+    addPartnerNo = document.getElementById("addPartnerNo");
+
+    removePartnerNo.addEventListener("click", function () {
+        const removePartnerModal = document.getElementById("removePartnerModal");
+        removePartnerModal.style.display = "none";
+    });
+
+    addPartnerNo.addEventListener("click", function () {
+        const addPartnerModal = document.getElementById("addPartnerModal");
+        addPartnerModal.style.display = "none";
+    });
 
     banUserNo.addEventListener("click", function () {
         const banUserModal = document.getElementById("banUserModal");
@@ -18,6 +30,26 @@ document.addEventListener("DOMContentLoaded", function () {
         censorPictureModal.style.display = "none";
     });
 });
+
+function openConfirmationPopupAddPartner(userId, username) {
+    const addPartnerModal = document.getElementById("addPartnerModal");
+
+    const addPartnerTitle = document.getElementById("addPartneTitle");
+    addPartnerTitle.textContent = `Are you sure you want to add ${username} as partner`;
+    const addPartneUserInput = document.getElementById("userIdAddPartner");
+    addPartneUserInput.value = userId;
+    addPartnerModal.style.display = "flex";
+}
+
+function openConfirmationPopupRemovePartner(userId, username) {
+    const removePartnerModal = document.getElementById("removePartnerModal");
+
+    const removePartnerTitle = document.getElementById("removePartneTitle");
+    removePartnerTitle.textContent = `Are you sure you want to remove ${username} as partner`;
+    const removePartneUserInput = document.getElementById("userIdRemovePartner");
+    removePartneUserInput.value = userId;
+    removePartnerModal.style.display = "flex";
+}
 
 function openConfirmationPopupBanUser(userId, username) {
     const banUserModal = document.getElementById("banUserModal");
