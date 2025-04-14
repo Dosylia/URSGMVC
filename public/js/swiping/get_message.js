@@ -135,12 +135,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success) {
                 return data; // ✅ Return the actual game data here
             } else {
-                console.log('Error fetching game status:', data.error);
+                console.log(data.error);
                 return null;
             }
         })
         .catch(error => {
-            console.log('Fetch error:', error);
             return null;
         });
     }

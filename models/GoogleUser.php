@@ -420,5 +420,22 @@ class GoogleUser extends DataBase
     
         return $puuidTest ?: false;
     }
+
+    public function getUserByDiscordId($discordId) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `googleuser` as g
+                                        WHERE
+                                            g.`google_id` = ? 
+        ");
+    
+        $query->execute([$discordId]);
+        $discordIdTest = $query->fetch();
+    
+        return $discordIdTest ?: false;
+    }
     
 }

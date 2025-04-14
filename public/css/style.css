@@ -4152,6 +4152,44 @@ nav .scale:hover, nav .scaleNoRound:hover {
     flex: 1;
 }
 
+.signup_buttonPopup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  font-family: "Google Sans",arial,sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid #dadce0;
+  background-color: white;
+  color: black;
+  padding: 0 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 40px;
+  letter-spacing: 0.25px;
+  width: fit-content;
+  margin: auto;
+  gap: 10px;
+}
+
+.signup_buttonPopup img {
+  width: 25px;
+  height: 25px;
+}
+
+.dark-mode .signup_buttonPopup {
+  background-color: var(--dark-grey);
+  color: white;
+}
+
+.dark-mode .L5Fo6c-sM5MNb {
+  color: white !important;
+  background-color: var(--dark-grey) !important;
+}
+
 .signup_button {
 background: linear-gradient(45deg, #df4b1a 10%, #e74057 100%);
 border-radius: 1000px;

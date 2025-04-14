@@ -11,13 +11,14 @@ class Discord extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-    public function saveDiscordData($userId, $discordId, $discordUsername, $discordAvatar, $accessToken, $refreshToken) 
+    public function saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken) 
     {
         $query = $this->bdd->prepare("
                             INSERT INTO `discord`(
                                                 `user_id`,
                                                 `discord_id`,
-                                                `discord_username`,                               
+                                                `discord_username`, 
+                                                `discord_email`,                              
                                                 `discord_avatar`,
                                                 `access_token`,
                                                 `refresh_token`
@@ -28,11 +29,12 @@ class Discord extends DataBase
                                                 ?,
                                                 ?,
                                                 ?,
+                                                ?,
                                                 ?
                                             )
         ");
 
-        $saveDiscordData = $query->execute([$userId, $discordId, $discordUsername, $discordAvatar, $accessToken, $refreshToken]);
+        $saveDiscordData = $query->execute([$userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken]);
     
         if($saveDiscordData)
         {
@@ -53,8 +55,30 @@ class Discord extends DataBase
         ");
 
         $query->execute([$userId]);
-        $discordUsername = $query->fetch(\PDO::FETCH_ASSOC);
+        $discordUsername = $query->fetch();
         return $discordUsername;
+    }
+
+    public function getDiscordByUsername($username)
+    {
+        $query = $this->bdd->prepare("
+                            SELECT
+                                *
+                            FROM `discord`
+                            WHERE `discord_username` = ?
+        ");
+
+        $query->execute([$username]);
+        $discordUsername = $query->fetch();
+
+        if($discordUsername)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
     }
 
     public function storeTemporaryChannel($channelId)

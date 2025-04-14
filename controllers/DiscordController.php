@@ -2,8 +2,10 @@
 
 namespace controllers;
 
+use models\LeagueOfLegends;
+use models\Valorant;
 use models\User;
-use models\Block;
+use models\UserLookingFor;
 use models\GoogleUser;
 use models\ChatMessage;
 use models\Discord;
@@ -12,9 +14,11 @@ use traits\SecurityController;
 class DiscordController
 {
     use SecurityController;
+    private LeagueOfLegends $leagueOfLegends;
     private User $user;
+    private Valorant $valorant;
     private GoogleUser $googleUser;
-    private ChatMessage $chatmessage;
+    private UserLookingFor $userlookingfor;
     private Discord $discord;
     private $botToken;
     private $guildId;
@@ -22,10 +26,12 @@ class DiscordController
 
     public function __construct()
     {
+        $this->leagueOfLegends = new LeagueOfLegends();
         $this->user = new User();
+        $this->valorant = new Valorant();
         $this -> googleUser = new GoogleUser();
         $this -> discord = new Discord();
-        $this->chatmessage = new ChatMessage();
+        $this -> userlookingfor = new userLookingFor();
     }
 
     public function createChannel() {
@@ -271,30 +277,158 @@ class DiscordController
         // Store user info in session
         $_SESSION['discord_user'] = $userInfo;
     
-        // Get logged-in user ID (assumed stored in session)
-        $userId = $_SESSION['userId'] ?? null;
-    
-        if (!$userId) {
-            die("User must be logged in.");
-        }
-    
+
         // Extract all required data
         $discordId = $userInfo['id'];
         $discordUsername = $userInfo['username'];
+        $discordEmail = $userInfo['email']; 
         $discordAvatar = $userInfo['avatar'] ?? null;
         $accessToken = $tokenInfo['access_token'];
         $refreshToken = $tokenInfo['refresh_token'] ?? null;
         $expiresIn = $tokenInfo['expires_in'] ?? null;
-    
-        // Save data in database
-        $discordData = $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordAvatar, $accessToken, $refreshToken);
 
-        if (!$discordData) {
-            die("Failed to save data.");
+        $existingUser = $this->googleUser->getUserByDiscordId($discordId);
+
+        if ($existingUser) {
+            $_SESSION['google_userId'] = $existingUser['google_userId'];
+            $_SESSION['google_id'] = $discordId;
+            $_SESSION['email'] = $existingUser['google_email'];
+            $_SESSION['full_name'] = $existingUser['google_fullName'];
+            $_SESSION['google_firstName'] = $existingUser['google_firstName'];
+            $_SESSION['masterTokenWebsite'] = $existingUser['google_masterTokenWebsite'];
+
+            $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
+
+            if ($googleUser)
+            {
+                $user = $this->user->getUserByUsername($googleUser['user_username']);
+
+                if ($user) 
+                {
+                    $_SESSION['userId'] = $user['user_id'];
+                    $_SESSION['username'] = $user['user_username'];
+                    $_SESSION['gender'] = $user['user_gender'];
+                    $_SESSION['age'] = $user['user_age'];
+                    $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
+                    $_SESSION['game'] = $user['user_game'];
+
+                    if ($user['user_game'] == 'League of Legends') {
+                        $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
+
+                        if ($lolUser)
+                        {
+                            $_SESSION['lol_id'] = $lolUser['lol_id'];
+                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                            if ($lfUser)
+                            {
+                                $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                header('Location: /swiping?message=Connected successfully.');
+                                exit();
+                            }
+                            else 
+                            {
+                                header('Location: /signup?message=Create your Looking for account.');
+                                exit();
+                            }
+                        }
+                        else 
+                        {
+                            header('Location: /signup?message=Create your LoL account.');
+                            exit();
+                        }
+                    }
+                    else 
+                    {
+                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
+
+                        if ($valorantUser)
+                        {
+
+                            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
+            
+                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                            if ($lfUser)
+                            {
+                                $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                header('Location: /swiping?message=Connected successfully.');
+                                exit();
+                            }
+                            else 
+                            {
+                                header('Location: /signup?message=Create your Looking for account.');
+                                exit();
+                            }
+
+                        }
+                        else 
+                        {
+                            header('Location: /signup?message=Create your Valorant account.');
+                            exit();
+                        }
+
+                    }
+
+                }
+                else 
+                {
+                    header('Location: /signup?message=Create your account.');
+                    exit();
+                }
+            }
+            else 
+            {
+                header('Location: /signup?message=Create your account.');
+                exit();
+            }
+        } else {
+
+            $googleUser = $this->googleUser->getGoogleUserByEmail($discordEmail);
+
+            if($googleUser) {
+                header('Location: /?message=An URSG account already exist with that email.');
+                exit();
+            }
+
+            $fullName = $discordUsername;
+            $firstName = $discordUsername;
+            $googleFamilyName = $discordUsername;
+            $RSO = 0;
+            $createGoogleUserDiscord = $this->googleUser->createGoogleUser($discordId, $fullName, $firstName, $googleFamilyName,  $RSO, $discordEmail);
+
+            if ($createGoogleUserDiscord)
+            {
+                require 'keys.php';
+
+                $lifetime = 7 * 24 * 60 * 60;
+
+                session_destroy();
+
+                session_set_cookie_params($lifetime);
+
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+
+                // MASTER TOKEN SYSTEM
+                $token = bin2hex(random_bytes(32));
+                $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserDiscord, $token);
+
+                if ($createToken) {
+                    $_SESSION['masterTokenWebsite'] = $token;
+                }
+                
+                if (!isset($_SESSION['googleId'])) {
+                    $_SESSION['google_userId'] = $createGoogleUserDiscord;
+                    $_SESSION['google_id'] = $discordId;
+                    $_SESSION['email'] = $discordEmail;
+                    $_SESSION['full_name'] = $fullName;
+                }
+
+                header('Location: /signup?message=Account created');
+                exit();
+
+            }
         }
-    
-        // Redirect to the create channel page
-        header("Location: /userProfile?message==Discord account linked successfully.");
     }
 
     public function validateTokenWebsite($token, $userId): bool
