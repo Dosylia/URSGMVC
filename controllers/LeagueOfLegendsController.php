@@ -620,7 +620,7 @@ class LeagueOfLegendsController
 
     public function createLeagueUser()
     {
-        if (isset($_POST['submit'])) 
+        if (isset($_POST['submit']) && isset($_POST['userId'])) 
         {
 
             $userId = $this->validateInput($_POST["userId"]);

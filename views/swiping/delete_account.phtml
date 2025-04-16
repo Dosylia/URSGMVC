@@ -4,7 +4,7 @@
         <h1>Delete your account</h1>
         <p>Choose the account you want to delete</p>
         <div class="delete_selecter">
-            <button class="btn_user_updates" id="deleteGoogle_btn"><i class="fa-brands fa-google"></i></i>Google account</button>
+            <button class="btn_user_updates" id="deleteGoogle_btn"><i class="fa-brands fa-google"></i></i>Google account/ Discord</button>
             <button class="btn_user_updates" id="deleteRiot_btn"><i class="fa-solid fa-hand-fist"></i></i>Riot account</button>
         </div>
         <div id="deleteGoogle_div">
@@ -14,7 +14,7 @@
                 <p class="errorsForm"><?= $_GET['error'] ?></p>
                 <?php endif; ?>
 
-                <label for="email">Google email of the account you with registred with</label>
+                <label for="email">Google email (or email of Discord account) of the account you with registred with</label>
                 <p>You will receive an email to confirm your identity and your choice.</p>
                 <input type="email" id="email" name="email" placeholder="JohnDoe@gmail.com" required>
 

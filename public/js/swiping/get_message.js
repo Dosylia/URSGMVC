@@ -544,7 +544,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     
         const replacedMessage = message.replace(/:\w+(-\w+)*:/g, function(match) {
-            console.log("Matching emote:", match);
             return emoteMap[match] || match;
         });
     

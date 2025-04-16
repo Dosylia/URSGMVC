@@ -380,7 +380,7 @@ class ChatMessageController
                 }
 
     
-                echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications, 'sendNotificationsBrowser' => $sendNotificationsBrowser]);
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }

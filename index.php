@@ -101,6 +101,7 @@ $actionMap = [
     'updateBonusPicturePhone' => [UserController::class, 'updateBonusPicturePhone'],
     'deleteBonusPicturePhone' => [UserController::class, 'deleteBonusPicturePhone'],
     'getUserData' => [UserController::class, 'getUserData'],
+    'addBonusPicture' => [UserController::class, 'addBonusPicture'],
     'friendlistPage' => [FriendRequestController::class, 'pageFriendlist'],
     'blockPerson' => [BlockController::class, 'blockPerson'],
     'unfriendPerson' => [FriendRequestController::class, 'unfriendPerson'],

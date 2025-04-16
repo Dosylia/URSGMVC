@@ -183,41 +183,18 @@ class GoogleUserController
                 (
                     $this->isConnectLeague() && 
                     !$this->isConnectValorant() && 
-                    $finalUser['lf_lolmain1'] !== NULL
+                    $finalUser['lf_lolrank'] !== NULL
                 ) || 
                 (
                     $this->isConnectValorant() && 
                     !$this->isConnectLeague() && 
-                    $finalUser['lf_valmain1'] !== NULL
+                    $finalUser['lf_valrank'] !== NULL
                 )
             ) && 
             $this->isConnectLf()
         )  {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-            $allUsersArcane = $this-> user -> getAllUsers();
-            if ($user && $usersAll) {
-                $userData = json_encode($user);
-                $usersAllData = json_encode($usersAll);
-            }
-
-            
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($allUsersArcane as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
 
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
@@ -231,13 +208,13 @@ class GoogleUserController
                 (
                     $this->isConnectValorant() && 
                     !$this->isConnectLeague() && 
-                    $finalUser['lf_valmain1'] == NULL
+                    $finalUser['lf_valrole'] == NULL
                     && $finalUser['user_game'] == "Valorant"
                 )
             ) && 
             $this->isConnectLf()
         )  {
-            // Code block 2: User is connected via Google, Website and has League data, need looking for
+            // Code block 2: User is connected via Google, Website and has Valorant data, need looking for
             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/lookingforuservalorant";
@@ -252,7 +229,7 @@ class GoogleUserController
                 (
                     $this->isConnectLeague() && 
                     !$this->isConnectValorant() && 
-                    $finalUser['lf_lolmain1'] == NULL && $finalUser['user_game'] == "League of Legends"
+                    $finalUser['lf_lolrole'] == NULL && $finalUser['user_game'] == "League of Legends"
                 )
             ) && 
             $this->isConnectLf()
@@ -617,6 +594,16 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
+                $testGoogleUserEmail = $this->googleUser->getGoogleUserByEmail($this->getGoogleEmail());
+                if ($testGoogleUserEmail)
+                {
+                    $response = array(
+                        'message' => 'Email already used.',
+                    );
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;
+                }
                 $RSO = 0;
                 $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
     

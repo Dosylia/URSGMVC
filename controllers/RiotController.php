@@ -481,9 +481,17 @@ class RiotController
         return null; // ✅ only return null if nothing matched
     }
 
-    public function getGameStatus($puuid, $server, $apiKey) {
-        $url = "https://". strtolower($server) .".api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{$puuid}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+    public function getGameStatus($puuid, $region, $apiKey)
+    {
+        $url = "https://$region.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/$puuid?api_key=$apiKey";
+    
+        $response = @file_get_contents($url);
+    
+        if ($response === false) {
+            return null;
+        }
+    
+        return json_decode($response, true);
     }
 
     // Fetch the summoner profile details
