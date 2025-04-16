@@ -58,8 +58,14 @@ class GoogleUserController
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf()
         ) {
-            header("location:/swiping");
-            exit();
+            if (isset($_GET['message'])) {
+                $message = $_GET['message'];
+                header("location:/swiping"."?message=$message");
+                exit();
+            } else {
+                header("location:/swiping");
+                exit();
+            }
         } else {
             if($this->isConnectGoogle())
             {
@@ -988,6 +994,17 @@ class GoogleUserController
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
+                $testGoogleUserEmail = $this->googleUser->getGoogleUserByEmail($this->getGoogleEmail());
+                if ($testGoogleUserEmail)
+                {
+                    $response = array(
+                        'message' => 'Email already used.',
+                    );
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;
+                }
+
                 $RSO = 0;
                 $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
     
