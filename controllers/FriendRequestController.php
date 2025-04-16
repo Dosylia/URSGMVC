@@ -597,48 +597,23 @@ class FriendRequestController
             $status = 'pending';
             $amount = 10;
 
-            // // Validate Authorization Header
-            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //     return;
-            // }
-
-            // $token = $matches[1];
-
-            // // Validate Token for User
-            // if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
-            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //     return;
-            // }
-
-
-
-            if (isset($_SESSION)) {
-
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                if ($user['user_id'] != $_POST["senderId"])
-                {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                    return;
-                }
-
-                if ($user['user_id'] == $_POST["receiverId"])
-                {
-                    echo json_encode(['success' => false, 'message' => 'Cant swipe yourself, weirdo']);
-                    return;
-                }
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
             }
 
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
             $user = $this->user->getUserById($_POST["senderId"]);
-
-            // if ($user['user_isVip'] == 1) {
-            //     $amount = 12;
-            // }
-
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
             $receiverId = $this->validateInput($_POST["receiverId"]);
@@ -650,14 +625,20 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
                     echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
                 }
             } else {
-                $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                // Check if there is already a friend request with those 
+                $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
+
+                if ($checkOldFriendRequest)
+                {
+                    // Update old one
+                    $acceptFriendRequest = $this->friendrequest->acceptFriendRequest($checkOldFriendRequest['fr_id']);
+                } else {
+                    // Create new one
+                    $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                }
                 echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
 
@@ -667,39 +648,24 @@ class FriendRequestController
             $status = 'rejected';
             $amount = 10;
 
-            // // Validate Authorization Header
-            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //     return;
-            // }
-
-            // $token = $matches[1];
-
-            // // Validate Token for User
-            // if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
-            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //     return;
-            // }
-
-            if (isset($_SESSION)) {
-
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                if ($user['user_id'] != $_POST["senderId"])
-                {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
-                    return;
-                }
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
             }
 
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
             $user = $this->user->getUserById($_POST["senderId"]);
 
-            // if ($user['user_isVip'] == 1) {
-            //     $amount = 12;
-            // }
 
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
@@ -711,14 +677,18 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                    // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
                     echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
                 }
             } else {
-                $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                // $addCurrency = $this->user->addCurrency($this->getSenderId(), $amount);
-                // $addCurrencySnapshot = $this->user->addCurrencySnapshot($this->getSenderId(), $amount);
+                $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
+                if ($checkOldFriendRequest)
+                {
+                    // Update old one
+                    $rejectFriendRequest = $this->friendrequest->rejectFriendRequest($checkOldFriendRequest['fr_id']);
+                } else {
+                    // Create new one
+                    $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                }
                 echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
             }
 

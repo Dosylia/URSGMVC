@@ -549,4 +549,30 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function checkOldFriendRequest($senderId, $receiverId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            *
+                                        FROM 
+                                            `friendrequest`
+                                        WHERE 
+                                            (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
+                                        AND 
+                                            `fr_status` IN ('accepted', 'rejected')
+        ");
+    
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
+        $checkOldFriendRequestTest = $query->fetch();
+        
+        if ($checkOldFriendRequestTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+    }
+
 }
