@@ -301,7 +301,7 @@ class GoogleUserController
         
         } else {
             // Code block 9: Redirect to / if none of the above conditions are met
-            header("Location: /?message=test");
+            header("Location: /?message=Couldn't sign you up properly");
             exit();
         }
     }  

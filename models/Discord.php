@@ -81,30 +81,36 @@ class Discord extends DataBase
         }
     }
 
-    public function storeTemporaryChannel($channelId)
+    public function storeTemporaryChannel($channelId, $userId)
     {
         $query = $this->bdd->prepare("
-                            INSERT INTO `temporary_channels`(
-                                                `channel_id`,
-                                                `expiry_time`
-                                            )
-                                            VALUES (
-                                                ?,
-                                                NOW() + INTERVAL 3600 SECOND
-                                            )
+            INSERT INTO `temporary_channels` (
+                `channel_id`,
+                `user_id`,
+                `created_at`,
+                `expiry_time`
+            )
+            VALUES (
+                ?,
+                ?,
+                NOW(),
+                NOW() + INTERVAL 3600 SECOND
+            )
         ");
-
-        $storeTemporaryChannel = $query->execute([$channelId]);
     
-        if($storeTemporaryChannel)
-        {
-            return true;
-        }
-        else 
-        {
-            return false;  
-        }
+        return $query->execute([$channelId, $userId]);
     }
+
+    public function hasCreatedChannelRecently($userId, $minutes = 10)
+    {
+        $query = $this->bdd->prepare("
+            SELECT COUNT(*) FROM `temporary_channels`
+            WHERE `user_id` = ? AND `created_at` > (NOW() - INTERVAL ? MINUTE)
+        ");
+        $query->execute([$userId, $minutes]);
+        return $query->fetchColumn() > 0;
+    }
+        
 
     public function removeTemporaryChannel($channelId)
     {

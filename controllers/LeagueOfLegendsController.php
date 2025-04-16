@@ -39,7 +39,7 @@ class LeagueOfLegendsController
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] !== $_SESSION['userId']) {
+                if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
                     exit();
                 }
@@ -54,7 +54,7 @@ class LeagueOfLegendsController
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
             if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] !== $_SESSION['userId']) {
+                if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
                     exit();
                 }

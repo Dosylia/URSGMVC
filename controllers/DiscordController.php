@@ -59,6 +59,11 @@ class DiscordController
             return;
         }
 
+        if ($this->discord->hasCreatedChannelRecently($userId)) {
+            echo json_encode(['success' => false, 'error' => 'You have to wait before creating another channel.']);
+            return;
+        }
+
         require_once 'keys.php';
         $botToken = $discordToken;
         $guildId = $discordServerId;
@@ -91,7 +96,7 @@ class DiscordController
 
         if ($channelId) {
             // Store the channel ID and the time it should be deleted
-            $this->discord->storeTemporaryChannel($channelId); // 1 hour expiry
+            $this->discord->storeTemporaryChannel($channelId, $userId); // 1 hour expiry
         }
 
         // Step 2: Create an invite for the channel
@@ -115,6 +120,11 @@ class DiscordController
         $botToken = $discordToken;
         $channels = $this->discord->getExpiredChannels();
         $guildId = $discordServerId; // Replace with your actual guild ID
+
+        if (empty($channels)) {
+            echo "No expired channels to delete.";
+            return;
+        }
     
         foreach ($channels as $channel) {
             // Ensure 'channel_id' is set in the channel array
@@ -136,9 +146,6 @@ class DiscordController
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             $response = curl_exec($ch);
             curl_close($ch);
-    
-            // Debug: var_dump the response from the widget API
-            var_dump($response);
     
             // Check if the response is valid
             if (!$response) {
@@ -179,18 +186,23 @@ class DiscordController
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                $deleteResponse = curl_exec($ch);
+                curl_setopt($ch, CURLOPT_HEADER, true); // Get response headers too
+                curl_setopt($ch, CURLOPT_VERBOSE, true); // Helpful for debugging
+                
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
-    
-                // Debug: var_dump the response from the delete request
-                var_dump($deleteResponse);
-    
-                if ($deleteResponse) {
-                    // Remove channel from the database if deletion is successful
+                
+                // Parse the response body
+                list($headers, $body) = explode("\r\n\r\n", $response, 2);
+                
+                if ($httpCode === 200 || $httpCode === 204) {
+                    echo "✅ Channel {$channel['channel_id']} deleted successfully.\n";
                     $this->discord->removeTemporaryChannel($channel['channel_id']);
-                    error_log("Channel {$channel['channel_id']} deleted successfully.");
                 } else {
-                    error_log("Error deleting channel {$channel['channel_id']}.");
+                    error_log("❌ Failed to delete channel {$channel['channel_id']} - HTTP {$httpCode}");
+                    echo "❌ Failed to delete channel {$channel['channel_id']} - HTTP {$httpCode}";
+                    error_log("Response body: " . $body);
                 }
             }
         }
