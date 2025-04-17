@@ -348,6 +348,23 @@ class FriendRequest extends DataBase
         }        
     }
 
+    public function pendingFriendrequest($frId, $newSenderId, $newReceiverId) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE `friendrequest`
+                                        SET 
+                                            `fr_status` = 'pending',
+                                            `fr_senderId` = ?,
+                                            `fr_receiverId` = ?
+                                        WHERE 
+                                            fr_id = ?
+        ");
+    
+        $pendingFriendRequestTest = $query->execute([$newSenderId, $newReceiverId, $frId]);
+    
+        return $pendingFriendRequestTest ?: false;
+    }
+
     public function rejectFriendRequest($frId) 
     {
         $query = $this -> bdd -> prepare("
@@ -478,28 +495,22 @@ class FriendRequest extends DataBase
     public function checkifPending($receiverId, $senderId)
     {
         $query = $this->bdd->prepare("
-                                    SELECT 
-                                        *
-                                    FROM 
-                                        `friendrequest`
-                                    WHERE 
-                                        (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
-                                    AND 
-                                        `fr_status` = 'pending'
+                                        SELECT * 
+                                        FROM friendrequest 
+                                        WHERE (
+                                            (fr_senderId = ? AND fr_receiverId = ?) 
+                                            OR 
+                                            (fr_senderId = ? AND fr_receiverId = ?)
+                                        )
+                                        AND fr_status = 'pending'
         ");
     
-        $query->execute([$senderId, $receiverId, $senderId, $receiverId]);
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
         $checkPendingTest = $query->fetch();
         
-        if ($checkPendingTest)
-        {
-            return true;
-        }
-        else
-        {
-            return false;  
-        }
+        return $checkPendingTest ?: false;
     }
+    
 
     public function updateFriendRequest($receiverId, $senderId, $status) 
     {
@@ -567,7 +578,7 @@ class FriendRequest extends DataBase
         
         if ($checkOldFriendRequestTest)
         {
-            return true;
+            return $checkOldFriendRequestTest;
         }
         else
         {

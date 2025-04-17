@@ -530,20 +530,36 @@ class FriendRequestController
             // Initialize request data
             $requestDate = date('Y-m-d H:i:s');
             $status = 'pending';
-    
-            // Check if friend request is pending
+
+            if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
+                echo json_encode(["status" => "error", "message" => "You can't send a friend request to a blocked user."]);
+                exit;
+            }
+
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
-    
+
             if ($checkIfPending) {
-                // Update friend request to accepted
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'message' => 'Swipe No, updated']);
+                    echo json_encode(['success' => true, 'error' => 'Accepted friend request directly']);
                 }
             } else {
-                // Create new friend request with status 'pending'
-                $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                echo json_encode(['success' => true, 'message' => 'Swipe Yes, created']);
+                // Check if there is already a friend request with those 
+                $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
+
+                if ($checkOldFriendRequest)
+                {
+                    // Update old one
+                    $pendingFriendrequest = $this->friendrequest->pendingFriendrequest(
+                        $checkOldFriendRequest['fr_id'],
+                        $this->getSenderId(),
+                        $this->getReceiverId()
+                    );
+                } else {
+                    // Create new one
+                    $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                }
+                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
             }
     
         } elseif (isset($_POST['swipe_no'])) {
@@ -571,17 +587,23 @@ class FriendRequestController
     
             // Check if friend request is pending
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
-    
+
             if ($checkIfPending) {
-                // Update friend request to rejected
                 $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'message' => 'Swipe No, updated']);
+                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
                 }
             } else {
-                // Create new friend request with status 'rejected'
-                $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                echo json_encode(['success' => true, 'message' => 'Swipe No, created']);
+                $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
+                if ($checkOldFriendRequest)
+                {
+                    // Update old one
+                    $rejectFriendRequest = $this->friendrequest->rejectFriendRequest($checkOldFriendRequest['fr_id']);
+                } else {
+                    // Create new one
+                    $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
+                }
+                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
             }
     
         } else {
@@ -619,13 +641,17 @@ class FriendRequestController
             $receiverId = $this->validateInput($_POST["receiverId"]);
             $this->setReceiverId((int)$receiverId);
 
+            if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
+                echo json_encode(["status" => "error", "message" => "You can't send a friend request to a blocked user."]);
+                exit;
+            }
 
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                    echo json_encode(['success' => true, 'error' => 'Accepted friend request directly']);
                 }
             } else {
                 // Check if there is already a friend request with those 
@@ -634,7 +660,11 @@ class FriendRequestController
                 if ($checkOldFriendRequest)
                 {
                     // Update old one
-                    $acceptFriendRequest = $this->friendrequest->acceptFriendRequest($checkOldFriendRequest['fr_id']);
+                    $pendingFriendrequest = $this->friendrequest->pendingFriendrequest(
+                        $checkOldFriendRequest['fr_id'],
+                        $this->getSenderId(),
+                        $this->getReceiverId()
+                    );
                 } else {
                     // Create new one
                     $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
@@ -665,8 +695,6 @@ class FriendRequestController
             }
 
             $user = $this->user->getUserById($_POST["senderId"]);
-
-
             $senderId = $this->validateInput($_POST["senderId"]);
             $this->setSenderId((int)$senderId);
             $receiverId = $this->validateInput($_POST["receiverId"]);

@@ -49,6 +49,11 @@ class BlockController
                 exit;
             }
 
+            if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
+                header("location:/friendlistPage?message=User already blocked");
+                exit();  
+            }
+
             $blockPerson = $this->block->blockPerson($this->getSenderId(), $this->getReceiverId(), $date);
 
             if ($blockPerson)

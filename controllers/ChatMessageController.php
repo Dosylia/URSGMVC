@@ -282,6 +282,8 @@ class ChatMessageController
         $this->setReceiverId($data->receiverId);
         $this->setMessage($this->validateInput($data->message));
 
+        $sender = $this->user->getUserById($this->getSenderId());
+
         $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
 
         if ($testFriendstatus != "accepted") {
@@ -290,9 +292,10 @@ class ChatMessageController
         }
     
         $insertMessage = $this->chatmessage->insertMessage($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $status);
+        $rawMessage = $data->message;
     
         if ($insertMessage) {
-            $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
+            $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $rawMessage, $this->getSenderId());
             $friend = $this->user->getUserById($this->getReceiverId());
             $sendNotificationsBrowser = false;
 
@@ -300,7 +303,7 @@ class ChatMessageController
                 $endPoint = $friend['user_notificationEndPoint'];
                 $p256dh = $friend['user_notificationP256dh'];
                 $auth = $friend['user_notificationAuth'];
-                $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $this->getMessage(), $user['user_username']);
+                $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $rawMessage, $sender['user_username']);
             }
             echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
         } else {
@@ -364,11 +367,12 @@ class ChatMessageController
                 }
     
             $insertMessage = $this->chatmessage->insertMessageWebsite($this->getSenderId(), $this->getReceiverId(), $this->getMessage(), $replyToChatId, $status);
+            $rawMessage = $data->message;
     
             if ($insertMessage) {
                 $userId = $this->getSenderId();
 
-                $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
+                $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $rawMessage, $this->getSenderId());
                 $friend = $this->user->getUserById($this->getReceiverId());
                 $sendNotificationsBrowser = false;
 
@@ -376,7 +380,7 @@ class ChatMessageController
                     $endPoint = $friend['user_notificationEndPoint'];
                     $p256dh = $friend['user_notificationP256dh'];
                     $auth = $friend['user_notificationAuth'];
-                    $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $this->getMessage(), $user['user_username']);
+                    $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $rawMessage, $user['user_username']);
                 }
 
     

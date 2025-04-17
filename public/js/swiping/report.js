@@ -25,6 +25,8 @@ function reportUser(userId, reportedId, content, status, reason) {
             if (data.success) {
                 console.log('Reported user:', data.message);
                 displayNotification("User reported successfully!");
+                const overlay = document.getElementById("overlay");
+                overlay.style.display = "none";
             } else {
                 console.error('Error fetching messages:', data.error);
             }

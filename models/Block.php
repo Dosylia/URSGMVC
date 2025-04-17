@@ -45,6 +45,20 @@ class Block extends DataBase
         }
     }
 
+    public function isBlocked($senderId, $receiverId)
+{
+    $query = $this->bdd->prepare("
+                                    SELECT 1 FROM `block`
+                                    WHERE 
+                                        (block_senderId = ? AND block_receiverId = ?)
+                                        OR
+                                        (block_senderId = ? AND block_receiverId = ?)
+    ");
+
+    $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
+    return $query->fetch() ? true : false;
+}
+
     public function blockPerson($senderId, $receiverId, $date) 
     {
 
