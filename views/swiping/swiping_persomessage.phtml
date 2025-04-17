@@ -130,12 +130,15 @@
                             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
                             <span id="reply-preview"></span>
-                            <input id="message_text" maxlength="500" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"><br>
+                            <span id="imagePreviewContainer" style="margin-bottom: 8px;"></span>
+                            <input id="message_text" maxlength="500" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"  data-username="<?= $friendChat['user_username'] ?>"><br>
                             <div>
                                 <button id="btnDesign" type="button" class="send-message-button">
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </button>
                             </div>
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                            <button type="button" class="btn_uploadPicture" onclick="document.getElementById('imageInput').click()"><i class="fa-solid fa-image"></i></button>
                             <span id="discord-create"><i class="fa-brands fa-discord"></i></span>
                             <input id="submit_chat" type="submit" name="submit" value="Submit" style="display: none;">
                         </form>

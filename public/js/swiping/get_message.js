@@ -38,6 +38,12 @@ document.addEventListener("DOMContentLoaded", function () {
             friendId = newFriendId; // Update the recipient ID
             replyPreviewContainer.style.display = "none"; // Hide the reply preview
             chatInput.dataset.replyTo = ""; // Clear the reply context
+            let messageInput = document.getElementById("message_text");
+            const username = messageInput.dataset.username;
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            previewContainer.innerHTML = ''; // Clear the preview container
+            messageInput.value = '';
+            messageInput.placeholder = 'Talk to @' + username;
             fetchMessages(userId, friendId); // Load new messages
         }
     });
@@ -207,9 +213,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (message.chat_replyTo) {
                 let originalMessage = messages.find(m => m.chat_id == message.chat_replyTo);
                 if (originalMessage) {
-                    const truncatedMessage = originalMessage.chat_message.length > 50 
-                    ? originalMessage.chat_message.substring(0, 50) + "..." 
-                    : originalMessage.chat_message;
+                    let replacedMessage = originalMessage.chat_message.replace(/\[img\](.*?)\[\/img\]/g, 'Contains a 📷');
+
+                    const truncatedMessage = replacedMessage.length > 50 
+                        ? replacedMessage.substring(0, 50) + "..." 
+                        : replacedMessage;
+                    
+                    let finalMessage = truncatedMessage;
                     if (previousMessage && previousMessage.chat_senderId === message.chat_senderId) {
                         let timeDifference = new Date(message.chat_date) - new Date(previousMessage.chat_date);
                         if (timeDifference <= 5 * 60 * 1000) {
@@ -229,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${truncatedMessage}
+                                        ${finalMessage}
                                 </span>
                             </p>
                             `;
@@ -254,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${truncatedMessage}
+                                        ${finalMessage}
                                     </span>
                                 </p>
                             `;
@@ -283,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         max-width: 100%;
                                         padding: 0 10px;
                                     ">
-                                        ${truncatedMessage}
+                                        ${finalMessage}
                                     </span>
                                 </p>
 
@@ -410,6 +420,8 @@ document.addEventListener("DOMContentLoaded", function () {
             messageContent = messageContent.replace(/https:\/\/discord\.gg\/[a-zA-Z0-9]+/g, function(url) {
                 return `<a href="${url}" target="_blank" class="discord-link">Click to join</a>`;
             });
+
+            messageContent = processMessageContent(messageContent);
             
             messageDiv.innerHTML = messageContent;
 
@@ -495,13 +507,56 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(scrollToBottom, 100);
     }
 
+    function processMessageContent(messageContent) {
+        // Replace [img][/img] with a sanitized image URL
+        messageContent = messageContent.replace(/\[img\](.*?)\[\/img\]/g, function(match, url) {
+            // Sanitize the URL
+            const sanitizedUrl = sanitizeUrl(url);
+    
+            if (sanitizedUrl) {
+                // Return a safe, clickable image if the URL is valid
+                return `<a href="${sanitizedUrl}" target="_blank"><img src="${sanitizedUrl}" class="chat-image" alt="Sent image"></a>`;
+            } else {
+                // If the URL is invalid or harmful, return an empty string or a warning placeholder
+                return '<span class="invalid-url-warning">Invalid image URL</span>';
+            }
+        });
+    
+        return messageContent;
+    }
+
+    function sanitizeUrl(url) {
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+        const urlLower = url.toLowerCase();
+    
+        // Check if the URL contains a valid image extension
+        const isValidImage = imageExtensions.some(ext => urlLower.endsWith(ext));
+    
+        // If the URL is relative (i.e., doesn't start with 'http://', 'https://', or '/'), allow it
+        if (isValidImage) {
+            if (url.startsWith('/') || urlLower.startsWith('http://') || urlLower.startsWith('https://')) {
+                return url; // Valid relative or absolute image URL
+            } else {
+                // Allow relative paths (no protocol)
+                return `/${url}`; // Prepend a '/' to make it a valid relative URL
+            }
+        }
+    
+        return null;  // If not a valid image, return null
+    }
+
     function replyToMessage(chatId, messageText, senderName) {
         replyPreviewContainer.style.display = "block";
         const truncatedMessage = messageText.length > 50 ? messageText.substring(0, 50) + "..." : messageText;
+
+        let finalMessage = messageText; 
+        if (messageText.includes('[img]') && messageText.includes('[/img]')) {
+            finalMessage = messageText.replace(/\[img\](.*?)\[\/img\]/g, 'Replying to a picture 📷');
+        }
     
         replyPreviewContainer.innerHTML = `
             <div class="reply-preview-content">
-                <strong>${senderName}:</strong> ${messageText}
+                <strong>${senderName}:</strong> ${finalMessage}
                 <button type="button" id="cancel-reply-btn">✖</button>
             </div>
         `;

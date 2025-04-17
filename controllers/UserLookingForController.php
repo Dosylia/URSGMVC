@@ -926,6 +926,7 @@ class UserLookingForController
     {
         $input = trim($input);
     
+        // Try decoding if it looks like JSON
         if (is_string($input) && (strpos($input, '[') === 0 || strpos($input, '{') === 0)) {
             $decodedInput = json_decode($input, true);
     
@@ -934,7 +935,15 @@ class UserLookingForController
             }
         }
     
-        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        // If it's a raw string, attempt to decode HTML entities and retry JSON
+        $decodedEntities = html_entity_decode($input, ENT_QUOTES, 'UTF-8');
+        $tryJsonAgain = json_decode($decodedEntities, true);
+    
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $tryJsonAgain;
+        }
+    
+        return [];
     }
 
     public function getUserId()

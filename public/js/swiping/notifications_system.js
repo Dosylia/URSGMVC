@@ -39,6 +39,10 @@ function processNotificationQueue() {
 
     if (type === "message" && userId) {
         // Create a clickable link
+        let finalMessage = message; 
+        if (message.includes('[img]') && message.includes('[/img]')) {
+            finalMessage = message.replace(/\[img\](.*?)\[\/img\]/g, '📷'); // Replace [img]...[/img] with 📷 emoji
+        }
         const link = document.createElement('a');
         link.href = `/persoChat&friend_id=${userId}&mark_as_read=true`;
         link.style.textDecoration = 'none';
@@ -54,7 +58,7 @@ function processNotificationQueue() {
 
         // Add the message text
         const text = document.createElement('span');
-        text.textContent = message;
+        text.textContent = finalMessage;
 
         // Append elements to the link
         link.appendChild(img);

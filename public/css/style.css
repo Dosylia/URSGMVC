@@ -1879,6 +1879,27 @@ section.siteMap tr:nth-child(even) {
       width: 30%;
     }
 
+    .chat-image {
+      width: auto;
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .img-preview {
+      width: auto;
+      height: 30px;
+    }
+
+    .btn_uploadPicture {
+      background-color: var(--main--red);
+      color: white;
+      border-radius: 20px;
+      padding: 5px 10px;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
 
     #friendSearch {
       display: flex;
@@ -7538,11 +7559,11 @@ justify-content: center;
   }
 
   .send-message-button {
-    margin: 10px;
+    margin: unset;
     border-radius: 50%;
     display: inline-block;
     background-color: var(--main--red);
-    padding: 10px;
+    padding: 8px;
     border: none;
    }
 
