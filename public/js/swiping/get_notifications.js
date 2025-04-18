@@ -11,6 +11,7 @@ let lastNotifCountPending = 0;
 let lastNotifContentPending = [];
 let AllNotifications = [];
 const requestBtn = document.getElementById('requests-btn');
+const messageSound = new Audio('public/sounds/notification.mp3');
 
 function fetchFriendRequest(userId) {
     fetch('index.php?action=getFriendRequestWebsite', {
@@ -358,7 +359,7 @@ function addNewNotification(newNotification) {
 }
 
 function fetchUnreadMessage(userId) {
-    const servedSenderIds = JSON.parse(localStorage.getItem('servedSenderIds')) || []; // Track sender IDs
+    const servedSenderIds = JSON.parse(localStorage.getItem('servedSenderIds')) || [];
 
     fetch('index.php?action=getUnreadMessageWebsite', {
         method: 'POST',
@@ -376,31 +377,35 @@ function fetchUnreadMessage(userId) {
             const newSenderIds = [];
             const updatedServedSenderIds = [...servedSenderIds];
 
+            let shouldPlaySound = false;
+
             data.unreadCount.forEach((message) => {
                 if (!servedSenderIds.includes(message.chat_senderId)) {
-                    // Serve the notification
-                    const type = 'message';
                     displayNotification(
                         `New message from ${message.user_username}: ${message.chat_message}`,
-                        type,
+                        'message',
                         message.chat_senderId,
                         message.user_picture
                     );
 
-                    // Track sender as served
                     newSenderIds.push(message.chat_senderId);
                     updatedServedSenderIds.push(message.chat_senderId);
+
+                    shouldPlaySound = true; // Mark for sound play
                 }
             });
 
-            // Update local storage with new served sender IDs
-            localStorage.setItem('servedSenderIds', JSON.stringify(updatedServedSenderIds));
+            // 🔊 Play sound if any new sender triggered a notification
+            const soundSetting = localStorage.getItem('soundNotifications');
 
-            // Update UI or perform other actions
+            if (shouldPlaySound && soundSetting != "off") {
+                console.log('Playing notification sound');
+                messageSound.play().catch(err => console.warn("Sound play error:", err));
+            }
+
+            localStorage.setItem('servedSenderIds', JSON.stringify(updatedServedSenderIds));
             fillUnread(data.unreadCount);
             updateUnreadMessagesForFriends(data.unreadCount);
-
-            // Clean up old sender IDs
             cleanupServedSenders(data.unreadCount.map(m => m.chat_senderId));
         } else {
             globalUnreadCounts = {};
@@ -414,6 +419,7 @@ function fetchUnreadMessage(userId) {
         console.error('Fetch error:', error);
     });
 }
+
 
 
 function cleanupServedSenders(currentUnreadSenderIds) {

@@ -236,7 +236,7 @@
 }
 
 #user-info p {
-  font-size: 0.5em;
+  font-size: 1em;
   align-self: flex-end; 
   margin-bottom: 7px;
 }
@@ -6787,7 +6787,7 @@ justify-content: center;
   color: white;
 }
 
-.toggle-container, .toggle-container-filter {
+.toggle-container, .toggle-container-filter, .toggle-container-sound {
     width: 80px;
     height: 40px;
     background-color: #ccc;
@@ -6810,7 +6810,7 @@ justify-content: center;
     transition: transform 0.3s;
   }
 
-  .filter-button {
+  .filter-button, #toggle-button-sound {
     width: 40px;
     height: 40px;
     background-color: #fff;
@@ -6821,15 +6821,16 @@ justify-content: center;
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.filter-button.active {
+.filter-button.active, #toggle-button-sound.active {
+    background-color: #ddd;
   transform: translateX(40px);
 }
 
-  .toggle-container-filter.active, .toggle-container.active {
+  .toggle-container-filter.active, .toggle-container.active, .toggle-container-sound.active {
     background-color: rgb(128, 211, 128) !important;
   }
 
-  .dark-mode .toggle-container, .dark-mode .toggle-container-filter {
+  .dark-mode .toggle-container, .dark-mode .toggle-container-filter, .dark-mode .toggle-container-sound {
     background-color: var(--ligher--grey);
   }
 
@@ -6842,11 +6843,11 @@ justify-content: center;
     background-color: #ddd;
   }
 
-  .dark-mode .filter-button {
+  .dark-mode .filter-button, .dark-mode #toggle-button-sound {
     background-color: #ddd;
   }
   
-  .light-mode .toggle-container, .light-mode .toggle-container-filter {
+  .light-mode .toggle-container, .light-mode .toggle-container-filter, .light-mode .toggle-container-sound {
     background-color: #ccc; /* Couleur de fond pour le mode clair */
   }
 

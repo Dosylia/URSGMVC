@@ -13,7 +13,6 @@ let firstFriendId = friendId;
 let replyPreviewContainer = document.getElementById("reply-preview");
 let chatInput = document.getElementById("message_text");
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Script loaded");
     // Gestion du clic sur les amis pour charger les messages
     document.addEventListener("click", function (event) {
         let link = event.target.closest(".username_chat_friend");
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!link) return;
     
         event.preventDefault(); // Prevent the default behavior for non-navigational links
-        console.log("Trying to change chat");
     
         let newFriendId = link.getAttribute("data-friend-id");
         console.log("New friend ID:", newFriendId);
@@ -89,9 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             isFirstFetch = false; // Reset the flag after the first fetch
         }
 
-        console.log('Fetching messages for userId:', userId, 'and friendId:', friendId);
-
-        fetch('index.php?action=getMessageDataWebsite', {
+        fetch('/getMessageDataWebsite', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -99,33 +95,61 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
         })
-        .then(response => response.json())
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+        
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                throw new Error('Invalid JSON response from server');
+            }
+        
+            return data;
+        })
         .then(data => {
             if (data.success) {
                 if (data.messages !== null && data.messages !== undefined) {
                     if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
-                        currentMessages = data.messages; // Update the current messages
+                        currentMessages = data.messages;
                         showFriendInfo(data.friend).then(() => {
                             updateMessageContainer(data.messages, data.friend, data.user);
                         });
                     } else {
-                         console.log('No new messages. No update needed.');
+                        console.log('No new messages. No update needed.');
                     }
                 } else {
                     showFriendInfo(data.friend);
                     console.log('No messages found.');
-                    currentMessages = []; // Reset the current messages
+                    currentMessages = [];
                 }
             } else {
                 console.error('Error fetching messages:', data.error);
+        
+                if (
+                    data.error.includes('Friend not found') ||
+                    data.error.includes('User not found')
+                ) {
+                    console.warn('Stopping message fetch loop due to missing friend/user.');
+                    return;
+                }
+        
+                // Optional: retry for other types of logical errors
+                setTimeout(() => fetchMessages(userId, friendId), 5000);
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error);
-
-            // Retry fetching messages after a delay
-            setTimeout(() => fetchMessages(userId, friendId), 5000);
-        });
+            console.error('Fetch or JSON parse error:', error);
+        
+            // Retry only for temporary issues (not "Friend not found", etc.)
+            if (!error.message.includes('Friend not found') && !error.message.includes('User not found')) {
+                setTimeout(() => fetchMessages(userId, friendId), 5000);
+            } else {
+                console.warn('Not retrying due to invalid user/friend.');
+            }
+        });        
     }
 
     function getGameStatusLoL(friendId) {
@@ -702,8 +726,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to scroll to the bottom of the messages container
     function scrollToBottom() {
-        let messagesContainer = document.getElementById("messages");
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        const messagesContainer = document.getElementById("messages");
+        if (!messagesContainer) return;
+    
+        // Smooth scroll to bottom
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'auto'
+        });
     }
 
     const chatfilter = (textToFilter) => {

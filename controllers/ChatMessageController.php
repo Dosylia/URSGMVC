@@ -792,11 +792,23 @@ class ChatMessageController
             $friend = $this->user->getUserById($this->getFriendId());
             $user = $this->user->getUserById($this->getUserId());
 
+            if (!$friend) {
+                error_log("Friend not found for ID: " . $this->getFriendId());
+                echo json_encode(['success' => false, 'error' => 'Friend not found']);
+                return;
+            }
+            
+            if (!$user) {
+                error_log("User not found for ID: " . $this->getUserId());
+                echo json_encode(['success' => false, 'error' => 'User not found']);
+                return;
+            }
+
             if (isset($_POST['firstFriend']) && $_POST['firstFriend'] === "no" && $messages) {
                 $this->chatmessage->updateMessageStatus('read', $this->getUserId(), $this->getFriendId());
             }
 
-            if ($messages !== false && $friend !== false && $user !== false) {
+            if ($messages !== false && is_array($friend) && is_array($user)) {
                 $data = [
                     'success' => true,
                     'friend' => [

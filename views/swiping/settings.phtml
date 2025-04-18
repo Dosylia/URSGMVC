@@ -1,6 +1,6 @@
 <section id="setting-page">
 <div class="page-header">
-    <a href="/store">Settings</a>
+    <a href="#">Settings</a>
 </div>
 
     <div id="userInfo" data-user-id="<?= $user['user_id']; ?>" data-chat-filter="<?= $user['user_hasChatFilter']; ?>"></div>
@@ -25,11 +25,25 @@
         </div>
     </div>
 
-    <div class="delete-option">
-     <a class="btn_user_updates" href="/deleteAccount"><i class="fa-solid fa-trash"></i>Delete account</a>
+    <div class="setting-option">
+        <span>
+            <i class="fa-solid fa-headphones"></i> 
+            <span>Sound Notification</span>
+        </span>
+        <div class="toggle-container-sound" id="toggle-container-sound">
+            <div id="toggle-button-sound"></div>
+        </div>
     </div>
 
-    <!-- <span id="placeholderMessage"></span> -->
+    <a href="/deleteAccount">
+        <div class="setting-option">
+            <span>
+                <i class="fa-solid fa-trash"></i> 
+                <span>Delete account</span>
+            </span>
+        </div>
+    </a>
 </section>
 
 <script src="public/js/swiping/switchChatFilter.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/switchSoundNotification.js?<?= time(); ?>"></script>
