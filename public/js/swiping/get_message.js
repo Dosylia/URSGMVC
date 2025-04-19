@@ -29,6 +29,16 @@ document.addEventListener("DOMContentLoaded", function () {
     
         let newFriendId = link.getAttribute("data-friend-id");
         console.log("New friend ID:", newFriendId);
+
+        const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
+
+        // Always check screen size after updating messages
+        if (isMax1018px) {
+            if (chatInterface && window.getComputedStyle(messageContainer).display === 'none') {
+                chatInterface.style.display = 'none';
+                messageContainer.style.display = 'block';
+            }
+        }
     
         if (newFriendId !== friendId) {
             const modalDiscord = document.getElementById('confirmationModalDiscord');
@@ -121,9 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log('No new messages. No update needed.');
                     }
                 } else {
-                    showFriendInfo(data.friend);
-                    console.log('No messages found.');
+                    // Handle empty messages case
                     currentMessages = [];
+                    showFriendInfo(data.friend).then(() => {
+                        updateMessageContainer([], data.friend, data.user); // Pass empty array
+                    });
+                    console.log('No messages found.');
                 }
             } else {
                 console.error('Error fetching messages:', data.error);
@@ -517,15 +530,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
         });
-    
-        const isMax1018px = window.matchMedia("(max-width: 1018px)").matches;
-    
-        if (isMax1018px) {
-            if (chatInterface !== null && window.getComputedStyle(messageContainer).display == 'none') {
-                chatInterface.style.display = 'none';
-                messageContainer.style.display = 'block';
-            }
-        } 
     
         console.log('Messages container updated. Now scrolling to bottom.');
         setTimeout(scrollToBottom, 100);

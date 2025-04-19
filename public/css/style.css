@@ -2297,6 +2297,7 @@ section.siteMap tr:nth-child(even) {
   #report-username {
       font-size: 2em;
       font-weight: 800;
+      font-family: 'Libre Franklin', sans-serif;
   }
 
   #report-modal .user-info img {

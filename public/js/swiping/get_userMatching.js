@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
             hasBindedAccount = true;
             sUsername.innerText = data.lol_account;
         } else {
-            sUsername.innerText = "UNKNOW";
+            sUsername.innerText = "UNKNOWN";
             hasBindedAccount = false;
         }
 

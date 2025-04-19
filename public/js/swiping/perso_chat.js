@@ -19,7 +19,7 @@ if (buttonclose !== null && buttonclose !== undefined) {
 // Fetch the full friend list once
 function fetchAllFriends(userId) {
     const token = localStorage.getItem('masterTokenWebsite');
-    return fetch('index.php?action=getFriendlistWebsite', {
+    return fetch('/getFriendlistWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

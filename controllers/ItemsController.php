@@ -122,6 +122,54 @@ class ItemsController
         }
     }
 
+    public function getOwnedItemsPhone()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userId'])) 
+        {
+            $userId = $_POST['userId'];
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+            $items = $this-> items -> getOwnedItems($_POST['userId']);
+
+            if ($items)
+            {
+                $response = array(
+                    'items' => $items,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = array('message' => 'Couldnt get all items');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+        } else {
+            $response = array('message' => 'Cant access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;  
+        }
+    }
+
     public function buyItem()
     {
         if (isset($_POST['param'])) {
@@ -250,21 +298,21 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // // Validate Authorization Header
-                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+                // Validate Authorization Header
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                //     return;
-                // }
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    return;
+                }
 
-                // $token = $matches[1];
+                $token = $matches[1];
 
-                // // Validate Token for User
-                // if (!$this->validateTokenWebsite($token, $userId)) {
-                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                //     return;
-                // }
+                // Validate Token for User
+                if (!$this->validateTokenWebsite($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
 
 
                 $user = $this->user->getUserById($_SESSION['userId']);
@@ -445,21 +493,21 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // // Validate Authorization Header
-                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+                // Validate Authorization Header
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                //     return;
-                // }
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    return;
+                }
 
-                // $token = $matches[1];
+                $token = $matches[1];
 
-                // // Validate Token for User
-                // if (!$this->validateTokenWebsite($token, $userId)) {
-                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                //     return;
-                // }
+                // Validate Token for User
+                if (!$this->validateTokenWebsite($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
 
                 $user = $this->user->getUserById($_SESSION['userId']);
                 if (isset($_SESSION)) {
@@ -519,6 +567,22 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
+                // Validate Authorization Header
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    return;
+                }
+
+                $token = $matches[1];
+
+                // Validate Token for User
+                if (!$this->validateToken($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
+
                 $ownedItems = $this->items->getOwnedItems($userId);
 
                 if ($ownedItems) {
@@ -559,21 +623,21 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // // Validate Authorization Header
-                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+                // Validate Authorization Header
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                //     return;
-                // }
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    return;
+                }
 
-                // $token = $matches[1];
+                $token = $matches[1];
 
-                // // Validate Token for User
-                // if (!$this->validateTokenWebsite($token, $userId)) {
-                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                //     return;
-                // }
+                // Validate Token for User
+                if (!$this->validateTokenWebsite($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
 
                 $user = $this->user->getUserById($_SESSION['userId']);
                 if (isset($_SESSION)) {
@@ -624,6 +688,21 @@ class ItemsController
             if (isset($data->itemId) && isset($data->userId)) {
                 $itemId = $data->itemId;
                 $userId = $data->userId;
+
+                // Validate Authorization Header
+                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                    return;
+                }
+            
+                $token = $matches[1];
+
+                if (!$this->validateToken($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
 
                 if ($itemId && $userId) {
                     $removeItems = $this->items->removeItems($itemId, $userId);

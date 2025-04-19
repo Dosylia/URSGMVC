@@ -355,6 +355,27 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function getMasterTokenPhoneByGoogleUserId($googleUserId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            google_masterToken
+                                        FROM 
+                                            googleuser AS g
+                                        WHERE 
+                                            google_userId = ?
+        ");
+    
+        $query->execute([$googleUserId]);
+        $token = $query->fetch();
+    
+        if ($token) {
+            return $token;
+        } else {
+            return false;
+        }
+    }
+
     public function getMasterTokenWebsiteByUserId($userId)
     {
         $query = $this->bdd->prepare("

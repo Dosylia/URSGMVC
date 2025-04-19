@@ -497,8 +497,25 @@ class UserLookingForController
             $data = json_decode($_POST['lookingforData']);
 
             if (isset($data->game) && $data->game == "League of Legends") {
-                $userId = $this->validateInput($data->userId);
+            $userId = $this->validateInput($data->userId);
             $this->setUserId($userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
             $lfGender = $this->validateInput($data->gender);
             $this->setLfGender($lfGender);
             $lfKindOfGamer = $this->validateInput($data->kindOfGamer);
@@ -584,6 +601,23 @@ class UserLookingForController
             } else {
 
             $userId = $this->validateInput($data->userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+            
             $this->setUserId($userId);
             $lfGender = $this->validateInput($data->gender);
             $this->setLfGender($lfGender);
@@ -909,6 +943,18 @@ class UserLookingForController
     
         if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
             $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
             return hash_equals($storedToken, $token);
         }
     

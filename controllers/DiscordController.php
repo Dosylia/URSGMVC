@@ -117,6 +117,14 @@ class DiscordController
 
     public function deleteExpiredChannels() {
         require_once 'keys.php';
+
+        $tokenAdmin = $_GET['token'] ?? null;
+
+        if (!isset($token) || $tokenAdmin !== $tokenRefresh) { 
+            header("Location: /?message=Unauthorized");
+            exit();
+        }
+
         $botToken = $discordToken;
         $channels = $this->discord->getExpiredChannels();
         $guildId = $discordServerId; // Replace with your actual guild ID

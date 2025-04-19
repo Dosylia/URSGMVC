@@ -485,10 +485,23 @@ class RiotController
     {
         $url = "https://$region.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/$puuid?api_key=$apiKey";
     
-        $response = @file_get_contents($url);
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
     
-        if ($response === false) {
-            return null;
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
         }
     
         return json_decode($response, true);
@@ -497,13 +510,51 @@ class RiotController
     // Fetch the summoner profile details
     public function getSummonerProfile($puuid, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$puuid}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+    
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
+        }
+    
+        return json_decode($response, true);
     }
 
     // Fetch ranked stats for the summoner
     public function getSummonerRankedStats($summonerId, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+    
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
+        }
+    
+        return json_decode($response, true);
     }
 
     public function getTopPlayedChamps($puuid, $server, $apiKey) {

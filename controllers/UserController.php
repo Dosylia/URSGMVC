@@ -232,6 +232,21 @@ class UserController
             $short_bio = $this->validateInput($data->shortBio);
             $this->setShortBio($short_bio);
 
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenGoogleUserId($token, $googleUserId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
             // Perform validation and user creation logic
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
                 $response = array('message' => 'Inputs cannot be empty');
@@ -512,6 +527,23 @@ class UserController
             $data = json_decode($_POST['userData']);
             $username = $this->validateInput($data->username);
             $this->setUsername($username);
+            $user = $this->user->getUserByUsername($this->getUsername());
+
+             // Validate Authorization Header
+             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        
+             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                 return;
+             }
+         
+             $token = $matches[1];
+ 
+             if (!$this->validateToken($token, $user['user_id'])) {
+                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 return;
+             }
+
             $discord = $this->validateInput($data->discord);
             $this->setDiscord($discord);
             $twitter = $this->validateInput($data->twitter);
@@ -986,11 +1018,28 @@ class UserController
 
     public function getUserData()
     {
+        // require 'keys.php';
         $response = array('message' => 'Error');
     
         if (isset($_POST['userId'])) {
+
+            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
+        
+            // $token = $matches[1];
+        
+            // // Check if the provided token matches the valid token
+            // if ($token !== $validToken) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            // }
+
             // Directly get the userId from POST data
-            $userId = $this->validateInput($_POST['userId']); // No need for json_decode here
+            $userId = $this->validateInput($_POST['userId']); 
     
             // Assuming validateInput returns an integer or valid user ID
             $user = $this->user->getUserById($userId);
@@ -1012,9 +1061,26 @@ class UserController
 
     public function registerToken()
     {
+        require 'keys.php';
         $response = array('message' => 'Error');
     
         if (isset($_POST['userId']) && isset($_POST['token'])) {
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            // Check if the provided token matches the valid token
+            if ($token !== $validToken) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
             $userId = $this->validateInput($_POST['userId']);
             $token = $this->validateInput($_POST['token']);
     
@@ -1044,9 +1110,6 @@ class UserController
                 $user = $this->user->getUserById($data->userId);
             }
 
-            if ($data->game == "League of Legends") 
-            {
-            // Validate and set user data
             $userId = $this->validateInput($data->userId);
 
             
@@ -1064,6 +1127,9 @@ class UserController
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
+
+            if ($data->game == "League of Legends") 
+            {
 
             $username = $this->validateInput($data->username);
             $gender = $this->validateInput($data->gender);
@@ -1195,7 +1261,6 @@ class UserController
             } 
             else
             {
-            $userId = $this->validateInput($data->userId);
             $username = $this->validateInput($data->username);
             $gender = $this->validateInput($data->gender);
             $age = $this->validateInput($data->age);
@@ -2245,18 +2310,32 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-                $updateFilter = $this->user->updateFilter($status, $userId);
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
 
-                if ($updateFilter) {
-                    $response = array('message' => 'Success');
-                    echo json_encode($response);
-                    exit;
-                } else {
-                    $response = array('message' => 'Couldnt update status');
-                    echo json_encode($response);
-                    exit;
-                }
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $updateFilter = $this->user->updateFilter($status, $userId);
+
+            if ($updateFilter) {
+                $response = array('message' => 'Success');
+                echo json_encode($response);
+                exit;
+            } else {
+                $response = array('message' => 'Couldnt update status');
+                echo json_encode($response);
+                exit;
+            }
         }
     }
 
@@ -2268,21 +2347,21 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
-            // // Validate Authorization Header
-            // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            //     return;
-            // }
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
 
-            // $token = $matches[1];
+            $token = $matches[1];
 
-            // // Validate Token for User
-            // if (!$this->validateTokenWebsite($token, $userId)) {
-            //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            //     return;
-            // }
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
             if (isset($_SESSION)) {
                 $user = $this-> user -> getUserById($userId);
@@ -2671,6 +2750,18 @@ class UserController
     
         if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
             $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateTokenGoogleUserId($token, $googleUserId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenPhoneByGoogleUserId($googleUserId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
             return hash_equals($storedToken, $token);
         }
     

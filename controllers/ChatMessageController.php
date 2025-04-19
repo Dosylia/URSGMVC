@@ -457,6 +457,71 @@ class ChatMessageController
             echo json_encode(['success' => false, 'message' => 'Could not move uploaded file']);
         }
     }
+
+    public function uploadChatImagePhone(): void
+    {
+        // Validate Authorization Header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+        $userId = $_SESSION['userId'] ?? null;
+    
+        if (!$userId || !$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'message' => 'Upload error']);
+            return;
+        }
+    
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    
+        // Check the file extension
+        $fileExtension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid file extension']);
+            return;
+        }
+    
+        // First check using mime_content_type()
+        $fileType = mime_content_type($_FILES['image']['tmp_name']);
+        if (!in_array($fileType, $allowedTypes)) {
+            // Fallback to finfo if mime_content_type fails
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $fileMimeType = finfo_file($finfo, $_FILES['image']['tmp_name']);
+            finfo_close($finfo);
+    
+            // Second check using finfo
+            if (!in_array($fileMimeType, $allowedTypes)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid file type']);
+                return;
+            }
+        }
+    
+        // Match your working logic: relative path
+        $uploadDir = 'public/upload/chat/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+    
+        $filename = uniqid('chat_', true) . '.' . $fileExtension; // Ensure proper extension
+        $targetPath = $uploadDir . $filename;
+    
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+            $imageUrl = 'public/upload/chat/' . $filename; // Public URL path
+            echo json_encode(['success' => true, 'imageUrl' => $imageUrl]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Could not move uploaded file']);
+        }
+    }
     
 
     public function deleteChatImage(): void
@@ -838,6 +903,12 @@ class ChatMessageController
                         'user_id' => $friend['user_id'],
                         'user_username' => $friend['user_username'],
                         'user_picture' => $friend['user_picture']
+                    ],
+                    'user' => [
+                        'user_id' => $user['user_id'],
+                        'user_username' => $user['user_username'],
+                        'user_picture' => $user['user_picture'],
+                        'user_hasChatFilter' => $user['user_hasChatFilter']
                     ],
                 ];
                 echo json_encode($data);

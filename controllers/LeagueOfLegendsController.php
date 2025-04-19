@@ -215,6 +215,22 @@ class LeagueOfLegendsController
             
             $userId = $this->validateInput($data->userId);
             $this->setUserId($userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+
+            if (!$this->validateToken($token, $this->getUserId())) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
             $loLAccount = $this->validateInput($data->account);
             $this->setLolAccount(str_replace(' ', '', $loLAccount));
             $parts = explode('#', $this->getLolAccount());
@@ -277,7 +293,26 @@ class LeagueOfLegendsController
     public function getSummonerByNameAndTag($summonerName, $tagLine, $apiKey) {
         $region = "americas";
         $url = "https://{$region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" . urlencode($summonerName) . "/{$tagLine}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+    
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
+        }
+    
+        return json_decode($response, true);
     }
 
     public function verifyLeagueAccount()
@@ -357,6 +392,22 @@ class LeagueOfLegendsController
             $data = json_decode($_POST['userData']);
             
             $userId = $this->validateInput($data->userId);
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+            
             $this->setUserId($userId);
             $puudId = $data->puuId;
             $server = $data->server;
@@ -448,14 +499,47 @@ class LeagueOfLegendsController
 
     public function getSummonerProfile($puudId, $server ,$apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$puudId}?api_key={$apiKey}";
-        return json_decode(file_get_contents($url), true);
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+    
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
+        }
+    
+        return json_decode($response, true);
     }
     
     public function getSummonerRankedStats($summonerId, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
-        $response = @file_get_contents($url);
-        if ($response === false) {
-            return null;
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+    
+        $response = @file_get_contents($url, false, $context);
+    
+        // Check for HTTP errors
+        if (isset($http_response_header)) {
+            preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
+            $statusCode = $match[1] ?? 0;
+    
+            if ($statusCode != '200') {
+                error_log("Riot API error");
+                return null;
+            }
         }
     
         return json_decode($response, true);
@@ -814,6 +898,23 @@ class LeagueOfLegendsController
         {
             $data = json_decode($_POST['leagueData']);
             $userId = $this->validateInput($data->userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
             $this->setUserId($userId);
             $loLMain1 = $this->validateInput($data->main1);
             $this->setLoLMain1($loLMain1);
@@ -978,6 +1079,18 @@ class LeagueOfLegendsController
     
         if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
             $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
             return hash_equals($storedToken, $token);
         }
     

@@ -258,6 +258,24 @@ class ValorantController
         {
             $data = json_decode($_POST['valorantData']);
             $userId = $this->validateInput($data->userId);
+
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+
             $this->setUserId($userId);
             $valorantMain1 = $this->validateInput($data->main1);
             $this->setValorantMain1($valorantMain1);
@@ -411,6 +429,18 @@ class ValorantController
     
         if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
             $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
             return hash_equals($storedToken, $token);
         }
     
