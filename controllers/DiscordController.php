@@ -120,7 +120,7 @@ class DiscordController
 
         $tokenAdmin = $_GET['token'] ?? null;
 
-        if (!isset($token) || $tokenAdmin !== $tokenRefresh) { 
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
             exit();
         }

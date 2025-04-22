@@ -135,6 +135,7 @@ $actionMap = [
     'getItemsWebsite' => [ItemsController::class, 'getItemsWebsite'],
     'getOwnedItems' => [ItemsController::class, 'getOwnedItems'],
     'getOwnedItemsPhone' => [ItemsController::class, 'getOwnedItemsPhone'],
+    'Phone' => [ItemsController::class, 'getOwnedItemsPhone'], // Remove when mobile app update is out
     'usePictureFrame' => [ItemsController::class, 'usePictureFrame'],
     'usePictureFrameWebsite' => [ItemsController::class, 'usePictureFrameWebsite'],
     'removePictureFrame' => [ItemsController::class, 'removePictureFrame'],

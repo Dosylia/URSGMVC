@@ -3382,6 +3382,12 @@ section.siteMap tr:nth-child(even) {
       cursor: pointer;
       margin: 2px;
   }
+
+  .replied-message .emote {
+    width: 20px;
+    height: 20px;
+    margin: unset;
+  }
   
   #toggleEmotePicker {
       background: none;
@@ -3465,6 +3471,12 @@ section.siteMap tr:nth-child(even) {
     .friend-details-top p{
       font-size: 0.8em;
       font-weight: 600;
+    }
+
+    .friends-lol-username {
+      cursor: pointer;
+      user-select: none; 
+      position: relative;
     }
 
 

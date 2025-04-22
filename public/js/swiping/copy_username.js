@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const lolUserText = document.getElementById('lolUserText');
     const copyIcon = document.querySelector('#lolUserText .fa-copy');
-
     const inviteFriendbtn = document.getElementById('inviteFriend_btn')
 
 

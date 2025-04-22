@@ -138,15 +138,16 @@
                                 <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                             </div>
                         <?php endif; ?>
-                        <img src="public/images/champions/<?= $lolUser['lol_main1']?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= $lolUser['lol_main2']?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= $lolUser['lol_main3']?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main1'])) ?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main2'])) ?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main3'])) ?>.png" alt="Champion">
                     </div>
 
                     <div class="champions mate" style="<?= $lfUser['lf_lolNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                        <img src="public/images/champions/<?= $lfUser['lf_lolmain1']?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= $lfUser['lf_lolmain2']?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= $lfUser['lf_lolmain3']?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain1'])) ?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain2'])) ?>.png" alt="Champion">
+                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain3'])) ?>.png" alt="Champion">
+
                     </div>
                 </div>
             <?php else : ?>
