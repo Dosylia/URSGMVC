@@ -3096,22 +3096,25 @@ section.siteMap tr:nth-child(even) {
     }
 
     .message-text {
+      display: inline-block;
       border-radius: 20px;
       background-color: var(--main--red);
       border: none;
-      padding: 7px 14px;
+      padding: 7px 35px 7px 14px;
       color: white;
       margin-bottom: 5px;
-      position: relative; 
-      display: inline-flex;
-      align-items: center; 
       max-width: 70%;
       word-wrap: break-word;
-      gap: 8px; 
-  }
+      position: relative;
+      line-height: 30px
+    }
   
   .message-status {
       font-size: 12px;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 0.8em;
       color: rgba(255, 255, 255, 0.7);
       align-self: flex-end;
       display: flex;
@@ -3214,7 +3217,6 @@ section.siteMap tr:nth-child(even) {
   
     .messages-container {
       min-height: 50vh;
-      overflow-y: scroll;
       width: 800px;
       display: block;
       margin: auto;
@@ -7169,6 +7171,7 @@ justify-content: center;
 
   .messages-container {
     display: none;
+    width: 100%;
   }
 
   .chat_box {

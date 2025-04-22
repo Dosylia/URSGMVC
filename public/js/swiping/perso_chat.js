@@ -1,4 +1,4 @@
-import { chatInterface, messageContainer } from './get_message.js';
+import { chatInterface, messageContainer } from './get_message_utils.js';
 
 const buttonclose = document.getElementById('buttonSwitchChat');
 const searchBar = document.getElementById('friendSearch');

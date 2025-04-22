@@ -1,6 +1,6 @@
 "use strict";
 
-import { friendId, userId, fetchMessages } from './get_message.js';
+import { fetchMessages, clearImageVar, clearImageFalse } from './get_message_utils.js';
 
 let senderId;
 let receiverId;
@@ -13,11 +13,6 @@ let attachedImages = [];
 window.sendMessageToPhp = function(senderId, message, replyToChatId) {
     let friendIdElement = document.getElementById("receiverId");
     const receiverId = friendIdElement ? friendIdElement.value : null;
-    // If wanna convert time directly before sending it
-    // let utcDate = new Date();
-    // let localOffset = utcDate.getTimezoneOffset() * 60000;
-    // let localDate = new Date(utcDate.getTime() - localOffset);
-    // let formattedTime = localDate.toLocaleTimeString();
     const token = localStorage.getItem('masterTokenWebsite');
 
     const cleanedMessage = message.replace('📷', '').trim();
@@ -51,9 +46,8 @@ window.sendMessageToPhp = function(senderId, message, replyToChatId) {
         console.log('Success:', data);
         messageInput.value = '';
         const previewContainer = document.getElementById('imagePreviewContainer');
-        previewContainer.innerHTML = ''; // Clear the preview container
-        attachedImages = []; // Clear the attached images array
-        // After successfully sending message, fetch updated messages
+        previewContainer.innerHTML = ''; 
+        attachedImages = []; 
         let replyPreviewContainer = document.getElementById("reply-preview");
         replyPreviewContainer.innerHTML = '';
         replyPreviewContainer.style.display = 'none';
@@ -87,6 +81,7 @@ document.getElementById('imageInput').addEventListener('change', function() {
         if (data.success && data.imageUrl) {
          // Add [img] tag to the message input (optional)
         attachedImages = [];
+        clearImageFalse();
         attachedImages.push(data.imageUrl);
         messageInput.value = '📷';
 
@@ -244,6 +239,15 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log('Message is empty');
             isActionAllowed = true; // Re-enable action
             return;
+        }
+
+        if (clearImageVar === true) {
+            attachedImages = [];
+            clearImageFalse();
+            if (message === "" && attachedImages.length === 0) {
+                isActionAllowed = true;
+                return;
+            }
         }
     
         const replyToChatId = messageInput.dataset.replyTo || null;
