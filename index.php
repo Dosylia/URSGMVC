@@ -164,6 +164,7 @@ $actionMap = [
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'uploadChatImage' => [ChatMessageController::class, 'uploadChatImage'],
     'deleteChatImage' => [ChatMessageController::class, 'deleteChatImage'],
+    'getAllQueuedNotification' => [ChatMessageController::class, 'getAllQueuedNotification'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
     'updateFriendWebsite' => [FriendRequestController::class, 'updateFriendWebsite'],
     'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],

@@ -9,6 +9,12 @@ let btnSubmit;
 let btnDesign;
 let isActionAllowed = true;
 let attachedImages = [];
+let messageBurstCount = 0;
+let lastMessageTimestamp = 0;
+let isCoolingDown = false;
+const BURST_LIMIT = 5;
+const COOLDOWN_TIME = 2000; 
+const spamWarning = document.getElementById("spamWarning");
 
 window.sendMessageToPhp = function(senderId, message, replyToChatId) {
     let friendIdElement = document.getElementById("receiverId");
@@ -226,6 +232,13 @@ document.addEventListener("DOMContentLoaded", function() {
     function handleSendMessage(event) {
         event.preventDefault();
     
+        const now = Date.now();
+    
+        if (isCoolingDown) {
+            console.warn("Cooldown active. Please wait.");
+            return;
+        }
+    
         if (!isActionAllowed) {
             return;
         }
@@ -234,13 +247,12 @@ document.addEventListener("DOMContentLoaded", function() {
     
         const message = messageInput.value.trim();
     
-        // Check if both message and attached images are empty
         if (message === "" && attachedImages.length === 0) {
             console.log('Message is empty');
-            isActionAllowed = true; // Re-enable action
+            isActionAllowed = true;
             return;
         }
-
+    
         if (clearImageVar === true) {
             attachedImages = [];
             clearImageFalse();
@@ -254,10 +266,34 @@ document.addEventListener("DOMContentLoaded", function() {
     
         sendMessageToPhp(senderId, message, replyToChatId);
     
+        if (now - lastMessageTimestamp > COOLDOWN_TIME) {
+            messageBurstCount = 0;
+        }
+    
+        messageBurstCount++;
+        lastMessageTimestamp = now;
+        
+        if (isCoolingDown) {
+            spamWarning.style.display = 'block';
+            return;
+        }
+    
+        if (messageBurstCount >= BURST_LIMIT) {
+            isCoolingDown = true;
+            spamWarning.style.display = 'block';
+        
+            setTimeout(() => {
+                isCoolingDown = false;
+                messageBurstCount = 0;
+                spamWarning.style.display = 'none';
+            }, COOLDOWN_TIME);
+        }
+    
         setTimeout(() => {
             isActionAllowed = true;
-        }, 750);
+        }, 50);
     }
+    
 
     if (!senderIdElement || !receiverIdElement || !messageInput || !btnSubmit || !btnDesign) {
         return;
@@ -275,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const emotes = document.querySelectorAll('.emote');
 
     toggleEmotePickerButton.addEventListener('click', function() {
-        emoteContainer.style.display = emoteContainer.style.display === 'none' ? 'block' : 'none';
+        emoteContainer.style.display = emoteContainer.style.display === 'none' ? 'flex' : 'none';
     });
 
     emotes.forEach(emote => {

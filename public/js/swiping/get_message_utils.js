@@ -561,7 +561,9 @@ export function fetchMessages(userId, friendId) {
             ':cat-sus:': '<img src="public/images/emotes/cat-sus.png" alt="cat-sus" class="emote">',
             ':cat-bruh:': '<img src="public/images/emotes/cat-bruh.png" alt="cat-bruh" class="emote">',
             ':cat-licking:': '<img src="public/images/emotes/cat-licking.png" alt="cat-licking" class="emote">',
-            ':cat-laugh:': '<img src="public/images/emotes/cat-laugh.png" alt="cat-laugh" class="emote">'
+            ':cat-laugh:': '<img src="public/images/emotes/cat-laugh.png" alt="cat-laugh" class="emote">',
+            ':cat-crying:': '<img src="public/images/emotes/cat-crying.png" alt="cat-crying" class="emote">',
+            ':cat-love:': '<img src="public/images/emotes/cat-love.png" alt="cat-love" class="emote">',
         };
     
         const replacedMessage = message.replace(/:\w+(-\w+)*:/g, function(match) {

@@ -310,4 +310,115 @@ class ChatMessage extends DataBase
         }
     }
 
+    public function queueNotificationWebsite($senderId, $receiverId, $message, $type, $endpoint, $p256dh, $auth) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `notifications_queue`(
+                                                `user_id`,
+                                                `sender_id`,         
+                                                `message`,
+                                                `type`,
+                                                `endpoint`,
+                                                `p256dh`,
+                                                `auth`   
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?
+                                            )
+                                        ");
+
+        $queueNotificationTest = $query -> execute([$receiverId, $senderId, $message, $type, $endpoint, $p256dh, $auth]);
+
+        if($queueNotificationTest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
+    public function queueNotificationPhone($senderId, $receiverId, $message, $type, $expoToken) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `notifications_queue`(
+                                                `user_id`,
+                                                `sender_id`,         
+                                                `message`,
+                                                `type`,
+                                                `expoToken`   
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?,
+                                                ?
+                                            )
+                                        ");
+
+        $queueNotificationTest = $query -> execute([$receiverId, $senderId, $message, $type, $expoToken]);
+
+        if($queueNotificationTest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
+    public function getAllQueuedNotifications()
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT 
+                                                * 
+                                            FROM 
+                                                `notifications_queue`
+        ");
+
+        $query -> execute();
+        $getAllQueuedNotificationTest = $query -> fetchAll();
+
+        if($getAllQueuedNotificationTest)
+        {
+            return $getAllQueuedNotificationTest;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function deleteQueuedNotification($notificationId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            DELETE FROM 
+                                                `notifications_queue`
+                                            WHERE
+                                                `id` = ?
+        ");
+
+        $deleteQueuedNotificationTest = $query -> execute([$notificationId]);
+
+        if($deleteQueuedNotificationTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

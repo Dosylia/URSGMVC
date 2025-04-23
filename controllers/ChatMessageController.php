@@ -236,7 +236,7 @@ class ChatMessageController
 
                 $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $this->getMessage(), $this->getSenderId());
     
-                echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }
@@ -295,17 +295,43 @@ class ChatMessageController
         $rawMessage = $data->message;
     
         if ($insertMessage) {
-            $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $rawMessage, $this->getSenderId());
             $friend = $this->user->getUserById($this->getReceiverId());
-            $sendNotificationsBrowser = false;
+            $sendNotificationPhone = true;
+            $sendNotificationsBrowser = true;
+
+            if ($friend['user_token'] !== NULL)
+            {
+                $expoToken = $friend['user_token'];
+                $type = "phone";
+                $sendNotificationsPhone = $this->chatmessage->queueNotificationPhone($this->getReceiverId(), $this->getSenderId(), $rawMessage, $type, $expoToken);
+
+                if ($sendNotificationsPhone) {
+                    $sendNotificationPhone = true;
+                } else {
+                    $sendNotificationPhone = false;
+                }
+            }
 
             if ($friend['user_notificationPermission'] == 1) {
                 $endPoint = $friend['user_notificationEndPoint'];
                 $p256dh = $friend['user_notificationP256dh'];
                 $auth = $friend['user_notificationAuth'];
-                $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $rawMessage, $sender['user_username']);
+                $type = "browser";
+                $sendNotificationsBrowser = $this->chatmessage->queueNotificationWebsite($this->getReceiverId(), $this->getSenderId(), $rawMessage, $type, $endPoint, $p256dh, $auth);
+
+                if ($sendNotificationsBrowser) {
+                    $sendNotificationsBrowser = true;
+                } else {
+                    $sendNotificationsBrowser = false;
+                }
             }
-            echo json_encode(['success' => true, 'message' => 'Message sent successfully', 'sendNotifications' => $sendNotifications]);
+
+            if ($sendNotificationsBrowser && $sendNotificationPhone) {
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Message sent successfully but error with notifications']);
+            }
+
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to send message']);
         }
@@ -370,21 +396,43 @@ class ChatMessageController
             $rawMessage = $data->message;
     
             if ($insertMessage) {
-                $userId = $this->getSenderId();
-
-                $sendNotifications = $this->sendNotificationsPhone($this->getReceiverId(), $rawMessage, $this->getSenderId());
                 $friend = $this->user->getUserById($this->getReceiverId());
-                $sendNotificationsBrowser = false;
+                $sendNotificationPhone = true;
+                $sendNotificationsBrowser = true;
+
+                if ($friend['user_token'] !== NULL)
+                {
+                    $expoToken = $friend['user_token'];
+                    $type = "phone";
+                    $sendNotificationsPhone = $this->chatmessage->queueNotificationPhone($this->getReceiverId(), $this->getSenderId(), $rawMessage, $type, $expoToken);
+
+                    if ($sendNotificationsPhone) {
+                        $sendNotificationPhone = true;
+                    } else {
+                        $sendNotificationPhone = false;
+                    }
+                }
 
                 if ($friend['user_notificationPermission'] == 1) {
                     $endPoint = $friend['user_notificationEndPoint'];
                     $p256dh = $friend['user_notificationP256dh'];
                     $auth = $friend['user_notificationAuth'];
-                    $sendNotificationsBrowser = $this->sendPushNotification($endPoint, $p256dh, $auth, $rawMessage, $user['user_username']);
+                    $type = "browser";
+                    $sendNotificationsBrowser = $this->chatmessage->queueNotificationWebsite($this->getReceiverId(), $this->getSenderId(), $rawMessage, $type, $endPoint, $p256dh, $auth);
+
+                    if ($sendNotificationsBrowser) {
+                        $sendNotificationsBrowser = true;
+                    } else {
+                        $sendNotificationsBrowser = false;
+                    }
                 }
 
+                if ($sendNotificationsBrowser && $sendNotificationPhone) {
+                    echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
+                } else {
+                    echo json_encode(['success' => true, 'message' => 'Message sent successfully but error with notifications']);
+                }
     
-                echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }
@@ -392,6 +440,53 @@ class ChatMessageController
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
     }
+
+    public function getAllQueuedNotification()
+    {
+        require_once 'keys.php';
+    
+        $tokenAdmin = $_GET['token'] ?? null;
+    
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
+            http_response_code(401); // Return Unauthorized for cron logs
+            echo "❌ Unauthorized.\n";
+            exit();
+        }
+    
+        $queuedNotifications = $this->chatmessage->getAllQueuedNotifications();
+        if ($queuedNotifications) {
+            foreach ($queuedNotifications as $notification) {
+                if ($notification['type'] === "browser") {
+                    $endPoint = $notification['endpoint'];
+                    $p256dh = $notification['p256dh'];
+                    $auth = $notification['auth'];
+                    $message = $notification['message'];
+                    $user = $this->user->getUserById($notification['user_id']);
+                    $senderName = $user['user_username'];
+    
+                    if ($this->sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName)) {
+                        $this->chatmessage->deleteQueuedNotification($notification['id']);
+                        echo "✅ Notification served.\n";
+                    }
+                } else {
+                    $expoToken = $notification['expoToken'];
+                    $message = $notification['message'];
+                    $user = $this->user->getUserById($notification['user_id']);
+                    $senderName = $user['user_username'];
+    
+                    if ($this->sendPushNotificationPhone($expoToken, $message, $senderName)) {
+                        $this->chatmessage->deleteQueuedNotification($notification['id']);
+                        echo "✅ Notification served.\n";
+                    }
+                }
+            }
+        } else {
+            echo "✅ No notification to serve.\n";
+        }
+    
+        http_response_code(200);
+    }
+    
 
     public function uploadChatImage(): void
     {
@@ -596,10 +691,9 @@ class ChatMessageController
             // Process and get the results
             foreach ($webPush->flush() as $report) {
                 if ($report->isSuccess()) {
-                    error_log('Push Notification sent successfully to: ' . $endPoint);
                     return true;
                 } else {
-                    error_log('Push Notification failed for: ' . $endPoint);
+                    error_log('Push Notification failed for: ' . $endPoint . 'message was sent by ' . $senderName);
                     error_log('Reason: ' . $report->getReason());
                     return false;
                 }
@@ -1098,6 +1192,43 @@ class ChatMessageController
 
             return $result;
         }
+    }
+
+    public function sendPushNotificationPhone($expoToken, $message, $friendUsername) {
+
+        $title = "URSG - Message from " . $friendUsername;
+        $body = $message;
+
+        $expoPushUrl = 'https://exp.host/--/api/v2/push/send';
+
+        $notificationPayload = [
+            'to' => $expoToken,
+            'sound' => 'default',
+            'title' => $title,
+            'body' => $body,
+        ];
+
+        $headers = [
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $expoPushUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($notificationPayload));
+
+        $result = curl_exec($ch);
+
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+
+        curl_close($ch);
+
+        return $result;
     }
 
     public function getAccessToken(): string

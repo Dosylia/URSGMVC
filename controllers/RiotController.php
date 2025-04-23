@@ -498,14 +498,18 @@ class RiotController
             preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
             $statusCode = $match[1] ?? 0;
     
-            if ($statusCode != '200') {
-                error_log("Riot API error");
+            if ($statusCode == '404') {
+                // Summoner is not currently in a game — not an error
+                return null;
+            } elseif ($statusCode != '200') {
+                error_log("Riot API error with getGameStatus: HTTP $statusCode");
                 return null;
             }
         }
     
         return json_decode($response, true);
     }
+    
 
     // Fetch the summoner profile details
     public function getSummonerProfile($puuid, $server, $apiKey) {

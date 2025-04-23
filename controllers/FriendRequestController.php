@@ -612,6 +612,20 @@ class FriendRequestController
                 return;
             }
     
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+        
             $senderId = $this->validateInput($_POST["senderId"]);
             $receiverId = $this->validateInput($_POST["receiverId"]);
             

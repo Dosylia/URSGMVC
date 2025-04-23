@@ -125,12 +125,17 @@
                                     <img src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
                                     <img src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
                                     <img src="public/images/emotes/cat-laugh.png" alt=":cat-laugh:" class="emote">
+                                    <img src="public/images/emotes/cat-crying.png" alt=":cat-crying:" class="emote">
+                                    <img src="public/images/emotes/cat-love.png" alt=":cat-love:" class="emote">
                                 </div>
                             </div>
                             <input id="senderId" type="hidden" name="sender_id" value="<?= $user['user_id']; ?>">
                             <input id="receiverId" type="hidden" name="receiver_id" value="<?= $friendChat['user_id'] ?>">
                             <span id="reply-preview"></span>
                             <span id="imagePreviewContainer" style="margin-bottom: 8px;"></span>
+                            <div id="spamWarning" style="display:none; color: red; margin-bottom: 5px; font-weight: bold;">
+                                You're sending messages too fast. Please wait a moment.
+                            </div>
                             <input id="message_text" maxlength="500" type="text" name="message_text" class="message_text" placeholder="Talk to @<?= $friendChat['user_username'] ?>" autocomplete="off"  data-username="<?= $friendChat['user_username'] ?>"><br>
                             <div>
                                 <button id="btnDesign" type="button" class="send-message-button">
