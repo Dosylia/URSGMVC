@@ -37,32 +37,9 @@ function getFriendList(userId, page = 1) {
                     }
 
                     renderFriendList(filteredFriends, page);
-                    setupPagination(filteredFriends.length, itemsPerPage);
                 }
             } else {
                 console.error('Error fetching friends:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
-}
-
-function getGameStatusLoL(friendId) {
-    fetch('/getGameStatusLoL', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `friendId=${encodeURIComponent(friendId)}`
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Game status:', data.status);
-                return data;
-            } else {
-                console.error('Error fetching game status:', data.error);
             }
         })
         .catch(error => {
@@ -107,18 +84,12 @@ async function renderFriendList(friendList, page) {
     }
 
     try {
-        // Simulating a delay (remove this in actual code)
-        await new Promise(resolve => setTimeout(resolve, 500));
 
         // Clear friend list
         friendListContainer.innerHTML = '';
 
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = Math.min(startIndex + itemsPerPage, friendList.length);
-        const paginatedFriends = friendList.slice(startIndex, endIndex);
-
-        if (paginatedFriends.length > 0) {
-            const firstFriend = paginatedFriends[0];
+        if (friendList.length > 0) {
+            const firstFriend = friendList[0];
             const lookingForButton = document.getElementById('looking-for-button');
 
             if (firstFriend.friend_isLookingGameUser === 1) {
@@ -128,13 +99,7 @@ async function renderFriendList(friendList, page) {
             }
         }
 
-        paginatedFriends.forEach(friend => {
-            const friendLeagueStatus = getGameStatusLoL(friend.friend_id);
-
-            if (friendLeagueStatus) {
-                console.log('Friend League Status:', friendLeagueStatus);
-            }
-
+        friendList.forEach(friend => {
             const friendElement = document.createElement('a');
             friendElement.className = "username_chat_friend clickable";
             friendElement.href = "#";
@@ -171,7 +136,7 @@ async function renderFriendList(friendList, page) {
             }
 
             const gameLogo = document.createElement('img');
-            gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/lol-logo.png' : 'public/images/Valorant.png';
+            gameLogo.src = friend.friend_game === 'League of Legends' ? 'public/images/league-icon.png' : 'public/images/valorant-icon.png';
             gameLogo.alt = friend.friend_game;
 
             detailsDiv.appendChild(chatNameSpan);
@@ -215,87 +180,6 @@ async function renderFriendList(friendList, page) {
             friendListContainer.style.display = 'block';
         }
     }
-}
-
-
-
-// Set up pagination
-function setupPagination(totalItems, itemsPerPage) {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.innerHTML = '';
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // First Button
-    const firstButton = document.createElement('button');
-    firstButton.className = 'pagination-button';
-    firstButton.textContent = '<<';
-    firstButton.disabled = currentPage === 1;
-    firstButton.addEventListener('click', () => {
-        currentPage = 1;
-        refreshMode = false;
-        getFriendList(userId, currentPage);
-    });
-    paginationContainer.appendChild(firstButton);
-
-    // Previous Button
-    const prevButton = document.createElement('button');
-    prevButton.className = 'pagination-button';
-    prevButton.textContent = '<';
-    prevButton.disabled = currentPage === 1;
-    prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            refreshMode = false;
-            getFriendList(userId, currentPage);
-        }
-    });
-    paginationContainer.appendChild(prevButton);
-
-    // Page Buttons
-    const maxVisiblePages = 3;
-    const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    for (let i = startPage; i <= endPage; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        pageButton.className = 'pagination-button';
-        if (i === currentPage) pageButton.classList.add('active');
-
-        pageButton.addEventListener('click', () => {
-            currentPage = i;
-            refreshMode = false;
-            getFriendList(userId, currentPage);
-        });
-
-        paginationContainer.appendChild(pageButton);
-    }
-
-    // Next Button
-    const nextButton = document.createElement('button');
-    nextButton.className = 'pagination-button';
-    nextButton.textContent = '>';
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            refreshMode = false;
-            getFriendList(userId, currentPage);
-        }
-    });
-    paginationContainer.appendChild(nextButton);
-
-    // Last Button
-    const lastButton = document.createElement('button');
-    lastButton.className = 'pagination-button';
-    lastButton.textContent = '>>';
-    lastButton.disabled = currentPage === totalPages;
-    lastButton.addEventListener('click', () => {
-        currentPage = totalPages;
-        refreshMode = false;
-        getFriendList(userId, currentPage);
-    });
-    paginationContainer.appendChild(lastButton);
 }
 
 // Periodic updates for online status

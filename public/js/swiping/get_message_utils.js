@@ -632,6 +632,8 @@ export function fetchMessages(userId, friendId) {
     
         const userInfo = document.createElement("span");
         userInfo.style.width = "80%";
+        userInfo.style.display = "flex";
+        userInfo.style.gap = "5px";
         userInfo.innerHTML = `
             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${friend.user_username}">
             <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(friend.user_username)}">
@@ -706,7 +708,7 @@ export function fetchMessages(userId, friendId) {
         }
     
         messagesContainer.innerHTML = '';
-        messagesContainer.style.minHeight = 'calc(var(--vh, 1vh) * 60)';
+        messagesContainer.style.minHeight = 'calc(var(--vh, 1vh) * 65)';
     }
     
     
