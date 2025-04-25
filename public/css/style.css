@@ -2993,6 +2993,7 @@ section.siteMap tr:nth-child(even) {
       color: white;
       border: none;
       border-radius: 20px;
+      cursor: pointer;
     }
 
     .replied-message.inverted {

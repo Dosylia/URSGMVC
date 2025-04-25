@@ -18,11 +18,16 @@ export let clearImageVar = false;
 export function fetchMessages(userId, friendId) {
     const token = localStorage.getItem('masterTokenWebsite');
     const firstFriendInput = document.getElementById('firstFriend');
-    const firstFriend = firstFriendInput ? firstFriendInput.value : null;
+    let firstFriend = firstFriendInput ? firstFriendInput.value : null;
 
 
     if (firstFriend && friendId !== firstFriendId) {
         firstFriendInput.value = "no";
+    }
+
+    const hasFocus = document.hasFocus();
+    if (!hasFocus) {
+        firstFriend = "yes";
     }
 
     if (isFirstFetch) {
@@ -153,6 +158,7 @@ export function fetchMessages(userId, friendId) {
     
             let messageDiv = document.createElement("div");
             messageDiv.classList.add("message", messageClass);
+            messageDiv.id = `message-${message.chat_id}`;
     
             // Message Status (for sent messages only)
             let messageStatus = "";
@@ -213,8 +219,8 @@ export function fetchMessages(userId, friendId) {
                                         ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
-                                        padding: 0 10px;
-                                    ">
+                                        padding: 0 10px;"
+                                    data-reply-id="${message.chat_replyTo}">
                                         ${renderEmotes(finalMessage)}
                                 </span>
                             </p>
@@ -238,8 +244,8 @@ export function fetchMessages(userId, friendId) {
                                         ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
-                                        padding: 0 10px;
-                                    ">
+                                        padding: 0 10px;"
+                                    data-reply-id="${message.chat_replyTo}">
                                         ${renderEmotes(finalMessage)}
                                     </span>
                                 </p>
@@ -267,8 +273,8 @@ export function fetchMessages(userId, friendId) {
                                         ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
-                                        padding: 0 10px;
-                                    ">
+                                        padding: 0 10px;"
+                                    data-reply-id="${message.chat_replyTo}">
                                         ${renderEmotes(finalMessage)}
                                     </span>
                                 </p>
@@ -468,6 +474,32 @@ export function fetchMessages(userId, friendId) {
                     timestampSpan.style.display = 'none';
                 });
             }
+        });
+
+        // Add click handlers to replied message previews
+        document.querySelectorAll('.replied-message').forEach(element => {
+            element.addEventListener('click', function(e) {
+                console.log('Clicked on replied message preview!');
+                e.stopPropagation();
+                const replyId = this.dataset.replyId;
+                if (replyId) {
+                    const originalMessage = document.getElementById(`message-${replyId}`);
+                    if (originalMessage) {
+                        // Smooth scroll to original message
+                        originalMessage.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        
+                        // Visual feedback (optional)
+                        const originalMessageSpan = originalMessage.querySelector('span.message-text');
+                        originalMessageSpan.style.backgroundColor = '#ffeb3b40';
+                        setTimeout(() => {
+                            originalMessageSpan.style.backgroundColor = '';
+                        }, 3000);
+                    }
+                }
+            });
         });
     
         setTimeout(scrollToBottom, 100);
