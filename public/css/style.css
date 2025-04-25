@@ -2121,8 +2121,8 @@ section.siteMap tr:nth-child(even) {
 
 .frame_around_picture {
     position: absolute;
-    top: -60px;
-    left: -116px;
+    top: -49px;
+    left: -105px;
     width: 438px; 
     height: 320px;
     pointer-events: none; 
@@ -7314,8 +7314,8 @@ justify-content: center;
   }
 
   .frame_around_picture {
-    top: -60px;
-    left: -99px;
+    top: -49px;
+    left: -109px;
     width: 444px; 
     height: 320px;
   }
@@ -8042,7 +8042,7 @@ justify-content: center;
     }
 
     .frame_around_picture {
-      top: -20px;
+      top: -27px;
       left: -20px;
       width: 180px;
       height: 140px;
