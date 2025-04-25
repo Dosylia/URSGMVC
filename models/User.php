@@ -917,4 +917,24 @@ class User extends DataBase
             return false;
         }
     }
+
+    public function updateLastRewardTime($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_lastReward` = NOW()
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $addLastRewardTimeTest = $query -> execute([$userId]);
+
+        if ($addLastRewardTimeTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

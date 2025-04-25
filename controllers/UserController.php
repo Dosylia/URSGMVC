@@ -1984,7 +1984,7 @@ class UserController
             
                     // Check if the matched user is not the current user
                     if ($matchedUserId != $userId) {
-                        // if ($_SESSION['userId'] == 158) {
+                        // if ($_SESSION['userId'] == 157) {
                         //     $matchedUserId = 157;
                         // }
                         $userMatched = $this->user->getUserById($matchedUserId);

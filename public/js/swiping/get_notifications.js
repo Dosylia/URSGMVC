@@ -26,6 +26,12 @@ function fetchFriendRequest(userId) {
     .then(data => {
         if (data.success && data.pendingRequests) {
             // Filter out existing pending notifications
+            if (data.givenDailyReward) {
+                displayNotification(
+                    `You just won 500 credits for connecting today!`,
+                    userId
+                );                
+            }
             AllNotifications = AllNotifications.filter(request => request.type !== 'pending');
             const pendingWithType = data.pendingRequests
             .filter(notif => notif.fr_notifReadPending === 0)
@@ -48,6 +54,12 @@ function fetchFriendRequest(userId) {
             }
         } else {
             // Remove all pending notifications
+            if (data.givenDailyReward) {
+                displayNotification(
+                    `You just won 500 credits for connecting today!`,
+                    userId
+                );                
+            }
             AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');
             lastNotifCountPending = 0;
             lastNotifContentPending = [];

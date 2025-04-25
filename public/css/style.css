@@ -2563,7 +2563,6 @@ section.siteMap tr:nth-child(even) {
 .picture-wrapper, .picture-wrapper-swiping {
   position: relative;
   width: calc(50% - 10px); /* Two pictures per row with space between */
-  overflow: hidden;
   border-radius: 8px;
 }
 

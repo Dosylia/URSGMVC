@@ -88,15 +88,29 @@ class FriendRequestController
             $addCurrency = $this->user->addCurrency($userId, $amount);
             $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
 
+            $lastRequestTime = strtotime($user['user_lastRequestTime']);
+            $lastRewardTime = strtotime($user['user_lastReward']);
+            $givenDailyReward = false;
+
+            if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
+                $rewardAmount = 500;
+                $this->user->addCurrency($userId, $rewardAmount);
+                $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
+                if ($updateLastRewardTime) {
+                    $givenDailyReward = true;
+                }
+            }
+
             if ($friendRequest) {
                 $data = [
                     'message' => 'Success',
                     'friendRequest' => $friendRequest,
+                    'givenDailyReward' => $givenDailyReward,
                 ];
 
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'message' => 'No friend requests found']);
+                echo json_encode(['success' => false, 'message' => 'No friend requests found', 'givenDailyReward' => $givenDailyReward]);
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid request']);
@@ -1121,6 +1135,19 @@ class FriendRequestController
             $pendingRequests = $this->friendrequest->getPendingFriendRequests($userId); // Updated to fetch details
     
             $lastRequestTime = $this->user->getLastRequestTime($userId);
+            $user = $this->user->getUserById($userId);
+            $lastRequestTimeReward = strtotime($user['user_lastRequestTime']);
+            $lastRewardTime = strtotime($user['user_lastReward']);
+            $givenDailyReward = false;
+
+            if (date('Y-m-d', $lastRequestTimeReward) > date('Y-m-d', $lastRewardTime)) {
+                $rewardAmount = 500;
+                $this->user->addCurrency($userId, $rewardAmount);
+                $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
+                if ($updateLastRewardTime) {
+                    $givenDailyReward = true;
+                }
+            }
     
             if ($currentTime - $lastRequestTime > 20) {
                 $amount = 2;
@@ -1141,12 +1168,13 @@ class FriendRequestController
                 // Return full pending request data
                 $data = [
                     'success' => true,
-                    'pendingRequests' => $pendingRequests // Full details of pending requests
+                    'pendingRequests' => $pendingRequests, // Full details of pending requests
+                    'givenDailyReward' => $givenDailyReward,
                 ];
     
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No friend requests found']);
+                echo json_encode(['success' => false, 'error' => 'No friend requests found', 'givenDailyReward' => $givenDailyReward,]);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
