@@ -90,6 +90,59 @@ class ItemsController
         }
     }
 
+    public function ownVIPEmotesPhone()
+    {
+        $response = array('message' => 'Error');
+        if (isset($_POST['userId'])) 
+        {
+            $userId = $_POST['userId'];
+            // Validate Authorization Header
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            $ownedVIPEmotes = $this-> items -> ownVIPEmotes($_POST['userId']);
+
+            if ($ownedVIPEmotes)
+            {
+                $response = array(
+                    'ownVIPEmotes' => true,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = array(
+                    'ownVIPEmotes' => false,
+                    'message' => 'Success'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;  
+            }
+
+        } else {
+            $response = array('message' => 'Cant access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;  
+        }
+    }
+
     public function getOwnedItems()
     {
         $response = array('message' => 'Error');

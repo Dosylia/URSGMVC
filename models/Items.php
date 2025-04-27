@@ -195,4 +195,39 @@ class Items extends DataBase
         $query->execute([$userId]);
     }
 
+    public function ownVIPEmotes($userId) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            items_id,
+                                            items_name,
+                                            items_price,
+                                            items_desc,
+                                            items_picture,
+                                            items_category,
+                                            items_discount,
+                                            items_isActive,
+                                            items_createdAt,
+                                            userItems_id,
+                                            userItems_isUsed
+                                        FROM
+                                            `items`
+                                        JOIN
+                                            `user_items`
+                                        ON
+                                            items_id = userItems_itemId
+                                        WHERE
+                                            userItems_userId = ? AND items_category = 'emote'
+        ");
+    
+        $query->execute([$userId]);
+        $ItemslistTest = $query->fetchAll();
+    
+        if ($ItemslistTest) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

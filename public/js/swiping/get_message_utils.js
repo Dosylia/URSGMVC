@@ -149,6 +149,7 @@ export function fetchMessages(userId, friendId) {
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
             let timestampPosition = isCurrentUser ? "normal" : "inverted";
             let pictureLink;
+            let senderOwnsVIPEmotes = (message.chat_senderId == user.user_id) ? user.ownVIPEmotes : friend.ownVIPEmotes;
     
             if (messageUser.user_picture === null || messageUser.user_picture === undefined) {
                 pictureLink = "images/defaultprofilepicture.jpg";
@@ -208,7 +209,7 @@ export function fetchMessages(userId, friendId) {
                             messageContent = `
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 20px; padding-bottom: 5px; position: relative; z-index: 950;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
                                 <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -233,7 +234,7 @@ export function fetchMessages(userId, friendId) {
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
                                     <span class="timestamp-hover">${formattedTime}</span>
-                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                     ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
                                     <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -262,7 +263,7 @@ export function fetchMessages(userId, friendId) {
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
                                     <span class="timestamp-hover">${formattedTime}</span>
                                     <span class="message-text" style="text-align: ${messagePosition};">
-                                        ${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                        ${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                         ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
                                     <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -275,7 +276,7 @@ export function fetchMessages(userId, friendId) {
                                         max-width: 100%;
                                         padding: 0 10px;"
                                     data-reply-id="${message.chat_replyTo}">
-                                        ${renderEmotes(finalMessage)}
+                                        ${renderEmotes(finalMessage, senderOwnsVIPEmotes)}
                                     </span>
                                 </p>
 
@@ -288,7 +289,7 @@ export function fetchMessages(userId, friendId) {
                             messageContent = `
                             <p class="last-message" style="text-align: ${messagePosition}; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
                                 <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -313,7 +314,7 @@ export function fetchMessages(userId, friendId) {
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                     <span class="timestamp-hover">${formattedTime}</span>
-                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                     ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
                                     <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -339,7 +340,7 @@ export function fetchMessages(userId, friendId) {
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
                                 <span class="replied-message ${timestampPosition}" style="position: absolute; 
@@ -364,7 +365,7 @@ export function fetchMessages(userId, friendId) {
                         messageContent = `
                         <p class="last-message" style="text-align: ${messagePosition};">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                             ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                             </span>
                         </p>
@@ -377,7 +378,7 @@ export function fetchMessages(userId, friendId) {
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
                             </p>
@@ -391,7 +392,7 @@ export function fetchMessages(userId, friendId) {
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message)) : renderEmotes(message.chat_message)}
+                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                             ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                             </span>
                         </p>
@@ -582,7 +583,7 @@ export function fetchMessages(userId, friendId) {
     
     
     // Function to replace emote codes with actual emote images
-    function renderEmotes(message) {
+    function renderEmotes(message, ownVIPEmotes) {
         const emoteMap = {
             ':surprised-cat:': '<img src="public/images/emotes/surprised-cat.png" alt="surprised-cat" class="emote">',
             ':cat-smile:': '<img src="public/images/emotes/cat-smile.png" alt="cat-smile" class="emote">',
@@ -597,6 +598,42 @@ export function fetchMessages(userId, friendId) {
             ':cat-crying:': '<img src="public/images/emotes/cat-crying.png" alt="cat-crying" class="emote">',
             ':cat-love:': '<img src="public/images/emotes/cat-love.png" alt="cat-love" class="emote">',
         };
+
+        
+        if (ownVIPEmotes) {
+            emoteMap[':urpe-stonks:'] = '<img src="public/images/emotes/urpe-stonks.png" alt="urpe-stonks" class="emote">';
+            emoteMap[':vipurpe-stonks:'] = '<img src="public/images/emotes/urpe-stonks.png" alt="urpe-stonks" class="emote">';
+            emoteMap[':urpe-cry:'] = '<img src="public/images/emotes/urpe-cry.png" alt="urpe-cry" class="emote">';
+            emoteMap[':vipurpe-cry:'] = '<img src="public/images/emotes/urpe-cry.png" alt="urpe-cry" class="emote">';
+            emoteMap[':urpe-sip:'] = '<img src="public/images/emotes/urpe-sip.png" alt="urpe-sip" class="emote">';
+            emoteMap[':vipurpe-sip:'] = '<img src="public/images/emotes/urpe-sip.png" alt="urpe-sip" class="emote">';
+            emoteMap[':urpe-jesus:'] = '<img src="public/images/emotes/urpe-jesus.png" alt="urpe-jesus" class="emote">';
+            emoteMap[':vipurpe-jesus:'] = '<img src="public/images/emotes/urpe-jesus.png" alt="urpe-jesus" class="emote">';
+            emoteMap[':urpe-hype:'] = '<img src="public/images/emotes/urpe-hype.png" alt="urpe-hype" class="emote">';
+            emoteMap[':vipurpe-hype:'] = '<img src="public/images/emotes/urpe-hype.png" alt="urpe-hype" class="emote">';
+            emoteMap[':urpe-hide:'] = '<img src="public/images/emotes/urpe-hide.png" alt="urpe-hide" class="emote">';
+            emoteMap[':vipurpe-hide:'] = '<img src="public/images/emotes/urpe-hide.png" alt="urpe-hide" class="emote">';
+            emoteMap[':urpe-heart:'] = '<img src="public/images/emotes/urpe-heart.png" alt="urpe-heart" class="emote">';
+            emoteMap[':vipurpe-heart:'] = '<img src="public/images/emotes/urpe-heart.png" alt="urpe-heart" class="emote">';
+            emoteMap[':urpe-dead:'] = '<img src="public/images/emotes/urpe-dead.png" alt="urpe-dead" class="emote">';
+            emoteMap[':vipurpe-dead:'] = '<img src="public/images/emotes/urpe-dead.png" alt="urpe-dead" class="emote">';
+            emoteMap[':urpe-blush:'] = '<img src="public/images/emotes/urpe-blush.png" alt="urpe-blush" class="emote">';
+            emoteMap[':vipurpe-blush:'] = '<img src="public/images/emotes/urpe-blush.png" alt="urpe-blush" class="emote">';
+            emoteMap[':urpe-blanket:'] = '<img src="public/images/emotes/urpe-blanket.png" alt="urpe-blanket" class="emote">';
+            emoteMap[':vipurpe-blanket:'] = '<img src="public/images/emotes/urpe-blanket.png" alt="urpe-blanket" class="emote">';
+            emoteMap[':urpe-cool:'] = '<img src="public/images/emotes/urpe-cool.png" alt="urpe-cool" class="emote">';
+            emoteMap[':vipurpe-cool:'] = '<img src="public/images/emotes/urpe-cool.png" alt="urpe-cool" class="emote">';
+            emoteMap[':urpe-eat:'] = '<img src="public/images/emotes/urpe-eat.png" alt="urpe-eat" class="emote">';
+            emoteMap[':vipurpe-eat:'] = '<img src="public/images/emotes/urpe-eat.png" alt="urpe-eat" class="emote">';
+            emoteMap[':urpe-notstonks:'] = '<img src="public/images/emotes/urpe-notstonks.png" alt="urpe-notstonks" class="emote">';
+            emoteMap[':vipurpe-notstonks:'] = '<img src="public/images/emotes/urpe-notstonks.png" alt="urpe-notstonks" class="emote">';
+            emoteMap[':urpe-madaf:'] = '<img src="public/images/emotes/urpe-madaf.png" alt="urpe-madaf" class="emote">';
+            emoteMap[':vipurpe-madaf:'] = '<img src="public/images/emotes/urpe-madaf.png" alt="urpe-madaf" class="emote">';
+            emoteMap[':urpe-sad:'] = '<img src="public/images/emotes/urpe-sad.png" alt="urpe-sad" class="emote">';
+            emoteMap[':vipurpe-sad:'] = '<img src="public/images/emotes/urpe-sad.png" alt="urpe-sad" class="emote">';
+            emoteMap[':urpe-run:'] = '<img src="public/images/emotes/urpe-run.png" alt="urpe-run" class="emote">';
+            emoteMap[':vipurpe-run:'] = '<img src="public/images/emotes/urpe-run.png" alt="urpe-run" class="emote">';
+        }
     
         const replacedMessage = message.replace(/:\w+(-\w+)*:/g, function(match) {
             return emoteMap[match] || match;
