@@ -1,4 +1,4 @@
-const archetypes = {
+let archetypes = {
     shotcaller: 0,
     yasuo: 0,
     enchanter: 0,
@@ -6,6 +6,9 @@ const archetypes = {
     otp: 0,
     aram: 0,
   };
+
+  let currentChart = null;
+  let isFinalResult = false;
   
   const descriptions = {
     shotcaller: "🧠 The Shotcaller Tyrant – Your teammates are pawns. You mute pings *except* your own.",
@@ -21,12 +24,12 @@ const archetypes = {
   const resultTitle = document.getElementById('result-title');
   const resultDesc = document.getElementById('result-description');
   const canvas = document.getElementById('result-chart');
+  const createAccountDiv = document.getElementById('createURSGAccount');
   
   const backBtn = document.getElementById('backBtn');
   const nextBtn = document.getElementById('nextBtn');
   const confirmBtn = document.getElementById('confirmBtn');
   const nav = document.getElementById('navigation');
-  console.log(nav);
   
   let questions = [];
   let currentIndex = 0;
@@ -41,12 +44,17 @@ const archetypes = {
         questions.forEach(q => q.style.display = 'none');
         if (questions.length > 0) {
           showQuestion(currentIndex);
-          nav.classList.remove('hidden');
+          updateProgressBar(0);
+          nav.style.display = 'flex';
         } else {
-            nav.classList.add('hidden');
+            nav.style.display = 'none';
         }
       })
       .catch(error => console.error('Error loading questions:', error));
+  }
+
+  function displayCreateAccount() {
+    createAccountDiv.classList.remove('hidden');
   }
   
   function showQuestion(index) {
@@ -65,6 +73,10 @@ const archetypes = {
         btn.classList.add('selected');
       };
     });
+
+    if (!isFinalResult) {
+      updateProgressBar();
+    }
   }
   
   function updateNavButtons() {
@@ -72,57 +84,185 @@ const archetypes = {
     nextBtn.classList.toggle('hidden', currentIndex >= questions.length - 1);
     confirmBtn.classList.toggle('hidden', currentIndex < questions.length - 1);
   }
+
+  function updateProgressBar(progress = null) {
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+      const progressValue = progress !== null ? progress : ((currentIndex + 1) / questions.length) * 100;
+      progressBar.style.width = `${progressValue}%`;
+    }
+  }
+
+  function clearChart() {
+    if (currentChart) {
+      currentChart.destroy();
+      currentChart = null;
+    }
+  }
+
   
-  function showResult() {
-    // Reset archetype scores
-    Object.keys(archetypes).forEach(k => archetypes[k] = 0);
+function resetQuiz() {
+  selectedAnswers = {};
+  currentIndex = 0;
   
-    Object.values(selectedAnswers).forEach(val => {
-      val.split(',').forEach(type => {
-        archetypes[type.trim()]++;
+  resultContainer.classList.add('hidden');
+  nav.style.display = 'flex';
+  quizContainer.classList.remove('hidden');
+  document.getElementById('resetBtn').classList.add('hidden');
+  createAccountDiv.classList.add('hidden');
+  
+  questions.forEach(q => q.style.display = 'none');
+  showQuestion(currentIndex);
+
+  // Reset progress bar
+  updateProgressBar(0);
+  clearChart();
+  }
+  
+  function showResult(loadingOldResult = false, result = null) {
+    if (!loadingOldResult && !result) {
+      // Only reset if NOT loading old result
+      Object.keys(archetypes).forEach(k => archetypes[k] = 0);
+  
+      Object.values(selectedAnswers).forEach(val => {
+        val.split(',').forEach(type => {
+          archetypes[type.trim()]++;
+        });
       });
-    });
   
+      localStorage.setItem('personalityTestResult', JSON.stringify(archetypes));
+    } else if (result) {
+      archetypes = result;
+    }
+
+    isFinalResult = true;
+    updateProgressBar(100);
     const sorted = Object.entries(archetypes).sort((a, b) => b[1] - a[1]);
     const top = sorted[0][0];
   
     resultTitle.textContent = `Your LoL Personality:`;
     resultDesc.innerHTML = descriptions[top];
-  
+    
     drawChart(sorted);
     resultContainer.classList.remove('hidden');
     quizContainer.classList.add('hidden');
-    nav.classList.add('hidden');
+    nav.style.display = 'none';
+    document.getElementById('resetBtn').classList.remove('hidden');
   }
   
   function drawChart(data) {
     const ctx = canvas.getContext('2d');
+    if (currentChart) currentChart.destroy();
+  
     const labels = data.map(item => item[0]);
     const values = data.map(item => item[1]);
-    const colors = ['#f87171','#60a5fa','#a78bfa','#4ade80','#fbbf24','#38bdf8'];
+    const colors = ['rgba(248, 113, 113, 0.6)', 'rgba(96, 165, 250, 0.6)', 'rgba(167, 139, 250, 0.6)', 'rgba(74, 222, 128, 0.6)', 'rgba(251, 191, 36, 0.6)', 'rgba(56, 189, 248, 0.6)'];
   
-    new Chart(ctx, {
-      type: 'doughnut',
+    currentChart = new Chart(ctx, {
+      type: 'radar',
       data: {
         labels: labels,
         datasets: [{
           data: values,
           backgroundColor: colors,
-          borderWidth: 1
+          borderColor: colors.map(c => c.replace('0.6', '1')),
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
         }]
       },
       options: {
-        responsive: false,
+        responsive: true,
+        scales: {
+          r: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+            ticks: { display: false, backdropColor: 'transparent' },
+            pointLabels: { font: { size: 14 } }
+          }
+        },
         plugins: {
-          legend: { position: 'bottom' },
-          tooltip: { enabled: true }
+          legend: { position: 'bottom', labels: { boxWidth: 20, padding: 15 } },
+          tooltip: { enabled: false }
+        },
+        elements: {
+          line: { tension: 0.4 }
         }
       }
     });
   }
+
+  function getOldResult(userId) {
+    const token = localStorage.getItem('masterTokenWebsite');
+    fetch('/getPersonalityTestResult', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${token}`,
+      },
+        body: `userId=${encodeURIComponent(parseInt(userId))}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        if (!data.result) {
+          console.log('No previous result found for this user.');
+          return;
+        } else {
+          const result = data.result;
+          Object.keys(archetypes).forEach(key => {
+            archetypes[key] = result[key] || 0;
+            console.log('Result for achetype:', key, 'is', archetypes[key]);
+          });
+          showResult(true);
+        }
+      } else {
+        console.error('Error fetching old result:', data.error);
+      }
+    })
+    .catch(error => console.error('Error fetching old result:', error));
+  }
+
+  function savePersonalityTestResult(userId) {
+    const token = localStorage.getItem('masterTokenWebsite');
+    const result = Object.entries(archetypes).reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+  
+    // Include userId inside the body
+    const bodyData = {
+      userId: userId,
+      result: result,
+    };
+  
+    fetch('/savePersonalityTestResult', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(bodyData),
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result saved:', data))
+    .catch(error => console.error('Error saving result:', error));
+  }
   
   document.addEventListener("DOMContentLoaded", function () {
     fetchQuestions();
+
+    if (typeof userId !== 'undefined' && userId !== null) {
+      getOldResult(userId);
+    } else {
+      const savedResult = localStorage.getItem('personalityTestResult');
+      
+      if (savedResult) {
+        const result = JSON.parse(savedResult);
+        displayCreateAccount();
+        showResult(true, result); 
+      }
+    }
   
     backBtn.addEventListener('click', () => {
       if (currentIndex > 0) {
@@ -137,10 +277,19 @@ const archetypes = {
         showQuestion(currentIndex);
       }
     });
+
+    document.getElementById('resetBtn').onclick = resetQuiz;
   
     confirmBtn.addEventListener('click', () => {
       if (Object.keys(selectedAnswers).length === questions.length) {
         showResult();
+        if (typeof userId !== 'undefined' && userId !== null) {
+          savePersonalityTestResult(userId);
+        } else {
+          // save to local storage if userId is not available
+          displayCreateAccount();
+          localStorage.setItem('personalityTestResult', JSON.stringify(archetypes));
+        }
       } else {
         alert('Please answer all questions before submitting.');
       }

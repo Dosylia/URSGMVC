@@ -987,91 +987,233 @@ font-size: 0.7em;
 
 /* PERSONALITY TEST */
 
+/* General Layout */
 .lol-quiz {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 600px;
+  max-width: 650px;
   margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 1rem;
-  background: linear-gradient(to right, #1f1c2c, #928dab);
+  padding: 2.5rem;
+  background: #1c1c2e; /* Darker background */
   color: #fff;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to right, #2e2c3d, #282236); /* Subtle gradient */
+  position: relative;
 }
 
+/* Header */
+.lol-quiz h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Question Styling */
 .lol-quiz .question {
   display: none;
   margin-bottom: 2rem;
 }
 
 .lol-quiz .question h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  text-shadow: 1px 1px 3px #000;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  color: #ccc;
 }
 
 .lol-quiz .question button {
   display: block;
   width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
   border: none;
-  border-radius: 0.5rem;
-  background-color: #ffffff10;
+  border-radius: 1rem;
+  background-color: #ffffff20; /* Semi-transparent background */
   color: #fff;
   font-weight: bold;
+  font-size: 1rem;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .lol-quiz .question button:hover,
 .lol-quiz .question button.selected {
-  background-color: #ffffff30;
+  background-color: #ffffff40;
+  transform: scale(1.02); /* Slight scale-up for hover */
 }
 
+/* Navigation Buttons */
 .lol-quiz .navigation {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-top: 2rem;
 }
 
 .lol-quiz .navigation button {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.5rem;
   border: none;
-  border-radius: 0.5rem;
-  background-color: #29274c;
+  border-radius: 1rem;
+  background-color: #5c4d81; /* Dark purple */
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .lol-quiz .navigation button:hover {
-  background-color: #3d3a69;
+  background-color: #7b6a99; /* Lighter purple on hover */
+  transform: scale(1.05); /* Slight scale-up on hover */
 }
 
+.lol-quiz .navigation button:disabled {
+  background-color: #7b7b7b;
+  cursor: not-allowed;
+}
+
+/* Result Section */
 .lol-quiz #result {
   text-align: center;
-  padding-top: 1rem;
+  padding-top: 2rem;
 }
 
 .lol-quiz #result-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .lol-quiz #result-description {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin-bottom: 1.5rem;
+  color: #d4d4d4;
+}
+
+#canvas-container {
+  width: 100%;
+  max-width: 600px; 
+  margin: 0 auto; 
+}
+
+#result-chart {
+  width: 100% !important;
+  height: auto !important; 
+  aspect-ratio: 1 / 1;
 }
 
 .lol-quiz canvas {
   margin: auto;
+  max-width: 90%;
 }
 
+/* Progress Bar Container */
+#progressBarContainer {
+  width: 100%;
+  height: 10px;
+  background-color: #3a3a58;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+#progressBar {
+  height: 100%;
+  background-color: #ff6b81; /* Fresh and bold pinkish-red */
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+/* Reset Button */
+#resetBtn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #ff4f5a, #ff6f7d); /* Modern red gradient */
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+  margin-bottom: 20px;
+}
+
+#resetBtn:hover {
+  background: linear-gradient(45deg, #ff1f32, #ff3f56); /* Darker red hover */
+  transform: scale(1.1); /* Larger scale effect on hover */
+}
+
+#resetBtn:focus {
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 79, 90, 0.8);
+}
+
+#resetBtn.hidden {
+  display: none;
+}
+
+/* Create Account Section (Non-user) */
+#createURSGAccount {
+  padding: 2rem;
+  background-color: #2c2a3c; /* Dark background to fit with the quiz design */
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+#createURSGAccount.show {
+  display: block;
+  opacity: 1; /* Fade in */
+  transform: translateY(0); /* Smooth slide-up */
+}
+
+#createURSGAccount h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #f8f9fa; /* Light text color */
+  text-transform: uppercase;
+}
+
+#createURSGAccount p {
+  font-size: 1rem;
+  color: #d1d3d8;
+  margin-bottom: 2rem;
+}
+
+#createURSGAccount a {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, #4e73df, #2a3d9e); /* Cool gradient for the button */
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#createURSGAccount a:hover {
+  background: linear-gradient(45deg, #3551b3, #1e2a78); /* Darker gradient on hover */
+  transform: scale(1.05); /* Slight scale-up effect */
+}
+
+#createURSGAccount a:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 50, 255, 0.7); /* Glow effect when focused */
+}
 
 /* END OF PERSONALITY TEST */
+
 
 /* SCROLL BAR */
 

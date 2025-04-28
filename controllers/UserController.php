@@ -2725,6 +2725,79 @@ class UserController
         echo json_encode($response);
     }
 
+    public function getPersonalityTestResult() {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $personalityTestResult = $this->user->getPersonalityTestResult($userId);
+    
+        if ($personalityTestResult !== false) {
+            // Decode the JSON before sending it back
+            $decodedResult = json_decode($personalityTestResult, true);
+    
+            echo json_encode(['success' => true, 'result' => $decodedResult]);
+        } else {
+            echo json_encode(['success' => true, 'error' => 'Could not get personality test result', 'result' => false]);
+        }
+    }
+
+    public function savePersonalityTestResult() {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Decode raw JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+    
+        if (!isset($input['userId']) || !isset($input['result'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int) $input['userId'];
+        $result = $input['result'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        // Save full result as JSON
+        $savePersonalityTestResult = $this->user->savePersonalityTestResult($userId, json_encode($result));
+    
+        if ($savePersonalityTestResult) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Database save failed']);
+        }
+    }
+    
+
     public function saveDarkMode()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

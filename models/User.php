@@ -937,4 +937,45 @@ class User extends DataBase
             return false;
         }
     }
+
+    public function savePersonalityTestResult($userId, $result)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_personalityTestResult` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $savePersonalityTestResult = $query -> execute([$result, $userId]);
+
+        if ($savePersonalityTestResult) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getPersonalityTestResult($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                `user_personalityTestResult`
+                                            FROM
+                                                `user`
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $query->execute([$userId]);
+        $result = $query->fetch();
+
+        if ($result) {
+            return $result['user_personalityTestResult'];
+        } else {
+            return false;
+        }
+    }
 }
