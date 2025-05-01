@@ -4,6 +4,7 @@
     --ligher--grey: #4f4b52;
     --main--red: #e84056;
     --dark--red: #980c1f;
+    --gold: #E0AD66;
     --white: rgb(255, 255, 255);
   }
 
@@ -899,7 +900,7 @@ font-size: 0.7em;
   filter: none;
 }
 
-#filter-modal .separator-filters, #filter-modal-no-users .separator-filters {
+#filter-modal .separator-filters, #filter-modal-no-users .separator-filters, .separators-quiz {
   margin: 20px 0;
   height: 3px;
   background: linear-gradient(to right, transparent, var(--main--red), transparent);
@@ -992,23 +993,48 @@ font-size: 0.7em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 650px;
   margin: 2rem auto;
-  padding: 2.5rem;
-  background: #1c1c2e; /* Darker background */
-  color: #fff;
+  padding: 1.5rem;
+  color: black;
   border-radius: 1.5rem;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(to right, #2e2c3d, #282236); /* Subtle gradient */
-  position: relative;
+  background: white; 
+  border: 2px solid var(--main--red);
+}
+
+.dark-mode .lol-quiz {
+  color: #fff;
+  background: var(--dark-grey);
+}
+
+.lol-quiz .gold-text {
+  color: #E0AD66;
+}
+
+.axisLabel {
+  fill: #333; 
+  font-size: 18px;
+}
+
+.dark-mode .axisLabel {
+  fill: #fff;
 }
 
 /* Header */
 .lol-quiz h1 {
   font-size: 2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: #f8f9fa;
+  margin-bottom: 0.5rem;
+  color: var(--main--red);
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.lol-quiz h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #595959;
+  font-weight: 500;
 }
 
 /* Question Styling */
@@ -1018,57 +1044,101 @@ font-size: 0.7em;
 }
 
 .lol-quiz .question h3 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin-bottom: 1.25rem;
-  font-weight: bold;
+  color: black;
+  text-align: center;
+  font-weight: 500;
+}
+
+.dark-mode .lol-quiz .question h3 {
+  color: white;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-  color: #ccc;
 }
 
 .lol-quiz .question button {
   display: block;
   width: 100%;
-  margin: 1rem 0;
-  padding: 1rem;
+  margin: 0.9rem 0;
+  padding: 0.8rem;
   border: none;
-  border-radius: 1rem;
-  background-color: #ffffff20; /* Semi-transparent background */
-  color: #fff;
+  border-radius: 2rem;
+  background-color: white; 
+  color: black;
   font-weight: bold;
   font-size: 1rem;
   text-align: left;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  border: 1px solid var(--main--red);
+}
+
+.dark-mode .lol-quiz .question button {
+  background-color: var(--dark-ligher-grey); 
+  border: 1px solid var(--gold);
+  color: #fff;
 }
 
 .lol-quiz .question button:hover,
 .lol-quiz .question button.selected {
-  background-color: #ffffff40;
-  transform: scale(1.02); /* Slight scale-up for hover */
+  background-color: rgba(231, 64, 87, 0.3); 
+  transform: scale(1.02); 
+}
+
+.dark-mode .lol-quiz .question button:hover,
+.dark-mode .lol-quiz .question button.selected {
+  background-color: rgba(224, 173, 102, 0.3);
 }
 
 /* Navigation Buttons */
 .lol-quiz .navigation {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2rem;
+  justify-content: center;
+  gap: 20px;
+  width: 60%;
+  margin: 0 auto;
 }
 
 .lol-quiz .navigation button {
-  flex: 1;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2.5rem;
   border: none;
   border-radius: 1rem;
-  background-color: #5c4d81; /* Dark purple */
   color: white;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
+  border: 1px solid var(--main--red);
   transition: background 0.3s ease, transform 0.2s ease;
+  width: 45%;
+}
+
+.lol-quiz .navigation #backBtn {
+  color: black;
+  background-color: white;
+}
+
+.dark-mode .lol-quiz .navigation #backBtn {
+  color: white;
+  background-color: var(--dark-grey);
+}
+
+.lol-quiz .navigation #backBtn {
+  color: black;
+  background-color: white;
+}
+
+.lol-quiz .navigation #nextBtn {
+  color: white;
+  background-color: var(--main--red);
+}
+
+.lol-quiz .navigation #confirmBtn {
+  color: white;
+  background-color: var(--main--red);
 }
 
 .lol-quiz .navigation button:hover {
-  background-color: #7b6a99; /* Lighter purple on hover */
+  background-color: var(--dark--red); 
   transform: scale(1.05); /* Slight scale-up on hover */
 }
 
@@ -1092,19 +1162,28 @@ font-size: 0.7em;
 .lol-quiz #result-description {
   font-size: 1.25rem;
   margin-bottom: 1.5rem;
+  color: black;
+}
+
+.dark-mode .lol-quiz #result-description {
   color: #d4d4d4;
 }
 
 #canvas-container {
+  overflow: visible;
   width: 100%;
-  max-width: 600px; 
-  margin: 0 auto; 
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+#result-chart path.slice {
+  mix-blend-mode: multiply; /* Creates nice color overlap */
 }
 
 #result-chart {
-  width: 100% !important;
-  height: auto !important; 
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1;  /* Ensure the chart stays square */
+  overflow: visible;
 }
 
 .lol-quiz canvas {
@@ -1116,17 +1195,37 @@ font-size: 0.7em;
 #progressBarContainer {
   width: 100%;
   height: 10px;
-  background-color: #3a3a58;
+  background-color: #C2BBBB;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1.5rem;
+  position: relative;
+  overflow: visible;
+}
+
+#progressPercent {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ligher--grey);
+}
+
+.dark-mode #progressBarContainer {
+  background-color: #333131;
 }
 
 #progressBar {
   height: 100%;
-  background-color: #ff6b81; /* Fresh and bold pinkish-red */
+  background-color: var(--main--red); /* Fresh and bold pinkish-red */
   transition: width 0.3s ease;
   border-radius: 10px;
+}
+
+.dark-mode #progressBar {
+  background-color: #E0AD66;
 }
 
 /* Reset Button */
@@ -8435,6 +8534,10 @@ justify-content: center;
 
 
 @media only screen and (max-width: 500px) {
+
+  .axisLabel {
+    font-size: 14px;
+  }
 
   #swipe_yes, #swipe_no {
     width: 50px;
