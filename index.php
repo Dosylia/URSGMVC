@@ -206,6 +206,7 @@ $actionMap = [
     'deleteExpiredChannels' => [DiscordController::class, 'deleteExpiredChannels'],
     'updateNotificationPermission' => [UserController::class, 'updateNotificationPermission'],
     'saveNotificationSubscription' => [UserController::class, 'saveNotificationSubscription'],
+    'sendMessageDiscord' => [DiscordController::class, 'sendMessageDiscord'],
 ];
 
 $action = "home";

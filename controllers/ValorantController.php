@@ -50,6 +50,7 @@ class ValorantController
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant()){
             // Code block 2: User is connected via Google, Website but not connected to Valorant LATER ADD VALORANT CHECK
@@ -64,6 +65,7 @@ class ValorantController
             $template = "views/signup/valorantuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
@@ -71,6 +73,7 @@ class ValorantController
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
@@ -107,6 +110,7 @@ class ValorantController
             $current_url = "https://ur-sg.com/updateValorantPage";
             $template = "views/swiping/update_valorant";
             $page_title = "URSG - Update Valorant";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -142,6 +146,7 @@ class ValorantController
             $current_url = "https://ur-sg.com/updateValorantAccount";
             $template = "views/swiping/update_valorantAccount";
             $page_title = "URSG - Update Valorant account";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else

@@ -50,6 +50,7 @@ class LeagueOfLegendsController
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
@@ -64,6 +65,8 @@ class LeagueOfLegendsController
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
+            $picture = "ursg-preview-small";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
@@ -71,6 +74,7 @@ class LeagueOfLegendsController
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
@@ -106,6 +110,7 @@ class LeagueOfLegendsController
             $current_url = "https://ur-sg.com/updateLeaguePage";
             $template = "views/swiping/update_league";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -130,6 +135,7 @@ class LeagueOfLegendsController
             $current_url = "https://ur-sg.com/updateLeagueAccount";
             $template = "views/swiping/update_leagueAccount";
             $page_title = "URSG - Bind league account";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else

@@ -57,6 +57,7 @@ class AdminController
 
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Admin";
             require "views/layoutAdmin.phtml";
         } 
@@ -88,6 +89,7 @@ class AdminController
 
             $current_url = "https://ur-sg.com/adminGame";
             $template = "views/admin/admin_game";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Admin Game";
             require "views/layoutAdmin.phtml";
         } 
@@ -113,6 +115,7 @@ class AdminController
 
             $current_url = "https://ur-sg.com/adminReports";
             $template = "views/admin/admin_reports";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Admin Report";
             require "views/layoutAdmin.phtml";
         } 
@@ -413,6 +416,7 @@ class AdminController
 
             $current_url = "https://ur-sg.com/admin_users";
             $template = "views/admin/admin_users";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Admin Users";
             require "views/layoutAdmin.phtml";
         } 

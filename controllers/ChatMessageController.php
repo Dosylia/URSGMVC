@@ -84,6 +84,7 @@ class ChatMessageController
 
             $current_url = "https://ur-sg.com/persoChat";
             $template = "views/swiping/swiping_persomessage";
+            $picture = "chat-preview";
             $page_title = "URSG - Chat";
             require "views/layoutSwiping.phtml";
         } else {
@@ -138,6 +139,7 @@ class ChatMessageController
             }
 
             $current_url = "https://ur-sg.com/chatTest";
+            $picture = "chat-preview";
             $template = "views/swiping/message_test";
             $page_title = "URSG - Chat";
             require "views/layoutSwiping.phtml";

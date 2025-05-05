@@ -23,18 +23,20 @@
       Restart Quiz
     </button>
     <h2 id="result-title"></h2>
-    <p id="result-description"></p>
+    <div class="result-row">
+      <img id="result-image" src="" alt="Result Image" />
+      <p id="result-description"></p>
+    </div>
     <div id="canvas-container" class="w-full" style="position: relative;">
       <svg id="result-chart"></svg>
     </div>
   </div>
 
   <div id="createURSGAccount" class="hidden">
-    <h2 class="text-lg font-bold mb-4">Create a URSG Account</h2>
-    <p class="mb-4">To save your results, please create an account with us.</p>
-    <a href="/signup" class="bg-blue-500 text-white px-4 py-2 rounded">Register</a>
+    <h2 >Create a URSG Account</h2>
+    <p id="create-account-desc">To save your results, please create an account with us.</p>
+    <a href="/?triggerSignUp=true">Go to Sign Up</a>
   </div>
 </section>
   <script src="https://d3js.org/d3.v6.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="public/js/swiping/personality_test.js?<?= time(); ?>"></script>

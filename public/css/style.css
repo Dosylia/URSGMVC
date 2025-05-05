@@ -991,7 +991,7 @@ font-size: 0.7em;
 /* General Layout */
 .lol-quiz {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 650px;
+  max-width: 950px;
   margin: 2rem auto;
   padding: 1.5rem;
   color: black;
@@ -1153,10 +1153,29 @@ font-size: 0.7em;
   padding-top: 2rem;
 }
 
+.lol-quiz .color-red {
+  color: var(--main--red) !important;
+}
+
+.lol-quiz .result-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+  padding: 0 10%;
+  box-sizing: border-box;
+}
+
 .lol-quiz #result-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
+}
+
+.lol-quiz #result-image {
+  width: auto;
+  height: 300px;
 }
 
 .lol-quiz #result-description {
@@ -1260,13 +1279,19 @@ font-size: 0.7em;
 /* Create Account Section (Non-user) */
 #createURSGAccount {
   padding: 2rem;
-  background-color: #2c2a3c; /* Dark background to fit with the quiz design */
+  background-color: white;
   border-radius: 1.5rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
   max-width: 600px;
   margin: 2rem auto;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  color: black;
+}
+
+.dark-mode #createURSGAccount {
+  background-color: var(--dark-grey);
+  color: black;
 }
 
 #createURSGAccount.show {
@@ -1279,11 +1304,21 @@ font-size: 0.7em;
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #f8f9fa; /* Light text color */
+  color: black;
   text-transform: uppercase;
 }
 
+.dark-mode #createURSGAccount h2 {
+  color: #f8f9fa;
+}
+
 #createURSGAccount p {
+  font-size: 1rem;
+  color: black;
+  margin-bottom: 2rem;
+}
+
+.dark-mode #createURSGAccount p {
   font-size: 1rem;
   color: #d1d3d8;
   margin-bottom: 2rem;
@@ -1292,7 +1327,7 @@ font-size: 0.7em;
 #createURSGAccount a {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(45deg, #4e73df, #2a3d9e); /* Cool gradient for the button */
+  background: linear-gradient(45deg, #f07070, #87090e);
   color: #fff;
   font-size: 1.125rem;
   font-weight: bold;
@@ -1302,8 +1337,8 @@ font-size: 0.7em;
 }
 
 #createURSGAccount a:hover {
-  background: linear-gradient(45deg, #3551b3, #1e2a78); /* Darker gradient on hover */
-  transform: scale(1.05); /* Slight scale-up effect */
+  background: linear-gradient(45deg, #87090e, #f07070);
+  transform: scale(1.05); 
 }
 
 #createURSGAccount a:focus {
@@ -7316,6 +7351,15 @@ justify-content: center;
 
 @media only screen and (max-width: 1150px) {
 
+  .lol-quiz .result-row {
+    gap: 20px;
+    padding: unset;
+  }
+
+  .lol-quiz {
+    max-width: 650px;
+  }
+
   #user-container {
     width: 80%;
   }
@@ -8528,6 +8572,14 @@ justify-content: center;
   .user-picture-swiping {
     width: 150px;
     height: 150px;
+  }
+
+  .lol-quiz .result-row {
+    flex-direction: column;
+  }
+
+  .lol-quiz #result-image {
+    display: none;
   }
 
 }

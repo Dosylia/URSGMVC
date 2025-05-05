@@ -18,8 +18,11 @@ let archetypes = {
         egirl: "Mute all? Never. Flame all? Always... but somehow still getting friend requests between deaths.",
         TheBaus: "Your 1v5 attempts are just elaborate inting with extra steps.",
         cryBabyAdc: "Toxic and emotional - a true ADC main.",
-        boosted: "You blame teammates while being carried harder than a shopping cart."
-      }
+        boosted: "You blame teammates while being carried harder than a shopping cart.",
+        theSmurf: "Your 'educational' smurfing comes with bonus verbal abuse."
+        
+      },
+      image: "toxic.png"
     },
     egirl: {
       main: "💅 The Egirl",
@@ -28,8 +31,9 @@ let archetypes = {
         boosted: "Your mechanics are questionable, but your vibes are undeniable.",
         theSmurf: "Are you actually good or just a bit delusional?",
         toxic: "At least people think it's cute when you flame them.",
-        cryBabyAdc: "You tilt with elegance. 3/10 KDA but 10/10 drama."
-      }
+        cryBabyAdc: "You decided to become the carry? Looks like it failed"
+      },
+      image: "egirl.jpg",
     },
     boosted: {
       main: "📈 The Clueless Carry",
@@ -38,8 +42,10 @@ let archetypes = {
         egirl: "Boosted and egirl? I won't flame you, Twitter is already doing that.",
         TheBaus: "You think running it down is a valid strategy if you get one kill",
         theSmurf: "The only thing you're smurfing on is the report menu",
-        cryBabyAdc: "You demand peel while positioning like a melee minion"
-      }
+        cryBabyAdc: "You demand peel while positioning like a melee minion",
+        toxic: "You flame others while being carried harder than a shopping cart"
+      },
+      image: "boosted.jpg",
     },
     TheBaus: {
       main: "🌪️ The Calculated Inter",
@@ -48,8 +54,10 @@ let archetypes = {
         toxic: "Your 'big brain plays' come with a side of all-chat manifesto",
         boosted: "Even your duo can't explain how some of these deaths work",
         cryBabyAdc: "You dive fountain then spam ping your support for not following",
-        theSmurf: "Only think you're smurfing it at is speed running grey screens"
-      }
+        theSmurf: "Only think you're smurfing it at is speed running grey screens",
+        egirl: "Your roams are either genius or griefing - no in between"
+      },
+      image: "TheBaus.jpg",
     },
     cryBabyAdc: {
       main: "😭 The Emotionally Fragile ADC",
@@ -59,7 +67,8 @@ let archetypes = {
         egirl: "You tilt like it's sponsored content. Simps will love it though.",
         boosted: "The only thing more fragile than your mental is your positioning",
         TheBaus: "You demand babysitting while perma running it down mid"
-      }
+      },
+      image: "crybabyadc.png",
     },
     theSmurf: {
       main: "🕶️ The Mystery Box",
@@ -68,8 +77,10 @@ let archetypes = {
         boosted: "You're probably smurfing in sponge bob low elo.",
         TheBaus: "Your plays make people question if smurfing works differently in Brazil",
         egirl: "Your mastery emotes outnumber your actual mastery",
-        toxic: "Your 'educational' smurfing comes with bonus verbal abuse"
-      }
+        toxic: "Your 'educational' smurfing comes with bonus verbal abuse",
+        cryBabyAdc: "You still end up carrying at least, or are you delusional about that too?"
+      },
+      image: "theSmurf.jpg",
     }
   };
   
@@ -131,11 +142,31 @@ let archetypes = {
     //   text: "You flame while getting caught, tilt while carrying. The ADC main character complex is strong - complete with villain arc."
     // }
   };
+
+  const archetypeKeywords = {
+    toxic: "flame lord",
+    egirl: "charmer",
+    boosted: "wildcard",
+    TheBaus: "limit tester",
+    cryBabyAdc: "drama carry",
+    theSmurf: "secret prodigy"
+  };
+  
+  const archetypePhrases = {
+    toxic: "You're a true <span class='color-red'>{keyword}</span>, but even chaos deserves calm. Join us and find your duo.",
+    egirl: "You're a natural <span class='color-red'>{keyword}</span>, but even charmers need teammates. Join us and vibe together!",
+    boosted: "You're the ultimate <span class='color-red'>{keyword}</span>, but even wildcards shine brightest with a crew. Join us!",
+    TheBaus: "You're a fearless <span class='color-red'>{keyword}</span>, but even rebels need a team. Join us and send it together!",
+    cryBabyAdc: "You're a passionate <span class='color-red'>{keyword}</span>, but even emotions win more with friends. Join us!",
+    theSmurf: "You're a lowkey <span class='color-red'>{keyword}</span>, but even legends need recognition. Join us and show them!"
+  };
+  
   
   const quizContainer = document.getElementById('quiz-container');
   const resultContainer = document.getElementById('result');
   const resultTitle = document.getElementById('result-title');
   const resultDesc = document.getElementById('result-description');
+  const resultImage = document.getElementById('result-image');
   const canvas = document.getElementById('result-chart');
   const createAccountDiv = document.getElementById('createURSGAccount');
   const progressBarContainer = document.getElementById('progressBarContainer');
@@ -151,26 +182,50 @@ let archetypes = {
   let selectedAnswers = {}; // question index -> selected button
   
   async function fetchQuestions() {
-    fetch('/questions.html')
-      .then(response => response.text())
-      .then(html => {
-        quizContainer.innerHTML = html;
-        questions = quizContainer.querySelectorAll('.question');
-        questions.forEach(q => q.style.display = 'none');
-        if (questions.length > 0) {
-          showQuestion(currentIndex);
-          updateProgressBar(0);
-          nav.style.display = 'flex';
-        } else {
-            nav.style.display = 'none';
-        }
-      })
-      .catch(error => console.error('Error loading questions:', error));
+    try {
+      const response = await fetch('/questions.html');
+      const html = await response.text();
+      quizContainer.innerHTML = html;
+      questions = quizContainer.querySelectorAll('.question');
+      questions.forEach(q => q.style.display = 'none');
+      
+      if (questions.length > 0) {
+        showQuestion(currentIndex);
+        updateProgressBar(0);
+        nav.style.display = 'flex';
+      } else {
+        nav.style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Error loading questions:', error);
+      nav.style.display = 'none';
+    }
   }
 
-  function displayCreateAccount() {
+  function resetSelectionState() {
+    selectedAnswers = {};
+  }
+
+  function displayCreateAccount(archetypes) {
+    // Get the top archetype
+    const sorted = Object.entries(archetypes).sort((a, b) => b[1] - a[1]);
+  
+    const topArchetype = sorted[0][0];
+  
+    const createAccountDesc = document.getElementById('create-account-desc');
+    const keyword = archetypeKeywords[topArchetype];
+    const phraseTemplate = archetypePhrases[topArchetype];
+  
+    if (keyword && phraseTemplate) {
+      const phrase = phraseTemplate.replace("{keyword}", keyword);
+      createAccountDesc.innerHTML = phrase;
+    } else {
+      createAccountDesc.innerHTML = "You're a unique <span class='color-red'>mystery</span>, but even mysteries deserve a match. Join us!";
+    }
+  
     createAccountDiv.classList.remove('hidden');
   }
+  
   
   function showQuestion(index) {
     currentIndex = index; // <== ADD THIS LINE
@@ -226,33 +281,41 @@ let archetypes = {
 
   
   async function resetQuiz() {
+    resetSelectionState();
     if (!questions || questions.length === 0) {
       try {
-        questions = await fetchQuestions();
+        await fetchQuestions(); // Wait for fetchQuestions to complete before proceeding
       } catch (error) {
         console.error("Failed to fetch questions:", error);
         return;
       }
     }
   
-    selectedAnswers = {};
-    currentIndex = 0;
+    // Ensure that questions are properly initialized after fetch
+    if (questions && questions.length > 0) {
+      selectedAnswers = {};
+      currentIndex = 0;
   
-    resultContainer.classList.add('hidden');
-    nav.style.display = 'flex';
-    quizContainer.classList.remove('hidden');
-    document.getElementById('resetBtn').classList.add('hidden');
-    createAccountDiv.classList.add('hidden');
-    progressBarContainer.classList.remove('hidden');
+      resultContainer.classList.add('hidden');
+      nav.style.display = 'flex';
+      quizContainer.classList.remove('hidden');
+      document.getElementById('resetBtn').classList.add('hidden');
+      createAccountDiv.classList.add('hidden');
+      progressBarContainer.classList.remove('hidden');
   
-    questions.forEach(q => q.style.display = 'none');
-    showQuestion(currentIndex);
-    isFinalResult = false;
+      questions.forEach(q => q.style.display = 'none');
+      showQuestion(currentIndex);
+      isFinalResult = false;
   
-    // Reset progress bar
-    updateProgressBar(0);
-    clearChart();
+      // Reset progress bar
+      updateProgressBar(0);
+      clearChart();
+    } else {
+      console.error("Questions are not available or failed to load.");
+    }
   }
+  
+  
   
   
   function showResult(loadingOldResult = false, result = null) {
@@ -284,9 +347,14 @@ let archetypes = {
       sorted[1], 
       ...sorted.slice(2).filter(([_, score]) => score >= threshold)
     ];
+
+    let image = descriptions[dominant[0][0]].image;
+    resultImage.src = `public/images/test/${image}`;
+    resultImage.alt = descriptions[dominant[0][0]].main;
     
     // Generate dynamic description
     resultDesc.innerHTML = generateMixedDescription(sorted, dominant);
+    resultTitle.innerHTML = descriptions[dominant[0][0]].main;
     
     drawChart(sorted);
     nextBtn.classList.add('hidden');
@@ -300,25 +368,25 @@ let archetypes = {
 
   function generateMixedDescription(sortedArchetypes, dominant) {
     const [mainType, mainScore] = dominant[0];
-    let description = `${descriptions[mainType].main}<br>${descriptions[mainType].core}`;
+    let description = `${descriptions[mainType].core}`;
   
     // Check for hybrid combinations first
     if (dominant.length > 1) {
       const [secondType, secondScore] = dominant[1];
-      const hybridKey = `${mainType}_${secondType}`;
-      const reverseHybridKey = `${secondType}_${mainType}`;
+      // const hybridKey = `${mainType}_${secondType}`;
+      // const reverseHybridKey = `${secondType}_${mainType}`;
   
-      if (hybridDescriptions[hybridKey]) {
-        return `${hybridDescriptions[hybridKey].title}<br>${hybridDescriptions[hybridKey].text}`;
-      }
-      if (hybridDescriptions[reverseHybridKey]) {
-        return `${hybridDescriptions[reverseHybridKey].title}<br>${hybridDescriptions[reverseHybridKey].text}`;
-      }
+      // if (hybridDescriptions[hybridKey]) {
+      //   return `${hybridDescriptions[hybridKey].text}`;
+      // }
+      // if (hybridDescriptions[reverseHybridKey]) {
+      //   return `${hybridDescriptions[reverseHybridKey].text}`;
+      // }
   
       // Add modifier if exists
       if (descriptions[mainType].modifiers[secondType]) {
         description += `<br><br>${descriptions[mainType].modifiers[secondType]}`;
-      } else {
+      } else if (relationships?.[mainType]?.[secondType]) {
         description += `<br><br>${relationships[mainType][secondType]}`;
       }
     }
@@ -326,13 +394,12 @@ let archetypes = {
     // Add special case for close scores
     if (dominant.length > 1 && mainScore - dominant[1][1] < 2) {
       const secondDesc = descriptions[dominant[1][0]];
-      return `🔥 Hybrid Personality 🔥<br>` +
-        `${descriptions[mainType].main} / ${secondDesc.main}<br>` +
-        `${descriptions[mainType].core} ${secondDesc.core}`;
+      return `${descriptions[mainType].core} ${secondDesc.core}`;
     }
   
     return description;
   }
+  
   
   function drawChart(data) {
     let radius, margin;
@@ -491,7 +558,7 @@ let archetypes = {
       
       if (savedResult) {
         const result = JSON.parse(savedResult);
-        displayCreateAccount();
+        displayCreateAccount(result);
         showResult(true, result); 
       } else {
         fetchQuestions();
@@ -521,8 +588,8 @@ let archetypes = {
           savePersonalityTestResult(userId);
         } else {
           // save to local storage if userId is not available
-          displayCreateAccount();
           localStorage.setItem('personalityTestResult', JSON.stringify(archetypes));
+          displayCreateAccount(archetypes);
         }
       } else {
         alert('Please answer all questions before submitting.');

@@ -48,6 +48,7 @@ class FriendRequestController
             $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
             $current_url = "https://ur-sg.com/friendlistPage";
             $template = "views/swiping/swiping_friendlist";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Friendlist";
             require "views/layoutSwiping.phtml";
         } else {

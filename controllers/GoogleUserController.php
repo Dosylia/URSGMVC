@@ -81,6 +81,7 @@ class GoogleUserController
             $current_url = "https://ur-sg.com/";
             $template = "views/home";
             $title = "JOIN NOW";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Home";
             require "views/layoutHome.phtml";
         }
@@ -114,6 +115,7 @@ class GoogleUserController
             $current_url = "https://ur-sg.com/confirmMail";
             $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
+            $picture = "ursg-preview-small";
             $page_title = "URSG - Confirm Mail";
             require "views/layoutSignup.phtml";
         }
@@ -206,6 +208,7 @@ class GoogleUserController
             $template = "views/swiping/swiping_main";
             $title = "Swipe test";
             $page_title = "URSG - Swiping";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";;
         } elseif (
             $this->isConnectGoogle() && 
@@ -227,6 +230,7 @@ class GoogleUserController
             $template = "views/signup/lookingforvalorant";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif (
             $this->isConnectGoogle() && 
@@ -247,6 +251,7 @@ class GoogleUserController
             $template = "views/signup/lookingforlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif (
             $this->isConnectGoogle() &&
@@ -267,6 +272,7 @@ class GoogleUserController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && $secondTierUser['user_game'] === "League of Legends" && !$this->isConnectLf()) { 
             // Code block 5: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
@@ -275,6 +281,7 @@ class GoogleUserController
             $template = "views/signup/leagueoflegendsuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant() && $secondTierUser['user_game'] === "Valorant") {
             // Code block 6: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
@@ -283,6 +290,7 @@ class GoogleUserController
             $template = "views/signup/valorantuser";
             $title = "More about you";
             $page_title = "URSG - Sign up";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 1) {
             // Code block 7: User is connected via Google but doesn't have a username
@@ -290,6 +298,7 @@ class GoogleUserController
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 0) {
             // Code block 8: User is connected via Google but doesn't have a username
@@ -297,6 +306,7 @@ class GoogleUserController
             $template = "views/signup/waitingEmail";
             $title = "Confirm Mail";
             $page_title = "URSG - Confirm Mail";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         
         } else {
@@ -312,6 +322,7 @@ class GoogleUserController
         $template = "views/legalnotice";
         $title = "Legal Notice";
         $page_title = "URSG - Legal notice";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 
@@ -321,6 +332,7 @@ class GoogleUserController
         $template = "views/csae";
         $title = "Child Sexual Abuse and Exploitation (CSAE) Policy";
         $page_title = "URSG - Child Sexual Abuse and Exploitation (CSAE) Policy";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 
@@ -330,6 +342,7 @@ class GoogleUserController
         $template = "views/termsofservice";
         $title = "Terms of service";
         $page_title = "URSG - Terms of service";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 
@@ -340,6 +353,7 @@ class GoogleUserController
         $template = "views/sitemap";
         $title = "Site map";
         $page_title = "URSG - Site map";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 
@@ -349,6 +363,7 @@ class GoogleUserController
         $template = "views/pageNotFound";
         $title = "404 - Page not found";
         $page_title = "URSG - 404 - Page not found";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 
@@ -1278,6 +1293,7 @@ class GoogleUserController
         $current_url = "https://ur-sg.com/deleteAccount";
         $template = "views/swiping/delete_account";
         $page_title = "URSG - Delete account";
+        $picture = "ursg-preview-small";
         require "views/layoutSwiping_noheader.phtml";
     }
 

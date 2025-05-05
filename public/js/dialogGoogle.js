@@ -34,3 +34,10 @@ if (favDialog)
     favDialog.showModal();
     }
 }
+
+window.onload = function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('triggerSignUp') === 'true') {
+    document.getElementById('signup_button').click();
+  }
+};

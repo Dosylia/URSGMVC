@@ -451,6 +451,57 @@ class DiscordController
         }
     }
 
+    public function sendMessageDiscord()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $user = $this->user->getUserById($userId);
+    
+        if ($user['lol_verified'] != 1) {
+            echo json_encode(['success' => true, 'error' => 'User has no league data']);
+            return;
+        }
+    
+        require_once 'keys.php';
+        $botToken = $discordToken;
+        $channelId = "1263123769866850406"; // Your target channel ID
+    
+        // Construct message content
+        $message = "**{$user['user_username']}** is looking for players on server **{$user['lol_server']}**!\nTheir username is: `{$user['lol_account']}`";
+    
+        $url = "https://discord.com/api/v10/channels/{$channelId}/messages";
+        $data = ["content" => $message];
+    
+        $response = $this->makeDiscordRequest($url, $data, $botToken);
+    
+        if (isset($response['id'])) {
+            echo json_encode(['success' => true, 'messageId' => $response['id']]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
+        }
+    }
+    
+
     public function validateTokenWebsite($token, $userId): bool
     {
         $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);

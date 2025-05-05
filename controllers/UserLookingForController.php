@@ -54,6 +54,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/lookingforuserlol";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
@@ -62,6 +63,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/leagueuser";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
+                $picture = "ursg-preview-small";
                 require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
@@ -69,6 +71,7 @@ class UserLookingForController
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
@@ -86,6 +89,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/lookingforuservalorant";
             $title = "What are you looking for?";
             $page_title = "URSG - Looking for";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
@@ -94,6 +98,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/leagueuser";
                 $title = "More about you";
                 $page_title = "URSG - Sign up";
+                $picture = "ursg-preview-small";
                 require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
@@ -101,6 +106,7 @@ class UserLookingForController
             $template = "views/signup/basicinfo";
             $title = "Sign up";
             $page_title = "URSG - Sign";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
@@ -162,6 +168,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/updateLookingForPage";
             $template = "views/swiping/update_lookingFor";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -221,6 +228,7 @@ class UserLookingForController
             $current_url = "https://ur-sg.com/updateLookingForGamePage";
             $template = "views/swiping/update_lookingForGame";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSignup.phtml";
         } 
         else

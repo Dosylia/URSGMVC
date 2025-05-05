@@ -50,6 +50,7 @@ class ItemsController
             $current_url = "https://ur-sg.com/store";
             $template = "views/swiping/store";
             $page_title = "URSG - Store";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else

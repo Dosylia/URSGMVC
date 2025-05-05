@@ -201,6 +201,7 @@ class UserController
             $current_url = "https://ur-sg.com/leaderboard";
             $template = "views/swiping/leaderboard";
             $page_title = "URSG - Leaderboard";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -591,6 +592,7 @@ class UserController
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
             $page_title = "URSG - What kind of League player";
+            $picture = "ursg-quiz";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -598,6 +600,7 @@ class UserController
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
             $page_title = "URSG - What kind of League player";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping_noheader.phtml";
         }        
     }
@@ -756,6 +759,7 @@ class UserController
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/profiletest";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -1747,6 +1751,7 @@ class UserController
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -2105,6 +2110,7 @@ class UserController
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -2156,6 +2162,7 @@ class UserController
             $current_url = "https://ur-sg.com/chatTest";
             $template = "views/swiping/message_test";
             $page_title = "URSG - Chat";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } else {
             header("Location: /");
@@ -2199,6 +2206,7 @@ class UserController
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
+                    $picture = "ursg-preview-small";
                     require "views/layoutSwiping.phtml";
                 } else {
                     header("Location: /userProfile?message=No user found");
@@ -2232,6 +2240,7 @@ class UserController
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
+                    $picture = "ursg-preview-small";
                     require "views/layoutSwiping_noheader.phtml";
                 } else {
                     header("Location: /?message=No user found");
@@ -2267,6 +2276,7 @@ class UserController
             $current_url = "https://ur-sg.com/updateProfile";
             $template = "views/swiping/update_profile";
             $page_title = "URSG - Profile";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
@@ -2293,6 +2303,7 @@ class UserController
             $current_url = "https://ur-sg.com/settings";
             $template = "views/swiping/settings";
             $page_title = "URSG - Settings";
+            $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
         } 
         else
