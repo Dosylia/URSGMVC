@@ -1,4 +1,21 @@
-<div class="chat_page">   
+<div class="chat_page">
+    <div id="overlay"></div>
+    <div id="lookingfor-modal" class="modal lookingfor-modal-hidden">
+        <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
+            <h2>Looking for a game?</h2>
+            <?php if (
+                ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
+                $user['user_game'] === "Valorant"
+            ) : ?>
+            <p class="lookingfor-modal-p">Give us your Lol/Valorant account</p>
+            <input type="text" id="lookingfor-account" placeholder="Enter your account's name">
+            <?php endif; ?>
+            <p class="lookingfor-modal-p">Any message you wanna add? It will be shown on our <a href="https://discord.gg/Bfpkws74V3" target="_blank">Discord server</a>.</p>
+            <textarea id="lookingfor-message" rows="4" cols="50" placeholder="Type your message here..."></textarea>
+            <button id="submit-lookingfor">Looking for</button>
+        </div>
+    </div>   
     <?php if (isset($_GET['firstFriend'])) : ?>
         <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
     <?php endif; ?>

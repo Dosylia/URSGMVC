@@ -1,124 +1,163 @@
 <div class="friendlist-page">
-    <div class="chat-interface"><br>
-        <div class="chat_box"><br>
-            <h1 class="title_generalbox">Friends</h1><br>       
-            <?php if(empty($getFriendlist)): ?>
-                <section class="no_friend"><br><br>     
-                    <img src="public/images/sadbee.webp" alt="jhinshrug">
-                    <h2>You have no friends yet, wait until they accept your request or swipe more!</h2>
-                </section>  
-            <?php else :?>
+    <h1 class="title_generalbox">Friends</h1>
+
+    <div class="tab-buttons">
+        <button class="tab-button active" onclick="switchTab('latest')">Latest</button>
+        <button class="tab-button" onclick="switchTab('online')">Online</button>
+        <button class="tab-button" onclick="switchTab('blocked')">Blocked</button>
+    </div>
+
+    <div id="latest" class="friendlist-section active">
+        <?php if(empty($getFriendlist)): ?>
+            <section class="no_friend">
+                <img src="public/images/sadbee.webp" alt="No friends">
+                <h2>You have no friends yet. Try swiping more or wait for acceptances!</h2>
+            </section>
+        <?php else : ?>
+            <?php foreach($getFriendlist as $friend) : ?>
+                <?php
+                    if ($user['user_id'] == $friend['sender_id']) {
+                        $friendId = $friend['receiver_id'];
+                        $friendUsername = $friend['receiver_username'];
+                        $friendPicture = $friend['receiver_picture'];
+                        $isOnline = $friend['receiver_isOnline'];
+                    } else {
+                        $friendId = $friend['sender_id'];
+                        $friendUsername = $friend['sender_username'];
+                        $friendPicture = $friend['sender_picture'];
+                        $isOnline = $friend['sender_isOnline'];
+                    }
+                ?>
+                <div class="friend-entry" data-sender-id="<?= $friendId ?>">
+                    <div class="friend-avatar">
+                        <a href="/anotherUser&username=<?= $friendUsername ?>">
+                            <img src="<?= $friendPicture ? 'public/upload/'.$friendPicture : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $friendUsername ?>" loading="lazy">
+                        </a>
+                        <div class="friend-info">
+                        <a class="friend-name" href="/anotherUser&username=<?= $friendUsername ?>"><?= $friendUsername ?></a>
+                        <?php if ($isOnline): ?>
+                            <span class="online-status"></span>
+                        <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
+                        <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                    </div>
+                </div>
+
+                <!-- Confirmation Dialogs -->
+                <dialog id="confirmationPopup_<?= $friendId ?>" class="confirmationPopup">
+                    <div class="popup-content">
+                        <button class="closeButton" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">X</button>
+                        <h2 class="title_generalbox">Block <span><?= $friendUsername ?></span>?</h2>
+                        <form action="/blockPerson" method="post">
+                            <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
+                            <input type="hidden" name="receiverId" value="<?= $friendId ?>">
+                            <div class="button_container">
+                                <button name="submit" type="submit" class="confirmation-button">Yes</button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+
+                <dialog id="confirmationPopupUnfriend<?= $friendId ?>" class="confirmationPopup">
+                    <div class="popup-content">
+                        <button class="closeButton" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">X</button>
+                        <h2 class="title_generalbox">Unfriend <span><?= $friendUsername ?></span>?</h2>
+                        <form action="/unfriendPerson" method="post">
+                            <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
+                            <input type="hidden" name="receiverId" value="<?= $friendId ?>">
+                            <div class="button_container">
+                                <button name="submit" type="submit" class="confirmation-button">Yes</button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+
+    <div id="online" class="friendlist-section">
+        <?php if(empty($getFriendlist)): ?>
+                <section class="no_friend">
+                    <img src="public/images/sadbee.webp" alt="No friends">
+                    <h2>You have no friends yet. Try swiping more or wait for acceptances!</h2>
+                </section>
+        <?php else : ?>
                 <?php foreach($getFriendlist as $friend) : ?>
                     <?php
                         if ($user['user_id'] == $friend['sender_id']) {
                             $friendId = $friend['receiver_id'];
                             $friendUsername = $friend['receiver_username'];
                             $friendPicture = $friend['receiver_picture'];
+                            $isOnline = $friend['receiver_isOnline'];
                         } else {
                             $friendId = $friend['sender_id'];
                             $friendUsername = $friend['sender_username'];
                             $friendPicture = $friend['sender_picture'];
+                            $isOnline = $friend['sender_isOnline'];
                         }
                     ?>
-                    <div class="friend" data-sender-id="<?= $friendId ?>">
-                        <div class="friend-avatar">
-                            <a href="/anotherUser&username=<?= $friendUsername ?>">
-                                <?php if ($friendPicture !== NULL) : ?>
-                                    <img src="public/upload/<?= $friendPicture ?>" alt="Avatar <?= $friendUsername ?>"></a>
-                                <?php else : ?>
-                                    <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $friendUsername ?>"></a>
-                                <?php endif; ?>
-                        </div>
-                        <div class="friend-details">
-                            <span class="friendlist-name friendlist-page">
-                                <a class="person_button" href="/anotherUser&username=<?= $friendUsername ?>">
-                                    <?= $friendUsername ?>
-                                </a>
-                                <div class="button_container">
-                                    <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
-                                    <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
-                                </div>
-                            </span>
-                        </div>
-                    </div>                
-                        <dialog id="confirmationPopup_<?= $friendId ?>" class="confirmationPopup">
-                            <div class="popup-content">
-                                <button class="closeButton" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">X</button>
-                                <h2 class="title_generalbox">Are you sure you want to block <span><?= $friendUsername ?></span>?</h2>
-                                <form action="/blockPerson" method="post">
-                                    <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
-                                    <input type="hidden" name="receiverId" value="<?= $friendId ?>">
-                                    <div class="button_container">
-                                        <button class="confirmation-button" name="submit" type="submit">Yes</button>
-                                        <button class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">No</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </dialog>
 
-                        <dialog id="confirmationPopupUnfriend<?= $friendId ?>" class="confirmationPopup">
-                            <div class="popup-content">
-                                <button class="closeButton" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">X</button>
-                                <h2 class="title_generalbox">Are you sure you want to unfriend <span><?= $friendUsername ?></span>?</h2>
-                                <form action="/unfriendPerson" method="post">
-                                    <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
-                                    <input type="hidden" name="receiverId" value="<?= $friendId ?>">
-                                    <div class="button_container">
-                                        <button class="confirmation-button" name="submit" type="submit">Yes</button>
-                                        <button class="confirmation-button" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">No</button>
-                                    </div>
-                                </form>
+                    <?php if ($isOnline): ?>
+                        <div class="friend-entry" data-sender-id="<?= $friendId ?>">
+                            <div class="friend-avatar">
+                                <a href="/anotherUser&username=<?= $friendUsername ?>">
+                                    <img src="<?= $friendPicture ? 'public/upload/'.$friendPicture : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $friendUsername ?>" loading="lazy">
+                                </a>
+                                <div class="friend-info">
+                                <a class="friend-name" href="/anotherUser&username=<?= $friendUsername ?>"><?= $friendUsername ?></a>
+                                <span class="online-status"></span>
+                                </div>
                             </div>
-                        </dialog>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+                            <div class="friend-actions">
+                                <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
+                                <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
-    <div class="chat-interface"><br>
-        <div class="chat_box"><br>  
-            <h2 class="title_generalbox">Blocked Users</h2><br>
-            <?php if(empty($getBlocklist)): ?>
-                <section class="no_friend"><br><br>     
-                <img src="public/images/jhinshrug.png" alt="jhinshrug" class="blocked-users-image">
-                    <h2>You have no blocked users.</h2>
-                </section>              
-            <?php else : ?>
-                <?php foreach($getBlocklist as $blocked) :?>
+    <div id="blocked" class="friendlist-section">
+        <?php if(empty($getBlocklist)): ?>
+            <section class="no_friend">
+                <img src="public/images/jhinshrug.png" alt="No blocked" class="blocked-users-image">
+                <h2>You have no blocked users.</h2>
+            </section>
+        <?php else : ?>
+            <?php foreach($getBlocklist as $blocked) :?>
+                <div class="friend-entry">
                     <div class="friend-avatar">
                         <a href="/anotherUser&username=<?= $blocked['user_username'] ?>">
-                        <?php if($blocked['user_picture'] !== NULL) :?>
-                            <img src="public/upload/<?= $blocked['user_picture'] ?>" alt="Avatar <?= $blocked['user_username'] ?>"></a>
-                        <?php else :?>
-                            <img src="public/images/defaultprofilepicture.jpg" alt="Avatar <?= $blocked['user_username'] ?>"></a>
-                        <?php endif; ?>
-                    </div>                
-                    
-                    <div class="friend-details">
-                        <span class="chat-name">
-                            <a class="person_button" href="/anotherUser&username=<?= $blocked['user_username'] ?>"> 
-                                <?=  $blocked['user_username'] ?>
-                            </a>           
-                            <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')">Unblock</button>         
-                        </span>
+                            <img src="<?= $blocked['user_picture'] ? 'public/upload/'.$blocked['user_picture'] : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $blocked['user_username'] ?>">
+                        </a>
                     </div>
+                    <div class="friend-info">
+                        <a class="friend-name" href="/anotherUser&username=<?= $blocked['user_username'] ?>"><?= $blocked['user_username'] ?></a>
+                        <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')">Unblock</button>
+                    </div>
+                </div>
 
-                    <dialog id="confirmationPopup2_<?= $blocked['block_id'] ?>" class="confirmationPopup2">
-                        <div class="popup-content">
-                            <button class="closeButton" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">X</button>
-                            <h2 class="title_generalbox">Are you sure you want to unblock <span><?= $blocked['user_username'] ?></span>?</h2>
-                            <form action="/unblockPerson" method="post">
-                                <input type="hidden" name="blockId" value="<?= $blocked['block_id'] ?>">
-                                <div class="button_container">
-                                    <button class="confirmation-button" name="submit" type="submit">Yes</button><br>
-                                    <button class="confirmation-button" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">No</button>
-                                </div>
-                            </form>
-                        </div>
-                    </dialog>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>                              
+                <dialog id="confirmationPopup2_<?= $blocked['block_id'] ?>" class="confirmationPopup2">
+                    <div class="popup-content">
+                        <button class="closeButton" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">X</button>
+                        <h2 class="title_generalbox">Unblock <span><?= $blocked['user_username'] ?></span>?</h2>
+                        <form action="/unblockPerson" method="post">
+                            <input type="hidden" name="blockId" value="<?= $blocked['block_id'] ?>">
+                            <div class="button_container">
+                                <button type="submit" class="confirmation-button">Yes</button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>
 

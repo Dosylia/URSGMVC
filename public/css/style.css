@@ -2146,18 +2146,81 @@ section.siteMap tr:nth-child(even) {
 
     .friendlist-page {
       display: flex;
-      flex-direction: row;
-      justify-content: space-around;
+      flex-direction: column;
       align-items: center;
+      margin-top: 20px;
     }
 
     .friendlist-page .chat-interface {
       width: 30%;
     }
 
+    .friendlist-page .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .friendlist-page .tab-button {
+        padding: 8px 16px;
+        cursor: pointer;
+        background-color: unset;
+        border: none;
+        color: black;
+    }
+
+    .dark-mode .friendlist-page .tab-button {
+      color: white;
+  }
+
+    .friendlist-page .tab-button.active {
+        color: var(--main--red);
+    }
+
+    .friendlist-page .friendlist-section {
+        display: none;
+    }
+
+    .friendlist-page .friendlist-section.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+    }
+
+    .friendlist-page .friend-entry {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .friendlist-page .friend-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .friendlist-page .friend-avatar img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+
+    .friendlist-page .friend-info {
+        margin-left: 15px;
+    }
+
+    .friendlist-page .friend-actions {
+        display: flex;
+        gap: 20px;
+    }
+
     .chat-image {
-      width: auto;
-      height: 50px;
+      width: 300px;
+      height: auto;
       cursor: pointer;
     }
 
@@ -2472,7 +2535,7 @@ section.siteMap tr:nth-child(even) {
       text-align: center;
   }
 
-  #filter-modal .modal-content, #filter-modal-no-users .modal-content {
+  #filter-modal .modal-content, #filter-modal-no-users .modal-content, #lookingfor-modal .modal-content {
     position: absolute;
     top: 20%;
     left: 50%;
@@ -2509,27 +2572,33 @@ section.siteMap tr:nth-child(even) {
     font-weight: 600;
   }
 
-  #report-modal h2 {
+  #report-modal h2, #lookingfor-modal h2 {
       color: black;
       font-size: 1.5em;
       font-weight: 800;
   }
 
-  #report-modal .report-modal-p {
+  #report-modal .report-modal-p, #lookingfor-modal .lookingfor-modal-p {
     color: rgb(77, 73, 73);
     margin-top: 30px;
   }
 
-  .dark-mode   #report-modal .report-modal-p {
+  #lookingfor-modal .lookingfor-modal-p a {
+    color: var(--main--red);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .dark-mode   #report-modal .report-modal-p, .dark-mode #lookingfor-modal .lookingfor-modal-p {
     color: rgb(184, 170, 170);
     margin-top: 30px;
   }
 
-  .dark-mode #report-modal h2 {
+  .dark-mode #report-modal h2, .dark-mode #lookingfor-modal h2 {
     color: white;
 }
 
-  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content {
+  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content, .dark-mode #lookingfor-modal .modal-content {
     background-color: var(--dark-ligher-grey);
     color: white;
 }
@@ -2539,7 +2608,7 @@ section.siteMap tr:nth-child(even) {
   z-index: 9000;
 }
 
-  #report-modal .close {
+  #report-modal .close, #lookingfor-modal .close {
       position: absolute;
       top: 10px;
       right: 15px;
@@ -2583,7 +2652,7 @@ section.siteMap tr:nth-child(even) {
   }
 
   /* Description Box */
-  #report-modal textarea {
+  #report-modal textarea, #lookingfor-modal textarea {
       width: 90%;
       height: 120px;
       margin-top: 10px;
@@ -2596,7 +2665,7 @@ section.siteMap tr:nth-child(even) {
       color: black;
   }
 
-  .dark-mode #report-modal textarea {
+  .dark-mode #report-modal textarea, .dark-mode #lookingfor-modal textarea {
     background-color: white;
   }
 
@@ -2607,13 +2676,13 @@ section.siteMap tr:nth-child(even) {
     padding-bottom: 10px;
   }
 
-  .dark-mode #report-modal textarea {
+  .dark-mode #report-modal textarea, .dark-mode #lookingfor-modal textarea {
     background-color: var(--dark-grey);
     color: white;
 }
 
   /* Report Button */
-  #report-modal #submit-report {
+  #report-modal #submit-report, #lookingfor-modal #submit-lookingfor {
       margin-top: 15px;
       background-color: var(--main--red);
       color: #fff;
@@ -2626,11 +2695,34 @@ section.siteMap tr:nth-child(even) {
       width: 30%;
   }
 
-  #report-modal #submit-report:hover {
+  #report-modal #submit-report:hover, #lookingfor-modal #submit-lookingfor:hover {
       opacity: 0.9;
   }
 
-  .report-modal-hidden {
+  #lookingfor-modal #lookingfor-account {
+    margin-top: 10px;
+    width: 80%;
+    padding: 5px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    resize: none;
+    background-color: #e0e0e0;
+    color: black;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .dark-mode #lookingfor-modal #lookingfor-account {
+    background-color: var(--dark-grey);
+    color: white;
+  }
+
+  #lookingfor-modal #lookingfor-message {
+    margin-top: 10px;
+  }
+
+  .report-modal-hidden, .lookingfor-modal-hidden {
       display: none;
   }
 
@@ -3049,7 +3141,7 @@ section.siteMap tr:nth-child(even) {
       color: #504e4e;
     }
   
-    .chat_box .title_generalbox,  .user_box .title_generalbox, dialog .title_generalbox, .friendrequest_box .title_generalbox {
+    .chat_box .title_generalbox,  .user_box .title_generalbox, dialog .title_generalbox, .friendrequest_box .title_generalbox, .friendlist-page .title_generalbox {
       font-size: 3vh;
       font-family: 'Geologica', sans-serif;
       color: #cb5242;
@@ -3741,7 +3833,7 @@ section.siteMap tr:nth-child(even) {
       cursor: pointer;
     }
     
-    .friend-avatar img {
+    .chat_page .friend-avatar img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -7723,9 +7815,30 @@ justify-content: center;
   .friendlist-page {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
     min-height: 90vh;
+  }
+
+  .friendlist-page .friend-avatar img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .friendlist-page .friend-info {
+    margin-left: 5px;
+  }
+
+  .friendlist-pag .unfriend_user {
+    padding: 5px 7px;
+    font-size: 12px;
+  }
+
+  .friendlist-page .friend-name {
+    font-size: 12px;
+  }
+
+  .friendlist-page .friendlist-section.active {
+    width: 95%;
   }
 
   .friendlist-page .chat-interface {
@@ -8115,6 +8228,12 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+  .chat-image {
+    width: 200px;
+    height: auto;
+    cursor: pointer;
+  }
 
     .swiping-ctn {
       width: 100%;
@@ -8703,6 +8822,11 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 350px) {
+
+  .chat-image {
+    width: 150px;
+  }
+
 
   .badge span {
     display: none;

@@ -135,7 +135,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -174,7 +174,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -209,7 +209,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -246,10 +246,18 @@ class FriendRequestController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
+
+        setcookie("auth_token", $token, [
+            'expires' => time() + 60 * 60 * 24 * 7,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
     
         $this->setUserId($userId);
     
@@ -471,7 +479,7 @@ class FriendRequestController
             $senderId = $this->validateInput($_POST["senderId"]);
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $senderId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $senderId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -509,7 +517,7 @@ class FriendRequestController
             $senderId = $this->validateInput($_POST["senderId"]);
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $senderId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $senderId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -702,7 +710,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $_POST["senderId"])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -761,7 +769,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $_POST["senderId"])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -1108,7 +1116,7 @@ class FriendRequestController
             $token = $matches[1];
     
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }

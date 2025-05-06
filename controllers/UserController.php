@@ -491,7 +491,7 @@ class UserController
                 $token = $matches[1];
             
                 // Validate Token for User
-                if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+                if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
                     echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
@@ -900,7 +900,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -1782,7 +1782,7 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -1839,7 +1839,7 @@ class UserController
         $auth = $subscriptionData['keys']['auth'];
     
         // Step 6: Validate token
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token', 'userId' => $userId]);
             return;
         }
@@ -2369,7 +2369,7 @@ class UserController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2533,7 +2533,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2591,7 +2591,7 @@ class UserController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2682,17 +2682,19 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
     
         $this->setUserId($userId);
+        $user = $this->user->getUserById($userId);
+        $oldTime = $user['user_requestIsLooking'];
 
         $setStatus = $this->user->userIsLookingForGame($this->getUserId());
 
         if($setStatus) {
-            $response = array('success' => true, 'message' => 'Status updated');
+            $response = array('success' => true, 'message' => 'Status updated', 'oldTime' => $oldTime);
         } else {
             $response = array('success' => false, 'message' => 'Could not update status');
         }
@@ -2754,7 +2756,7 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -2793,7 +2795,7 @@ class UserController
         $result = $input['result'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }

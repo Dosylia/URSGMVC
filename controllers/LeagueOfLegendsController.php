@@ -7,10 +7,12 @@ use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
 use traits\SecurityController;
+use traits\Translatable;
 
 class LeagueOfLegendsController
 {
     use SecurityController;
+    use Translatable;
 
     private LeagueOfLegends $leagueOfLegends;
     private FriendRequest $friendrequest;
@@ -36,6 +38,13 @@ class LeagueOfLegendsController
 
     public function pageLeagueUser()
     {
+        if (isset($_GET['lang'])) {
+            $lang = $_GET['lang'];
+        } else {
+            $lang = $_SESSION['lang'] ?? 'en';
+        }
+
+        $this->loadLanguage($lang);
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             if (isset($_GET['user_id'])) {
@@ -60,6 +69,7 @@ class LeagueOfLegendsController
                     exit();
                 }
             }
+
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $current_url = "https://ur-sg.com/leagueuser";
             $template = "views/signup/leagueoflegendsuser";

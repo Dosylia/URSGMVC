@@ -160,7 +160,7 @@ class ChatMessageController
     $token = $_GET['token'] ?? null;
 
     // Validate token and IDs (use your existing validation logic)
-    if (!$this->validateTokenWebsite($token, $userId)) {
+    if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
         echo "event: error\ndata: Invalid token\n\n";
         ob_flush();
         flush();
@@ -368,7 +368,7 @@ class ChatMessageController
              $token = $matches[1];
  
              // Validate Token for User
-             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
+             if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getSenderId())) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
                  return;
              }
@@ -507,7 +507,7 @@ class ChatMessageController
         $token = $matches[1];
         $userId = $_SESSION['userId'] ?? null;
     
-        if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
+        if (!$userId || !$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -637,7 +637,7 @@ class ChatMessageController
         $token = $matches[1];
         $userId = $_SESSION['userId'] ?? null;
         
-        if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
+        if (!$userId || !$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -731,7 +731,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -781,7 +781,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getSenderId())) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -960,7 +960,7 @@ class ChatMessageController
              $token = $matches[1];
  
              // Validate Token for User
-             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+             if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
                  return;
              }
@@ -1151,7 +1151,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }

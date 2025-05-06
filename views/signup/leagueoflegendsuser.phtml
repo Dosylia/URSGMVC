@@ -8,18 +8,18 @@
     <div id="champion-picker">
         <div class="champions-picker-column">
             <img src="public/images/champions/Kaisa.png" alt="Kai'Sa" class="champion-picker-img picker-main1">
-            <p id="main1-name">Main 1</p>
+            <p id="main1-name"><?= $this->_('main1') ?></p>
         </div>
         <div class="champions-picker-column">
             <img src="public/images/champions/Ezreal.png" alt="Ezreal" class="champion-picker-img picker-main2">
-            <p id="main2-name">Main 2</p>
+            <p id="main2-name"><?= $this->_('main2') ?></p>
         </div>
         <div class="champions-picker-column">
             <img src="public/images/champions/Jhin.png" alt="Jhin" class="champion-picker-img picker-main3">
-            <p id="main3-name">Main 3</p>
+            <p id="main3-name"><?= $this->_('main1') ?></p>
         </div>
         <div class="champions-picker-column">
-            <button type="button" id="skipSelection-btn">Skip</button>
+            <button type="button" id="skipSelection-btn"><?= $this->_('skip') ?></button>
         </div>
         <input type="hidden" id="main1" name="main1" value="" class="notranslate champion-picker-input">
         <input type="hidden" id="main2" name="main2" value="" class="notranslate champion-picker-input">
@@ -31,7 +31,7 @@
     <div id="modal-main1" class="champion-modal">
         <div class="modal-content">
             <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
-            <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+            <input type="text" placeholder="<?= $this->_('search_champion_placeholder') ?>" class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
             <div id="champion-list-main1" class="champion-list"></div>
         </div>
     </div>
@@ -55,62 +55,62 @@
     <script src="public/js/champions-picker.js?<?= time(); ?>"></script>
 
 
-        <label for="rank_lol">Your rank</label>
+    <label for="rank_lol"><?= $this->_('your_rank') ?></label>
         <select id="rank_lol" name="rank_lol">
-            <option value="" disabled selected>Select rank...</option>
-            <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-            <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-            <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-            <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-            <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-            <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-            <option value="Emerald" data-image="public/images/ranks/Emerald.png">Emerald</option>
-            <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-            <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-            <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-            <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
+            <option value="" disabled selected><?= $this->_('select_rank') ?></option>
+            <option value="Unranked" data-image="public/images/ranks/Unranked.png"><?= $this->_('rank[unranked]') ?></option>
+            <option value="Iron" data-image="public/images/ranks/Iron.png"><?= $this->_('rank[iron]') ?></option>
+            <option value="Bronze" data-image="public/images/ranks/Bronze.png"><?= $this->_('rank[bronze]') ?></option>
+            <option value="Silver" data-image="public/images/ranks/Silver.png"><?= $this->_('rank[silver]') ?></option>
+            <option value="Gold" data-image="public/images/ranks/Gold.png"><?= $this->_('rank[gold]') ?></option>
+            <option value="Platinum" data-image="public/images/ranks/Platinum.png"><?= $this->_('rank[platinum]') ?></option>
+            <option value="Emerald" data-image="public/images/ranks/Emerald.png"><?= $this->_('rank[emerald]') ?></option>
+            <option value="Diamond" data-image="public/images/ranks/Diamond.png"><?= $this->_('rank[diamond]') ?></option>
+            <option value="Master" data-image="public/images/ranks/Master.png"><?= $this->_('rank[master]') ?></option>
+            <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png"><?= $this->_('rank[grandmaster]') ?></option>
+            <option value="Challenger" data-image="public/images/ranks/Challenger.png"><?= $this->_('rank[challenger]') ?></option>
         </select>
+
 
         <div id="selected-ranks-lol"></div>
 
         <script src="public/js/ranks.js?<?= time(); ?>"></script>
 
-        <label for="role_lol">Your role</label>
-        <select id="role_lol" name="role_lol">
-            <option value="" disabled selected>Select role...</option>
-            <option value="Support" data-image="public/images/roles/support.png">Support</option>
-            <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-            <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-            <option value="Jungler" data-image="public/images/roles/jungle.png">Jungler</option>
-            <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-            <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-        </select>
-
+        <label for="role_lol"><?= $this->_('your_role') ?></label>
+            <select id="role_lol" name="role_lol">
+                <option value="" disabled selected><?= $this->_('select_role') ?></option>
+                <option value="Top" data-image="public/images/roles/top.png"><?= $this->_('role[top]') ?></option>
+                <option value="Jungle" data-image="public/images/roles/jungle.png"><?= $this->_('role[jungle]') ?></option>
+                <option value="Mid" data-image="public/images/roles/mid.png"><?= $this->_('role[mid]') ?></option>
+                <option value="ADC" data-image="public/images/roles/adc.png"><?= $this->_('role[adc]') ?></option>
+                <option value="Support" data-image="public/images/roles/support.png"><?= $this->_('role[support]') ?></option>
+                <option value="Fill" data-image="public/images/roles/fill.png"><?= $this->_('role[fill]') ?></option>
+            </select>
         <div id="selected-roles"></div>
 
         <script src="public/js/roles.js?<?= time(); ?>"></script>
 
-        <label for="server">Select your server</label>
+        <label for="server"><?= $this->_('your_server') ?></label>
             <select id="server" name="server">
-                <option value="" disabled selected>Select your server...</option>
-                <option value="Europe West">Europe West</option>
-                <option value="North America">North America</option>
-                <option value="Europe Nordic">Europe Nordic & East </option>
-                <option value="Brazil">Brazil</option>
-                <option value="Latin America North">Latin America North</option>
-                <option value="Latin America South">Latin America South</option>
-                <option value="Oceania">Oceania</option>
-                <option value="Russia">Russia</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Japan">Japan</option>
-                <option value="Korea">Korea</option>
+                <option value="" disabled selected><?= $this->_('select_server') ?></option>
+                <option value="Europe West"><?= $this->_('server[euw]') ?></option>
+                <option value="Europe Nordic"><?= $this->_('server[eune]') ?></option>
+                <option value="North America"><?= $this->_('server[na]') ?></option>
+                <option value="Brazil"><?= $this->_('server[Brazil]') ?></option>
+                <option value="Korea"><?= $this->_('server[kr]') ?></option>
+                <option value="Latin America North"><?= $this->_('server[lan]') ?></option>
+                <option value="Latin America South"><?= $this->_('server[las]') ?></option>
+                <option value="Oceania"><?= $this->_('server[oce]') ?></option>
+                <option value="RURussia"><?= $this->_('server[ru]') ?></option>
+                <option value="Turkey"><?= $this->_('server[tr]') ?></option>
+                <option value="Japan"><?= $this->_('server[Japan]') ?></option>
             </select>
 
         <?php if($this->isConnectWebsite()) : ?>
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
         <?php endif ; ?>
 
-        <input name="submit" id="send-button" type="submit" value="Send">
+        <input name="submit" id="send-button" type="submit" value="<?= $this->_('submit') ?>">
     </form>
     <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
 </div>

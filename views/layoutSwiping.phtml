@@ -1,4 +1,12 @@
 <?php require "views/layout.phtml"; ?>
+
+<?php 
+    if (!isset($_COOKIE['auth_token'])) {
+        header("Location: /logout");
+        exit();
+    }
+?>
+
 <?php if (isset($_SESSION['mode'])) : ?>
     <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
 <?php else : ?>

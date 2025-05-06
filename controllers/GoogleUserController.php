@@ -11,6 +11,7 @@ use models\MatchingScore;
 use models\Partners;
 use models\BannedUsers;
 use traits\SecurityController;
+use traits\Translatable;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Google_Client;
@@ -20,6 +21,7 @@ require 'vendor/autoload.php';
 class GoogleUserController
 {
     use SecurityController;
+    use Translatable;
 
     private GoogleUser $googleUser;
     private User $user;
@@ -76,6 +78,22 @@ class GoogleUserController
             {
                 $user = $this-> user -> getUserByUsername($_SESSION['username']);
             }
+
+            $reconnectUser = $this->restoreSessionFromToken();
+
+            if ($reconnectUser) {
+                header("location:/swiping");
+                exit();
+            }
+
+            if (isset($_GET['lang'])) {
+                $lang = $_GET['lang'];
+            } else {
+                $lang = $_SESSION['lang'] ?? 'en';
+            }
+
+            $this->loadLanguage($lang);
+
             require 'keys.php';
             $partners = $this -> partners -> getPartners();
             $current_url = "https://ur-sg.com/";
@@ -85,6 +103,75 @@ class GoogleUserController
             $page_title = "URSG - Home";
             require "views/layoutHome.phtml";
         }
+    }
+
+    public function restoreSessionFromToken()
+    {
+        if (isset($_COOKIE['auth_token']) && !$this->isConnectGoogle()) {
+            $token = $_COOKIE['auth_token'];
+            $token = strval($token);
+
+            // Get Google user by token
+            $testGoogleUser = $this->googleUser->getGoogleUserByMasterTokenWebsite($token);
+            if (!$testGoogleUser) {
+                return false;
+            }
+
+            // Set session and cookie
+            $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
+            $_SESSION['full_name'] = $testGoogleUser['google_fullName'];
+            $_SESSION['google_id'] = $testGoogleUser['google_id'];
+            $_SESSION['email'] = $testGoogleUser['google_email'];
+            $_SESSION['google_firstName'] = $testGoogleUser['google_firstName'];
+            $_SESSION['masterTokenWebsite'] = $token;
+
+            // Update cookie expiration
+            setcookie("auth_token", $token, [
+                'expires' => time() + 60 * 60 * 24 * 7,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Strict',
+            ]);
+
+            // Continue restoring user info
+            $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
+            if ($googleUser) {
+                $user = $this->user->getUserByUsername($googleUser['user_username']);
+                if ($user) {
+                    $_SESSION['userId'] = $user['user_id'];
+                    $_SESSION['username'] = $user['user_username'];
+                    $_SESSION['gender'] = $user['user_gender'];
+                    $_SESSION['age'] = $user['user_age'];
+                    $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
+                    $_SESSION['game'] = $user['user_game'];
+
+                    if ($user['user_game'] === 'League of Legends') {
+                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
+                        if ($lolUser) {
+                            $_SESSION['lol_id'] = $lolUser['lol_id'];
+                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                            if ($lfUser) {
+                                $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                return true;
+                            }
+                        }
+                    } else if ($user['user_game'] === 'Valorant') {
+                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
+                        if ($valorantUser) {
+                            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
+                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                            if ($lfUser) {
+                                $_SESSION['lf_id'] = $lfUser['lf_id'];
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private function getSocialNetworkLogo($social)
@@ -183,6 +270,14 @@ class GoogleUserController
                 $finalUser = $this->user->getUserById($secondTierUser['user_id']);
             }
         }
+
+        if (isset($_GET['lang'])) {
+            $lang = $_GET['lang'];
+        } else {
+            $lang = $_SESSION['lang'] ?? 'en';
+        }
+
+        $this->loadLanguage($lang);
 
         if (
             $this->isConnectGoogle() && 
@@ -470,6 +565,14 @@ class GoogleUserController
                         $_SESSION['email'] = $this->getGoogleEmail();
                         $_SESSION['google_firstName'] = $this->getGoogleFirstName();
                         $_SESSION['masterTokenWebsite'] = $token;
+
+                        setcookie("auth_token", $token, [
+                            'expires' => time() + 60 * 60 * 24 * 7,
+                            'path' => '/',
+                            'secure' => true,
+                            'httponly' => true,
+                            'samesite' => 'Strict',
+                        ]);
     
                         $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
                         if ($googleUser) {
@@ -650,6 +753,13 @@ class GoogleUserController
 
                     if ($createToken) {
                         $_SESSION['masterTokenWebsite'] = $token;
+                        setcookie("auth_token", $token, [
+                            'expires' => time() + 60 * 60 * 24 * 7,
+                            'path' => '/',
+                            'secure' => true,
+                            'httponly' => true,
+                            'samesite' => 'Strict',
+                        ]);
                     }
                     
                     if (!isset($_SESSION['googleId'])) {
@@ -1066,6 +1176,12 @@ class GoogleUserController
                 setcookie('googleId', "", time() - 42000, COOKIEPATH);
                 unset($_COOKIE['googleId']);
             }
+
+            if (isset($_COOKIE['auth_token'])) {
+                setcookie('auth_token', "", time() - 42000, "/");
+                unset($_COOKIE['auth_token']);
+            }
+    
     
             session_unset();
             session_destroy();

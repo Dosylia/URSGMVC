@@ -72,7 +72,7 @@ class GameController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -174,7 +174,7 @@ class GameController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($token, $userId)) {
+            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }

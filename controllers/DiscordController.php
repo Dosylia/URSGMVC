@@ -54,7 +54,7 @@ class DiscordController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -469,28 +469,82 @@ class DiscordController
     
         $userId = (int)$_POST['userId'];
     
-        // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
+        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
     
         $user = $this->user->getUserById($userId);
-    
-        if ($user['lol_verified'] != 1) {
-            echo json_encode(['success' => true, 'error' => 'User has no league data']);
+
+        $oldTimeRaw = $_POST['oldTime'] ?? null;
+        $oldTimeFormatted = str_replace('+', ' ', $oldTimeRaw);
+        $oldTime = strtotime($oldTimeFormatted);
+
+
+        if (time() - $oldTime < 120) { 
+            echo json_encode(['success' => false, 'error' => 'Please wait before sending another request']);
             return;
         }
+
+        $account = $_POST['account'] ?? null;
+        $extraMessage = $_POST['extraMessage'] ?? null;
+        $server = "Unknown";
     
+        if (!isset($user['user_game'])) {
+            echo json_encode(['success' => false, 'error' => 'User game not defined']);
+            return;
+        }
+        
+        $game = $user['user_game'];
+        
+        if ($game === 'League of Legends') {
+            if ($user['lol_verified'] == 1) {
+                $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
+                if ($lolUser) {
+                    $account = $lolUser['lol_account'];
+                    $server = $lolUser['lol_server'];
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'No League account found for verified user']);
+                    return;
+                }
+            } else {
+                if (!$account) {
+                    echo json_encode(['success' => false, 'error' => 'No League account provided for unverified user']);
+                    return;
+                }
+            }
+        } elseif ($game === 'Valorant') {
+            // Always fallback to provided account since Valorant can't be bound yet
+            if (!$account) {
+                echo json_encode(['success' => false, 'error' => 'No Valorant account provided']);
+                return;
+            } else {
+                $server = $user['valorant_server'] ?? 'Unknown';
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Unsupported game type']);
+            return;
+        }
+        
         require_once 'keys.php';
         $botToken = $discordToken;
-        $channelId = "1263123769866850406"; // Your target channel ID
+
+        if ($game == 'League of Legends') {
+            $channelId = "1263123769866850406";
+        } elseif ($game == 'Valorant') {
+            $channelId = "1263123785716858880";
+        }
     
-        // Construct message content
-        $message = "**{$user['user_username']}** is looking for players on server **{$user['lol_server']}**!\nTheir username is: `{$user['lol_account']}`";
+        $msg = "**{$user['user_username']}** is looking for players!";
+        $msg .= "\n> **Server:** " . ($server ? "**$server**" : "*Not specified*");
+        $msg .= "\n> **Account:** `{$account}`";
+    
+        if (!empty($extraMessage)) {
+            $msg .= "\n\n📣 *{$extraMessage}*";
+        }
     
         $url = "https://discord.com/api/v10/channels/{$channelId}/messages";
-        $data = ["content" => $message];
+        $data = ["content" => $msg];
     
         $response = $this->makeDiscordRequest($url, $data, $botToken);
     
@@ -500,6 +554,7 @@ class DiscordController
             echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
         }
     }
+    
     
 
     public function validateTokenWebsite($token, $userId): bool

@@ -458,5 +458,22 @@ class GoogleUser extends DataBase
     
         return $discordIdTest ?: false;
     }
+
+    public function getGoogleUserByMasterTokenWebsite($masterTokenWebsite) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `googleuser` as g
+                                        WHERE
+                                            g.`google_masterTokenWebsite` = ? 
+        ");
+    
+        $query->execute([$masterTokenWebsite]);
+        $masterTokenTest = $query->fetch();
+    
+        return $masterTokenTest ?: false;
+    }
     
 }

@@ -1,16 +1,16 @@
-
-<a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="Click to join our discord server">
+<!-- Discord Invite -->
+<a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('discord_invite_aria') ?>">
     <section class="discord">
         <div class="discord_row">
-        <i class="fa-brands fa-discord"></i>
-            <h2>Your soulmate on Discord!</h2>
+            <i class="fa-brands fa-discord"></i>
+            <h2><?= $this->_('discord_invite_title') ?></h2>
         </div>
     </section>
 </a>
 
-<!-- <div class="separator"></div><br> -->
+<!-- Partners Section -->
 <section id="partners">
-    <h2>Our Partners</h2>
+    <h2><?= $this->_('partners_title') ?></h2>
     <div class="partners-container">
         <?php foreach ($partners as $partner): ?>
             <div class="partner">
@@ -22,7 +22,7 @@
                     foreach ($socialLinks as $social => $link): 
                         $logoPath = $this->getSocialNetworkLogo($social);
                     ?>
-                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link">
+                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link" aria-label="<?= $this->_('social_link_aria_' . strtolower($social)) ?>">
                             <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
                         </a>
                     <?php endforeach; ?>
@@ -31,52 +31,51 @@
         <?php endforeach; ?>
     </div>
     <div class="call-to-action">
-        <p>Interested in becoming a partner? <a target="_blank" href="https://twitter.com/Dosylia">Contact us</a> for more information.</p>
+        <p><?= $this->_('partners_cta') ?> <a target="_blank" href="https://twitter.com/Dosylia"><?= $this->_('contact_us') ?></a></p>
     </div>
 </section>
 
+<!-- FAQ Section -->
 <section class="frequently_asked_question">
-    <h2>Frequently Asked questions</h2>
-        <div class="faq_row">
-            <div class="faq_row_box">
-                <h3>Why do I need a Google account?</h3>
-                    <p>To ensure a fair and secure user experience, each URSG account must be linked to a unique Google account. Even after linking your Google account, you'll need to confirm your email address and provide some additional information to fully access our website. We may introduce more login options in the future.
-                    <p>    
-            </div>
-
-            <div class="faq_row_box">
-                <h3>How does it work?</h3>
-                    <p>First, you need to sign up and tell us more about yourself and what you're looking for. This will help us match you with people who are a good fit for you. Once matched, you can chat with them through our platform or add them directly to play games.
-                    <p>    
-            </div>
+    <h2><?= $this->_('faq_title') ?></h2>
+    <div class="faq_row">
+        <div class="faq_row_box">
+            <h3><?= $this->_('faq_google_account_title') ?></h3>
+            <p><?= $this->_('faq_google_account_content') ?></p>
         </div>
-        <br>
+        <div class="faq_row_box">
+            <h3><?= $this->_('faq_how_title') ?></h3>
+            <p><?= $this->_('faq_how_content') ?></p>
+        </div>
+    </div>
+    <br>
 </section>
 
-<a href="https://ko-fi.com/yoursoulmategamer" target="_blank" aria-label="Click to support us on kofi">
+<!-- Ko-fi Support -->
+<a href="https://ko-fi.com/yoursoulmategamer" target="_blank" aria-label="<?= $this->_('kofi_invite_aria') ?>">
     <section class="kofi">
         <div class="kofi_row">
             <img src="public/images/kofi_s_logo_nolabel.png" alt="kofi logo" loading="lazy">
-            <h2>Support us on Ko-fi!</h2>
+            <h2><?= $this->_('kofi_invite_title') ?></h2>
         </div>
     </section>
 </a>
 
-<!-- Cookies -->
+<!-- Cookie Management -->
 <dialog id="dialogCookie">
-    <h2><i class="fa-solid fa-cookie"></i> Cookie Management</h2>
+    <h2><i class="fa-solid fa-cookie"></i> <?= $this->_('cookie_title') ?></h2>
     <div class="dialogCookieRowButtons">
-        <button id="btn_optionsCookie">Cookies</button>
-        <button id="btn_aboutCookie">About cookies</button>
+        <button id="btn_optionsCookie"><?= $this->_('cookie_btn_options') ?></button>
+        <button id="btn_aboutCookie"><?= $this->_('cookie_btn_about') ?></button>
     </div>
     <div class="dialogCookieRow" id="optionsCookies">
-        <h3>Strictly necessary</h3>
-        <p class="cookieState">Always active</p>
+        <h3><?= $this->_('cookie_necessary') ?></h3>
+        <p class="cookieState"><?= $this->_('cookie_always_active') ?></p>
     </div>
     <div class="dialogCookieRow" id="aboutCookies">
-        <p>Cookies are small text files stored on your device by your web browser. They help websites remember information about your visit, such as login details or preferences, to improve your browsing experience.</p>
+        <p><?= $this->_('cookie_about_text') ?></p>
     </div>
-    <button id="saveCookies">Save</button>
+    <button id="saveCookies"><?= $this->_('cookie_btn_save') ?></button>
 </dialog>
 
 <script src="public/js/home.js?<?= time(); ?>"></script>

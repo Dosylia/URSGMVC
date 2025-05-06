@@ -51,3 +51,12 @@ function closeConfirmationPopupUnfriend(dialogId) {
       confirmationPopupUnfriend.style.display = "none";
   }
 }
+
+function switchTab(tabId) {
+  const tabs = document.querySelectorAll('.friendlist-section');
+  const buttons = document.querySelectorAll('.tab-button');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  buttons.forEach(btn => btn.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
