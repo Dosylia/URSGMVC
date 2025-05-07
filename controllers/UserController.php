@@ -13,10 +13,12 @@ use models\Items;
 use models\GoogleUser;
 use models\Report;
 use traits\SecurityController;
+use traits\Translatable;
 
 class UserController
 {
     use SecurityController;
+    use Translatable;
 
     private User $user;
     private FriendRequest $friendrequest;
@@ -175,6 +177,7 @@ class UserController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getTopUsers();
 
@@ -491,7 +494,7 @@ class UserController
                 $token = $matches[1];
             
                 // Validate Token for User
-                if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
+                if (!$this->validateTokenWebsite($token, $this->getUserId())) {
                     echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
@@ -588,6 +591,7 @@ class UserController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
@@ -597,6 +601,7 @@ class UserController
         } 
         else
         {
+            $this->initializeLanguage();
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
             $page_title = "URSG - What kind of League player";
@@ -900,7 +905,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -1721,33 +1726,10 @@ class UserController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-            $allUsersArcane = $this-> user -> getAllUsers();
-            if ($user && $usersAll) {
-                $userData = json_encode($user);
-                $usersAllData = json_encode($usersAll);
-            }
 
-            // ARCANE EVENT
-            $totalPiltoverCurrency = 0;
-            $totalZaunCurrency = 0;
-
-            foreach ($allUsersArcane as $userArcane) {
-                if ($userArcane['user_arcane'] === 'Piltover') {
-                    $totalPiltoverCurrency += $userArcane['user_currency'];
-                } elseif ($userArcane['user_arcane'] === 'Zaun') {
-                    $totalZaunCurrency += $userArcane['user_currency'];
-                }
-            }
-
-            $totalCurrency = $totalPiltoverCurrency + $totalZaunCurrency;
-            $piltoverPercentage = $totalCurrency > 0 ? ($totalPiltoverCurrency / $totalCurrency) * 100 : 0;
-            $zaunPercentage = 100 - $piltoverPercentage; 
-
-
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
@@ -1782,7 +1764,7 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -1839,7 +1821,7 @@ class UserController
         $auth = $subscriptionData['keys']['auth'];
     
         // Step 6: Validate token
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token', 'userId' => $userId]);
             return;
         }
@@ -2092,6 +2074,7 @@ class UserController
 
             // Get important datas
             require_once 'keys.php';
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             if ($user['user_game'] == "League of Legends")
@@ -2189,6 +2172,7 @@ class UserController
                     header("Location: /userProfile");
                     exit();
                 }
+                $this->initializeLanguage();
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 if ($anotherUser) 
@@ -2267,6 +2251,7 @@ class UserController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
@@ -2298,6 +2283,7 @@ class UserController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $current_url = "https://ur-sg.com/settings";
@@ -2369,7 +2355,7 @@ class UserController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2533,7 +2519,7 @@ class UserController
             $userId = (int)$_POST['userId'];
         
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2591,7 +2577,7 @@ class UserController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -2682,7 +2668,7 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -2756,7 +2742,7 @@ class UserController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -2795,7 +2781,7 @@ class UserController
         $result = $input['result'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }

@@ -8,10 +8,12 @@ use models\LeagueOfLegends;
 use models\FriendRequest;
 use models\GoogleUser;
 use traits\SecurityController;
+use traits\Translatable;
 
 class UserLookingForController
 {
     use SecurityController;
+    use Translatable;
 
     private UserLookingFor $userlookingfor;
     private User $user; 
@@ -49,6 +51,7 @@ class UserLookingForController
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLf()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/lookingforlol";
             $current_url = "https://ur-sg.com/lookingforuserlol";
@@ -58,6 +61,7 @@ class UserLookingForController
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
                 $template = "views/signup/leagueoflegendsuser";
             $current_url = "https://ur-sg.com/leagueuser";
@@ -67,6 +71,7 @@ class UserLookingForController
                 require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
+            $this->initializeLanguage();
             $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
@@ -84,6 +89,7 @@ class UserLookingForController
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectValorant() && !$this->isConnectLf()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $template = "views/signup/lookingforvalorant";
             $current_url = "https://ur-sg.com/lookingforuservalorant";
@@ -93,6 +99,7 @@ class UserLookingForController
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant()){
             // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
                 $template = "views/signup/leagueoflegendsuser";
             $current_url = "https://ur-sg.com/leagueuser";
@@ -102,6 +109,7 @@ class UserLookingForController
                 require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
+            $this->initializeLanguage();
             $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
@@ -126,6 +134,7 @@ class UserLookingForController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
@@ -189,6 +198,7 @@ class UserLookingForController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 

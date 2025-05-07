@@ -1,6 +1,6 @@
 <section id="setting-page">
 <div class="page-header">
-    <a href="#">Settings</a>
+    <a href="#"><?= $this->_('settings') ?></a>
 </div>
 
     <div id="userInfo" data-user-id="<?= $user['user_id']; ?>" data-chat-filter="<?= $user['user_hasChatFilter']; ?>"></div>
@@ -8,7 +8,7 @@
     <div class="setting-option">
         <span>
             <i class="fas fa-comment-slash"></i> 
-            <span>Chat Filter</span>
+            <span><?= $this->_('chat_filter') ?></span>
         </span>
         <div class="toggle-container-filter">
             <div id="toggleChatFilter" class="filter-button"></div>
@@ -18,7 +18,7 @@
     <div class="setting-option">
         <span>
             <i class="fas fa-moon"></i> 
-            <span>Dark Mode</span>
+            <span><?= $this->_('dark_mode') ?></span>
         </span>
         <div class="toggle-container">
             <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
@@ -28,18 +28,33 @@
     <div class="setting-option">
         <span>
             <i class="fa-solid fa-headphones"></i> 
-            <span>Sound Notification</span>
+            <span><?= $this->_('sound_notifications') ?></span>
         </span>
         <div class="toggle-container-sound" id="toggle-container-sound">
             <div id="toggle-button-sound"></div>
         </div>
     </div>
 
+    <form method="POST" action="/changeLanguage" class="language-switcher">
+        <div class="setting-option">
+            <span>
+                <label for="lang"><i class="fa-solid fa-earth-americas"></i></label>
+                <span><?= $this->_('language') ?></span>
+            </span>
+            <select name="lang" id="lang" onchange="this.form.submit()">
+                <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
+                <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
+                <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
+                <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
+            </select>
+        </div>
+    </form>
+
     <a href="/deleteAccount">
         <div class="setting-option">
             <span>
                 <i class="fa-solid fa-trash"></i> 
-                <span>Delete account</span>
+                <span><?= $this->_('delete_account') ?></span>
             </span>
         </div>
     </a>

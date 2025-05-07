@@ -84,6 +84,48 @@
     color: var(--main--red);
   }
 
+  .footer_black .language-switcher, .footer_grey .language-switcher {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.language-switcher label {
+    color: #333;
+    margin-right: 0.5rem;
+}
+
+.language-switcher select {
+    background-color: #f9f9f9;
+    color: #111;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.language-switcher select:hover {
+    background-color: #fff;
+    border-color: #999;
+}
+
+.dark-mode .language-switcher label {
+    color: #ccc;
+}
+
+.dark-mode .language-switcher select {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    border: 1px solid #444;
+}
+
+.dark-mode .language-switcher select:hover {
+    background-color: #2a2a2a;
+    border-color: #666;
+}
+
+
 /* NEW PROFILE CSS */
 #user-container {
   display: flex;
@@ -7443,6 +7485,27 @@ justify-content: center;
 
 @media only screen and (max-width: 1150px) {
 
+  .footer_black, .footer_grey {
+    font-size: 0.8em;
+    flex-wrap: wrap;
+    }
+  
+    .top_footer, .social_footer, .mid_footer, .bot_footer {
+    flex-basis: 50%;
+    }
+  
+    .footer_black .top_footer,
+    .footer_black .mid_footer,
+    .footer_grey .top_footer,
+    .footer_grey .mid_footer {
+    padding-bottom: 30px;
+    }
+  
+    footer img {
+    width: 40px;
+    height: 40px;
+    }
+
   .lol-quiz .result-row {
     gap: 20px;
     padding: unset;
@@ -7913,27 +7976,6 @@ justify-content: center;
     height: fit-content;
     white-space: nowrap;
     text-overflow: clip;
-  }
-
-  .footer_black, .footer_grey {
-  font-size: 0.8em;
-  flex-wrap: wrap;
-  }
-
-  .top_footer, .social_footer, .mid_footer, .bot_footer {
-  flex-basis: 50%;
-  }
-
-  .footer_black .top_footer,
-  .footer_black .mid_footer,
-  .footer_grey .top_footer,
-  .footer_grey .mid_footer {
-  padding-bottom: 30px;
-  }
-
-  footer img {
-  width: 40px;
-  height: 40px;
   }
 
   #signup_button {

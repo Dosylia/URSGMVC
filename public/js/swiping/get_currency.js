@@ -1,7 +1,12 @@
 let userIdElementHeaderCurrency = document.getElementById('userId');
 let userIdHeaderCurrency = userIdElementHeaderCurrency ? userIdElementHeaderCurrency.value : null;
+let numberofFailCurrency = 0;
 
 function getCurrency(userId) {
+    if (numberofFailCurrency >= 5) {
+        console.error('Too many failed attempts to fetch accepted friend requests. Stopping further attempts.');
+        return;
+    }
     const token = localStorage.getItem('masterTokenWebsite');
     fetch('index.php?action=getCurrencyWebsite', {
         method: 'POST',
@@ -14,11 +19,13 @@ function getCurrency(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.message == "Success") {
+            numberofFailCurrency = 0;
             console.log('Currency fetched successfully');
             fillCurrency(data.currency);
         }
     })
     .catch(error => {
+        numberofFailCurrency++;
         console.error('Fetch error:', error);
     });
 }

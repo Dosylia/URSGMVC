@@ -13,9 +13,18 @@ let firstFriendId = friendId;
 export const replyPreviewContainer = document.getElementById("reply-preview");
 export const chatInput = document.getElementById("message_text");
 export let clearImageVar = false;
+let numberofFail = 0;
+
 
 // Function to fetch messages
 export function fetchMessages(userId, friendId) {
+
+    console.log('Fetching messages...');
+    if (numberofFail >= 5) {
+        console.error('Too many failed attempts. Stopping fetch loop.');
+        return;
+    }
+
     const token = localStorage.getItem('masterTokenWebsite');
     const firstFriendInput = document.getElementById('firstFriend');
     let firstFriend = firstFriendInput ? firstFriendInput.value : null;
@@ -59,6 +68,7 @@ export function fetchMessages(userId, friendId) {
     })
     .then(data => {
         if (data.success) {
+            numberofFail = 0; // Reset the fail counter on success
             if (data.messages !== null && data.messages !== undefined) {
                 if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
                     currentMessages = data.messages;
@@ -77,6 +87,7 @@ export function fetchMessages(userId, friendId) {
                 console.log('No messages found.');
             }
         } else {
+            numberofFail++;
             console.error('Error fetching messages:', data.error);
     
             if (
@@ -92,6 +103,7 @@ export function fetchMessages(userId, friendId) {
         }
     })
     .catch(error => {
+        numberofFail++;
         console.error('Fetch or JSON parse error:', error);
     
         // Retry only for temporary issues (not "Friend not found", etc.)

@@ -86,29 +86,34 @@ class GoogleUserController
                 exit();
             }
 
-            if (isset($_GET['lang'])) {
-                $lang = $_GET['lang'];
-            } else {
-                $lang = $_SESSION['lang'] ?? 'en';
-            }
-
-            $this->loadLanguage($lang);
+            $this->initializeLanguage();
 
             require 'keys.php';
             $partners = $this -> partners -> getPartners();
             $current_url = "https://ur-sg.com/";
             $template = "views/home";
-            $title = "JOIN NOW";
+            $title = $this->_('join_now');
             $picture = "ursg-preview-small";
             $page_title = "URSG - Home";
             require "views/layoutHome.phtml";
         }
     }
 
+    public function changeLanguage()
+    {
+        $allowedLangs = ['en', 'fr', 'de', 'es'];
+        if (isset($_POST['lang']) && in_array($_POST['lang'], $allowedLangs)) {
+            $lang = $_POST['lang'];
+            $_SESSION['lang'] = $lang;
+            header("location:/?message=Switched to $lang");
+            exit();
+        }
+    }
+
     public function restoreSessionFromToken()
     {
-        if (isset($_COOKIE['auth_token']) && !$this->isConnectGoogle()) {
-            $token = $_COOKIE['auth_token'];
+        if (isset($token) && !$this->isConnectGoogle()) {
+            $token = $token;
             $token = strval($token);
 
             // Get Google user by token
@@ -189,7 +194,7 @@ class GoogleUserController
 
     public function confirmMailPage() 
     {
-
+        $this->initializeLanguage();
         if (isset($_SESSION['email'])) {
             $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
         } else {
@@ -271,13 +276,7 @@ class GoogleUserController
             }
         }
 
-        if (isset($_GET['lang'])) {
-            $lang = $_GET['lang'];
-        } else {
-            $lang = $_SESSION['lang'] ?? 'en';
-        }
-
-        $this->loadLanguage($lang);
+        $this->initializeLanguage();
 
         if (
             $this->isConnectGoogle() && 
@@ -413,6 +412,7 @@ class GoogleUserController
 
     public function legalNoticePage() 
     {
+        $this->initializeLanguage();
         $current_url = "https://ur-sg.com/legalNotice";
         $template = "views/legalnotice";
         $title = "Legal Notice";
@@ -423,6 +423,7 @@ class GoogleUserController
 
     public function CSAEPage() 
     {
+        $this->initializeLanguage();
         $current_url = "https://ur-sg.com/CSAE";
         $template = "views/csae";
         $title = "Child Sexual Abuse and Exploitation (CSAE) Policy";
@@ -433,6 +434,7 @@ class GoogleUserController
 
     public function termsOfServicePage() 
     {
+        $this->initializeLanguage();
         $current_url = "https://ur-sg.com/termsOfService";
         $template = "views/termsofservice";
         $title = "Terms of service";
@@ -443,6 +445,7 @@ class GoogleUserController
 
     public function siteMapPage() 
     {
+        $this->initializeLanguage();
         $xml = simplexml_load_file('sitemap.xml');
             $current_url = "https://ur-sg.com/siteMap";
         $template = "views/sitemap";
@@ -454,6 +457,7 @@ class GoogleUserController
 
     public function notFoundPage() 
     {
+        $this->initializeLanguage();
         $current_url = "https://ur-sg.com/";
         $template = "views/pageNotFound";
         $title = "404 - Page not found";
@@ -1177,9 +1181,9 @@ class GoogleUserController
                 unset($_COOKIE['googleId']);
             }
 
-            if (isset($_COOKIE['auth_token'])) {
+            if (isset($token)) {
                 setcookie('auth_token', "", time() - 42000, "/");
-                unset($_COOKIE['auth_token']);
+                unset($token);
             }
     
     
@@ -1406,6 +1410,7 @@ class GoogleUserController
 
     public function deleteAccountPage()
     {
+        $this->initializeLanguage();
         $current_url = "https://ur-sg.com/deleteAccount";
         $template = "views/swiping/delete_account";
         $page_title = "URSG - Delete account";

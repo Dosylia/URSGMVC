@@ -44,6 +44,7 @@ spl_autoload_register('loadClass');
 // Define a map of actions to controller classes and methods
 $actionMap = [
     'home' => [GoogleUserController::class, 'homePage'],
+    'changeLanguage' => [GoogleUserController::class, 'changeLanguage'],
     'getAllUsersPhone' => [UserController::class, 'getAllUsersPhone'],
     'riotAccount' => [RiotController::class, 'riotAccount'],
     'riotAccountPhone' => [RiotController::class, 'riotAccountPhone'],

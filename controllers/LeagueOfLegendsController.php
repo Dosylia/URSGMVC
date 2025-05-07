@@ -38,13 +38,7 @@ class LeagueOfLegendsController
 
     public function pageLeagueUser()
     {
-        if (isset($_GET['lang'])) {
-            $lang = $_GET['lang'];
-        } else {
-            $lang = $_SESSION['lang'] ?? 'en';
-        }
-
-        $this->loadLanguage($lang);
+        $this->initializeLanguage();
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
             // Code block 1: User is connected via Google, Website and has League data, need looking for
             if (isset($_GET['user_id'])) {
@@ -99,6 +93,7 @@ class LeagueOfLegendsController
         {
 
           // Get important datas
+          $this->initializeLanguage();
           $user = $this-> user -> getUserByUsername($_SESSION['username']);
           $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
 
@@ -136,6 +131,7 @@ class LeagueOfLegendsController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $allUsers = $this-> user -> getAllUsers();
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);

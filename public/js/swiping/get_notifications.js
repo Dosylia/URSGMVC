@@ -12,8 +12,15 @@ let lastNotifContentPending = [];
 let AllNotifications = [];
 const requestBtn = document.getElementById('requests-btn');
 const messageSound = new Audio('public/sounds/notification.mp3');
+let numberOfFailsUnred = 0;
+let numberOfFailsAccepted = 0;
+let numberOfFailsPending = 0;
 
 function fetchFriendRequest(userId) {
+    if (numberOfFailsPending >= 5) {
+        console.error('Too many failed attempts to fetch accepted friend requests. Stopping further attempts.');
+        return; 
+    }
     fetch('index.php?action=getFriendRequestWebsite', {
         method: 'POST',
         headers: {
@@ -25,6 +32,7 @@ function fetchFriendRequest(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.pendingRequests) {
+            numberOfFailsPending = 0;   
             // Filter out existing pending notifications
             if (data.givenDailyReward) {
                 displayNotification(
@@ -53,6 +61,7 @@ function fetchFriendRequest(userId) {
                 }
             }
         } else {
+            numberOfFailsPending = 0;
             // Remove all pending notifications
             if (data.givenDailyReward) {
                 displayNotification(
@@ -66,10 +75,17 @@ function fetchFriendRequest(userId) {
         }
         fillNotificationCenter(); // Re-render all notifications
     })
-    .catch(error => console.error('Fetch error:', error));
+    .catch(error => {
+        numberOfFailsPending++;
+        console.error('Fetch error:', error);
+    });
 }
 
 function fetchAcceptedFriendRequest(userId) {
+    if (numberOfFailsAccepted >= 5) {
+        console.error('Too many failed attempts to fetch accepted friend requests. Stopping further attempts.');
+        return; 
+    }
     fetch('/getAcceptedFriendRequestWebsite', {
         method: 'POST',
         headers: {
@@ -81,6 +97,7 @@ function fetchAcceptedFriendRequest(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.acceptedFriendRequest) {
+            numberOfFailsAccepted = 0;
             // Filter out existing accepted notifications
             AllNotifications = AllNotifications.filter(notif => notif.type !== 'accepted');
             const acceptedWithType = data.acceptedFriendRequest.map(notif => ({ ...notif, type: 'accepted' }));
@@ -88,6 +105,7 @@ function fetchAcceptedFriendRequest(userId) {
             lastNotifCount = data.acceptedFriendRequest.length;
             lastNotifContent = data.acceptedFriendRequest;
         } else {
+            numberOfFailsAccepted = 0;
             // Remove all accepted notifications
             AllNotifications = AllNotifications.filter(notif => notif.type !== 'accepted');
             lastNotifCount = 0;
@@ -95,7 +113,10 @@ function fetchAcceptedFriendRequest(userId) {
         }
         fillNotificationCenter(); // Re-render all notifications
     })
-    .catch(error => console.error('Fetch error:', error));
+    .catch(error => {
+        numberOfFailsAccepted++;
+        console.error('Fetch error:', error);
+    });
 }
 
 // Helper function to compare two arrays of objects (deep comparison)
@@ -371,6 +392,11 @@ function addNewNotification(newNotification) {
 }
 
 function fetchUnreadMessage(userId) {
+
+    if (numberOfFailsUnred >= 5) {
+        console.error('Too many failed attempts to fetch unread messages. Stopping further attempts.');
+        return; 
+    }
     const servedSenderIds = JSON.parse(localStorage.getItem('servedSenderIds')) || [];
 
     fetch('index.php?action=getUnreadMessageWebsite', {
@@ -384,6 +410,7 @@ function fetchUnreadMessage(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.unreadCount) {
+            numberOfFailsUnred = 0;
             console.log('Unread messages fetched successfully');
 
             const newSenderIds = [];
@@ -420,6 +447,7 @@ function fetchUnreadMessage(userId) {
             updateUnreadMessagesForFriends(data.unreadCount);
             cleanupServedSenders(data.unreadCount.map(m => m.chat_senderId));
         } else {
+            numberOfFailsUnred = 0;
             globalUnreadCounts = {};
             clearContainer();
             document.title = originalTitleNoChange;
@@ -428,6 +456,7 @@ function fetchUnreadMessage(userId) {
         }
     })
     .catch(error => {
+        numberOfFailsUnred++;
         console.error('Fetch error:', error);
     });
 }

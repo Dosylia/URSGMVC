@@ -54,7 +54,7 @@ class DiscordController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -317,6 +317,14 @@ class DiscordController
             $_SESSION['google_firstName'] = $existingUser['google_firstName'];
             $_SESSION['masterTokenWebsite'] = $existingUser['google_masterTokenWebsite'];
 
+            setcookie("auth_token", $existingUser['google_masterTokenWebsite'], [
+                'expires' => time() + 60 * 60 * 24 * 7,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Strict',
+            ]);
+
             $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
 
             if ($googleUser)
@@ -433,6 +441,14 @@ class DiscordController
                 $token = bin2hex(random_bytes(32));
                 $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserDiscord, $token);
 
+                setcookie("auth_token", $token, [
+                    'expires' => time() + 60 * 60 * 24 * 7,
+                    'path' => '/',
+                    'secure' => true,
+                    'httponly' => true,
+                    'samesite' => 'Strict',
+                ]);
+
                 if ($createToken) {
                     $_SESSION['masterTokenWebsite'] = $token;
                 }
@@ -469,7 +485,7 @@ class DiscordController
     
         $userId = (int)$_POST['userId'];
     
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }

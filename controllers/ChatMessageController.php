@@ -10,12 +10,14 @@ use models\Items;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use traits\SecurityController;
+use traits\Translatable;
 
 require 'vendor/autoload.php';
 
 class ChatMessageController
 {
     use SecurityController;
+    use Translatable;
 
     private ChatMessage $chatmessage;
     private User $user;
@@ -45,6 +47,7 @@ class ChatMessageController
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf()
         ) {
+            $this->initializeLanguage();
             $user = $this->user->getUserById($_SESSION['userId']);
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
             $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
@@ -160,7 +163,7 @@ class ChatMessageController
     $token = $_GET['token'] ?? null;
 
     // Validate token and IDs (use your existing validation logic)
-    if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+    if (!$this->validateTokenWebsite($token, $userId)) {
         echo "event: error\ndata: Invalid token\n\n";
         ob_flush();
         flush();
@@ -368,7 +371,7 @@ class ChatMessageController
              $token = $matches[1];
  
              // Validate Token for User
-             if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getSenderId())) {
+             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
                  return;
              }
@@ -507,7 +510,7 @@ class ChatMessageController
         $token = $matches[1];
         $userId = $_SESSION['userId'] ?? null;
     
-        if (!$userId || !$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -637,7 +640,7 @@ class ChatMessageController
         $token = $matches[1];
         $userId = $_SESSION['userId'] ?? null;
         
-        if (!$userId || !$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -687,7 +690,7 @@ class ChatMessageController
                 'VAPID' => [
                     'publicKey' => $webPushPublicKey,
                     'privateKey' => $webPushPrivateKey,
-                    'subject' => 'https://nostalgic-jennings.217-154-5-6.plesk.page'
+                    'subject' => 'https://ur-sg.com'
                 ]
             ]);
     
@@ -731,7 +734,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -781,7 +784,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getSenderId())) {
+            if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -958,9 +961,14 @@ class ChatMessageController
              }
  
              $token = $matches[1];
+
+            //  if (!isset($token)) {
+            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     return;
+            //  }
  
              // Validate Token for User
-             if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
+             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
                  return;
              }
@@ -1151,7 +1159,7 @@ class ChatMessageController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $this->getUserId())) {
+            if (!$this->validateTokenWebsite($token, $this->getUserId())) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }

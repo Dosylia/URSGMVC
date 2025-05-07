@@ -8,10 +8,12 @@ use models\User;
 use models\GoogleUser;
 
 use traits\SecurityController;
+use traits\Translatable;
 
 class ItemsController
 {
     use SecurityController;
+    use Translatable;
 
     private Items $items;
     private User $user;
@@ -37,6 +39,7 @@ class ItemsController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
             $items = $this-> items -> getItems();
@@ -363,7 +366,7 @@ class ItemsController
                 $token = $matches[1];
 
                 // Validate Token for User
-                if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+                if (!$this->validateTokenWebsite($token, $userId)) {
                     echo json_encode(['success' => false, 'error' => 'Invalid token']);
                     return;
                 }
@@ -558,7 +561,7 @@ class ItemsController
                 $token = $matches[1];
 
                 // Validate Token for User
-                if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+                if (!$this->validateTokenWebsite($token, $userId)) {
                     echo json_encode(['success' => false, 'error' => 'Invalid token']);
                     return;
                 }
@@ -688,7 +691,7 @@ class ItemsController
                 $token = $matches[1];
 
                 // Validate Token for User
-                if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+                if (!$this->validateTokenWebsite($token, $userId)) {
                     echo json_encode(['success' => false, 'error' => 'Invalid token']);
                     return;
                 }
@@ -799,7 +802,7 @@ class ItemsController
                 // $token = $matches[1];
 
                 // // Validate Token for User
-                // if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+                // if (!$this->validateTokenWebsite($token, $userId)) {
                 //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 //     return;
                 // }

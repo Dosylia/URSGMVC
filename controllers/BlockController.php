@@ -9,10 +9,12 @@ use models\GoogleUser;
 use models\ChatMessage;
 
 use traits\SecurityController;
+use traits\Translatable;
 
 class BlockController
 {
     use SecurityController;
+    use Translatable;
 
     private Block $block;
     private FriendRequest $friendrequest;

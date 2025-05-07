@@ -237,6 +237,14 @@ class RiotController
                                     $createToken = $this->googleUser->storeMasterTokenWebsite($existingUser['google_userId'], $token);
                                 }
 
+                                setcookie("auth_token", $token, [
+                                    'expires' => time() + 60 * 60 * 24 * 7,
+                                    'path' => '/',
+                                    'secure' => true,
+                                    'httponly' => true,
+                                    'samesite' => 'Strict',
+                                ]);
+
                                 $_SESSION['google_userId'] = $existingUser['google_userId'];
                                 $_SESSION['google_id'] = $puuid;
                                 $_SESSION['email'] = $existingUser['google_email'];
@@ -367,6 +375,14 @@ class RiotController
                                 // MASTER TOKEN SYSTEM
                                 $token = bin2hex(random_bytes(32));
                                 $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserRiot, $token);
+
+                                setcookie("auth_token", $token, [
+                                    'expires' => time() + 60 * 60 * 24 * 7,
+                                    'path' => '/',
+                                    'secure' => true,
+                                    'httponly' => true,
+                                    'samesite' => 'Strict',
+                                ]);
             
                                 if ($createToken) {
                                     $_SESSION['masterTokenWebsite'] = $token;

@@ -35,4 +35,34 @@ trait Translatable
     {
         return $this->translations[$key] ?? $key;
     }
+
+    public function initializeLanguage()
+{
+    $allowedLangs = ['en', 'fr', 'de', 'es'];
+
+    if (isset($_GET['lang']) && in_array($_GET['lang'], $allowedLangs)) {
+        $lang = $_GET['lang'];
+    } else if (isset($_SESSION['lang'])) {
+        $lang = $_SESSION['lang'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode"), true);
+        $countryCode = $geo['countryCode'] ?? 'US';
+        $regionLangMap = [
+            'FR' => 'fr',
+            'DE' => 'de',
+            'ES' => 'es',
+            'AT' => 'de',
+            'LU' => 'fr',
+            'MX' => 'es',
+            'AR' => 'es',
+        ];
+
+        $lang = $regionLangMap[$countryCode] ?? 'en';
+        $_SESSION['lang'] = $lang;
+    }
+
+    $this->loadLanguage($lang);
+}
+
 }

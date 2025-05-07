@@ -1,205 +1,227 @@
-<?php require "views/layout.phtml"; ?> 
+<?php require "views/layout.phtml"; ?>
 <body>
 
-<header>
-    <section class="main_section">
-        <div class="top_main_section"> 
-            <div class="top_left_main_section">
-                <a href="/">
-                    <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
-                </a>
-            </div> 
-
-            <div class="top_right_main_section">
-                <div class="toggle-container">
-                            <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+    <header>
+        <section class="main_section">
+            <div class="top_main_section">
+                <div class="top_left_main_section">
+                    <a href="/">
+                        <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
+                    </a>
                 </div>
-            <nav>
-                <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
-                                        
-                <?php if(
-                                $this->isConnectGoogle() && 
-                                $this->isConnectWebsite() && 
-                                (
-                                    ($this->isConnectLeague() && !$this->isConnectValorant()) || 
-                                    ($this->isConnectValorant() && !$this->isConnectLeague())
-                                ) && 
-                                $this->isConnectLf()
-                            )  :?>  <!-- Connected to all -->
-                        <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in"> <!-- Log out button -->
-                                Log out
-                        </a>
-                        <a href="/userProfile?<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>  
-                    <?php elseif(
-                                    $this->isConnectGoogle() && 
-                                    $this->isConnectWebsite() && 
-                                    (
-                                        ($this->isConnectLeague() && !$this->isConnectValorant()) || 
-                                        ($this->isConnectValorant() && !$this->isConnectLeague())
-                                    ) && 
-                                    !$this->isConnectLf()
-                                ) : ?>  <!-- No session for looking for -->
-                        <a href="/logout"  class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>   
-                    <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectValorant() && !$this->isConnectLf()): ?>  <!-- No session for looking for and league -->
-                        <a href="/logout" class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>   
-                    <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
-                        <a href="/logout" class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / Diff name-->
-                            <?= ucfirst($googleUser['google_fullName']) ?>
-                        </a>
-                <?php else : ?>
-                    <input value="Sign up/Log in" type="text" title="Sign up/Sign in" id="signup_button">
-                <?php endif; ?>
-            </nav>
-        </div>
-    </div>
 
-        <div class="mid_main_section">
-            <p><?= $title ?></p>
-            <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf()) : ?>
-                <a href="/swiping" class="mid_main_section_button2">Swipe now</a>
-            <?php elseif ($this->isConnectGoogle()) : ?>
-                <a href="/signup" class="mid_main_section_button2">Join now</a>
-            <?php else : ?>
-                <input class="mid_main_section_button" value="Join now" >
-            <?php endif; ?>
-        </div>   
+                <div class="top_right_main_section">
+                    <div class="toggle-container">
+                        <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+                    </div>
+                    <nav>
+                        <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
 
-        <div class="bottom_section">
-            <div class="bottom_section_ctn">
-                <p>Download</p>
-                <a target="_blank" href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+                        <?php if (
+                            $this->isConnectGoogle() &&
+                            $this->isConnectWebsite() &&
+                            (
+                                ($this->isConnectLeague() && !$this->isConnectValorant()) ||
+                                ($this->isConnectValorant() && !$this->isConnectLeague())
+                            ) &&
+                            $this->isConnectLf()
+                        ): ?> <!-- Connected to all -->
+                            <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in">
+                                <!-- Log out button -->
+                                <?= $this->_('log_out') ?>
+
+                            </a>
+                            <a href="/userProfile?<?= ucfirst($user['user_username']) ?>" title="Profile"
+                                class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
+                                <?= ucfirst($user['user_username']) ?>
+                            </a>
+                        <?php elseif (
+                            $this->isConnectGoogle() &&
+                            $this->isConnectWebsite() &&
+                            (
+                                ($this->isConnectLeague() && !$this->isConnectValorant()) ||
+                                ($this->isConnectValorant() && !$this->isConnectLeague())
+                            ) &&
+                            !$this->isConnectLf()
+                        ): ?> <!-- No session for looking for -->
+                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
+                                <!-- Log out button -->
+                                <?= $this->_('log_out') ?>
+                            </a>
+                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
+                                <!-- User page / name = username -->
+                                <?= ucfirst($user['user_username']) ?>
+                            </a>
+                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectValorant() && !$this->isConnectLf()): ?>
+                            <!-- No session for looking for and league -->
+                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
+                                <!-- Log out button -->
+                                <?= $this->_('log_out') ?>
+                            </a>
+                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
+                                <!-- User page / name = username -->
+                                <?= ucfirst($user['user_username']) ?>
+                            </a>
+                        <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()): ?>
+                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
+                                <!-- Log out button -->
+                                <?= $this->_('log_out') ?>
+                            </a>
+                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
+                                <!-- User page / Diff name-->
+                                <?= ucfirst($googleUser['google_fullName']) ?>
+                            </a>
+                        <?php else: ?>
+                            <input value="<?= $this->_('sign_up_log_in') ?>" type="text" title="Sign up/Sign in" id="signup_button">
+                        <?php endif; ?>
+                    </nav>
+                </div>
             </div>
-        </div>
 
-    </section>
+            <div class="mid_main_section">
+                <p><?= $title ?></p>
+                <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf()): ?>
+                    <a href="/swiping" class="mid_main_section_button2"><?= $this->_('swipe_now') ?></a>
+                <?php elseif ($this->isConnectGoogle()): ?>
+                    <a href="/signup" class="mid_main_section_button2"><?= $this->_('join_now') ?></a>
+                <?php else: ?>
+                    <input class="mid_main_section_button" value="<?= $this->_('join_now') ?>">
+                <?php endif; ?>
+            </div>
 
-    <dialog id="favDialog">
-        <!-- Display of Log in button, cancel and terms of use -->
-         
-    <!-- TEST SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fnostalgic-jennings.217-154-5-6.plesk.page%2FdiscordData&scope=email+identify+guilds+connections -->
-        <!-- LIVE SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections -->
-        <section class="loginsignin">
-            <h2>Sign up/Log in</h2><br><br>
-                <p>When clicking on sign in,<br> you agree to <a href="/legalNotice">our terms of use</a>.</p><br>
-                <script  src="public/js/ajaxGoogle.js?<?= time(); ?>"></script>
-                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="signup_buttonPopup">
-                <img src="public/images/riot_icon.png" >Sign up with Riot account</a>
+            <div class="bottom_section">
+                <div class="bottom_section_ctn">
+                    <p><?= $this->_('download') ?></p>
+                    <a target="_blank"
+                        href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img
+                            id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+                </div>
+            </div>
+
+        </section>
+
+        <dialog id="favDialog">
+            <!-- Display of Log in button, cancel and terms of use -->
+
+            <!-- TEST SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fnostalgic-jennings.217-154-5-6.plesk.page%2FdiscordData&scope=email+identify+guilds+connections -->
+            <!-- LIVE SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections -->
+            <section class="loginsignin">
+                <h2><?= $this->_('sign_up_log_in') ?></h2><br><br>
+                <p><?= $this->_('when_clicking_on_sign_in') ?><br> <?= $this->_('you_agree_to') ?> <a
+                        href="/legalNotice"><?= $this->_('our_terms_of_use') ?></a>.</p><br>
+                <script src="public/js/ajaxGoogle.js?<?= time(); ?>"></script>
+                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid"
+                    class="signup_buttonPopup">
+                    <img src="public/images/riot_icon.png"><?= $this->_('sign_up_with_riot_account') ?></a>
                 <br><br>
-                <a href="https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections" class="signup_buttonPopup">
-                <img src="public/images/discord_user.png" >Sign up with Discord</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections"
+                    class="signup_buttonPopup">
+                    <img src="public/images/discord_user.png"><?= $this->_('sign_up_with_discord') ?></a>
                 <br><br>
                 <div class="social_buttons2">
-            <div id="g_id_onload"
-                data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
-                data-context="signin"
-                data-ux_mode="popup"
-                data-callback="handleCredentialResponse"
-                data-auto_prompt="false"
-                data-use_fedcm_for_prompt="true">
-            </div>
-            
-            <div class="g_id_signin"
-                data-type="standard"
-                data-shape="rectangular"
-                data-theme="outline"
-                data-text="signin_with"
-                data-size="large"
-                data-logo_alignment="left"
-                allow="identity-credentials-get">
-            </div>
+                    <div id="g_id_onload"
+                        data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
+                        data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                        data-auto_prompt="false" data-use_fedcm_for_prompt="true">
+                    </div>
 
-            <script nonce="TAJKETR">
-                window.onload = function() {
-                    window.google.accounts.id.initialize({
-                        client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
-                        callback: handleCredentialResponse,
-                    });
+                    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                        data-text="signin_with" data-size="large" data-logo_alignment="left"
+                        allow="identity-credentials-get">
+                    </div>
 
-                    <?php if (!$this->isConnectGoogle()): ?>
-                        window.google.accounts.id.prompt();
+                    <script nonce="TAJKETR">
+                        window.onload = function () {
+                            window.google.accounts.id.initialize({
+                                client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
+                                callback: handleCredentialResponse,
+                            });
+
+                            <?php if (!$this->isConnectGoogle()): ?>
+                                window.google.accounts.id.prompt();
+                            <?php endif; ?>
+                        };
+                    </script>
+
+                    <!-- URSG Test : 666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com -->
+                    <!-- URSG Prod : 666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com -->
+
+                    <?php if ($this->isConnectGoogle()): ?>
+                        <div id="g_id_one_tap" style="display:none;"></div>
                     <?php endif; ?>
-                };
-            </script>
 
-            <!-- URSG Test : 666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com -->
-            <!-- URSG Prod : 666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com -->
+                    <script src="https://accounts.google.com/gsi/client" defer async></script>
+                </div><br>
+                <!-- Get out of pop up -->
+                <button id="cancelBtn"><?= $this->_('cancel') ?></button>
+                <br><br>
+            </section>
 
-        <?php if ($this->isConnectGoogle()): ?>
-            <div id="g_id_one_tap" style="display:none;"></div>
-        <?php endif; ?>
-            
-            <script src="https://accounts.google.com/gsi/client" defer async></script>
-        </div><br>
-            <!-- Get out of pop up -->
-            <button id="cancelBtn">Cancel</button>
-            <br><br>
-        </section>
+            <!-- Display of buttons to download app on App store/Google Store -->
+            <section class="download_app_dialog">
+                <p><?= $this->_('download_the_app') ?></p>
+                <div class="download_app_dialog_logos">
+                    <a target="_blank"
+                        href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img
+                            id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+                </div>
+            </section>
+        </dialog>
+    </header>
 
-        <!-- Display of buttons to download app on App store/Google Store -->
-        <section class="download_app_dialog">  
-            <p>Download the app</p>
-            <div class="download_app_dialog_logos">
-                <a target="_blank" href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
-            </div>  
-        </section>
-    </dialog>
-</header>
-
-<div id="darkOverlay" class="dark-overlay"></div>
+    <div id="darkOverlay" class="dark-overlay"></div>
 
 
     <main>
-        <?php if(isset($_GET['message'])) :?>
+        <?php if (isset($_GET['message'])): ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
-        <?php require $template.".phtml"; ?> 
+        <?php require $template . ".phtml"; ?>
     </main>
 
 
-<footer>
-    <div class="footer_black">
-        <div class="top_footer">
-            <p>Copyright © 2025 URSG</p>
-            <p>Your Soulmate gamer</p>
-        </div>
+    <footer>
+        <div class="footer_black">
+            <div class="top_footer">
+                <p>Copyright © 2025 URSG</p>
+                <p>Your Soulmate gamer</p>
+            </div>
 
-        <div class="mid_footer">
-        <p><a href="/legalNotice">Legal notice/Privacy policy, </a><a href="/termsOfService">ToS, </a><a href="/CSAE">CSAE</a></p>
-            <a href="/siteMap"> Site map</a>
-        </div>
+            <div class="mid_footer">
+                <p><a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a><a
+                        href="/termsOfService"><?= $this->_('tos') ?>, </a><a href="/CSAE"><?= $this->_('csae') ?></a>
+                </p>
+                <a href="/siteMap"><?= $this->_('site_map') ?></a>
+            </div>
 
-        <div class="social_footer">
-            <a href="https://discord.gg/Bfpkws74V3" target="_blank">
-                <img src="public/images/discord2.png" alt="logo discord"></a>
-            <a href="https://twitter.com/Dosylia" target="_blank">
-                <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
-        </div>
+            <div class="social_footer">
+                <a href="https://discord.gg/Bfpkws74V3" target="_blank">
+                    <img src="public/images/discord2.png" alt="logo discord"></a>
+                <a href="https://twitter.com/Dosylia" target="_blank">
+                    <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
+                <form method="POST" action="/changeLanguage" class="language-switcher">
+                    <label for="lang">🌐</label>
+                    <select name="lang" id="lang" onchange="this.form.submit()">
+                        <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
+                        <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
+                        <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
+                        <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
+                    </select>
+                </form>
+            </div>
 
-        <div class="bot_footer">
-            <p>Made by :  <a href="https://www.dosylia.com/">Dosylia</a> and <a href="https://https://x.com/seenfront/">Seenfront</a></p>
-            <p>Design Lead :  <a href="https://https://x.com/CinderellaKuru/">Kuru</a></p>    
-            <p>Artwork by :  <a href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p>       
+            <div class="bot_footer">
+                <p><?= $this->_('made_by') ?> : <a href="https://www.dosylia.com/">Dosylia</a> and <a
+                        href="https://https://x.com/seenfront/">Seenfront</a></p>
+                <p><?= $this->_('design_lead') ?> : <a href="https://https://x.com/CinderellaKuru/">Kuru</a></p>
+                <p><?= $this->_('artwork_by') ?> : <a href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a>
+                </p>
+            </div>
         </div>
-    </div>   
-</footer>
+    </footer>
 
-<script src="public/js/dialogGoogle.js?<?= time(); ?>"></script>
-<script src="public/js/referal.js"></script>
+    <script src="public/js/dialogGoogle.js?<?= time(); ?>"></script>
+    <script src="public/js/referal.js"></script>
 </body>
 
 

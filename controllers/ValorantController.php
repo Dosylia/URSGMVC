@@ -7,10 +7,12 @@ use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
 use traits\SecurityController;
+use traits\Translatable;
 
 class ValorantController
 {
     use SecurityController;
+    use Translatable;
 
     private Valorant $valorant;
     private FriendRequest $friendrequest;
@@ -44,6 +46,7 @@ class ValorantController
                     exit();
                 }
             }
+            $this->initializeLanguage();
             $valorantUser = $this->valorant->getValorantUserByUsername($_SESSION['valorant_account']);
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $current_url = "https://ur-sg.com/lookingforuservalorant";
@@ -60,6 +63,7 @@ class ValorantController
                     exit();
                 }
             }
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $current_url = "https://ur-sg.com/valoranteuser";
             $template = "views/signup/valorantuser";
@@ -69,6 +73,7 @@ class ValorantController
             require "views/layoutSignup.phtml";
         } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
             // Code block 3: User is connected via Google but doesn't have a username
+            $this->initializeLanguage();
             $current_url = "https://ur-sg.com/basicinfo";
             $template = "views/signup/basicinfo";
             $title = "Sign up";
@@ -88,6 +93,7 @@ class ValorantController
         {
 
           // Get important datas
+          $this->initializeLanguage();
           $user = $this-> user -> getUserByUsername($_SESSION['username']);
           $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
 
@@ -126,6 +132,7 @@ class ValorantController
         {
 
             // Get important datas
+            $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
 

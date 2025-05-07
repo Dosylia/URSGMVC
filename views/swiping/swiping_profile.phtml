@@ -3,28 +3,28 @@
         <div id="edit-profile-container">
             <div id="menu-links">
                 <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile">
-                    <i class="fa-solid fa-pen"></i> <span class="menu-text">Update Profile</span>
+                    <i class="fa-solid fa-pen"></i> <span class="menu-text"><?= $this->_('update_profile') ?></span>
                 </a> 
                 <?php if ($user['user_game'] !== 'Valorant'): ?> 
                     <a href="/updateLeaguePage" class="btn_user_updates_profile" data-text="Update League">
-                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text">Update League</span>
+                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text"><?= $this->_('update_league') ?></span>
                     </a>
                 <?php else : ?>
                     <a href="/updateValorantPage" class="btn_user_updates_profile" data-text="Update Valorant">
-                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text">Update Valorant</span>
+                        <i class="fa-solid fa-gamepad"></i> <span class="menu-text"><?= $this->_('update_valorant') ?></span>
                     </a> 
                 <?php endif; ?>
                 <a href="/updateLookingForPage" class="btn_user_updates_profile" data-text="Update Interests">
-                    <i class="fa-solid fa-heart"></i> <span class="menu-text">Update Interests</span>
+                    <i class="fa-solid fa-heart"></i> <span class="menu-text"><?= $this->_('update_interests') ?></span>
                 </a>
                 <?php if ($user['user_game'] === "League of Legends") : ?>
                     <?php if ($lolUser['lol_verified'] === 1): ?>
                         <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates_profile" data-text="Bind Riot">
-                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text">Refresh Riot</span>
+                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('refresh_riot') ?></span>
                         </a>
                     <?php else : ?>
                         <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates_profile" data-text="Bind Riot">
-                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text">Bind Riot</span>
+                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('bind_riot') ?></span>
                         </a>
                     <?php endif; ?>
                 <?php endif; ?>
@@ -78,10 +78,10 @@
     </div>
     <div id="user-bottom-container"> <!--Flex column -->
         <nav id="user-bottom-nav"> <!--Flex row with JS -->
-            <button type="button" id="aboutme-btn" class="focused">About me</button>
-            <button type="button" id="pictures-btn">Pictures</button>
-            <button type="button" id="socials-btn">Socials</button>
-            <button type="button" id="requests-btn">Requests</button>
+            <button type="button" id="aboutme-btn" class="focused"><?= $this->_('about_me') ?></button>
+            <button type="button" id="pictures-btn"><?= $this->_('pictures') ?></button>
+            <button type="button" id="socials-btn"><?= $this->_('socials') ?></button>
+            <button type="button" id="requests-btn"><?= $this->_('requests') ?></button>
         </nav>
         <hr id="hr-user-bottom-nav">
         <div id="loading-indicator" style="display: none; text-align: center;">
@@ -210,7 +210,7 @@
                 <div class="about_you_users"><br>
                     <div class=""top-part-about style="flex-direction: column;">
                     <div class="gender about-users-containers">
-                        <p class="about-users-title"><strong>Gender</strong></p>
+                        <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
                         <?php if ($user['user_gender'] == "Female") : ?>
                             <p class="about-users-box">
                                 <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
@@ -256,17 +256,17 @@
                         <?php endif; ?>
                     </div>
                         <div class="queues about-users-containers">
-                        <p class="about-users-title"><strong>Queues</strong></p>
+                        <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
                             <?php if($user['user_kindOfGamer'] == "Chill") :?>
-                                <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-low-opacity">Competition</span></p>
+                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
                             <?php elseif($user['user_kindOfGamer'] == "Competition") :?>
-                                <p class="about-users-box"><span class="about-users-low-opacity">Chill</span>      <span class="about-users-selected">Competiton</span></p>
+                                <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
                             <?php else  :?>
-                                <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-selected">Competiton</span></p>
+                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
                             <?php endif; ?>
                         </div>
                         <div class="servers about-users-containers">
-                        <p class="about-users-title"><strong>Server</strong></p>
+                        <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
                         <?php if ($user['user_game'] == 'League of Legends'): ?> 
                             <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
                         <?php else : ?>
@@ -278,7 +278,7 @@
                 <div class="about_you_users"><br>
                     <div class="top-part-about" style="flex-direction: column;">
                         <div class="gender about-users-containers">
-                            <p class="about-users-title"><strong>Gender</strong></p>
+                            <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
                             <?php if ($lfUser['lf_gender'] == "Female") : ?>
                                 <p class="about-users-box">
                         <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
@@ -331,13 +331,13 @@
                         <?php endif; ?>
                         </div>
                         <div class="queues about-users-containers">
-                        <p class="about-users-title"><strong>Queues</strong></p>
+                        <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
                             <?php if($lfUser['lf_kindofgamer'] == "Chill") :?>
-                                <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-low-opacity">Competition</span></p>
+                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
                             <?php elseif($lfUser['lf_kindofgamer'] == "Competition") :?>
-                                <p class="about-users-box"><span class="about-users-low-opacity">Chill</span>      <span class="about-users-selected">Competiton</span></p>
+                                <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span>      <span class="about-users-selected"><?= $this->_('competition') ?></span></p>
                             <?php else  :?>
-                                <p class="about-users-box"><span class="about-users-selected">Chill      </span><span class="about-users-selected">Competiton</span></p>
+                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?>      </span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -352,7 +352,7 @@
         <div id="pictures-container"> <!--Flex row with -->
             <?php if ($user['user_bonusPicture'] !== NULL && $user['user_bonusPicture'] !== "[]"): ?>
                 <div class="bonusPicture_ctn">
-                        <button class="btn_updateProfile" id="opendialog_bonuspicture">Add a picture</button>
+                        <button class="btn_updateProfile" id="opendialog_bonuspicture"><?= $this->_('add_picture') ?></button>
                     <div class="bonusPicture_row">
                         <?php 
                         if (!empty($user['user_bonusPicture'])): 
@@ -374,19 +374,19 @@
                 </div>
             <?php else : ?>
                 <div class="bonusPicture_ctn">
-                        <button class="btn_updateProfile" id="opendialog_bonuspicture">Add a picture</button>
+                        <button class="btn_updateProfile" id="opendialog_bonuspicture"><?= $this->_('add_picture') ?></button>
                 </div>
             <?php endif; ?>
             <dialog id="favDialogBonusPicture">
                 <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
-                    <p class="title_generalbox">Add a profile picture or update it</p>
-                    <p>Accepted format : JPG, JPEG and PNG</p>
+                    <p class="title_generalbox"><?= $this->_('add_picture_desc') ?></p>
+                    <p><?= $this->_('add_picture_format') ?></p>
                     <div class="file-input-container">
                         <input type="file" id="file" name="file" class="file-input">
-                        <label for="file" class="file-label">Choose a file</label>
-                        <span id="file-name" class="file-name">No file selected</span>
+                        <label for="file" class="file-label"><?= $this->_('add_picture_chose') ?></label>
+                        <span id="file-name" class="file-name"><?= $this->_('add_picture_nofile') ?></span>
                     </div>
-                    <input type="submit" name="submit" value="Upload" id="send-button">
+                    <input type="submit" name="submit" value="<?= $this->_('add_picture_upload') ?>" id="send-button">
                 </form>
                 <button id="closeButton_user_picture_bonus">X</button>
             </dialog>
@@ -421,7 +421,7 @@
                     <?php else: ?>
                         <div class="social-container-right">
                             <img class="social_picture" src="<?= $imgSrc ?>" alt="<?= $key ?>_user">
-                            <p class="shadow">UNKNOWN</p>
+                            <p class="shadow"><?= $this->_('unknown') ?></p>
                         </div>
                         <div class="social-container-left">
                             <i class="fa-solid fa-link"></i> <!-- Link icon -->
@@ -468,22 +468,22 @@
                     <?php endforeach; ?>
                 </div>
             <?php else : ?>
-                <p style="text-align: center; width: 100%;">You don't have any friend requests</p>
+                <p style="text-align: center; width: 100%;"><?= $this->_('no_friend_request') ?></p>
             <?php endif; ?>
         </div>
     </div>
     <dialog id="favDialogPicture">
         <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
-            <p class="title_generalbox">Add a profile picture or update it</p>
-            <p>Accepted format : JPG, JPEG and PNG</p>
+            <p class="title_generalbox"><?= $this->_('add_picture_desc') ?></p>
+            <p><?= $this->_('add_picture_format') ?></p>
             <div class="file-input-container">
-                <label for="fileProfile" class="file-label">Choose a file</label>
+                <label for="fileProfile" class="file-label"><?= $this->_('add_picture_chose') ?></label>
                 <input type="file" id="fileProfile" name="fileProfile" class="file-input">
-                <span id="file-nameProfile" class="file-name">No file selected</span>
+                <span id="file-nameProfile" class="file-name"><?= $this->_('add_picture_nofile') ?></span>
             </div>
             <input type="submit" name="submit" value="Upload" id="send-button">
         </form>
-        <p class="title_generalbox">Add a profile picture frame</p>
+        <p class="title_generalbox"><?= $this->_('add_profile_frame') ?></p>
         <?php if ($ownedItems && count($ownedItems) > 0) : ?>
             <?php
             $profilePictures = array_filter($ownedItems, function($item) {
@@ -499,20 +499,20 @@
                             <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
                             <p><?= $item['items_name'] ?></p>
                             <?php if ($item['userItems_isUsed'] === 1) : ?>
-                                <button class="btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>">Remove</button>
+                                <button class="btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
                             <?php else : ?>
-                                <button class="btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>">Use</button>
+                                <button class="btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else : ?>
-                <p>You don't have any profile picture frame yet</p>
-                <a href="/store" class="btn_picture_frame">Go to the store</a>
+                <p><?= $this->_('no_profile_frame') ?></p>
+                <a href="/store" class="btn_picture_frame"><?= $this->_('go_to_store') ?></a>
             <?php endif; ?>
         <?php else : ?>
-            <p>You don't have any items yet</p>
-            <a href="/store" class="btn_picture_frame">Go to the store</a>
+            <p><?= $this->_('no_items') ?></p>
+            <a href="/store" class="btn_picture_frame"><?= $this->_('go_to_store') ?></a>
         <?php endif; ?>
         <button id="closeButton_user_picture">X</button>
     </dialog>

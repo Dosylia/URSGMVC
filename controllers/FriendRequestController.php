@@ -8,10 +8,12 @@ use models\Block;
 use models\GoogleUser;
 use models\ChatMessage;
 use traits\SecurityController;
+use traits\Translatable;
 
 class FriendRequestController
 {
     use SecurityController;
+    use Translatable;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -42,6 +44,7 @@ class FriendRequestController
             $this->isConnectLf()
         ) {
             // Get important datas
+            $this->initializeLanguage();
             $user = $this->user->getUserByUsername($_SESSION['username']);
             $allUsers = $this->user->getAllUsers();
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
@@ -135,7 +138,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -174,7 +177,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -209,7 +212,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -246,7 +249,7 @@ class FriendRequestController
         $userId = (int)$_POST['userId'];
     
         // Validate Token for User
-        if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -479,7 +482,7 @@ class FriendRequestController
             $senderId = $this->validateInput($_POST["senderId"]);
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $senderId)) {
+            if (!$this->validateTokenWebsite($token, $senderId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -517,7 +520,7 @@ class FriendRequestController
             $senderId = $this->validateInput($_POST["senderId"]);
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $senderId)) {
+            if (!$this->validateTokenWebsite($token, $senderId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -710,7 +713,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $_POST["senderId"])) {
+            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -769,7 +772,7 @@ class FriendRequestController
             $token = $matches[1];
 
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $_POST["senderId"])) {
+            if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
@@ -1116,7 +1119,7 @@ class FriendRequestController
             $token = $matches[1];
     
             // Validate Token for User
-            if (!$this->validateTokenWebsite($_COOKIE['auth_token'], $userId)) {
+            if (!$this->validateTokenWebsite($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
                 return;
             }
