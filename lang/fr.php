@@ -124,6 +124,47 @@ return [
     'no_picture_other' => 'Cet utilisateur n’a pas encore de photo',
     'unknown' => 'INCONNU',
 
+    //chat page
+    'looking_for_title' => 'Vous cherchez une partie ?',
+    'looking_for_account' => 'Indiquez-nous votre compte LoL/Valorant.',
+    'looking_for_message' => 'Un message à ajouter ? Il sera affiché sur notre ',
+    'looking_for_message_2' => 'serveur Discord',
+    'looking_for_submit' => 'Je cherche',
+    'looking_for_button' => 'Changer le statut en : Je cherche une partie',
+    'no_friends_yet' => 'Vous n’avez pas encore d’amis, attendez qu’ils acceptent votre demande ou continuez à swiper !',
+    'swipe_more' => 'Swiper encore',
+    'show_online_only' => 'Afficher uniquement les amis en ligne',
+    'search_friends' => 'Rechercher des amis...',
+
+    //leaderboard page
+    'store' => 'Boutique',
+    'leaderboard' => 'Classement',
+    'earn_points' => 'Gagner des points',
+    'you_can_earn_points' => 'Vous pouvez gagner des points en étant en ligne sur l’appli. D’autres options seront ajoutées bientôt !',
+    'close' => 'Fermer',
+    'rank' => 'Rang',
+    'username' => 'Pseudo',
+    'currency' => 'Monnaie',
+    'premium_status' => 'Statut Premium',
+    'premium' => 'Premium',
+    'regular' => 'Classique',
+    'previous' => 'Précédent',
+    'next' => 'Suivant',
+
+    // friendlist page
+    'friendlist_title' => 'Amis',
+    'friendlist_no_friends' => 'Vous n’avez pas encore d’amis. Essayez de swiper davantage ou attendez les acceptations !',
+    'latest_menu' => 'Récents',
+    'online_menu' => 'En ligne',
+    'blocked_menu' => 'Bloqués',
+    'form_unfriend' => 'Supprimer',
+    'form_yes' => 'Oui',
+    'form_no' => 'Non',
+    'form_block' => 'Bloquer',
+    'form_unblock' => 'Débloquer',
+    'blocked_no_user' => 'Vous n’avez encore aucun utilisateur bloqué.',
+
+
     // Rangs
     "ranks" => [
         "Unranked" => "Non classé",

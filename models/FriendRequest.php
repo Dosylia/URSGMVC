@@ -459,6 +459,37 @@ class FriendRequest extends DataBase
 
     }
 
+        public function addFriend($senderId, $receiverId, $requestDate) 
+    {
+
+        $query = $this -> bdd -> prepare("
+                                            INSERT INTO `friendrequest`(
+                                                `fr_senderId`,
+                                                `fr_receiverId`,
+                                                `fr_date`,
+                                                `fr_status`
+                                            )
+                                            VALUES (
+                                                ?,
+                                                ?,
+                                                ?,
+                                                'accepted'
+                                            )
+                                        ");
+
+        $addFriend = $query -> execute([$senderId, $receiverId, $requestDate]);
+
+        if($addFriend)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+
+    }
+
     public function swipeStatusNo($senderId, $receiverId, $requestDate, $status) 
     {
 

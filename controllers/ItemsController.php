@@ -249,13 +249,14 @@ class ItemsController
                     }
                 }
 
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
                 if ($item && $user) {
-                    if ($user['user_currency'] >= $item['items_price']) {
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $price = $item['items_price'];
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Item bought successfully']);
                     } else {
@@ -318,14 +319,13 @@ class ItemsController
                 // Check if the item and user exist
                 if ($item && $user) {
                     // Check if the user has enough currency
-                    if ($user['user_currency'] >= $item['items_price']) {
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $price = $item['items_price'];
-    
-                        // Apply discount for VIP users
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
     
                         // Update user's currency after purchase
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
@@ -396,12 +396,14 @@ class ItemsController
                 }
 
                 if ($item && $user) {
-                    if ($user['user_currency'] >= $item['items_price']) {
+
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $price = $item['items_price'];
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Item bought successfully']);
                     } else {
@@ -444,13 +446,15 @@ class ItemsController
                 }
 
                 if ($item && $user) {
-                    if ($user['user_currency'] >= $item['items_price']) {
+
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
                         $this->user->buyPremium($userId);
-                        $price = $item['items_price'];
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Role bought successfully']);
                     } else {
@@ -512,16 +516,16 @@ class ItemsController
     
                 // Check if the item and user exist
                 if ($item && $user) {
+
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
                     // Check if the user has enough currency
-                    if ($user['user_currency'] >= $item['items_price']) {
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
                         $this->user->buyPremium($userId);
-                        $price = $item['items_price'];
-    
-                        // Apply discount for VIP users
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
     
                         // Update user's currency after purchase
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
@@ -590,13 +594,15 @@ class ItemsController
                 }
 
                 if ($item && $user) {
-                    if ($user['user_currency'] >= $item['items_price']) {
+
+                $price = $item['items_price'];
+                if ($user['user_isVip'] == 1) {
+                    $price = $item['items_price'] * 0.8;
+                }
+
+                    if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
                         $this->user->buyPremium($userId);
-                        $price = $item['items_price'];
-                        if ($user['user_isVip'] == 1) {
-                            $price = $item['items_price'] * 0.8;
-                        } 
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Role bought successfully']);
                     } else {

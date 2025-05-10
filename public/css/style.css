@@ -1028,6 +1028,629 @@ font-size: 0.7em;
 
 /* END OF SWIPING PAGE */
 
+/* PLAYER FINDER PAGE */
+
+.playerfinder {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.playerfinder-banner {
+  display: flex;
+  background: rgb(223, 215, 215);
+  color: black;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.5em;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.playerfinder-banner img {
+  height: 200px;
+  width: auto;
+  margin-bottom: 20px;
+}
+
+.playerfinder-banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dark-mode .playerfinder-banner {
+  background: #312f2f;
+  color: #fff;
+}
+
+.playerfinder-container {
+  display: flex;
+  min-height: 68vh;
+  background: white;
+}
+
+.dark-mode .playerfinder-container {
+  background: #1a1a1a;
+}
+
+
+.playerfinder-filter {
+  width: 300px;
+  padding: 1em;
+  background: #ffffff;
+  color: black;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  position: sticky;
+  border-radius: 0 0 12px 0;
+  top: 1em;
+}
+
+.interested-btn {
+  background: var(--main--red);
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.voiceChat_row {
+  margin-bottom: 10px;
+}
+
+.dark-mode .playerfinder-filter {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.playerfinder-posts {
+  width: 80%;
+  padding: 2em;
+  background: white;
+  color: black;
+  display: flex;
+  gap: 1.5em;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+.dark-mode .playerfinder-posts {
+  background: #1a1a1a;
+  color: white;
+}
+
+.playerfinder-card {
+  background: white;
+  border: 1px solid #9e9a9a;
+  border-radius: 12px;
+  color: black;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+
+.dark-mode .playerfinder-card {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #fff;
+}
+
+.playerfinder-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 20px;
+}
+
+.playerfinder-card-header-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position : relative;
+}
+
+.playerfinder-card-header-row .mic {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 10px;
+}
+
+.playerfinder-card-header-row .server {
+  color: var(--ligher--grey);
+  font-size: 10px;
+}
+
+.dark-mode .playerfinder-card-header-row .server {
+  color: #979797;
+  font-size: 10px;
+}
+
+.playerfinder-card-header .username {
+  font-weight: 600;
+  font-size: 2em;
+  font-family: 'Libre Franklin', sans-serif;
+}
+
+.playerfinder-card-body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.playerfinder .pf-profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--main--red);
+}
+
+.playerfinder-center {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+
+.playerfinder .looking-for span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.playerfinder .about-user span {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9em;
+  color: var(--ligher--grey);
+  font-weight: 600;
+}
+
+.playerfinder .about-user {
+  justify-content: center;
+}
+
+.dark-mode .playerfinder .about-user, .dark-mode .playerfinder .looking-for {
+  width: 100%;
+  background: unset;
+  margin-bottom: unset;
+}
+
+.dark-mode .playerfinder .looking-for span, .dark-mode .playerfinder .about-user span {
+  color: #fff;
+}
+
+#savePreferencesBtn {
+  background: var(--main--red);
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  margin: 20px 0 0 0;
+}
+
+#savePreferencesBtn:hover {
+  background: var(--dark--red);
+}
+
+.playerfinder #createPostBtn {
+  background: var(--main--red);
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+}
+
+.playerfinder #createPostBtn:hover {
+  background: var(--dark--red);
+}
+
+.dark-mode .playerfinder #createPostBtn {
+  color: #fff;
+}
+
+.playerfinder .about-user, .playerfinder .looking-for {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.playerfinder .about-user .card-title {
+  position: absolute;
+  top: -15px;
+  font-size: 10px;
+  color: #c6becc;
+  font-style: italic;
+}
+
+ .playerfinder .looking-for .card-title {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  font-size: 10px;
+  color: #c6becc;
+    font-style: italic;
+}
+
+.dark-mode .playerfinder .looking-for .card-title, .dark-mode .playerfinder .about-user .card-title {
+  color: var(--ligher--grey);
+}
+
+
+.playerfinder .looking-for img, .playerfinder .about-user img{
+  width: 30px;
+  height: 30px;
+}
+
+.playerfinder .looking-for p{
+  width: 100%;
+}
+
+.error-message {
+  color: var(--main--red);
+  font-size: 0.85em;
+  margin-top: 5px;
+}
+
+.playerfinder .desc {
+  font-size: 0.9em;
+  line-height: 1.4;
+  background: #ded8d8;
+  padding: 0.5em;
+  border-radius: 8px;
+  width: 95%;
+  height: 55px;
+  word-wrap: break-word; 
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.dark-mode .playerfinder .desc {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.voiceChat_row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.playerfinder .submit {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playerfinder .submit-button {
+  padding: 0.5em 1em;
+  background: var(--main--red);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.dark-mode .playerfinder .submit-button {
+  background: #555;
+  color: #fff;
+}
+
+.playerfinder .submit-button:hover {
+  background: #555;
+}
+
+.dark-mode .playerfinder .submit-button:hover {
+  background: var(--dark--red);
+}
+
+.playerfinder-modal, .interested-modal{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.playerfinder-modal-content, .interested-modal-content {
+  background: #fff;
+  padding: 2em;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: sans-serif;
+  animation: slideUp 0.3s ease-out;
+}
+
+.interested-modal .interested-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1.5em;
+}
+
+.interested-modal .interested-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.75em 1em;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s;
+}
+
+.interested-modal .interested-user:hover {
+  background-color: #f0f0f0;
+}
+
+.interested-modal .user-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.interested-modal .username {
+  font-weight: 600;
+  flex: 1;
+}
+
+.interested-modal .user-role, .interested-modal .user-rank {
+  font-size: 0.9em;
+  color: #666;
+  background: #eee;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.interested-modal .role-img img, .interested-modal .rank-img img {
+  height: 24px;
+  width: auto;
+}
+
+.interested-modal .interested-accept-btn {
+  width: 100%;
+  font-weight: bold;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.interested-modal .close-modal-btn {
+  width: 100%;
+  padding: 0.75em;
+  font-weight: bold;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5em;
+}
+
+.interested-modal .interested-accept-btn {
+  background-color: var(--main--red);
+  color: white;
+}
+
+.interested-modal .interested-accept-btn:hover {
+  background-color: var(--dark--red);
+}
+
+.interested-modal .close-modal-btn {
+  background-color: #e5e7eb;
+  color: #333;
+}
+
+.interested-modal .close-modal-btn:hover {
+  background-color: #d1d5db;
+}
+
+/* Dark mode compatibility */
+.dark-mode .interested-modal .interested-users-list {
+  background-color: transparent;
+}
+
+.dark-mode .interested-modal .interested-user {
+  background-color: #3a3a3a;
+  border-color: #555;
+}
+
+.dark-mode .interested-modal .interested-user:hover {
+  background-color: #444;
+}
+
+.dark-mode .interested-modal .user-role, .dark-mode .interested-modal .user-rank {
+  background: #555;
+  color: #ddd;
+}
+
+.dark-mode .interested-modal .close-modal-btn {
+  background-color: #444;
+  color: #f0f0f0;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.playerfinder-modal-content h3, .interested-modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 1em;
+  text-align: center;
+  font-size: 1.4em;
+}
+
+.playerfinder-modal .form-group {
+  margin-bottom: 1em;
+}
+
+.playerfinder-modal .form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+.playerfinder-modal .form-group input[type="checkbox"] {
+  margin-left: 0.5em;
+}
+
+.playerfinder-modal select,
+.playerfinder-modal textarea,
+.playerfinder-modal input[type="text"]{
+  width: 100%;
+  padding: 0.6em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95em;
+  resize: vertical;
+}
+
+.playerfinder-modal textarea {
+  min-height: 60px;
+}
+
+.playerfinder-modal .error-message {
+  color: red;
+  font-size: 0.85em;
+  margin-top: 0.3em;
+}
+
+.playerfinder-modal .form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  margin-top: 1.5em;
+}
+
+.playerfinder-modal .form-actions button {
+  flex: 1;
+  padding: 0.6em;
+  font-size: 1em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: var(--main--red);
+  color: white;
+  transition: background 0.2s ease-in-out;
+}
+
+.playerfinder-modal .form-actions button.secondary {
+  background-color: #bbb;
+  color: #333;
+}
+
+.playerfinder-modal .form-actions button:hover {
+  background-color: var(--dark--red);
+}
+
+.playerfinder-modal .form-actions button.secondary:hover {
+  background-color: #999;
+}
+
+
+.playerfinder-filter select {
+  width: 90%;
+  padding: 0.5em;
+  border: 1px solid #444;
+  border-radius: 8px;
+  margin: 5px auto;
+}
+
+.dark-mode .playerfinder-filter select {
+  color: white;
+  background-color: var(--ligher--grey);
+}
+
+.dark-mode .playerfinder-filter input[type="checkbox"] {
+  background-color: var(--ligher--grey); 
+  border-color: var(--ligher--grey);
+}
+
+.dark-mode .playerfinder-banner {
+  background: #1e1e1e;
+  color: #f0f0f0;
+}
+
+.dark-mode .playerfinder-posts {
+  background: #1a1a1a;
+}
+
+.dark-mode .playerfinder-card {
+  background: #2a2a2a;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+.dark-mode .playerfinder-modal, .dark-mode .interested-modal {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.dark-mode .playerfinder-modal-content, .dark-mode .interested-modal-content {
+  background: #2b2b2b;
+  color: #f0f0f0;
+}
+
+.dark-mode .playerfinder-modal input,
+.dark-mode .playerfinder-modal textarea {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+/* END PLAYER FINDER PAGE */
+
 /* PERSONALITY TEST */
 
 /* General Layout */
@@ -7544,6 +8167,10 @@ justify-content: center;
 
 @media only screen and (max-width: 1018px) {
 
+  .playerfinder-filter {
+    width: 250px;
+  }
+
   #messages {
     height: unset;
     max-height: 68vh;
@@ -7706,6 +8333,10 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 900px) {
+
+  .playerfinder-card {
+    width: 200px;
+  }
 
   .swiping-ctn #bonus-picture-container {
     display: none;
@@ -8118,6 +8749,10 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  .playerfinder-filter {
+    width: 150px;
+  }
+
   /* .swiping-middle {
     flex-direction: row;
     flex-wrap: wrap;
@@ -8270,6 +8905,12 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+  .voiceChat_row {
+    gap: 20px;
+    align-items: center;
+    margin: 10px 30px 10px 0;
+  }
 
   .chat-image {
     width: 200px;
@@ -8437,6 +9078,73 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+    .playerfinder-card{
+      width: 70%;
+    }
+
+    .playerfinder-container {
+      display: flex;
+      height: 68vh;
+      flex-direction: column;
+    }
+
+    .playerfinder-banner img {
+      height: 100px;
+      width: auto;
+    }
+
+    
+  .playerfinder-banner h2 {
+    font-size: 1em;
+  }
+
+    #filterVoiceChat {
+      margin-bottom: 40px;
+    }
+
+    .playerfinder-filter {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 5px;
+      position: relative;
+      border-radius: unset;
+      top: unset;
+    }
+
+    .playerfinder-filter label {
+      width: 100%;
+      font-size: 0.8em;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #savePreferencesBtn {
+      font-size: 0.8em;
+      padding: 5px 10px;
+      position: absolute;
+      right: 5px;
+      bottom: 5px; 
+      margin: unset;
+    }
+
+    .playerfinder-filter h3 {
+      margin-right: 20px;
+    }
+
+    .playerfinder-posts {
+      padding: 20px;
+      box-sizing: border-box;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .playerfinder-filter select {
+      width: 95%;
+    }
 
     .swiping-buttons {
       position: absolute;

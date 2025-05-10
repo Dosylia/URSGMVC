@@ -32,6 +32,7 @@ use controllers\GameController;
 use controllers\AdminController;
 use controllers\WebSocketController;
 use controllers\DiscordController;
+use controllers\PlayerFinderController;
 
 function loadClass($class)
 {
@@ -198,7 +199,6 @@ $actionMap = [
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
     'userTest' => [UserController::class, 'pageUserProfileTest'],
     'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
-    'profileTest' => [UserController::class, 'profileTest'],
     'personalityTest' => [UserController::class, 'personalityTestPage'],
     'savePersonalityTestResult' => [UserController::class, 'savePersonalityTestResult'],
     'getPersonalityTestResult' => [UserController::class, 'getPersonalityTestResult'],
@@ -208,6 +208,11 @@ $actionMap = [
     'updateNotificationPermission' => [UserController::class, 'updateNotificationPermission'],
     'saveNotificationSubscription' => [UserController::class, 'saveNotificationSubscription'],
     'sendMessageDiscord' => [DiscordController::class, 'sendMessageDiscord'],
+    'playerfinder' => [PlayerFinderController::class, 'playerfinderPage'],
+    'addPlayerFinderPost' => [PlayerFinderController::class, 'addPlayerFinderPost'],
+    'deletePlayerFinderPost' => [PlayerFinderController::class, 'deletePlayerFinderPost'],
+    'playWithThem' => [PlayerFinderController::class, 'playWithThem'],
+    'addFriendAndChat' => [FriendRequestController::class, 'addFriendAndChat'],
 ];
 
 $action = "home";

@@ -60,6 +60,50 @@ class FriendRequestController
         }
     }
 
+    public function addFriendAndChat() 
+    {
+        if (isset($_POST['userId'])) {
+            $userId = $_POST['userId'];
+            $this->setUserId((int)$userId);
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                return;
+            }
+
+            $checkIfPending = $this->friendrequest->checkifPending($this->getUserId(), $_POST['friendId']);
+
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                }
+            }
+
+            $requestDate = date('Y-m-d H:i:s');
+            $friendId = $_POST['friendId'];
+            $addFriend = $this->friendrequest->addFriend($userId, $friendId, $requestDate);
+
+            if ($addFriend) {
+                echo json_encode(['success' => true, 'message' => 'Friend request sent']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to send friend request']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        }
+    }
+
     public function getFriendRequestPhone()
     {
         if (isset($_POST['userId'])) {

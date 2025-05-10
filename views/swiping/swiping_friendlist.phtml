@@ -1,17 +1,17 @@
 <div class="friendlist-page">
-    <h1 class="title_generalbox">Friends</h1>
+    <h1 class="title_generalbox"><?= $this->_('friendlist_title') ?></h1>
 
     <div class="tab-buttons">
-        <button class="tab-button active" onclick="switchTab('latest')">Latest</button>
-        <button class="tab-button" onclick="switchTab('online')">Online</button>
-        <button class="tab-button" onclick="switchTab('blocked')">Blocked</button>
+        <button class="tab-button active" onclick="switchTab('latest')"><?= $this->_('latest_menu') ?></button>
+        <button class="tab-button" onclick="switchTab('online')"><?= $this->_('online_menu') ?></button>
+        <button class="tab-button" onclick="switchTab('blocked')"><?= $this->_('blocked_menu') ?></button>
     </div>
 
     <div id="latest" class="friendlist-section active">
         <?php if(empty($getFriendlist)): ?>
             <section class="no_friend">
                 <img src="public/images/sadbee.webp" alt="No friends">
-                <h2>You have no friends yet. Try swiping more or wait for acceptances!</h2>
+                <h2><?= $this->_('friendlist_no_friends') ?></h2>
             </section>
         <?php else : ?>
             <?php foreach($getFriendlist as $friend) : ?>
@@ -41,8 +41,8 @@
                         </div>
                     </div>
                     <div class="friend-actions">
-                        <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
-                        <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                        <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')"><?= $this->_('form_unfriend') ?></button>
+                        <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')"><?= $this->_('form_block') ?></button>
                     </div>
                 </div>
 
@@ -50,13 +50,13 @@
                 <dialog id="confirmationPopup_<?= $friendId ?>" class="confirmationPopup">
                     <div class="popup-content">
                         <button class="closeButton" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">X</button>
-                        <h2 class="title_generalbox">Block <span><?= $friendUsername ?></span>?</h2>
+                        <h2 class="title_generalbox"><?= $this->_('form_block') ?> <span><?= $friendUsername ?></span>?</h2>
                         <form action="/blockPerson" method="post">
                             <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
                             <input type="hidden" name="receiverId" value="<?= $friendId ?>">
                             <div class="button_container">
-                                <button name="submit" type="submit" class="confirmation-button">Yes</button>
-                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')">No</button>
+                                <button name="submit" type="submit" class="confirmation-button"><?= $this->_('form_yes') ?></button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup('confirmationPopup_<?= $friendId ?>')"><?= $this->_('form_no') ?></button>
                             </div>
                         </form>
                     </div>
@@ -65,13 +65,13 @@
                 <dialog id="confirmationPopupUnfriend<?= $friendId ?>" class="confirmationPopup">
                     <div class="popup-content">
                         <button class="closeButton" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">X</button>
-                        <h2 class="title_generalbox">Unfriend <span><?= $friendUsername ?></span>?</h2>
+                        <h2 class="title_generalbox"><?= $this->_('form_unfriend') ?> <span><?= $friendUsername ?></span>?</h2>
                         <form action="/unfriendPerson" method="post">
                             <input type="hidden" name="senderId" value="<?= $user['user_id'] ?>">
                             <input type="hidden" name="receiverId" value="<?= $friendId ?>">
                             <div class="button_container">
-                                <button name="submit" type="submit" class="confirmation-button">Yes</button>
-                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')">No</button>
+                                <button name="submit" type="submit" class="confirmation-button"><?= $this->_('form_yes') ?></button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>')"><?= $this->_('form_no') ?></button>
                             </div>
                         </form>
                     </div>
@@ -84,7 +84,7 @@
         <?php if(empty($getFriendlist)): ?>
                 <section class="no_friend">
                     <img src="public/images/sadbee.webp" alt="No friends">
-                    <h2>You have no friends yet. Try swiping more or wait for acceptances!</h2>
+                    <h2><?= $this->_('friendlist_no_friends') ?></h2>
                 </section>
         <?php else : ?>
                 <?php foreach($getFriendlist as $friend) : ?>
@@ -114,8 +114,8 @@
                                 </div>
                             </div>
                             <div class="friend-actions">
-                                <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')">Unfriend</button>
-                                <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')">Block</button>
+                                <button class="unfriend_user" onclick="openConfirmationPopupUnfriend('confirmationPopupUnfriend<?= $friendId ?>', '<?= $friendUsername ?>')"><?= $this->_('form_unfriend') ?></button>
+                                <button class="block_user" onclick="openConfirmationPopup('confirmationPopup_<?= $friendId ?>', '<?= $friendUsername ?>')"><?= $this->_('form_block') ?></button>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -127,7 +127,7 @@
         <?php if(empty($getBlocklist)): ?>
             <section class="no_friend">
                 <img src="public/images/jhinshrug.png" alt="No blocked" class="blocked-users-image">
-                <h2>You have no blocked users.</h2>
+                <h2><?= $this->_('blocked_no_user') ?></h2>
             </section>
         <?php else : ?>
             <?php foreach($getBlocklist as $blocked) :?>
@@ -139,19 +139,19 @@
                     </div>
                     <div class="friend-info">
                         <a class="friend-name" href="/anotherUser&username=<?= $blocked['user_username'] ?>"><?= $blocked['user_username'] ?></a>
-                        <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')">Unblock</button>
+                        <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')"><?= $this->_('form_unblock') ?></button>
                     </div>
                 </div>
 
                 <dialog id="confirmationPopup2_<?= $blocked['block_id'] ?>" class="confirmationPopup2">
                     <div class="popup-content">
                         <button class="closeButton" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">X</button>
-                        <h2 class="title_generalbox">Unblock <span><?= $blocked['user_username'] ?></span>?</h2>
+                        <h2 class="title_generalbox"><?= $this->_('form_unblock') ?> <span><?= $blocked['user_username'] ?></span>?</h2>
                         <form action="/unblockPerson" method="post">
                             <input type="hidden" name="blockId" value="<?= $blocked['block_id'] ?>">
                             <div class="button_container">
-                                <button type="submit" class="confirmation-button">Yes</button>
-                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')">No</button>
+                                <button type="submit" class="confirmation-button"><?= $this->_('form_yes') ?></button>
+                                <button type="button" class="confirmation-button" onclick="closeConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>')"><?= $this->_('form_no') ?></button>
                             </div>
                         </form>
                     </div>

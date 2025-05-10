@@ -124,6 +124,45 @@ return [
     'no_picture_other' => 'This user has no picture yet',
     'unknown' => 'UNKNOWN',
 
+    //chat page
+    'looking_for_title' => 'Looking for a game?',
+    'looking_for_account' => 'Give us your Lol/Valorant account.',
+    'looking_for_message' => 'Any message you wanna add? It will be shown on our ',
+    'looking_for_message_2' => 'Discord server',
+    'looking_for_submit' => 'Looking for',
+    'looking_for_button' => 'Change status to : Looking for a game',
+    'no_friends_yet' => 'You have no friends yet, wait until they accept your request or swipe more!',
+    'swipe_more' => 'Swipe more',
+    'show_online_only' => 'Show Online Friends Only',
+    'search_friends' => 'Search for friends...',
+
+    //leaderboard page
+    'store' => 'Store',
+    'leaderboard' => 'Leaderboard',
+    'earn_points' => 'Earn Points',
+    'you_can_earn_points' => 'You can earn points by being online on the app. More options will be added later!',
+    'close' => 'Close',
+    'rank' => 'Rank',
+    'username' => 'Username',
+    'currency' => 'Currency',
+    'premium_status' => 'Premium Status',
+    'premium' => 'Premium',
+    'regular' => 'Regular',
+    'previous' => 'Previous',
+    'next' => 'Next',
+
+    // friendlist page
+    'friendlist_title' => 'Friends',
+    'friendlist_no_friends' => 'You have no friends yet. Try swiping more or wait for acceptances!',
+    'latest_menu' => 'Latest',
+    'online_menu' => 'Online',
+    'blocked_menu' => 'Blocked',
+    'form_unfriend' => 'Unfriend',
+    'form_yes' => 'Yes',
+    'form_no' => 'No',
+    'form_block' => 'Block',
+    'form_unblock' => 'Unblock',
+    'blocked_no_user' => 'You have no blocked users yet.',
 
     // Ranks
     "ranks" => [

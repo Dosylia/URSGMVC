@@ -124,6 +124,47 @@ return [
     'no_picture_other' => 'Dieser Benutzer hat noch kein Bild',
     'unknown' => 'UNBEKANNT',
 
+    //chat page
+    'looking_for_title' => 'Auf der Suche nach einem Spiel?',
+    'looking_for_account' => 'Gib uns deinen LoL-/Valorant-Account.',
+    'looking_for_message' => 'Möchtest du eine Nachricht hinzufügen? Sie wird auf unserem ',
+    'looking_for_message_2' => 'Discord-Server angezeigt',
+    'looking_for_submit' => 'Suchen',
+    'looking_for_button' => 'Status ändern auf: Suche nach einem Spiel',
+    'no_friends_yet' => 'Du hast noch keine Freunde. Warte, bis sie deine Anfrage annehmen oder swipe weiter!',
+    'swipe_more' => 'Weiter wischen',
+    'show_online_only' => 'Nur Online-Freunde anzeigen',
+    'search_friends' => 'Freunde suchen...',
+
+    //leaderboard page
+    'store' => 'Shop',
+    'leaderboard' => 'Rangliste',
+    'earn_points' => 'Punkte verdienen',
+    'you_can_earn_points' => 'Du kannst Punkte verdienen, indem du in der App online bist. Weitere Möglichkeiten folgen!',
+    'close' => 'Schließen',
+    'rank' => 'Rang',
+    'username' => 'Benutzername',
+    'currency' => 'Währung',
+    'premium_status' => 'Premium-Status',
+    'premium' => 'Premium',
+    'regular' => 'Standard',
+    'previous' => 'Zurück',
+    'next' => 'Weiter',
+
+    // friendlist page
+    'friendlist_title' => 'Freunde',
+    'friendlist_no_friends' => 'Du hast noch keine Freunde. Wische weiter oder warte auf Bestätigungen!',
+    'latest_menu' => 'Neueste',
+    'online_menu' => 'Online',
+    'blocked_menu' => 'Blockiert',
+    'form_unfriend' => 'Entfreunden',
+    'form_yes' => 'Ja',
+    'form_no' => 'Nein',
+    'form_block' => 'Blockieren',
+    'form_unblock' => 'Entblocken',
+    'blocked_no_user' => 'Du hast noch keine blockierten Benutzer.',
+
+
     // Ranks
     "ranks" => [
         "Unranked" => "Unranked",

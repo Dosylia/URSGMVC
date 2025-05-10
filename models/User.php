@@ -197,6 +197,57 @@ class User extends DataBase
         }
     }
 
+
+    public function getUsersByIds($userIds, $currentUserId)
+    {
+        if (count($userIds) > 0 && $currentUserId) {
+            $placeholders = implode(",", array_fill(0, count($userIds), "?"));
+
+            $query = $this->bdd->prepare("
+                SELECT
+                    u.*,
+                    l.*,
+                    v.*,
+                    lf.*,
+                    g.google_email,
+                    g.google_createdWithRSO,
+                    (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_lastRequestTime) <= 45) AS user_isOnline,
+                    (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
+
+                    -- Check if user is friend with the current user
+                    EXISTS (
+                        SELECT 1 FROM friendrequest fr
+                        WHERE (
+                            (fr.fr_senderId = u.user_id AND fr.fr_receiverId = ?) OR
+                            (fr.fr_senderId = ? AND fr.fr_receiverId = u.user_id)
+                        ) AND fr.fr_status = 'accepted'
+                    ) AS is_friend
+
+                FROM
+                    `user` AS u
+                LEFT JOIN
+                    `leagueoflegends` AS l ON u.user_id = l.user_id
+                LEFT JOIN
+                    `valorant` AS v ON u.user_id = v.user_id
+                LEFT JOIN
+                    `userlookingfor` AS lf ON u.user_id = lf.user_id
+                LEFT JOIN
+                    `googleuser` AS g ON u.google_userId = g.google_userId
+                WHERE
+                    u.user_id IN ($placeholders);
+            ");
+
+            // Bind parameters: first two for EXISTS (friendship), then the user IDs
+            $params = array_merge([$currentUserId, $currentUserId], $userIds);
+            $query->execute($params);
+
+            return $query->fetchAll();
+        }
+
+        return [];
+    }
+
+
     public function getAllUsers()
     {
         $query = $this->bdd->prepare("

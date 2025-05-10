@@ -527,6 +527,8 @@ class DiscordController
                 if (!$account) {
                     echo json_encode(['success' => false, 'error' => 'No League account provided for unverified user']);
                     return;
+                } else {
+                    $server = $user['lol_server'] ?? 'Unknown';
                 }
             }
         } elseif ($game === 'Valorant') {

@@ -122,6 +122,47 @@ return [
     'no_picture_other' => 'Este usuario aún no tiene foto',
     'unknown' => 'DESCONOCIDO',
 
+    //chat page
+    'looking_for_title' => '¿Buscas una partida?',
+    'looking_for_account' => 'Indícanos tu cuenta de LoL/Valorant.',
+    'looking_for_message' => '¿Quieres añadir un mensaje? Se mostrará en nuestro ',
+    'looking_for_message_2' => 'servidor de Discord',
+    'looking_for_submit' => 'Buscando',
+    'looking_for_button' => 'Cambiar estado a: Buscando una partida',
+    'no_friends_yet' => 'Aún no tienes amigos, espera a que acepten tu solicitud o sigue deslizando.',
+    'swipe_more' => 'Deslizar más',
+    'show_online_only' => 'Mostrar solo amigos en línea',
+    'search_friends' => 'Buscar amigos...',
+
+    //leaderboard page
+    'store' => 'Tienda',
+    'leaderboard' => 'Clasificación',
+    'earn_points' => 'Ganar puntos',
+    'you_can_earn_points' => 'Puedes ganar puntos estando en línea en la app. ¡Se añadirán más opciones pronto!',
+    'close' => 'Cerrar',
+    'rank' => 'Rango',
+    'username' => 'Nombre de usuario',
+    'currency' => 'Moneda',
+    'premium_status' => 'Estado Premium',
+    'premium' => 'Premium',
+    'regular' => 'Normal',
+    'previous' => 'Anterior',
+    'next' => 'Siguiente',
+
+    // friendlist page
+    'friendlist_title' => 'Amigos',
+    'friendlist_no_friends' => 'Aún no tienes amigos. ¡Intenta deslizar más o espera las aceptaciones!',
+    'latest_menu' => 'Recientes',
+    'online_menu' => 'En línea',
+    'blocked_menu' => 'Bloqueados',
+    'form_unfriend' => 'Eliminar amigo',
+    'form_yes' => 'Sí',
+    'form_no' => 'No',
+    'form_block' => 'Bloquear',
+    'form_unblock' => 'Desbloquear',
+    'blocked_no_user' => 'Aún no tienes usuarios bloqueados.',
+
+
     'ranks' => [
         'Unranked' => 'Sin clasificar',
         'Iron' => 'Hierro',

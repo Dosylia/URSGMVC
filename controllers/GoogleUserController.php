@@ -112,8 +112,8 @@ class GoogleUserController
 
     public function restoreSessionFromToken()
     {
-        if (isset($token) && !$this->isConnectGoogle()) {
-            $token = $token;
+        if (isset($_COOKIE['auth_token']) && !$this->isConnectGoogle()) {
+            $token = $_COOKIE['auth_token'];
             $token = strval($token);
 
             // Get Google user by token
@@ -1181,9 +1181,9 @@ class GoogleUserController
                 unset($_COOKIE['googleId']);
             }
 
-            if (isset($token)) {
+            if (isset($_COOKIE['auth_token'])) {
                 setcookie('auth_token', "", time() - 42000, "/");
-                unset($token);
+                unset($_COOKIE['auth_token']);
             }
     
     

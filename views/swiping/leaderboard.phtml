@@ -1,6 +1,6 @@
 <div class="page-header">
-    <a href="/store">Store</a>
-    <a href="/leaderboard" class="active">Leaderboard</a>
+    <a href="/store"><?= $this->_('store') ?></a>
+    <a href="/leaderboard" class="active"><?= $this->_('leaderboard') ?></a>
     <p id="earnpoints">?</p>
 </div>
 
@@ -8,9 +8,9 @@
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal store" id="modalEarnPoints">
-        <h2>Earn Points</h2>
-        <p>You can earn points by being online on the app. More options will be added later!</p>
-        <button id="closeModalEarnPoints">Close</button>
+        <h2><?= $this->_('earn_points') ?></h2>
+        <p><?= $this->_('you_can_earn_points') ?> </p>
+        <button id="closeModalEarnPoints"><?= $this->_('close') ?></button>
     </div>
 </div>
 
@@ -19,44 +19,47 @@
         <table class="leaderboard-table">
             <thead>
                 <tr>
-                    <th>Rank</th>
-                    <th>Username</th>
-                    <th>Currency</th>
-                    <th>Premium Status</th>
+                    <th><?= $this->_('rank') ?></th>
+                    <th> <?= $this->_('username') ?></th>
+                    <th><?= $this->_('currency') ?></th>
+                    <th><?= $this->_('premium_status') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php 
+                <?php
                 $rank = $offset + 1;
-                foreach ($usersOnPage as $user) : ?>
-                <tr>
-                    <td><?= $rank++ ?></td>
-                    <td><a href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?></a></td>
-                    <td><?= $user['user_currency'] ?><img src="/public/images/soulhard.png" alt="currency"></td>
-                    <td>
-                        <?php if ($user['user_isVip']) : ?>
-                            <span class="vip-badge">Premium<img src="/public/images/premium-badge.png" alt="Premium"></span>
-                        <?php else : ?>
-                            <span class="regular-badge">Regular</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                foreach ($usersOnPage as $user): ?>
+                    <tr>
+                        <td><?= $rank++ ?></td>
+                        <td><a
+                                href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?></a>
+                        </td>
+                        <td><?= $user['user_currency'] ?><img src="/public/images/soulhard.png" alt="currency"></td>
+                        <td>
+                            <?php if ($user['user_isVip']): ?>
+                                <span class="vip-badge"><?= $this->_('premium') ?><img src="/public/images/premium-badge.png"
+                                        alt="Premium"></span>
+                            <?php else: ?>
+                                <span class="regular-badge"><?= $this->_('regular') ?></span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 
     <div class="pagination">
-        <?php if ($page > 1) : ?>
-            <a href="?page=<?= $page - 1 ?>">&laquo; Previous</a>
+        <?php if ($page > 1): ?>
+            <a href="?page=<?= $page - 1 ?>">&laquo; <?= $this->_('previous') ?></a>
         <?php endif; ?>
-        
-        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
             <a href="?page=<?= $i ?>" class="<?= ($i === $page) ? 'active' : '' ?>"><?= $i ?></a>
         <?php endfor; ?>
-        
-        <?php if ($page < $totalPages) : ?>
-            <a href="?page=<?= $page + 1 ?>">Next &raquo;</a>
+
+        <?php if ($page < $totalPages): ?>
+            <a href="?page=<?= $page + 1 ?>"><?= $this->_('next') ?> &raquo;</a>
         <?php endif; ?>
     </div>
 </div>
