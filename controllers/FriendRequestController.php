@@ -65,6 +65,7 @@ class FriendRequestController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
+            $friendId = $_POST['friendId'];
 
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
@@ -81,6 +82,11 @@ class FriendRequestController
                 return;
             }
 
+            if ($userId === $friendId) {
+                echo json_encode(['success' => false, 'message' => 'You cannot add yourself as a friend']);
+                return;
+            }
+
             $checkIfPending = $this->friendrequest->checkifPending($this->getUserId(), $_POST['friendId']);
 
             if ($checkIfPending) {
@@ -91,7 +97,6 @@ class FriendRequestController
             }
 
             $requestDate = date('Y-m-d H:i:s');
-            $friendId = $_POST['friendId'];
             $addFriend = $this->friendrequest->addFriend($userId, $friendId, $requestDate);
 
             if ($addFriend) {

@@ -1,58 +1,49 @@
-const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
-const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
-let cancelButtonSocialLinks;
-if (favDialogSocialLinks !== null && favDialogSocialLinks !== undefined) {
-  cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
-}
+// const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
+// const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
+// let cancelButtonSocialLinks;
+// if (favDialogSocialLinks !== null && favDialogSocialLinks !== undefined) {
+//   cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
+// }
 const fileInputProfile = document.getElementById('fileProfile');
 const fileNameProfile = document.getElementById('file-nameProfile');
 const placeholderMessage = document.getElementById('placeholder-message');
 
-if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
-  showButtonSocialLinks.addEventListener('click', () => {
-    openDialogSocialLinks();
-  });
+// if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
+//   showButtonSocialLinks.addEventListener('click', () => {
+//     openDialogSocialLinks();
+//   });
   
-  cancelButtonSocialLinks.addEventListener('click', () => {
-    closeDialogSocialLinks();
-  });
-}
+//   cancelButtonSocialLinks.addEventListener('click', () => {
+//     closeDialogSocialLinks();
+//   });
+// }
 
-function openDialogSocialLinks() {
-  favDialogSocialLinks.style.display = 'flex';
-  favDialogSocialLinks.showModal();
-}
+// function openDialogSocialLinks() {
+//   favDialogSocialLinks.style.display = 'flex';
+//   favDialogSocialLinks.showModal();
+// }
 
-function closeDialogSocialLinks() {
-  favDialogSocialLinks.style.display = 'none';
-  favDialogSocialLinks.close();
-}
+// function closeDialogSocialLinks() {
+//   favDialogSocialLinks.style.display = 'none';
+//   favDialogSocialLinks.close();
+// }
 
 const showButtonPicture = document.getElementById('opendialog_update_picture');
 const favDialogPicture = document.getElementById('favDialogPicture');
 const cancelButtonPicture = favDialogPicture.querySelector('#closeButton_user_picture');
 
 showButtonPicture.addEventListener('click', () => {
-  openDialogPicture();
-  console.log('Opening picture dialog');
+    const overlay = document.getElementById("overlay");
+  overlay.style.display = "block";
   favDialogPicture.style.display = 'block';
 });
 
 cancelButtonPicture.addEventListener('click', () => {
-  closeDialogPicture();
+    const overlay = document.getElementById("overlay");
+  overlay.style.display = "none";
   favDialogPicture.style.display = 'none';
-  console.log('Closing picture dialog');
 });
 
-function openDialogPicture() {
-  favDialogPicture.style.display = 'flex';
-  favDialogPicture.showModal();
-}
-
-function closeDialogPicture() {
-  favDialogPicture.style.display = 'none';
-  favDialogPicture.close();
-}
 
 const hiddenP = document.getElementById('hidden_p');
 const imgDiscord = document.getElementById('discord_picture');

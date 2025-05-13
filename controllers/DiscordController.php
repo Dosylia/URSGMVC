@@ -470,34 +470,33 @@ class DiscordController
     public function sendMessageDiscord()
     {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
+
         if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
             echo json_encode(['success' => false, 'error' => 'Unauthorized']);
             return;
         }
-    
+
         $token = $matches[1];
-    
+
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
             return;
         }
-    
+
         $userId = (int)$_POST['userId'];
-    
+
         if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
-    
+
         $user = $this->user->getUserById($userId);
 
         $oldTimeRaw = $_POST['oldTime'] ?? null;
         $oldTimeFormatted = str_replace('+', ' ', $oldTimeRaw);
         $oldTime = strtotime($oldTimeFormatted);
 
-
-        if (time() - $oldTime < 120) { 
+        if (time() - $oldTime < 120) {
             echo json_encode(['success' => false, 'error' => 'Please wait before sending another request']);
             return;
         }
@@ -505,14 +504,14 @@ class DiscordController
         $account = $_POST['account'] ?? null;
         $extraMessage = $_POST['extraMessage'] ?? null;
         $server = "Unknown";
-    
+
         if (!isset($user['user_game'])) {
             echo json_encode(['success' => false, 'error' => 'User game not defined']);
             return;
         }
-        
+
         $game = $user['user_game'];
-        
+
         if ($game === 'League of Legends') {
             if ($user['lol_verified'] == 1) {
                 $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
@@ -532,7 +531,6 @@ class DiscordController
                 }
             }
         } elseif ($game === 'Valorant') {
-            // Always fallback to provided account since Valorant can't be bound yet
             if (!$account) {
                 echo json_encode(['success' => false, 'error' => 'No Valorant account provided']);
                 return;
@@ -543,7 +541,7 @@ class DiscordController
             echo json_encode(['success' => false, 'error' => 'Unsupported game type']);
             return;
         }
-        
+
         require_once 'keys.php';
         $botToken = $discordToken;
 
@@ -552,26 +550,70 @@ class DiscordController
         } elseif ($game == 'Valorant') {
             $channelId = "1263123785716858880";
         }
-    
-        $msg = "**{$user['user_username']}** is looking for players!";
-        $msg .= "\n> **Server:** " . ($server ? "**$server**" : "*Not specified*");
-        $msg .= "\n> **Account:** `{$account}`";
-    
-        if (!empty($extraMessage)) {
-            $msg .= "\n\n📣 *{$extraMessage}*";
+
+        $playerFinder = $_POST['playerfinder'] ?? null;
+        $voiceChat = $_POST['voiceChat'] ?? null;
+        $roleLookingFor = $_POST['roleLookingFor'] ?? null;
+        $rankLookingFor = $_POST['rankLookingFor'] ?? null;
+
+        // Build embed fields
+        $embedFields = [
+            [
+                "name" => "🌍 Server",
+                "value" => $server ? $server : "Not specified",
+                "inline" => true
+            ],
+            [
+                "name" => "🎮 Account",
+                "value" => "`$account`",
+                "inline" => true
+            ]
+        ];
+
+        if ($playerFinder) {
+            $embedFields[] = [
+                "name" => "🎧 Voice Chat",
+                "value" => $voiceChat ? "🎤 Looking for voice chat" : "🙊 Not looking for voice chat",
+                "inline" => false
+            ];
+            $embedFields[] = [
+                "name" => "🧩 Role looking for",
+                "value" => $roleLookingFor ? $roleLookingFor : "Not specified",
+                "inline" => true
+            ];
+            $embedFields[] = [
+                "name" => "📈 Rank looking for",
+                "value" => $rankLookingFor ? $rankLookingFor : "Not specified",
+                "inline" => true
+            ];
         }
-    
+
+        $embed = [
+            "title" => "{$user['user_username']} is looking for players!",
+            "color" => hexdec("F47FFF"), // A pinkish embed color
+            "fields" => $embedFields,
+            "timestamp" => date("c")
+        ];
+
+        if (!empty($extraMessage)) {
+            $embed["description"] = "📣 *$extraMessage*";
+        }
+
+        $data = [
+            "username" => "URSG bot",
+            "embeds" => [$embed]
+        ];
+
         $url = "https://discord.com/api/v10/channels/{$channelId}/messages";
-        $data = ["content" => $msg];
-    
         $response = $this->makeDiscordRequest($url, $data, $botToken);
-    
+
         if (isset($response['id'])) {
             echo json_encode(['success' => true, 'messageId' => $response['id']]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
         }
     }
+
     
     
 

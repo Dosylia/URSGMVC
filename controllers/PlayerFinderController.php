@@ -38,8 +38,8 @@ class PlayerFinderController
         )
         {
             $user = $this->user->getUserById($_SESSION['userId']);
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
                         $regionAbbreviations = [
@@ -70,13 +70,24 @@ class PlayerFinderController
             }
 
 
+            $availableRoles = [
+                'League of Legends' => array_merge(['Any'], $lol_roles),
+                'Valorant' => array_merge(['Any'], $valorant_roles)
+            ];
+
+            $availableRanks = [
+                'League of Legends' => array_merge(['Any'], $lol_ranks),
+                'Valorant' => array_merge(['Any'], $valorant_ranks)
+            ];
+
             if ($user['user_game'] === 'League of Legends') {
-                $availableRanks = $lol_ranks;
-                $availableRoles = $lol_roles;
+                $availableRanksCreate = $lol_ranks;
+                $availableRolesCreate = $lol_roles;
             } elseif ($user['user_game'] === 'Valorant') {
-                $availableRanks = $valorant_ranks;
-                $availableRoles = $valorant_roles;
+                $availableRanksCreate = $valorant_ranks;
+                $availableRolesCreate = $valorant_roles;
             }
+            $this->initializeLanguage();
             $playerFinderAll = $this->playerFinder->getAllPlayerFinderPost();
             $current_url = "https://ur-sg.com/playerFinder";
             $template = "views/swiping/playerfinder";
@@ -86,9 +97,10 @@ class PlayerFinderController
         } 
         else
         {
+            $interestedData = [];
             $playerFinderAll = $this->playerFinder->getAllPlayerFinderPost();
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $regionAbbreviations = [
@@ -104,6 +116,17 @@ class PlayerFinderController
                 "Japan" => "JP",
                 "Korea" => "KR",
             ];
+
+            $availableRoles = [
+                'League of Legends' => array_merge(['Any'], $lol_roles),
+                'Valorant' => array_merge(['Any'], $valorant_roles)
+            ];
+
+            $availableRanks = [
+                'League of Legends' => array_merge(['Any'], $lol_ranks),
+                'Valorant' => array_merge(['Any'], $valorant_ranks)
+            ];
+            $this->initializeLanguage();
             $current_url = "https://ur-sg.com/playerFinder";
             $template = "views/swiping/playerfinder";
             $page_title = "URSG - Player Finder";
@@ -208,6 +231,18 @@ class PlayerFinderController
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        if ($getPlayerFinderPost['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot delete this post']);
+            return;
+        }
     
         $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($postId);
     
@@ -253,6 +288,11 @@ class PlayerFinderController
             return;
         }
 
+        if ($getPlayerFinderPost['user_id'] == $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot play with yourself']);
+            return;
+        }
+
         $interested = json_decode($getPlayerFinderPost['pf_peopleInterest'], true);
 
         if (!is_array($interested)) {
@@ -266,7 +306,23 @@ class PlayerFinderController
         $playWithThem = $this->playerFinder->updatePeopleInterest($postId, $interested);
     
         if ($playWithThem) {
-            echo json_encode(['success' => true, 'message' => 'They will know you want to play with them']);
+            // Check if they are friends, if yes add isFriend yes, to redirect them to chat on front end
+            $friendRequest = $this->friendrequest->getFriendStatus($userId, $getPlayerFinderPost['user_id']);
+
+            if ($friendRequest === "accepted") {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Redirecting to friend chat',
+                    'isFriend' => true,
+                    'friendId' => $getPlayerFinderPost['user_id']
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'They will know you want to play with them',
+                    'isFriend' => false
+                ]);
+            }
         } else {
             echo json_encode(['success' => false, 'error' => 'Failed to play with them']);
         }

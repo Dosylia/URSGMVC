@@ -2,21 +2,31 @@
   <!-- Banner + CTA -->
   <div class="playerfinder-banner">
     <div class="playerfinder-banner-content">
-      <h2>Find your next teammate!</h2>
+      <h2>Find your next <span style="color: var(--main--red);">teammate</span>!</h2>
+            <?php if (
+      $this->isConnectGoogle() &&
+      $this->isConnectWebsite() &&
+      ($this->isConnectLeague() || $this->isConnectValorant()) && 
+      $this->isConnectLf()) : ?>
       <button type="button" id="createPostBtn">Create a Post</button>
+      <?php else : ?>
+        <button type="button" class="offline-btn">Create a Post</button>
+      <?php endif; ?>
     </div>
     <img src="public/images/kaisa-lulu.png" alt="Player Finder Banner" class="playerfinder-banner-image">
-    <?php if (count($interestedData) > 0) : ?>
-      <div class="interested-button">
-        <button type="button" class="interested-btn" id="interestedBtn-<?= $post['pf_id'] ?>">
-          <?= count($interestedData) ?> Interested
-        </button>
-      </div>
-    <?php endif; ?>
+  </div>
+
+  <!-- Modal for offline users -->
+  <div id="offlineModal" class="offline-modal hidden">
+    <div class="offline-modal-content">
+      <h3>You need to be online to do this action</h3>
+      <a href="/?triggerSignUp=true">Go to Sign Up</a>
+      <button type="button" class="close-modal-btn" data-modal="offlineModal">Close</button>
+    </div>
   </div>
 
   <!-- Modal for Showing Interested Users -->
-<div id="interestedModal-<?= $post['pf_id'] ?>" class="interested-modal hidden">
+<div id="interestedModal-<?= $playerFinderPost['pf_id'] ?>" class="interested-modal hidden">
   <div class="interested-modal-content">
     <h3>People Interested</h3>
     <div class="interested-users-list">
@@ -60,7 +70,7 @@
         </div>
       <?php endforeach; ?>
     </div>
-    <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $post['pf_id'] ?>">Close</button>
+    <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $playerFinderPost['pf_id'] ?>">Close</button>
   </div>
 </div>
 
@@ -68,11 +78,16 @@
   <div id="playerfinder-modal" class="playerfinder-modal hidden">
   <div class="playerfinder-modal-content">
     <h3>Create a Post</h3>
-
+    <hr class="separators-quiz">
     <div class="form-group">
-      <label>
-        Want Voice Chat?
-        <input type="checkbox" id="voiceChat">
+      <label class="toggle-wrapper" for="voiceChat">
+        <div class="voice-row">
+          <p>Want Voice Chat?</p>
+          <div class="switch">
+            <input type="checkbox" id="voiceChat">
+            <span class="slider"></span>
+          </div>
+        </div>
       </label>
     </div>
 
@@ -80,17 +95,17 @@
           ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
           $user['user_game'] === "Valorant"
       ) : ?>
-      <?php endif; ?>
-
       <div class="form-group">
         <label for="lookingfor-account">Your LoL/Valorant account</label>
         <input type="text" id="lookingfor-account" placeholder="Enter your account's name">
       </div>
+      <?php endif; ?>
 
     <div class="form-group">
       <label for="eloLookingFor">Role Looking For</label>
       <select id="eloLookingFor">
-        <?php foreach ($availableRoles as $role): ?>
+          <option value="Any">Any</option>
+        <?php foreach ($availableRolesCreate as $role): ?>
         <option value="<?= $role ?>"><?= $role ?></option>
         <?php endforeach; ?>
       </select>
@@ -99,7 +114,8 @@
     <div class="form-group">
       <label for="rankLookingFor">Rank Looking For</label>
       <select id="rankLookingFor">
-        <?php foreach ($availableRanks as $rank): ?>
+        <option value="Any">Any</option>
+        <?php foreach ($availableRanksCreate as $rank): ?>
         <option value="<?= $rank ?>"><?= $rank ?></option>
         <?php endforeach; ?>
       </select>
@@ -111,6 +127,8 @@
       <p id="descError" class="error-message hidden">Please enter a description.</p>
     </div>
 
+    <hr class="separators-quiz">
+
     <div class="form-actions">
       <button type="button" id="submitPostBtn">Submit</button>
       <button id="closeModalBtn" class="secondary">Close</button>
@@ -121,21 +139,43 @@
   <!-- Layout -->
   <div class="playerfinder-container">
     <!-- Filter Sidebar -->
-    <aside class="playerfinder-filter">
+    <button id="toggleFilter" class="filter-toggle">☰ Filter</button>
+    <aside class="playerfinder-filter hidden-on-mobile" id="filterPanel">
       <h3>Filter</h3>
-      <label>Role
-        <select id="filterRole">
-            <option value="">Any</option>
-            <?php foreach ($availableRoles as $role): ?>
-            <option value="<?= $role ?>"><?= $role ?></option>
-            <?php endforeach; ?>
+      <label>Game
+        <select id="filterGame">
+          <option value="">Any</option>
+          <option value="League of Legends">League of Legends</option>
+          <option value="Valorant">Valorant</option>
         </select>
-        </label>
+      </label>      
+    <label>Role
+        <select id="filterRole">
+              <option value="">Any</option>
+              <?php foreach ($availableRoles['League of Legends'] as $role): ?>
+                  <?php if ($role !== 'Any'): ?>
+                      <option value="<?= $role ?>" data-game="lol"><?= $role ?></option>
+                  <?php endif; ?>
+              <?php endforeach; ?>
+              <?php foreach ($availableRoles['Valorant'] as $role): ?>
+                  <?php if ($role !== 'Any'): ?>
+                      <option value="<?= $role ?>" data-game="valorant"><?= $role ?></option>
+                  <?php endif; ?>
+              <?php endforeach; ?>
+        </select>
+      </label>
         <label>Rank
         <select id="filterRank">
-            <option value="">Any</option>
-            <?php foreach ($availableRanks as $rank): ?>
-            <option value="<?= $rank ?>"><?= $rank ?></option>
+              <option value="">Any</option>
+            <?php foreach ($availableRanks['League of Legends'] as $rank): ?>
+                <?php if ($rank !== 'Any'): ?>
+                    <option value="<?= $rank ?>" data-game="lol"><?= $rank ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <?php foreach ($availableRanks['Valorant'] as $rank): ?>
+                <?php if ($rank !== 'Any'): ?>
+                    <option value="<?= $rank ?>" data-game="valorant"><?= $rank ?></option>
+                <?php endif; ?>
             <?php endforeach; ?>
         </select>
         </label>
@@ -151,85 +191,126 @@
 
     <!-- Posts -->
     <div class="playerfinder-posts">
-        <?php foreach ($playerFinderAll as $post): ?>
-            <?php
-              $isLoL = $post['user_game'] === 'League of Legends';
-              $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
-              $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
-              $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
-              $server = $isLoL ? $post['lol_server'] : $post['valorant_server'];
-              $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
-              $roleExt = $isLoL ? 'png' : 'webp'; // extension for role image
-            ?>
-            <div 
-            class="playerfinder-card" 
-            data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
-            data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
-            data-voice="<?= (int)$post['pf_voiceChat'] === 1 ? 'true' : 'false' ?>"
-            >
-                <div class="playerfinder-card-header">
-                    <div class="playerfinder-card-header-row">
-                        <?php if ((int)$post['pf_voiceChat'] === 1): ?>
-                          <span class="mic">🎤</span>
+        <?php if (count($interestedData) > 0) : ?>
+          <div class="interested-button">
+            <button type="button" class="interested-btn" id="interestedBtn-<?= $playerFinderPost['pf_id'] ?>">
+              <?= count($interestedData) ?> <i class="fa-solid fa-gamepad"></i> Teammate ready
+            </button>
+          </div>
+        <?php endif; ?>
+        <?php if (!empty($playerFinderAll)): ?>
+          <?php foreach ($playerFinderAll as $post): ?>
+              <?php
+                $isLoL = $post['pf_game'] === 'League of Legends';
+                $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
+                $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
+                $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
+                $server = $isLoL ? $post['lol_server'] : $post['valorant_server'];
+                $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
+                $roleFolder = $isLoL ? 'roles' : 'valorant_roles';
+                $roleExt = $isLoL ? 'png' : 'webp'; // extension for role image
+              ?>
+              <div class="playerfinder-card" 
+                  data-game="<?= $isLoL ? 'League of Legends' : 'Valorant' ?>"
+                  data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
+                  data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
+                  data-voice="<?= (int)$post['pf_voiceChat'] === 1 ? 'true' : 'false' ?>">
+                  <?php if (isset($user)): ?>
+                    <?php
+                    $interestedUsers = json_decode($post['pf_peopleInterest'], true);
+                    $isLiked = is_array($interestedUsers) && in_array($user['user_id'], $interestedUsers);
+                    ?>
+                    <?php if ($isLiked): ?> <!-- if person interested -->
+                      <i class="fa-solid fa-heart liked-post-<?= $post['pf_id'] ?> liked-post-general" style="display: block;"></i>
+                    <?php else: ?>
+                      <i class="fa-solid fa-heart liked-post-<?= $post['pf_id'] ?> liked-post-general" style="display: none;"></i>
+                    <?php endif; ?>
+                  <?php endif; ?>
+                  <?php if ($post['pf_game'] === 'League of Legends'): ?>
+                    <img src="public/images/league-icon.png" alt="League of Legends" class="game-icon">
+                  <?php else: ?>
+                    <img src="public/images/valorant-icon.png" alt="Valorant" class="game-icon">
+                  <?php endif; ?>
+                  <div class="playerfinder-card-header">
+                      <div class="playerfinder-card-header-row">
+                        <?php if (isset($post['user_picture']) && $post['user_picture'] !== null): ?>
+                          <img src="public/upload/<?= htmlspecialchars($post['user_picture']) ?>" alt="Profile Picture" class="pf-profile-pic">
+                        <?php else: ?>
+                          <img src="public/images/defaultprofilepicture.jpg" alt="Profile Picture" class="pf-profile-pic">
                         <?php endif; ?>
-                      <?php if (isset($post['user_picture']) && $post['user_picture'] !== null): ?>
-                        <img src="public/upload/<?= htmlspecialchars($post['user_picture']) ?>" alt="Profile Picture" class="pf-profile-pic">
-                      <?php else: ?>
-                        <img src="public/images/defaultprofilepicture.jpg" alt="Profile Picture" class="pf-profile-pic">
-                      <?php endif; ?>
-                        <span class="username"><?= htmlspecialchars($post['user_username']) ?></span>
-                        <span class="server"><?= $regionAbbreviations[$server] ?? $server ?></span>
-                    </div>
-                </div>
-                <div class="playerfinder-card-body">
-                  <div class="playerfinder-center">
-                    <div class="about-user">
-                        <p class="card-title">About them</p>
-                        <span>
-                            <img src="public/images/roles/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
-                        </span>
-                        <span>
-                            <img src="public/images/<?= $rankFolder ?>/<?= $rank ?>.png" alt="<?= htmlspecialchars($rank) ?>">
-                        </span>
+                          <span class="username"><?= htmlspecialchars($post['user_username']) ?></span>
+                          <?php if ((int)$post['pf_voiceChat'] === 1): ?>
+                            <span class="mic">🎤</span>
+                          <?php endif; ?>
+                          <span class="server"><?= $regionAbbreviations[$server] ?? $server ?></span>
                       </div>
-                    <div class="looking-for">
-                        <p class="card-title">Looking for</p>
-                        <?php
-                            $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
-                            $pfRank = $post['pf_rank']; // capital kept for rank
-                        ?>
-                        <span>
-                            <img src="public/images/roles/<?= $pfRole ?>.png" alt="<?= htmlspecialchars($post['pf_role']) ?>">
-                        </span>
-                        <span>
-                            <img src="public/images/ranks/<?= $pfRank ?>.png" alt="<?= htmlspecialchars($pfRank) ?>">
-                        </span>
-                    </div>
                   </div>
+                  <div class="playerfinder-card-body">
+                    <div class="playerfinder-center">
+                      <div class="about-user">
+                          <p class="card-title">About them</p>
+                          <span>
+                              <img src="public/images/<?= $roleFolder ?>/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
+                          </span>
+                          <span>
+                              <img src="public/images/<?= $rankFolder ?>/<?= $rank ?>.png" alt="<?= htmlspecialchars($rank) ?>">
+                          </span>
+                        </div>
+                      <div class="looking-for">
+                          <p class="card-title">Looking for</p>
+                          <?php
+                              $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
+                              $pfRank = $post['pf_rank']; // capital kept for rank
+                          ?>
+                          <span>
+                              <img src="public/images/<?= $roleFolder ?>/<?= $pfRole ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($post['pf_role']) ?>">
+                          </span>
+                          <span>
+                              <img src="public/images/<?= $rankFolder ?>/<?= $pfRank ?>.png" alt="<?= htmlspecialchars($pfRank) ?>">
+                          </span>
+                      </div>
+                    </div>
 
-                <?php if ($post['pf_description']): ?>
-                    <div class="desc">
-                        <?= nl2br(htmlspecialchars($post['pf_description'])) ?>
-                    </div>
-                <?php endif; ?>
-                <?php if ($post['user_id'] === $_SESSION['userId']): ?>
-                    <div class="delete">
-                        <button type="button" class="submit-button" id="delete-post" data-postId="<?= $post['pf_id']?>">Delete</button>
-                    </div>
-                <?php else : ?>
-                <div class="submit">
-                  <button 
-                    type="button" 
-                    class="submit-button playwith-btn" 
-                    data-postid="<?= $post['pf_id'] ?>"
-                  >
-                    Play with them
-                  </button>
-                </div>
-                <?php endif; ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
+                  <?php if ($post['pf_description']): ?>
+                      <div class="desc">
+                          <?= nl2br(htmlspecialchars($post['pf_description'])) ?>
+                      </div>
+                  <?php endif; ?>
+                    <?php if (isset($_SESSION['userId']) && $post['user_id'] === $_SESSION['userId']): ?>
+                      <div class="delete">
+                          <button type="button" class="submit-button" id="delete-post" data-postId="<?= $post['pf_id']?>">Delete</button>
+                      </div>
+                  <?php else : ?>
+                  <div class="submit">
+                    <?php if (
+                    $this->isConnectGoogle() &&
+                    $this->isConnectWebsite() &&
+                    ($this->isConnectLeague() || $this->isConnectValorant()) && 
+                    $this->isConnectLf()) : ?>
+                      <button 
+                        type="button" 
+                        class="submit-button playwith-btn" 
+                        data-postid="<?= $post['pf_id'] ?>"
+                      >
+                        Play with them
+                      </button>
+                    <?php else : ?>
+                      <button 
+                        type="button" 
+                        class="offline-btn" 
+                        data-postid="<?= $post['pf_id'] ?>"
+                      >
+                        Play with them
+                    </button>
+                    <?php endif; ?>
+                  </div>
+                  <?php endif; ?>
+                  </div>
+              </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <p class="no-posts">No one is looking for a game now.</p>
+        <?php endif; ?>
         <!-- Pagination -->
         <!-- <div class="pagination">
             <button id="prevPageBtn">Previous</button>

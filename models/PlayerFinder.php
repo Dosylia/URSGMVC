@@ -55,8 +55,8 @@ class PlayerFinder extends DataBase
                 val.valorant_rank, val.valorant_role, val.valorant_server
             FROM playerfinder pf
             JOIN user u ON pf.user_id = u.user_id
-            LEFT JOIN leagueoflegends lol ON u.user_game = 'League of Legends' AND lol.user_id = u.user_id
-            LEFT JOIN valorant val ON u.user_game = 'Valorant' AND val.user_id = u.user_id
+            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
+            LEFT JOIN valorant val ON val.user_id = u.user_id
             ORDER BY pf.pf_id DESC
         ");
         

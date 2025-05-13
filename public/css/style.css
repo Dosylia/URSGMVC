@@ -1050,7 +1050,6 @@ font-size: 0.7em;
 .playerfinder-banner img {
   height: 200px;
   width: auto;
-  margin-bottom: 20px;
 }
 
 .playerfinder-banner-content {
@@ -1070,6 +1069,7 @@ font-size: 0.7em;
   display: flex;
   min-height: 68vh;
   background: white;
+  position: relative;
 }
 
 .dark-mode .playerfinder-container {
@@ -1091,6 +1091,26 @@ font-size: 0.7em;
   top: 1em;
 }
 
+.hidden-on-mobile {
+  display: flex;
+}
+
+.filter-toggle {
+  display: none;
+  background-color: var(--main--red);
+  color: white;
+  padding: 0.5em 1em;
+  margin-bottom: 10px;
+  border: none;
+  font-size: 1rem;
+}
+
+.interested-button {
+  position: absolute;
+  top: 10px;
+  right: 10px; 
+}
+
 .interested-btn {
   background: var(--main--red);
   color: #fff;
@@ -1099,9 +1119,10 @@ font-size: 0.7em;
   cursor: pointer;
   text-align: center;
   border: none;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+}
+
+.interested-btn:hover {
+  background: var(--dark--red);
 }
 
 .voiceChat_row {
@@ -1114,8 +1135,7 @@ font-size: 0.7em;
 }
 
 .playerfinder-posts {
-  width: 80%;
-  padding: 2em;
+  padding: 3em 2em;
   background: white;
   color: black;
   display: flex;
@@ -1138,12 +1158,29 @@ font-size: 0.7em;
   display: flex;
   flex-direction: column;
   height: fit-content;
+  position: relative;
 }
 
 .dark-mode .playerfinder-card {
   background: #2a2a2a;
   border: 1px solid #444;
   color: #fff;
+}
+
+.playerfinder-card .game-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+}
+
+.playerfinder-card .liked-post-general {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  color: var(--main--red);
+  font-size: 15px;
 }
 
 .playerfinder-card-header {
@@ -1160,13 +1197,14 @@ font-size: 0.7em;
   align-items: center;
   flex-direction: column;
   position : relative;
+  width: 100%;
 }
 
 .playerfinder-card-header-row .mic {
   position: absolute;
-  top: 0;
-  right: 10px;
-  font-size: 10px;
+  bottom: 30px;
+  right: 20px;
+  font-size: 12px;
 }
 
 .playerfinder-card-header-row .server {
@@ -1183,6 +1221,11 @@ font-size: 0.7em;
   font-weight: 600;
   font-size: 2em;
   font-family: 'Libre Franklin', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
 }
 
 .playerfinder-card-body {
@@ -1251,6 +1294,7 @@ font-size: 0.7em;
   text-align: center;
   border: none;
   margin: 20px 0 0 0;
+  width: 90%;
 }
 
 #savePreferencesBtn:hover {
@@ -1293,7 +1337,7 @@ font-size: 0.7em;
 
  .playerfinder .looking-for .card-title {
   position: absolute;
-  right: -15px;
+  right: -25px;
   top: -15px;
   font-size: 10px;
   color: #c6becc;
@@ -1351,7 +1395,7 @@ font-size: 0.7em;
   justify-content: center;
 }
 
-.playerfinder .submit-button {
+.playerfinder .submit-button, .offline-btn {
   padding: 0.5em 1em;
   background: var(--main--red);
   border: none;
@@ -1361,20 +1405,20 @@ font-size: 0.7em;
   margin-bottom: 20px;
 }
 
-.dark-mode .playerfinder .submit-button {
+.dark-mode .playerfinder .submit-button, .dark-mode .offline-btn {
   background: #555;
   color: #fff;
 }
 
-.playerfinder .submit-button:hover {
+.playerfinder .submit-button:hover, .offline-btn:hover {
   background: #555;
 }
 
-.dark-mode .playerfinder .submit-button:hover {
+.dark-mode .playerfinder .submit-button:hover, .dark-mode .offline-btn:hover {
   background: var(--dark--red);
 }
 
-.playerfinder-modal, .interested-modal{
+.playerfinder-modal, .interested-modal, .offline-modal{
   position: fixed;
   top: 0;
   left: 0;
@@ -1387,7 +1431,7 @@ font-size: 0.7em;
   z-index: 999;
 }
 
-.playerfinder-modal-content, .interested-modal-content {
+.playerfinder-modal-content, .interested-modal-content, .offline-modal-content {
   background: #fff;
   padding: 2em;
   width: 100%;
@@ -1397,6 +1441,66 @@ font-size: 0.7em;
   font-family: sans-serif;
   animation: slideUp 0.3s ease-out;
 }
+
+  .playerfinder-modal-content .toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .playerfinder-modal-content .switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+  }
+
+  .playerfinder-modal-content .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .playerfinder-modal-content .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: 0.4s;
+  }
+
+  .playerfinder-modal-content .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+
+  .playerfinder-modal-content .voice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+  }
+
+  .playerfinder-modal-content input:checked + .slider {
+    background-color: var(--main--red);
+  }
+
+  .playerfinder-modal-content input:checked + .slider:before {
+    transform: translateX(20px);
+  }
 
 .interested-modal .interested-users-list {
   display: flex;
@@ -1431,6 +1535,7 @@ font-size: 0.7em;
 }
 
 .interested-modal .username {
+  position: relative;
   font-weight: 600;
   flex: 1;
 }
@@ -1449,18 +1554,18 @@ font-size: 0.7em;
 }
 
 .interested-modal .interested-accept-btn {
-  width: 100%;
+  max-width: 100%;
+  padding: 2px 5px;
   font-weight: bold;
   font-size: 15px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 0.5em;
   text-align: center;
 }
 
-.interested-modal .close-modal-btn {
+.interested-modal .close-modal-btn, .offline-modal .close-modal-btn {
   width: 100%;
   padding: 0.75em;
   font-weight: bold;
@@ -1481,12 +1586,12 @@ font-size: 0.7em;
   background-color: var(--dark--red);
 }
 
-.interested-modal .close-modal-btn {
+.interested-modal .close-modal-btn, .offline-modal .close-modal-btn {
   background-color: #e5e7eb;
   color: #333;
 }
 
-.interested-modal .close-modal-btn:hover {
+.interested-modal .close-modal-btn:hover, .offline-modal .close-modal-btn:hover {
   background-color: #d1d5db;
 }
 
@@ -1509,10 +1614,15 @@ font-size: 0.7em;
   color: #ddd;
 }
 
-.dark-mode .interested-modal .close-modal-btn {
+.dark-mode .interested-modal .close-modal-btn, .dark-mode .offline-modal .close-modal-btn {
   background-color: #444;
   color: #f0f0f0;
 }
+
+.offline-modal .close-modal-btn {
+  margin-top: 30px;
+}
+
 
 @keyframes slideUp {
   from {
@@ -1525,11 +1635,23 @@ font-size: 0.7em;
   }
 }
 
-.playerfinder-modal-content h3, .interested-modal-content h3 {
+.playerfinder-modal-content h3, .interested-modal-content h3, .offline-modal-content h3 {
   margin-top: 0;
   margin-bottom: 1em;
   text-align: center;
   font-size: 1.4em;
+}
+
+.offline-modal-content {
+  text-align: center;
+}
+
+.offline-modal-content a {
+  color: var(--main--red) !important;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.5em;
 }
 
 .playerfinder-modal .form-group {
@@ -1637,7 +1759,7 @@ font-size: 0.7em;
   background: rgba(0, 0, 0, 0.8);
 }
 
-.dark-mode .playerfinder-modal-content, .dark-mode .interested-modal-content {
+.dark-mode .playerfinder-modal-content, .dark-mode .interested-modal-content, .dark-mode .offline-modal-content {
   background: #2b2b2b;
   color: #f0f0f0;
 }
@@ -5332,6 +5454,7 @@ justify-content: center;
     width: fit-content;
     padding: 30px;
     min-width: 500px;
+    z-index: 50000;
   }
 
   .form-picture {
@@ -5677,6 +5800,14 @@ justify-content: center;
     background: linear-gradient(225deg, #e0dbdb, #b8b1b1);
     min-height: 10vh;
     max-height: 20vh;
+}
+
+.nav_swiping .swiping_noheader_signup {
+  font-size: 2em;
+  font-family: 'Rubik', sans-serif;
+  color: var(--main--red);
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .nav_swiping img {
@@ -8749,8 +8880,85 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  #filterVoiceChat {
+    margin-bottom: 40px;
+  }
+
+  .playerfinder-posts {
+    padding: 3em 20px;
+    box-sizing: border-box;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #savePreferencesBtn {
+    font-size: 0.8em;
+    padding: 5px 10px;
+    position: absolute;
+    right: 5px;
+    bottom: 5px; 
+    margin: unset;
+    width: 100%;
+    border-radius: unset;
+  }
+
+  .interested-btn {
+  top: 45px;
+  right: 10px;
+}
+
+  #toggleFilter {
+    cursor: pointer;
+  }
+
+  .hidden-on-mobile {
+    display: none;
+  }
+
+  .playerfinder-container {
+    display: flex;
+    min-height: 80vh;
+    flex-direction: column;
+  }
+
   .playerfinder-filter {
     width: 150px;
+  }
+
+    .filter-toggle {
+    display: block;
+  }
+
+  .playerfinder-filter.active {
+    display: flex;
+  }
+
+  .playerfinder-filter {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 5px;
+    position: relative;
+    border-radius: unset;
+    top: unset;
+  }
+
+  .playerfinder-filter label {
+    width: 100%;
+    font-size: 0.8em;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .playerfinder-filter h3 {
+    margin-right: 20px;
+  }
+
+
+  .playerfinder-filter select {
+    width: 95%;
   }
 
   /* .swiping-middle {
@@ -9079,15 +9287,15 @@ justify-content: center;
 
   @media only screen and (max-width: 600px) {
 
-    .playerfinder-card{
-      width: 70%;
-    }
+  #unread_message {
+    font-size: 8px;
+    padding: 2px 3px;
+  }
 
-    .playerfinder-container {
-      display: flex;
-      height: 68vh;
-      flex-direction: column;
-    }
+  .notif-badge {
+    font-size: 8px;
+    padding: 2px 3px;
+  }
 
     .playerfinder-banner img {
       height: 100px;
@@ -9099,51 +9307,12 @@ justify-content: center;
     font-size: 1em;
   }
 
-    #filterVoiceChat {
-      margin-bottom: 40px;
-    }
-
-    .playerfinder-filter {
-      width: 100%;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 5px;
-      position: relative;
-      border-radius: unset;
-      top: unset;
-    }
-
-    .playerfinder-filter label {
-      width: 100%;
-      font-size: 0.8em;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #savePreferencesBtn {
-      font-size: 0.8em;
-      padding: 5px 10px;
-      position: absolute;
-      right: 5px;
-      bottom: 5px; 
-      margin: unset;
-    }
-
-    .playerfinder-filter h3 {
-      margin-right: 20px;
-    }
-
     .playerfinder-posts {
-      padding: 20px;
+      padding: 2.7em 20px;
       box-sizing: border-box;
       gap: 20px;
       justify-content: center;
       width: 100%;
-    }
-
-    .playerfinder-filter select {
-      width: 95%;
     }
 
     .swiping-buttons {
@@ -9232,13 +9401,18 @@ justify-content: center;
       margin: 0;
     }
 
+    .currency p {
+      font-size: 1em;
+      gap: 5px;
+    }
+
     .currency {
-      padding: 5px 5px;
+      padding: 2px 2px;
     }
     
     .currency img {
-      width: 20px;
-      height: 20px;
+      width: 15px !important;
+      height: 15px !important;
     }
   
     .nav_swiping img {
@@ -9523,6 +9697,18 @@ justify-content: center;
 
 
 @media only screen and (max-width: 400px) {
+
+  #currency {
+    font-size: 15px;
+  }
+
+  .currency img {
+    display: none;
+  }
+
+   .nav-swiping-row {
+    gap: 6px;
+  }
 
   #restore-game-btn {
     font-size: 15px;
