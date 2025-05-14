@@ -8880,6 +8880,10 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+.interested-button {
+  top: 50px;
+}
+
   #filterVoiceChat {
     margin-bottom: 40px;
   }

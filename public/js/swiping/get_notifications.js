@@ -15,6 +15,7 @@ const messageSound = new Audio('public/sounds/notification.mp3');
 let numberOfFailsUnred = 0;
 let numberOfFailsAccepted = 0;
 let numberOfFailsPending = 0;
+let numberOfFailsInterested = 0;
 
 function fetchFriendRequest(userId) {
     if (numberOfFailsPending >= 5) {
@@ -77,6 +78,44 @@ function fetchFriendRequest(userId) {
     })
     .catch(error => {
         numberOfFailsPending++;
+        console.error('Fetch error:', error);
+    });
+}
+
+function fetchInterestedUsers(userId) {
+    if (numberOfFailsInterested >= 5) {
+        console.error('Too many failed attempts to fetch interested users. Stopping further attempts.');
+        return; 
+    }
+    fetch('/getInterestedPeople', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: `userId=${encodeURIComponent(userId)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.interestedUsers) {
+            numberOfFailsInterested = 0;
+            // Filter out existing interested notifications
+            AllNotifications = AllNotifications.filter(request => request.type !== 'interested');
+            const interestedWithType = data.interestedUsers.map(notif => ({ ...notif, type: 'interested' }));
+            AllNotifications.push(...interestedWithType);
+            lastNotifCount = data.interestedUsers.length;
+            lastNotifContent = data.interestedUsers;
+        } else {
+            numberOfFailsInterested = 0;
+            // Remove all interested notifications
+            AllNotifications = AllNotifications.filter(notif => notif.type !== 'interested');
+            lastNotifCount = 0;
+            lastNotifContent = [];
+        }
+        fillNotificationCenter(); // Re-render all notifications
+    })
+    .catch(error => {
+        numberOfFailsInterested++;
         console.error('Fetch error:', error);
     });
 }
@@ -149,9 +188,19 @@ function fillNotificationCenter() {
         notifItem.id = `notif-${notification.fr_id}`;
 
         let notifText = `${notification.user_username} `;
-        notifText += notification.type === 'pending' 
-            ? 'sent you a friend request' 
-            : 'accepted your friend request';
+        switch (notification.type) {
+            case 'pending':
+                notifText += 'sent you a friend request';
+                break;
+            case 'accepted':
+                notifText += 'accepted your friend request';
+                break;
+            case 'interested':
+                notifText += 'is interested to play with you';
+                break;
+            default:
+                notifText += 'sent you a notification';
+        }
 
         const notifTextElement = document.createElement('span');
         notifTextElement.textContent = notifText;
@@ -185,6 +234,19 @@ function fillNotificationCenter() {
                 window.location.href = `/persoChat?friend_id=${notification.fr_receiverId}`;
             } else if (notification.type === 'pending') {
                 window.location.href = `/userProfile`;
+            } else if (notification.type === 'interested') {
+                document.getElementById(`notif-${notification.fr_id}`)?.remove();
+
+                const dataDelete = {
+                    dataset: {
+                        frId: notification.fr_id,
+                        userId: notification.userId,
+                        type: "interested"
+                    }
+                };
+
+                handleNotificationClose(dataDelete);
+                window.location.href = `/persoChat?friend_id=${notification.friendId}`;
             }
         });
     });
@@ -238,6 +300,9 @@ function handleNotificationClose(target) {
     } else if (typeBtn === 'accepted') {
         console.log("Type", typeBtn);
         updateNotificationFriendRequestAccepted(frId, userId);
+    } else if (typeBtn === 'interested') {
+        console.log("Type", typeBtn);
+        updateNotificationPlayerFinder(frId, userId);
     } else {
         console.log('Unknown notification type');
     }
@@ -268,7 +333,57 @@ function clearAllNotifications() {
             updateNotificationFriendRequestPending(fr_id, userId, type);
         } else if (type === 'accepted') {
             updateNotificationFriendRequestAccepted(fr_id, userId, type);
+        } else if (type === 'interested') {
+            updateNotificationPlayerFinder(fr_id, userId, type);
         }
+    });
+}
+
+function updateNotificationPlayerFinder(frId, userId, type) {
+    fetch('/markInterestAsSeen', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: `postId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(userId)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Notification updated successfully');
+
+            // Remove only the dismissed notification row
+            const notifItem = document.getElementById(`notif-${frId}`);
+            if (notifItem) notifItem.remove();
+
+            // Update the notification count dynamically
+            const notifBadge = document.getElementById('notif-badge');
+            let currentCount = parseInt(notifBadge.textContent, 10) || 0;
+
+            if (currentCount > 1) {
+                notifBadge.textContent = currentCount - 1; // Decrease count
+            } else {
+                notifBadge.style.display = 'none'; // Hide if no notifications left
+
+                // Hide the bell icon if no notifications are left
+                const notifBell = document.getElementById('notification-bell');
+                if (notifBell) {
+                    notifBell.style.display = 'none'; // Hide bell icon
+                }
+
+                // Hide the modal if no notifications remain
+                const modal = document.getElementById('notif-modal');
+                if (modal) {
+                    modal.classList.add('hidden'); // Hide the modal
+                }
+            }
+        } else {
+            console.log('Failed to update notification');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
     });
 }
 
@@ -693,6 +808,7 @@ function fetchUpdates() {
     fetchAcceptedFriendRequest(userIdHeader);
     fetchFriendRequest(userIdHeader);
     fetchUnreadMessage(userIdHeader);
+    fetchInterestedUsers(userIdHeader);
 }
 
 document.addEventListener("DOMContentLoaded", function() {

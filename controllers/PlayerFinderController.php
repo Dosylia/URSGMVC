@@ -55,20 +55,21 @@ class PlayerFinderController
                 "Japan" => "JP",
                 "Korea" => "KR",
             ];
+
             $playerFinderPost = $this->playerFinder->getPlayerFinderPost($user['user_id']);
 
             if ($playerFinderPost && !empty($playerFinderPost['pf_peopleInterest'])) {
                 $interested = json_decode($playerFinderPost['pf_peopleInterest'], true);
 
                 if (!empty($interested)) {
-                    $interestedData = $this->user->getUsersByIds($interested, $_SESSION['userId']);
+                    $userIds = array_map(fn($entry) => $entry['userId'], $interested);
+                    $interestedData = $this->user->getUsersByIds($userIds, $_SESSION['userId']);
                 } else {
                     $interestedData = [];
                 }
             } else {
                 $interestedData = [];
             }
-
 
             $availableRoles = [
                 'League of Legends' => array_merge(['Any'], $lol_roles),
@@ -294,13 +295,18 @@ class PlayerFinderController
         }
 
         $interested = json_decode($getPlayerFinderPost['pf_peopleInterest'], true);
+        if (!is_array($interested)) $interested = [];
 
-        if (!is_array($interested)) {
-            $interested = [];
+        $alreadyInterested = false;
+        foreach ($interested as $entry) {
+            if ($entry['userId'] == $userId) {
+                $alreadyInterested = true;
+                break;
+            }
         }
 
-        if (!in_array($userId, $interested)) {
-            $interested[] = $userId;
+        if (!$alreadyInterested) {
+            $interested[] = ['userId' => $userId, 'seen' => false];
         }
 
         $playWithThem = $this->playerFinder->updatePeopleInterest($postId, $interested);
@@ -327,7 +333,106 @@ class PlayerFinderController
             echo json_encode(['success' => false, 'error' => 'Failed to play with them']);
         }
     }
+    
+    public function getInterestedPeople()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
 
+        $userId = $_POST['userId'] ?? null;
+    
+        if (!isset($userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        $interested = json_decode($getPlayerFinderPost['pf_peopleInterest'], true);
+        if (!is_array($interested)) $interested = [];
+
+        $unseenUsers = array_filter($interested, fn($entry) => !$entry['seen']);
+        $unseenIds = array_map(fn($entry) => $entry['userId'], $unseenUsers);
+
+        if (empty($unseenIds)) {
+            echo json_encode(['success' => true, 'interestedUsers' => false]);
+            return;
+        }
+
+        $users = $this->user->getUsersByIds($unseenIds, $userId);
+
+        $notifications = [];
+        foreach ($users as $user) {
+            $notifications[] = [
+                'fr_id' => $getPlayerFinderPost['pf_id'],
+                'userId' => $userId, 
+                'friendId' => $user['user_id'],
+                'user_username' => $user['user_username'],
+                'pf_status' => 'unseen',
+            ];
+        }
+
+        echo json_encode([
+            'success' => true,
+            'interestedUsers' => $notifications
+        ]);
+    }
+
+    public function markInterestAsSeen()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+
+        $token = $matches[1];
+
+        $userId = $_POST['userId'] ?? null;
+        $postId = $_POST['postId'] ?? null;
+
+        if (!$userId || !$postId || !$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $post = $this->playerFinder->getPlayerFinderPostById($postId);
+        if (!$post || $post['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'error' => 'Access denied']);
+            return;
+        }
+
+        $interested = json_decode($post['pf_peopleInterest'], true);
+        if (!is_array($interested)) $interested = [];
+
+        foreach ($interested as &$entry) {
+            if (!$entry['seen']) {
+                $entry['seen'] = true;
+            }
+        }
+
+        $update = $this->playerFinder->updatePeopleInterest($postId, $interested);
+        echo json_encode(['success' => $update]);
+    }
+    
 
     public function validateToken($token, $userId): bool
     {

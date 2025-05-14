@@ -124,7 +124,7 @@ class PlayerFinder extends DataBase
         }
     }
 
-public function updatePeopleInterest($postId, $interested)
+    public function updatePeopleInterest($postId, $interested)
     {
         $query = $this -> bdd -> prepare("
                                             UPDATE

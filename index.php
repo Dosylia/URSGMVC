@@ -211,7 +211,9 @@ $actionMap = [
     'playerfinder' => [PlayerFinderController::class, 'playerfinderPage'],
     'addPlayerFinderPost' => [PlayerFinderController::class, 'addPlayerFinderPost'],
     'deletePlayerFinderPost' => [PlayerFinderController::class, 'deletePlayerFinderPost'],
-    'playWithThem' => [PlayerFinderController::class, 'playWithThem'],
+    'playWithThem' => [PlayerFinderController::class, 'playWithThem'],    
+    'getInterestedPeople' => [PlayerFinderController::class, 'getInterestedPeople'],
+    'markInterestAsSeen' => [PlayerFinderController::class, 'markInterestAsSeen'],
     'addFriendAndChat' => [FriendRequestController::class, 'addFriendAndChat'],
 ];
 

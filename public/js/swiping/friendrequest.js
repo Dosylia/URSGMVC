@@ -1,5 +1,5 @@
 let friendRequests = []; // Array to hold all friend requests
-const usersPerPage = 3; // Number of friend requests to display per page
+const usersPerPage = 7; // Number of friend requests to display per page
 let currentPage = 1; // Start with the first page
 
 function updateFriend(frId, userId, status) {
