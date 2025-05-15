@@ -73,6 +73,106 @@ function addPlayerFinderPost({ voice, role, rank, desc, account }) {
     });
 }
 
+function editPlayerPost(postId, desc, newRole, newRank) {
+  fetch('/editPlayerPost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${token}`,
+    },
+        body: `userId=${encodeURIComponent(parseInt(userId))}&postId=${encodeURIComponent(parseInt(postId))}&description=${encodeURIComponent(desc)}&role=${encodeURIComponent(newRole)}&rank=${encodeURIComponent(newRank)}`,
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      const newParagraph = document.createElement('p');
+      newParagraph.className = `desc-${postId}`;
+      newParagraph.innerHTML = desc.replace(/\n/g, "<br>");
+      document.getElementById('descriptionField')?.replaceWith(newParagraph);
+
+      const updateBtn = document.getElementById('update-post');
+      updateBtn.remove();
+      const deleteDiv = document.querySelector('.delete');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'submit-button';
+      button.id = 'delete-post';
+      button.innerText = 'Delete';
+      button.dataset.postid = postId;
+      deleteDiv.appendChild(button);
+      const editPlayerFinderBtn = document.getElementById('edit-playerfinder');
+      editPlayerFinderBtn.style.display = 'block';
+      // Restore span display and update images
+      const card = document.querySelector(`.playerfinder-card[data-postid="${postId}"]`);
+      const game = card.dataset.game;
+      const isLoL = game === 'League of Legends';
+
+      const roleFolder = isLoL ? 'roles' : 'valorant_roles';
+      const rankFolder = isLoL ? 'ranks' : 'valorant_ranks';
+      const roleExt = isLoL ? 'png' : 'webp';
+
+      const roleImg = card.querySelector('.looking-for span:nth-child(2) img');
+      const rankImg = card.querySelector('.looking-for span:nth-child(3) img');
+
+      const newRoleSanitized = newRole.replace(/\s+/g, '');
+      const newRolePath = `public/images/${roleFolder}/${newRoleSanitized}.${roleExt}`;
+      const newRankPath = `public/images/${rankFolder}/${newRank}.png`;
+
+      roleImg.src = newRolePath;
+      roleImg.alt = newRole;
+      rankImg.src = newRankPath;
+      rankImg.alt = newRank;
+
+      card.dataset.roleName = newRole;
+      card.dataset.rank = newRank;
+
+      const roleSelect = document.getElementById('editRole');
+      const rankSelect = document.getElementById('editRank');
+      roleSelect?.remove();
+      rankSelect?.remove();
+
+      const spans = card.querySelectorAll('.looking-for span');
+      spans.forEach(span => span.style.display = 'inline-block');
+
+      const deletePostBtn = document.getElementById('delete-post');
+      deletePostBtn?.addEventListener('click', () => {
+      const token = localStorage.getItem('masterTokenWebsite');
+      const postId = deletePostBtn.dataset.postid;
+      deletePost(postId, token);
+    });
+
+    } else {
+      console.error('Error updating:', data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Request failed', error);
+  });
+}
+
+function deletePost(postId, token) {
+        fetch('/deletePlayerFinderPost', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ postId, userId }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log(data.message);
+          location.reload();
+        } else {
+          console.log('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Request failed', error);
+      });
+}
+
 
   function addFriendAndChat(friendId, userId) {
     const token = localStorage.getItem('masterTokenWebsite');
@@ -141,6 +241,7 @@ const applyFilters = () => {
     const offlineButtons = document.querySelectorAll(".offline-btn");
     const toggleBtn = document.getElementById('toggleFilter');
     const filterPanel = document.getElementById('filterPanel');
+    const editPlayerFinderBtn = document.getElementById('edit-playerfinder');
 
     const filterElements = [
       document.getElementById('filterGame'),
@@ -170,6 +271,94 @@ const applyFilters = () => {
       filterPanel.classList.toggle('active');
       filterPanel.classList.toggle('hidden-on-mobile');
     });
+
+    editPlayerFinderBtn?.addEventListener('click', () => {
+      const deletePostBtnEdit = document.getElementById('delete-post');
+      postId = editPlayerFinderBtn.dataset.postid;
+
+      const card = document.querySelector(`.playerfinder-card[data-postid="${postId}"]`);
+      const currentRole = card.dataset.roleName;
+      const currentRank = card.dataset.rank;
+      const voiceChatEnabled = card.dataset.voice === 'true';
+
+      const descParagraph = document.querySelector('.desc-' + postId);
+      const currentDesc = descParagraph.innerText.trim();
+
+      const textarea = document.createElement('textarea');
+      textarea.value = currentDesc;
+      textarea.maxLength = 130;
+      textarea.rows = 3;
+      textarea.required = true;
+      textarea.className = descParagraph.className;
+      textarea.id = 'descriptionField';
+      descParagraph.replaceWith(textarea);
+
+      deletePostBtnEdit.remove();
+      editPlayerFinderBtn.style.display = 'none';
+
+      const deleteDiv = document.querySelector('.delete');
+      const updateBtn = document.createElement('button');
+      updateBtn.type = 'button';
+      updateBtn.className = 'submit-button';
+      updateBtn.id = 'update-post';
+      updateBtn.innerText = 'Update';
+      deleteDiv.appendChild(updateBtn);
+
+      const game = card.dataset.game;
+      const isLoL = game === 'League of Legends';
+
+      const lolRoles = ['Any', 'Top laner', 'Jungle', 'Mid laner', 'AD Carry', 'Support'];
+      const valRoles = ['Any', 'Duelist', 'Initiator', 'Controller', 'Sentinel'];
+      const lolRanks = ['Any', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Emerald', 'Diamond', 'Master', 'Grandmaster', 'Challenger'];
+      const valRanks = ['Any', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Ascendant', 'Immortal', 'Radiant'];
+      const roles = isLoL ? lolRoles : valRoles;
+      const ranks = isLoL ? lolRanks : valRanks;
+
+      const roleSelect = document.createElement('select');
+      roleSelect.id = 'editRole';
+      roleSelect.className = 'input-style';
+      roles.forEach(role => {
+        const opt = document.createElement('option');
+        opt.value = role;
+        opt.text = role;
+        roleSelect.appendChild(opt);
+      });
+      roleSelect.value = currentRole;
+
+      const rankSelect = document.createElement('select');
+      rankSelect.id = 'editRank';
+      rankSelect.className = 'input-style';
+      ranks.forEach(rank => {
+        const opt = document.createElement('option');
+        opt.value = rank;
+        opt.text = rank;
+        rankSelect.appendChild(opt);
+      });
+      rankSelect.value = currentRank;
+
+      // Append all
+      const lookingForDiv = card.querySelector('.looking-for');
+      const spans = lookingForDiv.querySelectorAll('span');
+      spans.forEach(span => span.style.display = 'none');
+      lookingForDiv.appendChild(roleSelect);
+      lookingForDiv.appendChild(rankSelect);
+
+      updateBtn.style.backgroundColor = '#e84056';
+
+      updateBtn.addEventListener('click', () => {
+        const newDesc = descriptionField.value.trim();
+        if (!newDesc) {
+          document.getElementById('descError').classList.remove('hidden');
+          return;
+        }
+
+        const newRole = document.getElementById('editRole').value;
+        const newRank = document.getElementById('editRank').value;
+
+        editPlayerPost(postId, newDesc, newRole, newRank);
+      });
+    });
+
 
     document.getElementById('filterGame').addEventListener('change', function() {
       const game = this.value;
@@ -268,26 +457,7 @@ const applyFilters = () => {
     deletePostBtn?.addEventListener('click', () => {
       const token = localStorage.getItem('masterTokenWebsite');
       const postId = deletePostBtn.dataset.postid;
-      fetch('/deletePlayerFinderPost', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ postId, userId }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log(data.message);
-          location.reload();
-        } else {
-          console.log('Error: ' + data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Request failed', error);
-      });
+      deletePost(postId, token);
     });
 
     document.querySelectorAll('.interested-btn').forEach(button => {

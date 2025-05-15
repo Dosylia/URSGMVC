@@ -239,7 +239,7 @@ function fillNotificationCenter() {
 
                 const dataDelete = {
                     dataset: {
-                        frId: notification.fr_id,
+                        frId: notification.fr_id, // pf_id
                         userId: notification.userId,
                         type: "interested"
                     }

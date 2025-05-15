@@ -1,0 +1,81 @@
+<!-- Discord Invite -->
+<a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('discord_invite_aria') ?>">
+    <section class="discord">
+        <div class="discord_row">
+            <i class="fa-brands fa-discord"></i>
+            <h2><?= $this->_('discord_invite_title') ?></h2>
+        </div>
+    </section>
+</a>
+
+<!-- Partners Section -->
+<section id="partners">
+    <h2><?= $this->_('partners_title') ?></h2>
+    <div class="partners-container">
+        <?php foreach ($partners as $partner): ?>
+            <div class="partner">
+                <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
+                <h3><?= htmlspecialchars($partner['username']) ?></h3>
+                <div class="social-links">
+                    <?php 
+                    $socialLinks = json_decode($partner['social_links'], true);
+                    foreach ($socialLinks as $social => $link): 
+                        $logoPath = $this->getSocialNetworkLogo($social);
+                    ?>
+                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link" aria-label="<?= $this->_('social_link_aria_' . strtolower($social)) ?>">
+                            <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="call-to-action">
+        <p><?= $this->_('partners_cta') ?> <a target="_blank" href="https://twitter.com/Dosylia"><?= $this->_('contact_us') ?></a></p>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="frequently_asked_question">
+    <h2><?= $this->_('faq_title') ?></h2>
+    <div class="faq_row">
+        <div class="faq_row_box">
+            <h3><?= $this->_('faq_google_account_title') ?></h3>
+            <p><?= $this->_('faq_google_account_content') ?></p>
+        </div>
+        <div class="faq_row_box">
+            <h3><?= $this->_('faq_how_title') ?></h3>
+            <p><?= $this->_('faq_how_content') ?></p>
+        </div>
+    </div>
+    <br>
+</section>
+
+<!-- Ko-fi Support -->
+<a href="https://ko-fi.com/yoursoulmategamer" target="_blank" aria-label="<?= $this->_('kofi_invite_aria') ?>">
+    <section class="kofi">
+        <div class="kofi_row">
+            <img src="public/images/kofi_s_logo_nolabel.png" alt="kofi logo" loading="lazy">
+            <h2><?= $this->_('kofi_invite_title') ?></h2>
+        </div>
+    </section>
+</a>
+
+<!-- Cookie Management -->
+<dialog id="dialogCookie">
+    <h2><i class="fa-solid fa-cookie"></i> <?= $this->_('cookie_title') ?></h2>
+    <div class="dialogCookieRowButtons">
+        <button id="btn_optionsCookie"><?= $this->_('cookie_btn_options') ?></button>
+        <button id="btn_aboutCookie"><?= $this->_('cookie_btn_about') ?></button>
+    </div>
+    <div class="dialogCookieRow" id="optionsCookies">
+        <h3><?= $this->_('cookie_necessary') ?></h3>
+        <p class="cookieState"><?= $this->_('cookie_always_active') ?></p>
+    </div>
+    <div class="dialogCookieRow" id="aboutCookies">
+        <p><?= $this->_('cookie_about_text') ?></p>
+    </div>
+    <button id="saveCookies"><?= $this->_('cookie_btn_save') ?></button>
+</dialog>
+
+<script src="public/js/home.js?<?= time(); ?>"></script>

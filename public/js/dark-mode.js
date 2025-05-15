@@ -5,25 +5,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Charger la préférence du mode depuis le localStorage
   const savedMode = localStorage.getItem('mode');
-  if (savedMode) {
-      body.classList.add(savedMode);
-      if (savedMode === 'dark-mode' && container !== null) {
-          toggleButton.classList.add('dark-mode');
-          container.classList.add('active');
-      }
-  }
+    const activeMode = savedMode === 'light-mode' || savedMode === 'dark-mode' ? savedMode : 'dark-mode';
+
+    body.classList.add(activeMode);
+
+
+    if (activeMode === 'dark-mode' && container !== null) {
+        toggleButton.classList.add('dark-mode');
+        container.classList.add('active');
+    }
+
     if (container !== null) {
-        container.addEventListener('click', function() {
+        container.addEventListener('click', function () {
             if (body.classList.contains('dark-mode')) {
-                // Mode actuel : sombre, on passe au mode clair
+                // Switch to light mode
                 body.classList.remove('dark-mode');
-                body.classList.add('light-mode'); // Ajout de la classe "light-mode"
+                body.classList.add('light-mode');
                 toggleButton.classList.remove('dark-mode');
                 container.classList.remove('active');
                 saveModePreference('light-mode');
             } else {
-                // Mode actuel : clair, on passe au mode sombre
-                body.classList.remove('light-mode'); // Suppression de la classe "light-mode"
+                // Switch to dark mode
+                body.classList.remove('light-mode');
                 body.classList.add('dark-mode');
                 toggleButton.classList.add('dark-mode');
                 container.classList.add('active');
@@ -36,6 +39,5 @@ document.addEventListener('DOMContentLoaded', function() {
   // Fonction pour enregistrer le choix du mode dans le localStorage
   function saveModePreference(mode) {
       localStorage.setItem('mode', mode);
-      console.log("Préférence du mode enregistrée : " + mode);
   }
 });

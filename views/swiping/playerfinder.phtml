@@ -212,13 +212,25 @@
               ?>
               <div class="playerfinder-card" 
                   data-game="<?= $isLoL ? 'League of Legends' : 'Valorant' ?>"
+                  data-postid="<?= $post['pf_id'] ?>"
                   data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
+                  data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
+                  data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
+                  data-role-name="<?= htmlspecialchars($post['pf_role']) ?>"
                   data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
                   data-voice="<?= (int)$post['pf_voiceChat'] === 1 ? 'true' : 'false' ?>">
                   <?php if (isset($user)): ?>
                     <?php
                     $interestedUsers = json_decode($post['pf_peopleInterest'], true);
-                    $isLiked = is_array($interestedUsers) && in_array($user['user_id'], $interestedUsers);
+                    $isLiked = false;
+                      if (is_array($interestedUsers)) {
+                          foreach ($interestedUsers as $entry) {
+                              if (isset($entry['userId']) && $entry['userId'] == $user['user_id']) {
+                                  $isLiked = true;
+                                  break;
+                              }
+                          }
+                      }
                     ?>
                     <?php if ($isLiked): ?> <!-- if person interested -->
                       <i class="fa-solid fa-heart liked-post-<?= $post['pf_id'] ?> liked-post-general" style="display: block;"></i>
@@ -273,12 +285,13 @@
 
                   <?php if ($post['pf_description']): ?>
                       <div class="desc">
-                          <?= nl2br(htmlspecialchars($post['pf_description'])) ?>
+                          <p class="desc-<?= $post['pf_id'] ?>"><?= nl2br(htmlspecialchars($post['pf_description'])) ?></p>
                       </div>
                   <?php endif; ?>
                     <?php if (isset($_SESSION['userId']) && $post['user_id'] === $_SESSION['userId']): ?>
                       <div class="delete">
                           <button type="button" class="submit-button" id="delete-post" data-postId="<?= $post['pf_id']?>">Delete</button>
+                          <button type="button" class="submit-button" id="edit-playerfinder" data-postId="<?= $post['pf_id']?>">Edit</button>
                       </div>
                   <?php else : ?>
                   <div class="submit">

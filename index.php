@@ -215,6 +215,8 @@ $actionMap = [
     'getInterestedPeople' => [PlayerFinderController::class, 'getInterestedPeople'],
     'markInterestAsSeen' => [PlayerFinderController::class, 'markInterestAsSeen'],
     'addFriendAndChat' => [FriendRequestController::class, 'addFriendAndChat'],
+    'editPlayerPost' => [PlayerFinderController::class, 'editPlayerPost'],
+    'partners' => [GoogleUserController::class, 'partnersPage'],
 ];
 
 $action = "home";

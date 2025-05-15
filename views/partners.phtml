@@ -1,0 +1,25 @@
+<section id="partners">
+    <h2><?= $this->_('partners_title') ?></h2>
+    <div class="partners-container">
+        <?php foreach ($partners as $partner): ?>
+            <div class="partner">
+                <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
+                <h3><?= htmlspecialchars($partner['username']) ?></h3>
+                <div class="social-links">
+                    <?php 
+                    $socialLinks = json_decode($partner['social_links'], true);
+                    foreach ($socialLinks as $social => $link): 
+                        $logoPath = $this->getSocialNetworkLogo($social);
+                    ?>
+                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link" aria-label="<?= $this->_('social_link_aria_' . strtolower($social)) ?>">
+                            <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="call-to-action">
+        <p><?= $this->_('partners_cta') ?> <a target="_blank" href="https://twitter.com/Dosylia"><?= $this->_('contact_us') ?></a></p>
+    </div>
+</section>

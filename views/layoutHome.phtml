@@ -1,176 +1,127 @@
 <?php require "views/layout.phtml"; ?>
 <body>
+    <div id="overlay"></div>
+<div id="signup-modal" class="modal signup-modal-hidden">
+    <div class="modal-content">
+        <span id="close-modal" class="close">&times;</span>
+        <h2><?= $this->_('sign_up_log_in') ?></h2>
+        <hr class="separators-quiz" />
+        <p><?= $this->_('when_clicking_on_sign_in') ?><br> <?= $this->_('you_agree_to') ?> <a href="/legalNotice"><?= $this->_('our_terms_of_use') ?></a>.</p>
+        <script src="public/js/ajaxGoogle.js?<?= time(); ?>"></script>
+        <div class="signUpButtons">
+            <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="signup_buttonPopup"><img src="public/images/riot_icon.png"><?= $this->_('sign_up_with_riot_account') ?>
+            </a>
+            <a href="https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections" class="signup_buttonPopup"><img src="public/images/discord_user.png"><?= $this->_('sign_up_with_discord') ?>
+            </a>
 
-    <header>
-        <section class="main_section">
-            <div class="top_main_section">
-                <div class="top_left_main_section">
+            <!-- Dynamic Google Button Container -->
+            <div id="google-auth-container">
+                <!-- Custom Button (default) -->
+                <a href="#" class="signup_buttonPopup" id="google-signin">
+                    <img src="public/images/google-icon.png">Sign in with Google
+                </a>
+
+                <!-- Default Google Button (hidden) -->
+                <div class="social_buttons2" style="display: none;">
+                    <div id="g_id_onload"
+                        data-client_id="666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com"
+                        data-context="signin" 
+                        data-ux_mode="popup" 
+                        data-callback="handleCredentialResponse"
+                        data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin" 
+                        data-type="standard" 
+                        data-shape="rectangular" 
+                        data-theme="outline"
+                        data-text="signin_with" 
+                        data-size="large" 
+                        data-logo_alignment="left">
+                    </div>
+                </div>
+            </div>
+
+            <script nonce="TAJKETR">
+                let googleCooldown = false;
+                
+                function initGoogleSignIn() {
+                    window.google.accounts.id.initialize({
+                        client_id: "666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com",
+                        callback: handleCredentialResponse,
+                        ux_mode: 'popup',
+                        cancel_callback: (error) => {
+                            if (error.event === 'onetap.card.prompt.cooldown.1') {
+                                handleCooldown();
+                            }
+                        }
+                    });
+
+                    document.getElementById('google-signin').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if(!googleCooldown) {
+                            google.accounts.id.prompt((notification) => {
+                                if (notification.isNotDisplayed()) {
+                                    handleCooldown();
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function handleCooldown() {
+                    googleCooldown = true;
+                    // Show default button
+                    document.querySelector('#google-auth-container .social_buttons2').style.display = 'block';
+                    // Hide custom button
+                    document.getElementById('google-signin').style.display = 'none';
+                    // Reinitialize default Google button
+                    window.google.accounts.id.prompt();
+                    
+                    // Reset after 5 minutes (adjust as needed)
+                    setTimeout(() => {
+                        googleCooldown = false;
+                        document.querySelector('#google-auth-container .social_buttons2').style.display = 'none';
+                        document.getElementById('google-signin').style.display = 'flex';
+                    }, 300000);
+                }
+            </script>
+
+            <!-- URSG Test : 666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com -->
+            <!-- URSG Prod : 666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com -->
+
+            <script src="https://accounts.google.com/gsi/client" onload="initGoogleSignIn()" async defer></script>
+        </div>
+    </div>
+</div>
+    <header class="header">
+        <section class="header-top">
+            <nav>
+                <div class="nav-left">
                     <a href="/">
-                        <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
+                        <img class="logo_ursg" src="public/images/ursg-side.png" alt="logo">
                     </a>
                 </div>
-
-                <div class="top_right_main_section">
-                    <div class="toggle-container">
-                        <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
-                    </div>
-                    <nav>
-                        <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
-
-                        <?php if (
-                            $this->isConnectGoogle() &&
-                            $this->isConnectWebsite() &&
-                            (
-                                ($this->isConnectLeague() && !$this->isConnectValorant()) ||
-                                ($this->isConnectValorant() && !$this->isConnectLeague())
-                            ) &&
-                            $this->isConnectLf()
-                        ): ?> <!-- Connected to all -->
-                            <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in">
-                                <!-- Log out button -->
-                                <?= $this->_('log_out') ?>
-
-                            </a>
-                            <a href="/userProfile?<?= ucfirst($user['user_username']) ?>" title="Profile"
-                                class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                                <?= ucfirst($user['user_username']) ?>
-                            </a>
-                        <?php elseif (
-                            $this->isConnectGoogle() &&
-                            $this->isConnectWebsite() &&
-                            (
-                                ($this->isConnectLeague() && !$this->isConnectValorant()) ||
-                                ($this->isConnectValorant() && !$this->isConnectLeague())
-                            ) &&
-                            !$this->isConnectLf()
-                        ): ?> <!-- No session for looking for -->
-                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
-                                <!-- Log out button -->
-                                <?= $this->_('log_out') ?>
-                            </a>
-                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
-                                <!-- User page / name = username -->
-                                <?= ucfirst($user['user_username']) ?>
-                            </a>
-                        <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectValorant() && !$this->isConnectLf()): ?>
-                            <!-- No session for looking for and league -->
-                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
-                                <!-- Log out button -->
-                                <?= $this->_('log_out') ?>
-                            </a>
-                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
-                                <!-- User page / name = username -->
-                                <?= ucfirst($user['user_username']) ?>
-                            </a>
-                        <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()): ?>
-                            <a href="/logout" class="fix_mobile_signup signup_button" title="Log in">
-                                <!-- Log out button -->
-                                <?= $this->_('log_out') ?>
-                            </a>
-                            <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate">
-                                <!-- User page / Diff name-->
-                                <?= ucfirst($googleUser['google_fullName']) ?>
-                            </a>
-                        <?php else: ?>
-                            <input value="<?= $this->_('sign_up_log_in') ?>" type="text" title="Sign up/Sign in" id="signup_button">
-                        <?php endif; ?>
-                    </nav>
+                <div class="nav-rest">
+                    <a href="playerfinder">Player finder</a>
+                    <a href="https://discord.gg/Bfpkws74V3" target="_blank">Discord</a>
+                    <a href="/partners" target="_blank">Partners</a>
+                    <a class="openSignUp">Login</a>
                 </div>
-            </div>
-
-            <div class="mid_main_section">
-                <p><?= $title ?></p>
-                <?php if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && $this->isConnectLf()): ?>
-                    <a href="/swiping" class="mid_main_section_button2"><?= $this->_('swipe_now') ?></a>
-                <?php elseif ($this->isConnectGoogle()): ?>
-                    <a href="/signup" class="mid_main_section_button2"><?= $this->_('join_now') ?></a>
-                <?php else: ?>
-                    <input class="mid_main_section_button" value="<?= $this->_('join_now') ?>">
-                <?php endif; ?>
-            </div>
-
-            <div class="bottom_section">
-                <div class="bottom_section_ctn">
-                    <p><?= $this->_('download') ?></p>
-                    <a target="_blank"
-                        href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img
-                            id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
-                </div>
-            </div>
-
+            </nav>
         </section>
-
-        <dialog id="favDialog">
-            <!-- Display of Log in button, cancel and terms of use -->
-
-            <!-- TEST SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fnostalgic-jennings.217-154-5-6.plesk.page%2FdiscordData&scope=email+identify+guilds+connections -->
-            <!-- LIVE SERVER : https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections -->
-            <section class="loginsignin">
-                <h2><?= $this->_('sign_up_log_in') ?></h2><br><br>
-                <p><?= $this->_('when_clicking_on_sign_in') ?><br> <?= $this->_('you_agree_to') ?> <a
-                        href="/legalNotice"><?= $this->_('our_terms_of_use') ?></a>.</p><br>
-                <script src="public/js/ajaxGoogle.js?<?= time(); ?>"></script>
-                <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid"
-                    class="signup_buttonPopup">
-                    <img src="public/images/riot_icon.png"><?= $this->_('sign_up_with_riot_account') ?></a>
-                <br><br>
-                <a href="https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections"
-                    class="signup_buttonPopup">
-                    <img src="public/images/discord_user.png"><?= $this->_('sign_up_with_discord') ?></a>
-                <br><br>
-                <div class="social_buttons2">
-                    <div id="g_id_onload"
-                        data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
-                        data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
-                        data-auto_prompt="false" data-use_fedcm_for_prompt="true">
-                    </div>
-
-                    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-                        data-text="signin_with" data-size="large" data-logo_alignment="left"
-                        allow="identity-credentials-get">
-                    </div>
-
-                    <script nonce="TAJKETR">
-                        window.onload = function () {
-                            window.google.accounts.id.initialize({
-                                client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
-                                callback: handleCredentialResponse,
-                            });
-
-                            <?php if (!$this->isConnectGoogle()): ?>
-                                window.google.accounts.id.prompt();
-                            <?php endif; ?>
-                        };
-                    </script>
-
-                    <!-- URSG Test : 666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com -->
-                    <!-- URSG Prod : 666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com -->
-
-                    <?php if ($this->isConnectGoogle()): ?>
-                        <div id="g_id_one_tap" style="display:none;"></div>
-                    <?php endif; ?>
-
-                    <script src="https://accounts.google.com/gsi/client" defer async></script>
-                </div><br>
-                <!-- Get out of pop up -->
-                <button id="cancelBtn"><?= $this->_('cancel') ?></button>
-                <br><br>
-            </section>
-
-            <!-- Display of buttons to download app on App store/Google Store -->
-            <section class="download_app_dialog">
-                <p><?= $this->_('download_the_app') ?></p>
-                <div class="download_app_dialog_logos">
-                    <a target="_blank"
-                        href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><img
-                            id="google_logo" src="public/images/googleplay.png" alt="googleplay"></a>
+        <section class="header-bottom">
+            <div class="header-bottom-content">
+                <h2>Find your perfect gaming partner</h2>
+                <p>Join our community and discover new friends to play with.</p>
+                <div class="header-bottom-buttons">
+                    <a class="openSignUp">Get started </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><i class="fa-brands fa-google-play"></i> Download on Google Play</a>
                 </div>
-            </section>
-        </dialog>
+            </div>
+        </section>
     </header>
 
     <div id="darkOverlay" class="dark-overlay"></div>
-
 
     <main>
         <?php if (isset($_GET['message'])): ?>
@@ -179,50 +130,59 @@
         <?php require $template . ".phtml"; ?>
     </main>
 
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-group">
+                <div class="footer-links">
+                    <p>Links</p>
+                    <nav class="footer-nav-links">
+                        <a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a>
+                        <a href="/termsOfService"><?= $this->_('tos') ?></a>
+                        <a href="/CSAE"><?= $this->_('csae') ?></a>
+                    </nav>
+                </div>
 
-    <footer>
-        <div class="footer_black">
-            <div class="top_footer">
-                <p>Copyright © 2025 URSG</p>
-                <p>Your Soulmate gamer</p>
+                <div class="footer-socials">
+                    <p>Socials</p>
+                    <nav class="footer-nav-socials">
+                        <a href="https://twitter.com/MeetURSG" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.reddit.com/r/URSG/" target="_blank" aria-label="<?= $this->_('social_link_aria_reddit') ?>"><i class="fa-brands fa-reddit-alien"></i></a>
+                    </nav>
+                </div>
             </div>
 
-            <div class="mid_footer">
-                <p><a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a><a
-                        href="/termsOfService"><?= $this->_('tos') ?>, </a><a href="/CSAE"><?= $this->_('csae') ?></a>
-                </p>
-                <a href="/siteMap"><?= $this->_('site_map') ?></a>
-            </div>
+            <div class="footer-group">
+                <div class="footer-creators">
+                    <p>Made by</p>
+                    <nav class="footer-nav-creators">
+                        <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_dosylia') ?>">Dosylia</a>
+                    </nav>
+                </div>
 
-            <div class="social_footer">
-                <a href="https://discord.gg/Bfpkws74V3" target="_blank">
-                    <img src="public/images/discord2.png" alt="logo discord"></a>
-                <a href="https://twitter.com/Dosylia" target="_blank">
-                    <img src="public/images/twitter2.png" alt="logo twitter/x"></a>
-                <form method="POST" action="/changeLanguage" class="language-switcher">
-                    <label for="lang">🌐</label>
-                    <select name="lang" id="lang" onchange="this.form.submit()">
-                        <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
-                        <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
-                        <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
-                        <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
-                    </select>
-                </form>
+                <div class="footer-languages">
+                    <p>Language</p>
+                    <form method="POST" action="/changeLanguage" class="language-switcher">
+                        <label for="lang">🌐</label>
+                        <select name="lang" id="lang" onchange="this.form.submit()">
+                            <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
+                            <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
+                            <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
+                            <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
+                        </select>
+                    </form>
+                </div>
             </div>
+        </div>
 
-            <div class="bot_footer">
-                <p><?= $this->_('made_by') ?> : <a href="https://www.dosylia.com/">Dosylia</a> and <a
-                        href="https://https://x.com/seenfront/">Seenfront</a></p>
-                <p><?= $this->_('design_lead') ?> : <a href="https://https://x.com/CinderellaKuru/">Kuru</a></p>
-                <p><?= $this->_('artwork_by') ?> : <a href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a>
-                </p>
-            </div>
+        <div class="footer-copyright">
+            <p>&copy; <?= date('Y') ?> URSG. All rights reserved.</p>
+            <p class="legal">URSG isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games.</p>
         </div>
     </footer>
 
-    <script src="public/js/dialogGoogle.js?<?= time(); ?>"></script>
+    <script src="public/js/signUpModal.js?<?= time(); ?>"></script>
     <script src="public/js/referal.js"></script>
 </body>
-
 
 </html>

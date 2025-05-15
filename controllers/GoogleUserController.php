@@ -10,6 +10,7 @@ use models\UserLookingFor;
 use models\MatchingScore;
 use models\Partners;
 use models\BannedUsers;
+use models\PlayerFinder;
 use traits\SecurityController;
 use traits\Translatable;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -31,6 +32,7 @@ class GoogleUserController
     private MatchingScore $matchingscore;
     private Partners $partners;
     private BannedUsers $bannedusers;
+    private PlayerFinder $playerFinder;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -50,6 +52,7 @@ class GoogleUserController
         $this -> matchingscore = new MatchingScore();
         $this -> partners = new Partners();
         $this -> bannedusers = new BannedUsers();
+        $this -> playerFinder = new PlayerFinder();
     }
 
     public function homePage() 
@@ -89,7 +92,38 @@ class GoogleUserController
             $this->initializeLanguage();
 
             require 'keys.php';
-            $partners = $this -> partners -> getPartners();
+            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
+            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
+            $regionAbbreviations = [
+                "Europe West" => "EUW",
+                "North America" => "NA",
+                "Europe Nordic & East" => "EUNE",
+                "Brazil" => "BR",
+                "Latin America North" => "LAN",
+                "Latin America South" => "LAS",
+                "Oceania" => "OCE",
+                "Russia" => "RU",
+                "Turkey" => "TR",
+                "Japan" => "JP",
+                "Korea" => "KR",
+            ];
+
+            $availableRoles = [
+                'League of Legends' => array_merge(['Any'], $lol_roles),
+                'Valorant' => array_merge(['Any'], $valorant_roles)
+            ];
+
+            $availableRanks = [
+                'League of Legends' => array_merge(['Any'], $lol_ranks),
+                'Valorant' => array_merge(['Any'], $valorant_ranks)
+            ];
+            $playerFinderLasts = $this->playerFinder->getPlayerFinderLasts();
+            $totalPosts = count($playerFinderLasts);
+            $visibleCards = 3;
+            $centerStart = max(0, floor(($totalPosts - $visibleCards) / 2));
+            $centerEnd = $centerStart + $visibleCards - 1;
             $current_url = "https://ur-sg.com/";
             $template = "views/home";
             $title = $this->_('join_now');
@@ -97,6 +131,18 @@ class GoogleUserController
             $page_title = "URSG - Home";
             require "views/layoutHome.phtml";
         }
+    }
+
+    public function partnersPage()
+    {
+        $this->initializeLanguage();
+        $partners = $this -> partners -> getPartners();
+        $current_url = "https://ur-sg.com/partners";
+        $template = "views/partners";
+        $title = "Partners";
+        $page_title = "URSG - Partners";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping_noheader.phtml";
     }
 
     public function changeLanguage()

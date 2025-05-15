@@ -1,57 +1,225 @@
-<!-- Discord Invite -->
-<a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('discord_invite_aria') ?>">
-    <section class="discord">
-        <div class="discord_row">
-            <i class="fa-brands fa-discord"></i>
-            <h2><?= $this->_('discord_invite_title') ?></h2>
-        </div>
-    </section>
-</a>
+<div class="filter-container" style="border-top: 5px solid var(--main--red);">
+    <div class="playerfinder-filter" id="filterPanel" style="border-top: 5px solid var(--main--red);">
+        <label>Game
+        <select id="filterGame">
+            <option value="">Any</option>
+            <option value="League of Legends">League of Legends</option>
+            <option value="Valorant">Valorant</option>
+        </select>
+        </label>      
+    <label>Role
+        <select id="filterRole">
+                <option value="">Any</option>
+                <?php foreach ($availableRoles['League of Legends'] as $role): ?>
+                    <?php if ($role !== 'Any'): ?>
+                        <option value="<?= $role ?>" data-game="lol"><?= $role ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <?php foreach ($availableRoles['Valorant'] as $role): ?>
+                    <?php if ($role !== 'Any'): ?>
+                        <option value="<?= $role ?>" data-game="valorant"><?= $role ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+        </select>
+        </label>
+        <label>Rank
+        <select id="filterRank">
+                <option value="">Any</option>
+            <?php foreach ($availableRanks['League of Legends'] as $rank): ?>
+                <?php if ($rank !== 'Any'): ?>
+                    <option value="<?= $rank ?>" data-game="lol"><?= $rank ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <?php foreach ($availableRanks['Valorant'] as $rank): ?>
+                <?php if ($rank !== 'Any'): ?>
+                    <option value="<?= $rank ?>" data-game="valorant"><?= $rank ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </select>
+        </label>
+        <label>Voice Chat
+        <select id="filterVoiceChat">
+            <option value="">Any</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+        </label>
+        <button id="savePreferencesBtn">Find matches</button>
+    </div>
+</div>
 
-<!-- Partners Section -->
-<section id="partners">
-    <h2><?= $this->_('partners_title') ?></h2>
-    <div class="partners-container">
-        <?php foreach ($partners as $partner): ?>
-            <div class="partner">
-                <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
-                <h3><?= htmlspecialchars($partner['username']) ?></h3>
-                <div class="social-links">
-                    <?php 
-                    $socialLinks = json_decode($partner['social_links'], true);
-                    foreach ($socialLinks as $social => $link): 
-                        $logoPath = $this->getSocialNetworkLogo($social);
-                    ?>
-                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link" aria-label="<?= $this->_('social_link_aria_' . strtolower($social)) ?>">
-                            <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
-                        </a>
-                    <?php endforeach; ?>
+<div class="playerfinder-posts playerfinder-posts-landing">
+    <?php if (!empty($playerFinderLasts)): ?>
+        <?php foreach ($playerFinderLasts as $index => $post): ?>
+            <?php
+            $isCentral = $index >= $centerStart && $index <= $centerEnd;
+            $cardOpacityClass = $isCentral ? 'pf-card-center' : 'pf-card-faded';
+            $isLoL = $post['pf_game'] === 'League of Legends';
+            $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
+            $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
+            $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
+            $server = $isLoL ? $post['lol_server'] : $post['valorant_server'];
+            $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
+            $roleFolder = $isLoL ? 'roles' : 'valorant_roles';
+            $roleExt = $isLoL ? 'png' : 'webp'; // extension for role image
+            ?>
+            <div class="playerfinder-card playerfinder-card-landing <?= $cardOpacityClass ?>"
+                data-game="<?= $isLoL ? 'League of Legends' : 'Valorant' ?>"
+                data-postid="<?= $post['pf_id'] ?>"
+                data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
+                data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
+                data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
+                data-role-name="<?= htmlspecialchars($post['pf_role']) ?>"
+                data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
+                data-voice="<?= (int)$post['pf_voiceChat'] === 1 ? 'true' : 'false' ?>"
+                >
+                <?php if (isset($user)): ?>
+                <?php
+                $interestedUsers = json_decode($post['pf_peopleInterest'], true);
+                $isLiked = false;
+                    if (is_array($interestedUsers)) {
+                        foreach ($interestedUsers as $entry) {
+                            if (isset($entry['userId']) && $entry['userId'] == $user['user_id']) {
+                                $isLiked = true;
+                                break;
+                            }
+                        }
+                    }
+                ?>
+                <?php if ($isLiked): ?> <!-- if person interested -->
+                    <i class="fa-solid fa-heart liked-post-<?= $post['pf_id'] ?> liked-post-general" style="display: block;"></i>
+                <?php else: ?>
+                    <i class="fa-solid fa-heart liked-post-<?= $post['pf_id'] ?> liked-post-general" style="display: none;"></i>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php if ($post['pf_game'] === 'League of Legends'): ?>
+                <img src="public/images/league-icon.png" alt="League of Legends" class="game-icon">
+                <?php else: ?>
+                <img src="public/images/valorant-icon.png" alt="Valorant" class="game-icon">
+                <?php endif; ?>
+                <div class="playerfinder-card-header">
+                    <div class="playerfinder-card-header-row">
+                    <?php if (isset($post['user_picture']) && $post['user_picture'] !== null): ?>
+                        <img src="public/upload/<?= htmlspecialchars($post['user_picture']) ?>" alt="Profile Picture" class="pf-profile-pic">
+                    <?php else: ?>
+                        <img src="public/images/defaultprofilepicture.jpg" alt="Profile Picture" class="pf-profile-pic">
+                    <?php endif; ?>
+                        <span class="username"><?= htmlspecialchars($post['user_username']) ?></span>
+                        <?php if ((int)$post['pf_voiceChat'] === 1): ?>
+                        <span class="mic">🎤</span>
+                        <?php endif; ?>
+                        <span class="server"><?= $regionAbbreviations[$server] ?? $server ?></span>
+                    </div>
+                </div>
+                <div class="playerfinder-card-body">
+                <div class="playerfinder-center">
+                    <div class="about-user">
+                        <p class="card-title">About them</p>
+                        <span>
+                            <img src="public/images/<?= $roleFolder ?>/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
+                        </span>
+                        <span>
+                            <img src="public/images/<?= $rankFolder ?>/<?= $rank ?>.png" alt="<?= htmlspecialchars($rank) ?>">
+                        </span>
+                    </div>
+                    <div class="looking-for">
+                        <p class="card-title">Looking for</p>
+                        <?php
+                            $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
+                            $pfRank = $post['pf_rank']; // capital kept for rank
+                        ?>
+                        <span>
+                            <img src="public/images/<?= $roleFolder ?>/<?= $pfRole ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($post['pf_role']) ?>">
+                        </span>
+                        <span>
+                            <img src="public/images/<?= $rankFolder ?>/<?= $pfRank ?>.png" alt="<?= htmlspecialchars($pfRank) ?>">
+                        </span>
+                    </div>
+                </div>
+
+                <?php if ($post['pf_description']): ?>
+                    <div class="desc">
+                        <p class="desc-<?= $post['pf_id'] ?>"><?= nl2br(htmlspecialchars($post['pf_description'])) ?></p>
+                    </div>
+                <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
-    </div>
-    <div class="call-to-action">
-        <p><?= $this->_('partners_cta') ?> <a target="_blank" href="https://twitter.com/Dosylia"><?= $this->_('contact_us') ?></a></p>
-    </div>
-</section>
+    <?php endif; ?>
+</div>
 
-<!-- FAQ Section -->
-<section class="frequently_asked_question">
-    <h2><?= $this->_('faq_title') ?></h2>
-    <div class="faq_row">
-        <div class="faq_row_box">
-            <h3><?= $this->_('faq_google_account_title') ?></h3>
-            <p><?= $this->_('faq_google_account_content') ?></p>
-        </div>
-        <div class="faq_row_box">
-            <h3><?= $this->_('faq_how_title') ?></h3>
-            <p><?= $this->_('faq_how_content') ?></p>
-        </div>
-    </div>
-    <br>
-</section>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const container = document.querySelector('.playerfinder-posts-landing');
+  const cards = container?.children;
 
-<!-- Ko-fi Support -->
+  if (!container || !cards || cards.length === 0) return;
+
+  const totalCards = cards.length;
+  const isMobile = window.innerWidth <= 768;
+
+  // Clear classes first
+  for (let i = 0; i < totalCards; i++) {
+    cards[i].classList.remove('pf-card-center', 'pf-card-faded');
+  }
+
+  if (isMobile) {
+    // Only 1 center card, the true center
+    const centerIndex = Math.floor(totalCards / 2);
+
+    for (let i = 0; i < totalCards; i++) {
+      if (i === centerIndex) {
+        cards[i].classList.add('pf-card-center');
+      } else {
+        cards[i].classList.add('pf-card-faded');
+      }
+    }
+
+    // Scroll to center card
+    const containerWidth = container.offsetWidth;
+    const centerCard = cards[centerIndex];
+    const scrollPosition =
+      centerCard.offsetLeft - containerWidth / 2 + centerCard.offsetWidth / 2;
+
+    container.scrollTo({
+      left: scrollPosition,
+      behavior: 'auto',
+    });
+
+  } else {
+    // Desktop: highlight 3 cards centered in visible area
+    const card = cards[0];
+    const cardStyle = window.getComputedStyle(card);
+    const cardWidth = card.offsetWidth + parseFloat(cardStyle.marginRight || 0);
+    const containerWidth = container.offsetWidth;
+    const visibleCards = Math.floor(containerWidth / cardWidth);
+
+    // Find the center card index for visible cards
+    const centerIndex = Math.floor((totalCards - visibleCards) / 2) + Math.floor(visibleCards / 2);
+
+    // Highlight center card and one card before and after if possible
+    for (let i = 0; i < totalCards; i++) {
+      if (i >= centerIndex - 1 && i <= centerIndex + 1) {
+        cards[i].classList.add('pf-card-center');
+      } else {
+        cards[i].classList.add('pf-card-faded');
+      }
+    }
+
+    // Scroll to center card
+    const centerCard = cards[centerIndex];
+    const scrollPosition =
+      centerCard.offsetLeft - containerWidth / 2 + centerCard.offsetWidth / 2;
+
+    container.scrollTo({
+      left: scrollPosition,
+      behavior: 'auto',
+    });
+  }
+});
+</script>
+
+
 <a href="https://ko-fi.com/yoursoulmategamer" target="_blank" aria-label="<?= $this->_('kofi_invite_aria') ?>">
     <section class="kofi">
         <div class="kofi_row">
@@ -61,7 +229,7 @@
     </section>
 </a>
 
-<!-- Cookie Management -->
+
 <dialog id="dialogCookie">
     <h2><i class="fa-solid fa-cookie"></i> <?= $this->_('cookie_title') ?></h2>
     <div class="dialogCookieRowButtons">
@@ -79,3 +247,4 @@
 </dialog>
 
 <script src="public/js/home.js?<?= time(); ?>"></script>
+<script src="public/js/homePlayerFinder.js?<?= time(); ?>"></script>

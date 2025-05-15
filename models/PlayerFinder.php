@@ -66,6 +66,28 @@ class PlayerFinder extends DataBase
         return $getAllPlayerFinderPost ?: false;
     }
 
+        public function getPlayerFinderLasts() 
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                pf.*, 
+                u.user_username, u.user_picture, u.user_game, u.user_id,
+                lol.lol_rank, lol.lol_role, lol.lol_server,
+                val.valorant_rank, val.valorant_role, val.valorant_server
+            FROM playerfinder pf
+            JOIN user u ON pf.user_id = u.user_id
+            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
+            LEFT JOIN valorant val ON val.user_id = u.user_id
+            ORDER BY pf.pf_id DESC
+            LIMIT 7
+        ");
+        
+        $query->execute();
+        $getAllPlayerFinderPost = $query->fetchAll(\PDO::FETCH_ASSOC);
+    
+        return $getAllPlayerFinderPost ?: false;
+    }
+
     public function getPlayerFinderPost($userId) 
     {
         $query = $this -> bdd -> prepare("
@@ -138,6 +160,31 @@ class PlayerFinder extends DataBase
         $updatePeopleInterest = $query->execute([json_encode($interested), $postId]);
 
         if($updatePeopleInterest)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+    }
+
+    public function editPlayerPost($postId, $role, $rank, $description)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `playerfinder`
+                                            SET
+                                                `pf_role` = ?,
+                                                `pf_rank` = ?,
+                                                `pf_description` = ?
+                                            WHERE
+                                                `pf_id` = ?
+                                        ");
+
+        $editPlayerPost = $query->execute([$role, $rank, $description, $postId]);
+
+        if($editPlayerPost)
         {
             return true;
         }

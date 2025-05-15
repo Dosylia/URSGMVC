@@ -39,9 +39,9 @@ class PlayerFinderController
         {
             $user = $this->user->getUserById($_SESSION['userId']);
             $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
+            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner"];
             $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
-            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
+            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel"];
                         $regionAbbreviations = [
                 "Europe West" => "EUW",
                 "North America" => "NA",
@@ -431,6 +431,55 @@ class PlayerFinderController
 
         $update = $this->playerFinder->updatePeopleInterest($postId, $interested);
         echo json_encode(['success' => $update]);
+    }
+
+    public function editPlayerPost()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+        $userId = $_POST['userId'] ?? null;
+    
+        if (!isset($userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $postId = $_POST['postId'] ?? null;
+        $description = $_POST['description'] ?? null;
+        $role = $_POST['role'] ?? null;
+        $rank = $_POST['rank'] ?? null;
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        if ($getPlayerFinderPost['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot update this post']);
+            return;
+        }
+    
+        $updateDescPlayerFinder = $this->playerFinder->editPlayerPost($postId, $role, $rank, $description);
+    
+        if ($updateDescPlayerFinder) {
+            echo json_encode(['success' => true, 'message' => 'Description updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to update description']);
+        }
     }
     
 
