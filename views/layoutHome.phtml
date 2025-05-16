@@ -18,13 +18,13 @@
             <div id="google-auth-container">
                 <!-- Custom Button (default) -->
                 <a href="#" class="signup_buttonPopup" id="google-signin">
-                    <img src="public/images/google-icon.png">Sign in with Google
+                    <img src="public/images/google-icon.png"><?= $this->_('sign_in_google') ?>
                 </a>
 
                 <!-- Default Google Button (hidden) -->
                 <div class="social_buttons2" style="display: none;">
                     <div id="g_id_onload"
-                        data-client_id="666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com"
+                        data-client_id="666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com"
                         data-context="signin" 
                         data-ux_mode="popup" 
                         data-callback="handleCredentialResponse"
@@ -46,7 +46,7 @@
                 
                 function initGoogleSignIn() {
                     window.google.accounts.id.initialize({
-                        client_id: "666369513537-k9evji7708nvehk6t6ajqe6o5ege2s83.apps.googleusercontent.com",
+                        client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
                         callback: handleCredentialResponse,
                         ux_mode: 'popup',
                         cancel_callback: (error) => {
@@ -102,20 +102,20 @@
                     </a>
                 </div>
                 <div class="nav-rest">
-                    <a href="playerfinder">Player finder</a>
-                    <a href="https://discord.gg/Bfpkws74V3" target="_blank">Discord</a>
-                    <a href="/partners" target="_blank">Partners</a>
-                    <a class="openSignUp">Login</a>
+                    <a href="playerfinder"><?= $this->_('player_finder') ?></a>
+                    <a href="https://discord.gg/Bfpkws74V3" target="_blank"><?= $this->_('discord') ?></a>
+                    <a href="/partners" target="_blank"><?= $this->_('partners') ?></a>
+                    <a class="openSignUp"><?= $this->_('login') ?></a>
                 </div>
             </nav>
         </section>
         <section class="header-bottom">
             <div class="header-bottom-content">
-                <h2>Find your perfect gaming partner</h2>
-                <p>Join our community and discover new friends to play with.</p>
+                <h2><?= $this->_('find_perfect_gaming_partner') ?></h2>
+                <p><?= $this->_('join_our_community') ?></p>
                 <div class="header-bottom-buttons">
-                    <a class="openSignUp">Get started </a>
-                    <a href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><i class="fa-brands fa-google-play"></i> Download on Google Play</a>
+                    <a class="openSignUp"><?= $this->_('get_started') ?> </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share"><i class="fa-brands fa-google-play"></i> <?= $this->_('download_on_google_play') ?></a>
                 </div>
             </div>
         </section>
@@ -134,7 +134,7 @@
         <div class="footer-content">
             <div class="footer-group">
                 <div class="footer-links">
-                    <p>Links</p>
+                    <p><?= $this->_('footer_links') ?></p>
                     <nav class="footer-nav-links">
                         <a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a>
                         <a href="/termsOfService"><?= $this->_('tos') ?></a>
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="footer-socials">
-                    <p>Socials</p>
+                    <p><?= $this->_('footer_socials') ?></p>
                     <nav class="footer-nav-socials">
                         <a href="https://twitter.com/MeetURSG" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
                         <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
@@ -154,14 +154,14 @@
 
             <div class="footer-group">
                 <div class="footer-creators">
-                    <p>Made by</p>
+                    <p><?= $this->_('footer_madeby') ?></p>
                     <nav class="footer-nav-creators">
                         <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_dosylia') ?>">Dosylia</a>
                     </nav>
                 </div>
 
                 <div class="footer-languages">
-                    <p>Language</p>
+                    <p><?= $this->_('footer_language') ?></p>
                     <form method="POST" action="/changeLanguage" class="language-switcher">
                         <label for="lang">🌐</label>
                         <select name="lang" id="lang" onchange="this.form.submit()">
@@ -176,8 +176,8 @@
         </div>
 
         <div class="footer-copyright">
-            <p>&copy; <?= date('Y') ?> URSG. All rights reserved.</p>
-            <p class="legal">URSG isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games.</p>
+            <p>&copy; <?= date('Y') ?> <?= $this->_('footer_copywrite') ?></p>
+            <p class="legal"><?= $this->_('footer_riot') ?></p>
         </div>
     </footer>
 

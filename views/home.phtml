@@ -1,13 +1,13 @@
 <div class="filter-container" style="border-top: 5px solid var(--main--red);">
     <div class="playerfinder-filter" id="filterPanel" style="border-top: 5px solid var(--main--red);">
-        <label>Game
+        <label><?= $this->_('game') ?>
         <select id="filterGame">
-            <option value="">Any</option>
+            <option value=""><?= $this->_('any') ?></option>
             <option value="League of Legends">League of Legends</option>
             <option value="Valorant">Valorant</option>
         </select>
         </label>      
-    <label>Role
+    <label><?= $this->_('role') ?>
         <select id="filterRole">
                 <option value="">Any</option>
                 <?php foreach ($availableRoles['League of Legends'] as $role): ?>
@@ -37,14 +37,14 @@
             <?php endforeach; ?>
         </select>
         </label>
-        <label>Voice Chat
+        <label><?= $this->_('voice_chat') ?>
         <select id="filterVoiceChat">
             <option value="">Any</option>
             <option value="1">Yes</option>
             <option value="0">No</option>
         </select>
         </label>
-        <button id="savePreferencesBtn">Find matches</button>
+        <button id="savePreferencesBtn"><?= $this->_('find_matches') ?></button>
     </div>
 </div>
 
@@ -114,7 +114,7 @@
                 <div class="playerfinder-card-body">
                 <div class="playerfinder-center">
                     <div class="about-user">
-                        <p class="card-title">About them</p>
+                        <p class="card-title"><?= $this->_('about_them') ?></p>
                         <span>
                             <img src="public/images/<?= $roleFolder ?>/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
                         </span>
@@ -123,7 +123,7 @@
                         </span>
                     </div>
                     <div class="looking-for">
-                        <p class="card-title">Looking for</p>
+                        <p class="card-title"><?= $this->_('looking_for') ?></p>
                         <?php
                             $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
                             $pfRank = $post['pf_rank']; // capital kept for rank
@@ -218,6 +218,42 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+
+<section class="swipe-home">
+    <h2><?= $this->_('swipe_home_main_title') ?></h2>
+    <hr class="separators-quiz" style="width: 80%;"/>
+    <div class="swipe-home-card">
+        <img src="public/images/fire-icon.png" alt="Fire icon" loading="lazy">
+        <div class="swipe-home-card-text">
+            <h3><?= $this->_('swipe_home_sub_title') ?></h2>
+            <p><?= $this->_('swipe_home_text') ?></p>
+        </div>
+    </div>
+
+    <div class="swipe-home-card">
+        <img src="public/images/lgbt-icon.png" alt="Janna from League of Legends with a LGBT flag" loading="lazy">
+        <div class="swipe-home-card-text">
+            <h3><?= $this->_('swipe_home_sub_title2') ?></h3>
+            <p><?= $this->_('swipe_home_text2') ?></p>
+        </div>
+    </div>
+
+    <div class="swipe-home-card">
+        <img src="public/images/message-icon.png" alt="Message Icon" loading="lazy">
+        <div class="swipe-home-card-text">
+            <h3><?= $this->_('swipe_home_sub_title3') ?></h3>
+            <p><?= $this->_('swipe_home_text3') ?></p>
+        </div>
+    </div>
+
+    <div class="swipe-home-card">
+        <img src="public/images/riot-icon.png" alt="Riot games icon" loading="lazy">
+        <div class="swipe-home-card-text">
+            <h3><?= $this->_('swipe_home_sub_title4') ?></h3>
+            <p><?= $this->_('swipe_home_text4') ?></p>
+        </div>
+    </div>
+</section>
 
 
 <a href="https://ko-fi.com/yoursoulmategamer" target="_blank" aria-label="<?= $this->_('kofi_invite_aria') ?>">

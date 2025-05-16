@@ -56,7 +56,7 @@ return [
     'cookie_about_text' => 'Cookies are small text files stored on your device by your web browser. They help websites remember information about your visit, such as login details or preferences, to improve your browsing experience.',
     'cookie_btn_save' => 'Save',
 
-    // layoutHome.phtml
+// layoutHome.phtml
     'log_out' => 'Log out',
     'swipe_now' => 'Swipe now',
     'join_now' => 'Join now',
@@ -76,6 +76,39 @@ return [
     'made_by' => 'Made by',
     'design_lead' => 'Design Lead',
     'artwork_by' => 'Artwork by',
+    'sign_in_google' => 'Sign in with Google',
+    'player_finder' => 'Player finder',
+    'discord' => 'Discord',
+    'partners' => 'Partners',
+    'login' => 'Login',
+    'find_perfect_gaming_partner' => 'Find your perfect gaming partner',
+    'join_our_community' => 'Join our community and discover new friends to play with.',
+    'get_started' => 'Get started',
+    'download_on_google_play' => 'Download on Google Play',
+    'footer_socials' => 'Socials',
+    'footer_madeby' => 'Made by',
+    'footer_language' => 'Language',
+    'footer_links' => 'Links',
+    'footer_copyright' => 'Copyright © 2025 URSG. All rights reserved.',
+    'footer_riot' => 'URSG isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc. ',
+
+    //home.phtml
+    'game' => 'Game',
+    'any' => 'Any',
+    'role' => 'Role',
+    'voice_chat' => 'Voice Chat',
+    'find_matches' => 'Find matches',
+    'about_them' => 'About them',
+    'looking_for' => 'Looking for',
+    'swipe_home_main_title' => 'Swipe right to find your next player two',
+    'swipe_home_sub_title' => 'Find Your Duo',
+    'swipe_home_sub_title2' => 'Support For All',
+    'swipe_home_sub_title3' => 'Plan Your Session',   
+    'swipe_home_sub_title4' => 'Link Your Riot account',
+    'swipe_home_text' => 'Match with like-minded gamers based on your preferences',
+    'swipe_home_text2' => 'Straight or LGBT - You will find your players two no mater what',
+    'swipe_home_text3' => 'In app messsaging makes it easy to squad up and jump into game',
+    'swipe_home_text4' => 'Prove your grind - Sync your Riot account let your stats shine',
 
     // settings.phtml
     'settings' => 'Settings',

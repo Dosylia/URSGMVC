@@ -57,7 +57,7 @@
   /* NEW LANDING PAGE */
     .header {
       background-color: black;
-      background-image: url('../images/background-rose.png');
+      background-image: url('../images/background-rose.webp');
       display: flex;
       flex-direction: column;
       position: relative;
@@ -169,6 +169,80 @@
     body > div[style*="position: fixed"] {
       z-index: 2147483647 !important;
     }
+
+    .swipe-home {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: linear-gradient(225deg, #f8f7f7, #e2dddd);
+      padding: 40px 0;
+    }
+
+    .dark-mode .swipe-home {
+      background: linear-gradient(225deg, #2F2020, #222221);
+    }
+
+    .swipe-home h2 {
+      font-size: 2.5em;
+      text-align: center;
+      width: 80%;
+      color: black;
+    }
+
+    .dark-mode .swipe-home h2 {
+      color: white;
+    }
+
+    .swipe-home-card {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      border-radius: 20px;
+      border: 1px solid var(--main--red);
+      width: 80%;
+      max-width: 600px;
+      gap: 10px;
+      max-height: 100px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+  .swipe-home-card img {
+    max-height: 80px; 
+    max-width: 80px;
+    height: auto;
+    width: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    object-fit: contain;
+  }
+
+    .swipe-home-card-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .swipe-home-card-text h3 {
+      margin-top: 10px;
+      color: black;
+      font-size: 1.5em;
+    }
+
+    .swipe-home-card-text p {
+      color: black;
+      font-size: 0.8em;
+      margin-bottom: 10px;
+      margin-right: 10px;
+    }
+
+    .dark-mode .swipe-home-card-text h3, .dark-mode .swipe-home-card-text p {
+      color: white;
+    }
+
 
   /* END NEW LANDING PAGE */
 
@@ -9230,7 +9304,11 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
-  .playerfinder-posts-landing {
+.swipe-home-card {
+  max-height: 150px;
+}
+
+.playerfinder-posts-landing {
   flex-wrap: nowrap; 
   overflow-x: auto; 
   overflow-y: hidden;
@@ -9611,6 +9689,11 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+.swipe-home-card {
+  max-height: 175px;
+}
+
 
   .voiceChat_row {
     gap: 20px;
@@ -10132,6 +10215,11 @@ justify-content: center;
 
 
 @media only screen and (max-width: 500px) {
+
+.swipe-home-card {
+  height: 150px;
+}
+
 
   .axisLabel {
     font-size: 14px;
