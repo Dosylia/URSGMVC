@@ -89,7 +89,7 @@ return [
     'footer_madeby' => 'Made by',
     'footer_language' => 'Language',
     'footer_links' => 'Links',
-    'footer_copyright' => 'Copyright © 2025 URSG. All rights reserved.',
+    'footer_copyright' => 'Copyright © URSG. All rights reserved.',
     'footer_riot' => 'URSG isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc. ',
 
     //home.phtml

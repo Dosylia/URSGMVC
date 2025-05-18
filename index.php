@@ -207,6 +207,7 @@ $actionMap = [
     'deleteExpiredChannels' => [DiscordController::class, 'deleteExpiredChannels'],
     'updateNotificationPermission' => [UserController::class, 'updateNotificationPermission'],
     'saveNotificationSubscription' => [UserController::class, 'saveNotificationSubscription'],
+    'fetchNotificationEndpoint' => [UserController::class, 'fetchNotificationEndpoint'],
     'sendMessageDiscord' => [DiscordController::class, 'sendMessageDiscord'],
     'playerfinder' => [PlayerFinderController::class, 'playerfinderPage'],
     'addPlayerFinderPost' => [PlayerFinderController::class, 'addPlayerFinderPost'],

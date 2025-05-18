@@ -1200,6 +1200,9 @@ class FriendRequestController
             $lastRequestTimeReward = strtotime($user['user_lastRequestTime']);
             $lastRewardTime = strtotime($user['user_lastReward']);
             $givenDailyReward = false;
+            $amountGiven = 0;
+            $givenRequestReward = false;
+            $rewardAmount = 0;
 
             if (date('Y-m-d', $lastRequestTimeReward) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
@@ -1207,21 +1210,24 @@ class FriendRequestController
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
+                    $givenRequestReward = true;
                 }
             }
     
-            if ($currentTime - $lastRequestTime > 20) {
-                $amount = 2;
+            if ($currentTime - $lastRequestTime > 100) {
+                $amount = 10;
                 $user = $this->user->getUserById($userId);
-    
+                $amountGiven = 10;
                 if ($user['user_isVip'] == 1) {
                     $amount = 3;
+                    $amountGiven = 15;
                 }
                 $addCurrency = $this->user->addCurrency($userId, $amount);
                 $addCurrencySnapshot = $this->user->addCurrencySnapshot($userId, $amount);
     
                 if ($addCurrency) {
                     $this->user->updateLastRequestTime($userId);
+                    $givenRequestReward = true;
                 }
             }
     
@@ -1231,11 +1237,13 @@ class FriendRequestController
                     'success' => true,
                     'pendingRequests' => $pendingRequests, // Full details of pending requests
                     'givenDailyReward' => $givenDailyReward,
+                    'givenRequestReward' => $givenRequestReward,
+                    'amountGiven' => $amountGiven,
                 ];
     
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No friend requests found', 'givenDailyReward' => $givenDailyReward,]);
+                echo json_encode(['success' => false, 'error' => 'No friend requests found', 'givenDailyReward' => $givenDailyReward, 'givenRequestReward' => $givenRequestReward, 'amountGiven' => $amountGiven]);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);

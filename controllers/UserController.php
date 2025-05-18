@@ -1776,6 +1776,40 @@ class UserController
         }
     }
 
+    public function fetchNotificationEndpoint()
+    {
+        // Step 1: Check authentication
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Step 2: Retrieve and validate userId
+        $userId = $_POST['userId'] ?? null;
+        if (!$userId) {
+            echo json_encode(['success' => false, 'error' => 'Missing userId']);
+            return;
+        }
+    
+        // Step 3: Validate token
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        // Step 4: Fetch the subscription endpoint
+        $subscriptionEndpoint = $this->user->fetchSubscriptionEndpoint($userId);
+    
+        if ($subscriptionEndpoint) {
+            echo json_encode(['success' => true, 'endpoint' => $subscriptionEndpoint]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to fetch subscription endpoint']);
+        }
+    }
+
 
     public function getUserMatching()
     {

@@ -907,6 +907,27 @@ class User extends DataBase
         }
     }
 
+    public function fetchSubscriptionEndpoint($userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                `user_notificationEndPoint`
+                                            FROM
+                                                `user`
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $query->execute([$userId]);
+        $endpoint = $query->fetch();
+
+        if ($endpoint) {
+            return $endpoint['user_notificationEndPoint'];
+        } else {
+            return false;
+        }
+    }
+
     public function saveSubscription($userId, $endpoint, $p256dh, $auth) 
     {
         $query = $this -> bdd -> prepare("

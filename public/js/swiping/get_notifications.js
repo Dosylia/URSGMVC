@@ -35,11 +35,28 @@ function fetchFriendRequest(userId) {
         if (data.success && data.pendingRequests) {
             numberOfFailsPending = 0;   
             // Filter out existing pending notifications
-            if (data.givenDailyReward) {
+            if (data.givenDailyReward || data.givenRequestReward) {
+                if (data.givenDailyReward) {
                 displayNotification(
                     `You just won 500 credits for connecting today!`,
                     userId
-                );                
+                );
+                } else if (data.givenRequestReward) {
+                    const displayMoneyWon = document.getElementById('displayMoneyWon');
+                    if (displayMoneyWon) {
+                        console.log('Money won:', data.amountGiven);
+                        displayMoneyWon.textContent = `+ ${data.amountGiven}`;
+                        displayMoneyWon.style.display = 'block';
+
+                        displayMoneyWon.style.animation = 'none';
+                        displayMoneyWon.offsetHeight;
+                        displayMoneyWon.style.animation = 'rewardBounce 5s ease-out forwards';
+
+                        setTimeout(() => {
+                            displayMoneyWon.style.display = 'none';
+                        }, 7000);
+                    }
+                }               
             }
             AllNotifications = AllNotifications.filter(request => request.type !== 'pending');
             const pendingWithType = data.pendingRequests
@@ -64,11 +81,28 @@ function fetchFriendRequest(userId) {
         } else {
             numberOfFailsPending = 0;
             // Remove all pending notifications
-            if (data.givenDailyReward) {
+            if (data.givenDailyReward || data.givenRequestReward) {
+                if (data.givenDailyReward) {
                 displayNotification(
                     `You just won 500 credits for connecting today!`,
                     userId
-                );                
+                );
+                } else if (data.givenRequestReward) {
+                    const displayMoneyWon = document.getElementById('displayMoneyWon');
+                    if (displayMoneyWon) {
+                        console.log('Money won:', data.amountGiven);
+                        displayMoneyWon.textContent = `+ ${data.amountGiven}`;
+                        displayMoneyWon.style.display = 'block';
+
+                        displayMoneyWon.style.animation = 'none';
+                        displayMoneyWon.offsetHeight;
+                        displayMoneyWon.style.animation = 'rewardBounce 5s ease-out forwards';
+
+                        setTimeout(() => {
+                            displayMoneyWon.style.display = 'none';
+                        }, 7000);
+                    }
+                }               
             }
             AllNotifications = AllNotifications.filter(notif => notif.type !== 'pending');
             lastNotifCountPending = 0;
@@ -778,6 +812,24 @@ function sendSubscriptionToBackend(subscription, userId) {
     });
 }
 
+function refreshPushSubscription(userId) {
+    navigator.serviceWorker.ready.then(registration => {
+        // Step 1: Unsubscribe the old subscription if it exists
+        registration.pushManager.getSubscription().then(subscription => {
+            if (subscription) {
+                subscription.unsubscribe().then(() => {
+                    console.log('Old subscription removed.');
+                    // Step 2: Register again
+                    registerServiceWorker(userId);
+                });
+            } else {
+                console.log('No previous subscription found, registering fresh...');
+                registerServiceWorker(userId);
+            }
+        });
+    });
+}
+
 
 
 // Fonction pour remplir les demandes d'ami en attente
@@ -845,7 +897,7 @@ document.addEventListener("DOMContentLoaded", function() {
             addNotificationPermission(userId);
         } else {
             console.log('Notification permission already granted.');
-            registerServiceWorker(userId);
+             refreshPushSubscription(userId);
         }
 
         event.stopPropagation(); // Prevent closing immediately
@@ -860,4 +912,76 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+window.addEventListener('load', async function () {
+    if (Notification.permission !== 'granted') return;
+
+    const lastRefresh = parseInt(localStorage.getItem('notification_last_refresh'), 10);
+    const lastBrowserPrefix = localStorage.getItem('notification_browser_prefix');
+    const now = Date.now();
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+        refreshPushSubscription(userId);
+        return;
+    }
+
+    const currentEndpoint = subscription.endpoint;
+    let currentPrefix = 'unknown';
+
+    if (currentEndpoint.startsWith('https://fcm.googleapis.com')) {
+        currentPrefix = 'fcm';
+    } else if (currentEndpoint.startsWith('https://updates.push.services.mozilla.com')) {
+        currentPrefix = 'mozilla';
+    } else if (currentEndpoint.startsWith('https://push.apple.com')) {
+        currentPrefix = 'apple';
+    }
+
+    try {
+        const res = await fetch('/fetchNotificationEndpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `userId=${encodeURIComponent(parseInt(userId))}`
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            console.error('Error fetching server endpoint:', data.error);
+            return;
+        }
+
+        const serverEndpoint = data.endpoint;
+        const endpointChanged = serverEndpoint !== currentEndpoint;
+        const timeExpired = isNaN(lastRefresh) || (now - lastRefresh > sevenDays);
+        const browserChanged = lastBrowserPrefix !== currentPrefix;
+
+        const shouldRefresh = endpointChanged || timeExpired || browserChanged;
+
+        if (shouldRefresh) {
+            console.log('🔄 Refreshing subscription because:');
+            if (endpointChanged) console.log('- Endpoint changed');
+            if (timeExpired) console.log('- Last refresh too old');
+            if (browserChanged) console.log('- Browser changed');
+
+            refreshPushSubscription(userId);
+            localStorage.setItem('notification_last_refresh', now.toString());
+            localStorage.setItem('notification_browser_prefix', currentPrefix);
+        } else {
+            console.log('✅ Subscription is up-to-date');
+        }
+
+    } catch (error) {
+        console.error('Network error while fetching endpoint:', error);
+    }
+});
+
+
+
 

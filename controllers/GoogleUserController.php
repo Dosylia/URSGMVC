@@ -142,7 +142,17 @@ class GoogleUserController
         $title = "Partners";
         $page_title = "URSG - Partners";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function changeLanguage()
@@ -150,8 +160,12 @@ class GoogleUserController
         $allowedLangs = ['en', 'fr', 'de', 'es'];
         if (isset($_POST['lang']) && in_array($_POST['lang'], $allowedLangs)) {
             $lang = $_POST['lang'];
+
+            setcookie('lang', $lang, time() + (7 * 24 * 60 * 60), "/");
+
             $_SESSION['lang'] = $lang;
-            header("location:/?message=Switched to $lang");
+
+            header("Location: /?message=Switched to $lang");
             exit();
         }
     }
@@ -464,7 +478,17 @@ class GoogleUserController
         $title = "Legal Notice";
         $page_title = "URSG - Legal notice";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function CSAEPage() 
@@ -475,7 +499,17 @@ class GoogleUserController
         $title = "Child Sexual Abuse and Exploitation (CSAE) Policy";
         $page_title = "URSG - Child Sexual Abuse and Exploitation (CSAE) Policy";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function termsOfServicePage() 
@@ -486,7 +520,17 @@ class GoogleUserController
         $title = "Terms of service";
         $page_title = "URSG - Terms of service";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function siteMapPage() 
@@ -498,7 +542,17 @@ class GoogleUserController
         $title = "Site map";
         $page_title = "URSG - Site map";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function notFoundPage() 
@@ -509,7 +563,17 @@ class GoogleUserController
         $title = "404 - Page not found";
         $page_title = "URSG - 404 - Page not found";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function verifyGoogleToken($idToken) {
@@ -1461,7 +1525,17 @@ class GoogleUserController
         $template = "views/swiping/delete_account";
         $page_title = "URSG - Delete account";
         $picture = "ursg-preview-small";
-        require "views/layoutSwiping_noheader.phtml";
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
     }
 
     public function deleteGoogleAccount()

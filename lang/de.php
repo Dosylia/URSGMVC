@@ -89,7 +89,7 @@ return [
     'footer_madeby' => 'Erstellt von',
     'footer_language' => 'Sprache',
     'footer_links' => 'Links',
-    'footer_copyright' => 'Copyright © 2025 URSG. Alle Rechte vorbehalten.',
+    'footer_copyright' => 'Copyright © URSG. Alle Rechte vorbehalten.',
     'footer_riot' => 'URSG wird nicht von Riot Games unterstützt und spiegelt nicht die Meinungen oder Ansichten von Riot Games oder von Personen wider, die offiziell an der Produktion oder Verwaltung von Riot Games-Inhalten beteiligt sind. Riot Games und alle zugehörigen Inhalte sind Marken oder eingetragene Marken von Riot Games, Inc.',
 
 
