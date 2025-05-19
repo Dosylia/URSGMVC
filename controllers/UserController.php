@@ -1810,6 +1810,21 @@ class UserController
         }
     }
 
+    public function markInactiveUsersOffline()
+    {
+        require_once 'keys.php';
+    
+        $tokenAdmin = $_GET['token'] ?? null;
+    
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
+            http_response_code(401); // Return Unauthorized for cron logs
+            echo "❌ Unauthorized.\n";
+            exit();
+        } 
+
+        $this->user->markInactiveUsersOffline();
+    }
+
 
     public function getUserMatching()
     {

@@ -408,6 +408,47 @@
   height: 100%;
 }
 
+.support_ursg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  gap: 15px;
+  top: 30px;
+  left: 30px;
+  border-radius: 20px;
+  border: none;
+  background-color: rgba(232, 64, 86, 0.08);
+  width: 250px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.support_ursg h3 {
+  font-size: 1.2em;
+  color: var(--white);
+}
+
+.support_ursg p {
+  font-size: 0.8em;
+  color: white;
+}
+
+.support_ursg a {
+  width: 90%;
+  background-color: var(--main--red);
+  color: var(--white);
+  border-radius: 8px;
+  text-align: center;
+  padding: 3px 10px;
+  box-sizing: border-box;
+}
+
+.support_ursg a:hover {
+  background-color: var(--dark--red);
+}
+
 .dark-mode #user-container {
   background: linear-gradient(225deg, #444040, #222020);
   color: white;
@@ -8622,6 +8663,22 @@ justify-content: center;
     padding: 0 20px;
   }
 
+.support_ursg {
+  gap: 15px;
+  top: 30px;
+  left: 30px;
+  width: 200px;
+  padding: 20px;
+}
+
+.support_ursg h3 {
+  font-size: 1.2em;
+}
+
+.support_ursg p {
+  font-size: 0.8em;
+}
+
 }
 
 
@@ -9351,6 +9408,22 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+.support_ursg {
+  gap: 10px;
+  top: 15px;
+  left: 15px;
+  width: 175px;
+  padding: 15px;
+}
+
+.support_ursg h3 {
+  font-size: 1em;
+}
+
+.support_ursg p {
+  font-size: 0.7em;
+}
+
 .swipe-home-card {
   max-height: 150px;
 }
@@ -9736,6 +9809,26 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 600px) {
+
+.support_ursg {
+  gap: 10px;
+  top: 15px;
+  left: 15px;
+  width: 140px;
+  padding: 10px;
+}
+
+.support_ursg hr {
+  display: none;
+}
+
+.support_ursg h3 {
+  font-size: 0.9em;
+}
+
+.support_ursg p {
+  font-size: 0.6em;
+}
 
 .swipe-home-card {
   max-height: 175px;
@@ -10336,6 +10429,22 @@ justify-content: center;
 
 @media only screen and (max-width: 400px) {
 
+.support_ursg {
+  gap: 7px;
+  top: 10px;
+  left: 10px;
+  width: 130px;
+  padding: 10px;
+}
+
+.support_ursg p {
+  display: none;
+}
+
+.support_ursg a {
+  padding: 2px 5px;
+}
+
   #currency {
     font-size: 15px;
   }
@@ -10396,6 +10505,10 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 350px) {
+
+.support_ursg {
+  display: none;
+}
 
   .chat-image {
     width: 150px;

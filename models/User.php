@@ -169,7 +169,6 @@ class User extends DataBase
                                             l.*,
                                             v.*,
                                             lf.*,
-                                            (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_lastRequestTime) <= 45) AS user_isOnline,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
                                             g.google_email,
                                             g.google_createdWithRSO
@@ -211,7 +210,6 @@ class User extends DataBase
                     lf.*,
                     g.google_email,
                     g.google_createdWithRSO,
-                    (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_lastRequestTime) <= 45) AS user_isOnline,
                     (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
 
                     -- Check if user is friend with the current user
@@ -810,6 +808,27 @@ class User extends DataBase
         
         return $query->execute([$userId]);
     } 
+
+    public function markUserOnline($userId)
+    {
+        $query = $this->bdd->prepare("
+            UPDATE user 
+            SET user_isOnline = 1, user_lastSeen = NOW() 
+            WHERE user_id = ?
+        ");
+        return $query->execute([$userId]);
+    }
+
+    public function markInactiveUsersOffline()
+    {
+        $query = $this->bdd->prepare("
+            UPDATE user 
+            SET user_isOnline = 0 
+            WHERE user_isOnline = 1 
+            AND TIMESTAMPDIFF(SECOND, user_lastSeen, NOW()) > 60
+        ");
+        return $query->execute();
+    }
 
     public function logUserActivity($userId)
     {

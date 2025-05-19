@@ -158,7 +158,10 @@ return [
     'report_submit' => 'Signaler.',
     'no_picture_other' => 'Cet utilisateur n’a pas encore de photo',
     'unknown' => 'INCONNU',
-
+    'support_URSG' => 'Soutenir URSG',
+    'support_URSG_desc' => 'Soutenez le développement d’URSG en faisant un don sur notre Kofi',
+    'support_URSG_btn' => 'Aller sur Kofi',
+    
     //chat page
     'looking_for_title' => 'Vous cherchez une partie ?',
     'looking_for_account' => 'Indiquez-nous votre compte LoL/Valorant.',

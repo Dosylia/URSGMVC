@@ -20,7 +20,7 @@ class Admin extends DataBase
                                         FROM
                                             `user`
                                         WHERE
-                                            (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(user_lastRequestTime) <= 30)
+                                            user_isOnline = 1
         ");
     
         $query->execute();

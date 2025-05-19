@@ -106,7 +106,7 @@ return [
     'swipe_home_sub_title3' => 'Plan Your Session',   
     'swipe_home_sub_title4' => 'Link Your Riot account',
     'swipe_home_text' => 'Match with like-minded gamers based on your preferences',
-    'swipe_home_text2' => 'Straight or LGBT - You will find your players two no mater what',
+    'swipe_home_text2' => 'Straight or LGBT - You will find your players two no matter what',
     'swipe_home_text3' => 'In app messsaging makes it easy to squad up and jump into game',
     'swipe_home_text4' => 'Prove your grind - Sync your Riot account let your stats shine',
 
@@ -156,6 +156,9 @@ return [
     'report_description_submit' => 'Report.',
     'no_picture_other' => 'This user has no picture yet',
     'unknown' => 'UNKNOWN',
+    'support_URSG' => 'Support URSG',
+    'support_URSG_desc' => 'Support the development of URSG by donating on our Kofi',
+    'support_URSG_btn' => 'Go to Kofi',
 
     //chat page
     'looking_for_title' => 'Looking for a game?',

@@ -218,6 +218,7 @@ $actionMap = [
     'addFriendAndChat' => [FriendRequestController::class, 'addFriendAndChat'],
     'editPlayerPost' => [PlayerFinderController::class, 'editPlayerPost'],
     'partners' => [GoogleUserController::class, 'partnersPage'],
+    'markInactiveUsersOffline' => [UserController::class, 'pageUserProfileTest'],
 ];
 
 $action = "home";

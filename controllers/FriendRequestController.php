@@ -148,6 +148,7 @@ class FriendRequestController
             if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
                 $this->user->addCurrency($userId, $rewardAmount);
+                $this->user->markUserOnline($userId);
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
@@ -1134,6 +1135,7 @@ class FriendRequestController
     
             if ($addCurrency) {
                 $this->user->updateLastRequestTime($userId);
+                $this->user->markUserOnline($userId);
             }
         }
     
@@ -1230,6 +1232,8 @@ class FriendRequestController
                     $givenRequestReward = true;
                 }
             }
+
+            $this->user->markUserOnline($userId);
     
             if ($pendingRequests) {
                 // Return full pending request data

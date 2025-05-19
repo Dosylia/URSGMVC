@@ -157,6 +157,9 @@ return [
     'report_submit' => 'Reportar.',
     'no_picture_other' => 'Este usuario aún no tiene foto',
     'unknown' => 'DESCONOCIDO',
+    'support_URSG' => 'Apoyar URSG',
+    'support_URSG_desc' => 'Apoya el desarrollo de URSG donando en nuestro Kofi',
+    'support_URSG_btn' => 'Ir a Kofi',
 
     //chat page
     'looking_for_title' => '¿Buscas una partida?',
