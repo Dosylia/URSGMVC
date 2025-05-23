@@ -809,6 +809,8 @@ class ChatMessageController
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Failed to mark message as read']);
                 }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'No messages found']);
             }
 
              

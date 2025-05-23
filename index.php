@@ -219,6 +219,7 @@ $actionMap = [
     'editPlayerPost' => [PlayerFinderController::class, 'editPlayerPost'],
     'partners' => [GoogleUserController::class, 'partnersPage'],
     'markInactiveUsersOffline' => [UserController::class, 'pageUserProfileTest'],
+    'discordClaim' => [DiscordController::class, 'discordClaim'],
 ];
 
 $action = "home";
