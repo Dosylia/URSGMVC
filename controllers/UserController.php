@@ -1822,6 +1822,8 @@ class UserController
             exit();
         } 
 
+        echo "✅ Token is valid.\n";
+
         $this->user->markInactiveUsersOffline();
     }
 
@@ -2104,43 +2106,43 @@ class UserController
         }
     }
 
-    public function pageUserProfileTest(): void
-    {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf() &&
-            $this->isAdmin()
-        ) {
-            require_once 'keys.php';
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            if ($user['user_game'] == "League of Legends")
-            {
-                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-            }
-            else 
-            {
-                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-            }
-            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $bonusPictures = $this->user->getBonusPictures($this->getUsername());
+    // public function pageUserProfileTest(): void
+    // {
+    //     if (
+    //         $this->isConnectGoogle() &&
+    //         $this->isConnectWebsite() &&
+    //         ($this->isConnectLeague() || $this->isConnectValorant()) && 
+    //         $this->isConnectLf() &&
+    //         $this->isAdmin()
+    //     ) {
+    //         require_once 'keys.php';
+    //         $user = $this-> user -> getUserById($_SESSION['userId']);
+    //         $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+    //         if ($user['user_game'] == "League of Legends")
+    //         {
+    //             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+    //         }
+    //         else 
+    //         {
+    //             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+    //         }
+    //         $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+    //         $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+    //         $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+    //         $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+    //         $bonusPictures = $this->user->getBonusPictures($this->getUsername());
 
 
-            $current_url = "https://ur-sg.com/chatTest";
-            $template = "views/swiping/message_test";
-            $page_title = "URSG - Chat";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
-        }
-    }
+    //         $current_url = "https://ur-sg.com/chatTest";
+    //         $template = "views/swiping/message_test";
+    //         $page_title = "URSG - Chat";
+    //         $picture = "ursg-preview-small";
+    //         require "views/layoutSwiping.phtml";
+    //     } else {
+    //         header("Location: /");
+    //         exit();
+    //     }
+    // }
 
     public function pageAnotherUserProfile()
     {

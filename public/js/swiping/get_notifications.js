@@ -41,6 +41,18 @@ function fetchFriendRequest(userId) {
                     `You just won 500 credits for connecting today!`,
                     userId
                 );
+                    if (displayMoneyWon) {
+                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.style.display = 'block';
+
+                        displayMoneyWon.style.animation = 'none';
+                        displayMoneyWon.offsetHeight;
+                        displayMoneyWon.style.animation = 'rewardBounce 5s ease-out forwards';
+
+                        setTimeout(() => {
+                            displayMoneyWon.style.display = 'none';
+                        }, 7000);
+                    }
                 } else if (data.givenRequestReward) {
                     const displayMoneyWon = document.getElementById('displayMoneyWon');
                     if (displayMoneyWon) {
@@ -83,10 +95,22 @@ function fetchFriendRequest(userId) {
             // Remove all pending notifications
             if (data.givenDailyReward || data.givenRequestReward) {
                 if (data.givenDailyReward) {
-                displayNotification(
-                    `You just won 500 credits for connecting today!`,
-                    userId
-                );
+                    displayNotification(
+                        `You just won 500 credits for connecting today!`,
+                        userId
+                    );
+                    if (displayMoneyWon) {
+                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.style.display = 'block';
+
+                        displayMoneyWon.style.animation = 'none';
+                        displayMoneyWon.offsetHeight;
+                        displayMoneyWon.style.animation = 'rewardBounce 5s ease-out forwards';
+
+                        setTimeout(() => {
+                            displayMoneyWon.style.display = 'none';
+                        }, 7000);
+                    }
                 } else if (data.givenRequestReward) {
                     const displayMoneyWon = document.getElementById('displayMoneyWon');
                     if (displayMoneyWon) {
