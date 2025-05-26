@@ -1776,6 +1776,57 @@ class UserController
         }
     }
 
+    public function fetchNotificationEndpoint()
+    {
+        // Step 1: Check authentication
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Step 2: Retrieve and validate userId
+        $userId = $_POST['userId'] ?? null;
+        if (!$userId) {
+            echo json_encode(['success' => false, 'error' => 'Missing userId']);
+            return;
+        }
+    
+        // Step 3: Validate token
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        // Step 4: Fetch the subscription endpoint
+        $subscriptionEndpoint = $this->user->fetchSubscriptionEndpoint($userId);
+    
+        if ($subscriptionEndpoint) {
+            echo json_encode(['success' => true, 'endpoint' => $subscriptionEndpoint]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to fetch subscription endpoint']);
+        }
+    }
+
+    public function markInactiveUsersOffline()
+    {
+        require_once 'keys.php';
+    
+        $tokenAdmin = $_GET['token'] ?? null;
+    
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
+            http_response_code(401); // Return Unauthorized for cron logs
+            echo "❌ Unauthorized.\n";
+            exit();
+        } 
+
+        echo "✅ Token is valid.\n";
+
+        $this->user->markInactiveUsersOffline();
+    }
+
 
     public function getUserMatching()
     {
@@ -2055,43 +2106,43 @@ class UserController
         }
     }
 
-    public function pageUserProfileTest(): void
-    {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf() &&
-            $this->isAdmin()
-        ) {
-            require_once 'keys.php';
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-            if ($user['user_game'] == "League of Legends")
-            {
-                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-            }
-            else 
-            {
-                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-            }
-            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-            $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-            $bonusPictures = $this->user->getBonusPictures($this->getUsername());
+    // public function pageUserProfileTest(): void
+    // {
+    //     if (
+    //         $this->isConnectGoogle() &&
+    //         $this->isConnectWebsite() &&
+    //         ($this->isConnectLeague() || $this->isConnectValorant()) && 
+    //         $this->isConnectLf() &&
+    //         $this->isAdmin()
+    //     ) {
+    //         require_once 'keys.php';
+    //         $user = $this-> user -> getUserById($_SESSION['userId']);
+    //         $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+    //         if ($user['user_game'] == "League of Legends")
+    //         {
+    //             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+    //         }
+    //         else 
+    //         {
+    //             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
+    //         }
+    //         $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+    //         $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+    //         $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
+    //         $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
+    //         $bonusPictures = $this->user->getBonusPictures($this->getUsername());
 
 
-            $current_url = "https://ur-sg.com/chatTest";
-            $template = "views/swiping/message_test";
-            $page_title = "URSG - Chat";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
-        }
-    }
+    //         $current_url = "https://ur-sg.com/chatTest";
+    //         $template = "views/swiping/message_test";
+    //         $page_title = "URSG - Chat";
+    //         $picture = "ursg-preview-small";
+    //         require "views/layoutSwiping.phtml";
+    //     } else {
+    //         header("Location: /");
+    //         exit();
+    //     }
+    // }
 
     public function pageAnotherUserProfile()
     {

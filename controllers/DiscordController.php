@@ -614,6 +614,102 @@ class DiscordController
         }
     }
 
+    public function discordClaim() 
+    {
+        require_once 'keys.php';
+
+        $clientId = $discordClientId;
+        $clientSecret = $discordClientSecret;
+        $redirectUri = "https://ur-sg.com/discordClaim";
+        $premiumRoleId = 1375359507063902219;
+
+        $code = $_GET['code'] ?? null;
+        if (!$code) {
+            die("Authorization code missing.");
+        }
+
+        // Step 1: Get access token
+        $tokenResponse = file_get_contents("https://discord.com/api/oauth2/token", false, stream_context_create([
+            "http" => [
+                "method" => "POST",
+                "header" => "Content-Type: application/x-www-form-urlencoded",
+                "content" => http_build_query([
+                    "client_id" => $clientId,
+                    "client_secret" => $clientSecret,
+                    "grant_type" => "authorization_code",
+                    "code" => $code,
+                    "redirect_uri" => $redirectUri,
+                ])
+            ]
+        ]));
+        $tokenData = json_decode($tokenResponse, true);
+        $accessToken = $tokenData['access_token'] ?? null;
+        if (!$accessToken) die("Failed to get Discord access token.");
+
+        // Step 2: Get user data
+        $userInfo = json_decode(file_get_contents("https://discord.com/api/users/@me", false, stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Authorization: Bearer {$accessToken}"
+            ]
+        ])), true);
+        $discordId = $userInfo['id'] ?? null;
+        if (!$discordId) die("Failed to fetch Discord user.");
+
+        // Step 3: Check if user is in the server
+        $checkUrl = "https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}";
+        $memberResponse = file_get_contents($checkUrl, false, stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Authorization: Bot {$discordToken}",
+                "ignore_errors" => true
+            ]
+        ]));
+
+        if (strpos($http_response_header[0] ?? '', "200") === false) {
+            file_put_contents("discord_log.txt", "[User not in server] ID: {$discordId}\n", FILE_APPEND);
+            die("You must join the Discord server before claiming your role.");
+        }
+
+        // Step 4: Add role with PUT request (instead of makeDiscordRequest)
+        $url = "https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}/roles/{$premiumRoleId}";
+        $putContext = stream_context_create([
+            'http' => [
+                'method' => 'PUT',
+                'header' => "Authorization: Bot {$discordToken}\r\nContent-Length: 0\r\n",
+                'content' => '', // PUT must have content
+                'ignore_errors' => true
+            ]
+        ]);
+        $response = file_get_contents($url, false, $putContext);
+
+        // Debug output
+        if (strpos($http_response_header[0] ?? '', "204") === false) {
+            file_put_contents('discord_log.txt', "[Role Assignment Failed] Response:\n" . print_r($http_response_header, true), FILE_APPEND);
+            die("There was a problem assigning your premium role. Please contact support.");
+        }
+
+        // Step 5: Re-check if role was added (optional)
+        $checkRoles = file_get_contents("https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}", false, stream_context_create([
+            "http" => [
+                "method" => "GET",
+                "header" => "Authorization: Bot {$discordToken}",
+                "ignore_errors" => true
+            ]
+        ]));
+        $rolesInfo = json_decode($checkRoles, true);
+        $hasRole = in_array($premiumRoleId, $rolesInfo['roles'] ?? []);
+
+        if (!$hasRole) {
+            file_put_contents("discord_log.txt", "[Failed to confirm role] ID: {$discordId}\n", FILE_APPEND);
+            die("There was a problem assigning your premium role. Please contact support.");
+        }
+
+        header('Location: /store?message=Role assigned successfully.');
+        exit();
+    }
+
+
     
     
 

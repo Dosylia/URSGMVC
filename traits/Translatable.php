@@ -37,32 +37,38 @@ trait Translatable
     }
 
     public function initializeLanguage()
-{
-    $allowedLangs = ['en', 'fr', 'de', 'es'];
+    {
+        $allowedLangs = ['en', 'fr', 'de', 'es'];
 
-    if (isset($_GET['lang']) && in_array($_GET['lang'], $allowedLangs)) {
-        $lang = $_GET['lang'];
-    } else if (isset($_SESSION['lang'])) {
-        $lang = $_SESSION['lang'];
-    } else {
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode"), true);
-        $countryCode = $geo['countryCode'] ?? 'US';
-        $regionLangMap = [
-            'FR' => 'fr',
-            'DE' => 'de',
-            'ES' => 'es',
-            'AT' => 'de',
-            'LU' => 'fr',
-            'MX' => 'es',
-            'AR' => 'es',
-        ];
+        if (isset($_GET['lang']) && in_array($_GET['lang'], $allowedLangs)) {
+            $lang = $_GET['lang'];
+        } elseif (isset($_COOKIE['lang']) && in_array($_COOKIE['lang'], $allowedLangs)) {
+            $lang = $_COOKIE['lang'];
+        } elseif (isset($_SESSION['lang']) && in_array($_SESSION['lang'], $allowedLangs)) {
+            $lang = $_SESSION['lang'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode"), true);
+            $countryCode = $geo['countryCode'] ?? 'US';
 
-        $lang = $regionLangMap[$countryCode] ?? 'en';
+            $regionLangMap = [
+                'FR' => 'fr',
+                'DE' => 'de',
+                'ES' => 'es',
+                'AT' => 'de',
+                'LU' => 'fr',
+                'MX' => 'es',
+                'AR' => 'es',
+            ];
+
+            $lang = $regionLangMap[$countryCode] ?? 'en';
+        }
+
+        setcookie('lang', $lang, time() + (7 * 24 * 60 * 60), "/");
+
         $_SESSION['lang'] = $lang;
-    }
 
-    $this->loadLanguage($lang);
-}
+        $this->loadLanguage($lang);
+    }
 
 }

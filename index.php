@@ -197,7 +197,7 @@ $actionMap = [
     'reportAdminRequestBan' => [AdminController::class, 'reportAdminRequestBan'],
     'reportAdminCensorBoth' => [AdminController::class, 'reportAdminCensorBoth'],
     'reportAdminDismiss' => [AdminController::class, 'reportAdminDismiss'],
-    'userTest' => [UserController::class, 'pageUserProfileTest'],
+    // 'userTest' => [UserController::class, 'pageUserProfileTest'],
     'deleteBonusPicture' => [UserController::class, 'deleteBonusPicture'],
     'personalityTest' => [UserController::class, 'personalityTestPage'],
     'savePersonalityTestResult' => [UserController::class, 'savePersonalityTestResult'],
@@ -207,6 +207,7 @@ $actionMap = [
     'deleteExpiredChannels' => [DiscordController::class, 'deleteExpiredChannels'],
     'updateNotificationPermission' => [UserController::class, 'updateNotificationPermission'],
     'saveNotificationSubscription' => [UserController::class, 'saveNotificationSubscription'],
+    'fetchNotificationEndpoint' => [UserController::class, 'fetchNotificationEndpoint'],
     'sendMessageDiscord' => [DiscordController::class, 'sendMessageDiscord'],
     'playerfinder' => [PlayerFinderController::class, 'playerfinderPage'],
     'addPlayerFinderPost' => [PlayerFinderController::class, 'addPlayerFinderPost'],
@@ -217,6 +218,8 @@ $actionMap = [
     'addFriendAndChat' => [FriendRequestController::class, 'addFriendAndChat'],
     'editPlayerPost' => [PlayerFinderController::class, 'editPlayerPost'],
     'partners' => [GoogleUserController::class, 'partnersPage'],
+    'markInactiveUsersOffline' => [UserController::class, 'markInactiveUsersOffline'],
+    'discordClaim' => [DiscordController::class, 'discordClaim'],
 ];
 
 $action = "home";

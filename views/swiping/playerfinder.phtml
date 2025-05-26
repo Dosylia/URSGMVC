@@ -202,6 +202,7 @@
           <?php foreach ($playerFinderAll as $post): ?>
               <?php
                 $isLoL = $post['pf_game'] === 'League of Legends';
+                $gamePrefix = $isLoL ? 'lol' : 'valorant';
                 $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
                 $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
                 $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
@@ -215,9 +216,10 @@
                   data-postid="<?= $post['pf_id'] ?>"
                   data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
                   data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
-                  data-role="<?= strtolower(str_replace(' ', '', $post['pf_role'])) ?>"
                   data-role-name="<?= htmlspecialchars($post['pf_role']) ?>"
-                  data-rank="<?= htmlspecialchars($post['pf_rank']) ?>"
+                  data-role-user="<?= strtolower(str_replace(' ', '', $post[$gamePrefix . '_role'])) ?>"
+                  data-rank-user="<?= htmlspecialchars($post[$gamePrefix . '_rank']) ?>"
+                  data-role-name-user="<?= htmlspecialchars($post[$gamePrefix . '_role']) ?>"
                   data-voice="<?= (int)$post['pf_voiceChat'] === 1 ? 'true' : 'false' ?>">
                   <?php if (isset($user)): ?>
                     <?php

@@ -74,7 +74,11 @@ function buyRole(itemId, userId) {
         placeholderMessage.innerHTML = '';
         console.log('Success:', data);
         if (data.success) {
-            placeholderMessage.innerHTML = data.message;
+            placeholderMessage.innerHTML = `
+                ${data.message}<br/>
+                <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
+                <button onclick="claimDiscordRole()" class="claimPremium">Claim Premium Role on Discord</button>
+            `;
         } else {
             placeholderMessage.innerHTML = data.message;
         }
@@ -82,6 +86,13 @@ function buyRole(itemId, userId) {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+function claimDiscordRole() {
+    window.open(
+        'https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordClaim&scope=identify',
+        '_blank'
+    );
 }
 
 // EVENTS

@@ -14,12 +14,12 @@ export const replyPreviewContainer = document.getElementById("reply-preview");
 export const chatInput = document.getElementById("message_text");
 export let clearImageVar = false;
 let numberofFail = 0;
+let lastFriendStatus = null;
 
 
 // Function to fetch messages
 export function fetchMessages(userId, friendId) {
 
-    console.log('Fetching messages...');
     if (numberofFail >= 5) {
         console.error('Too many failed attempts. Stopping fetch loop.');
         return;
@@ -76,7 +76,7 @@ export function fetchMessages(userId, friendId) {
                         updateMessageContainer(data.messages, data.friend, data.user);
                     });
                 } else {
-                    console.log('No new messages. No update needed.');
+                    showFriendInfo(data.friend);
                 }
             } else {
                 // Handle empty messages case
@@ -678,7 +678,27 @@ export function fetchMessages(userId, friendId) {
     }
 
     async function showFriendInfo(friend) {
-        if (!friend || friend.user_username === currentFriendUsername) return;
+        if (!friend) return;
+
+        const isSameFriend = friend.user_username === currentFriendUsername;
+        const hasSameStatus = friend.user_isOnline === lastFriendStatus;
+
+        if (isSameFriend && hasSameStatus) return;
+
+        if (isSameFriend && !hasSameStatus) {
+            const statusSpan = document.querySelector("#friendTop .online-status, #friendTop .offline-status, #friendTop .looking-game-status");
+            if (statusSpan) {
+                statusSpan.className = friend.user_isOnline === 1 ? "online-status" : "offline-status";
+            }
+            if (friend.user_isOnline === 0) {
+                const statusGame = document.querySelector(".ingame-status");
+                if (statusGame) {
+                    statusGame.remove();
+                }
+            }
+            lastFriendStatus = friend.user_isOnline;
+            return;
+        }
     
         friendIdElement.value = friend.user_id;
         const usernameFriend = document.getElementById("message_text");

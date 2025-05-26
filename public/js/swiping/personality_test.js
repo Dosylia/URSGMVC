@@ -5,12 +5,14 @@ let archetypes = {
     TheBaus: 0,
     cryBabyAdc: 0,
     theSmurf: 0,
+    strategic: 0,
+    serious: 0
   };
 
   let currentChart = null;
   let isFinalResult = false;
   
-  const descriptions = {
+const descriptions = {
     toxic: {
       main: "🔥 The Keyboard Warrior",
       core: "You peaked at silver 3 in Season 8 and never forgave the game.",
@@ -19,8 +21,9 @@ let archetypes = {
         TheBaus: "Your 1v5 attempts are just elaborate inting with extra steps.",
         cryBabyAdc: "Toxic and emotional - a true ADC main.",
         boosted: "You blame teammates while being carried harder than a shopping cart.",
-        theSmurf: "Your 'educational' smurfing comes with bonus verbal abuse."
-        
+        theSmurf: "Your 'educational' smurfing comes with bonus verbal abuse.",
+        strategic: "Your 'strategic' pings are just passive-aggressive flame in disguise.",
+        serious: "You take the game way too seriously... just not your own improvement."
       },
       image: "toxic.png"
     },
@@ -31,7 +34,10 @@ let archetypes = {
         boosted: "Your mechanics are questionable, but your vibes are undeniable.",
         theSmurf: "Are you actually good or just a bit delusional?",
         toxic: "At least people think it's cute when you flame them.",
-        cryBabyAdc: "You decided to become the carry? Looks like it failed"
+        cryBabyAdc: "You decided to become the carry? Looks like it failed",
+        TheBaus: "Your 'roams' are just excuses to visit other lanes and emote spam",
+        strategic: "Your game plan consists entirely of looking cute and hoping for ganks",
+        serious: "You pretend to care about macro but we all know you're here for the skins"
       },
       image: "egirl.jpg",
     },
@@ -43,7 +49,9 @@ let archetypes = {
         TheBaus: "You think running it down is a valid strategy if you get one kill",
         theSmurf: "The only thing you're smurfing on is the report menu",
         cryBabyAdc: "You demand peel while positioning like a melee minion",
-        toxic: "You flame others while being carried harder than a shopping cart"
+        toxic: "You flame others while being carried harder than a shopping cart",
+        strategic: "Your 'strategy' is following the nearest teammate until they carry you",
+        serious: "You unironically think watching one pro game makes you understand macro"
       },
       image: "boosted.jpg",
     },
@@ -55,7 +63,9 @@ let archetypes = {
         boosted: "Even your duo can't explain how some of these deaths work",
         cryBabyAdc: "You dive fountain then spam ping your support for not following",
         theSmurf: "Only think you're smurfing it at is speed running grey screens",
-        egirl: "Your roams are either genius or griefing - no in between"
+        egirl: "Your roams are either genius or griefing - no in between",
+        strategic: "Your 'strategy' is just running it down with extra steps",
+        serious: "You've convinced yourself your 20 death games are 'educational'"
       },
       image: "TheBaus.jpg",
     },
@@ -66,7 +76,10 @@ let archetypes = {
         toxic: "Your tears fuel both your plays and your flame",
         egirl: "You tilt like it's sponsored content. Simps will love it though.",
         boosted: "The only thing more fragile than your mental is your positioning",
-        TheBaus: "You demand babysitting while perma running it down mid"
+        TheBaus: "You demand babysitting while perma running it down mid",
+        theSmurf: "You think you're smurfing but your KDA says otherwise",
+        strategic: "Your 'positioning' is just hiding behind teammates until you die anyway",
+        serious: "You take every death as a personal insult from Riot Games"
       },
       image: "crybabyadc.png",
     },
@@ -78,50 +91,116 @@ let archetypes = {
         TheBaus: "Your plays make people question if smurfing works differently in Brazil",
         egirl: "Your mastery emotes outnumber your actual mastery",
         toxic: "Your 'educational' smurfing comes with bonus verbal abuse",
-        cryBabyAdc: "You still end up carrying at least, or are you delusional about that too?"
+        cryBabyAdc: "You still end up carrying at least, or are you delusional about that too?",
+        strategic: "Your 'coaching' consists of spamming pings and typing '?'",
+        serious: "You pretend to be educational but really just enjoy stomping noobs"
       },
       image: "theSmurf.jpg",
+    },
+    strategic: {
+      main: "🧠 The Grand Strategist",
+      core: "You see the game five moves ahead, even if your teammates are still learning chess.",
+      modifiers: {
+        boosted: "Your 'big brain plays' often leave teammates wondering if you're trolling",
+        TheBaus: "Your 'strategic inting' is just regular inting with better vocabulary",
+        egirl: "You claim to understand wave states but really just follow your duo's pings",
+        toxic: "Your 'constructive criticism' is just flame wrapped in macro terms",
+        cryBabyAdc: "You ping missing 15 times then tilt when no one rotates",
+        theSmurf: "Your 'educational content' is just you smurfing with extra steps",
+        serious: "You've watched so many guides you forgot to actually play the game"
+      },
+      image: "strategist.jpeg",
+    },
+    serious: {
+      main: "🎯 The Tryhard",
+      core: "Every game is a tournament final, every mistake is unacceptable, and fun is secondary to LP gains.",
+      modifiers: {
+        boosted: "You study pro builds but still can't hit skillshots",
+        TheBaus: "Your 'serious gameplay' is just running it down with better excuses",
+        egirl: "You pretend to care about macro but really just want to look smart",
+        toxic: "Your 'constructive feedback' is just flame with extra steps",
+        cryBabyAdc: "You analyze every death frame by frame then blame your support",
+        theSmurf: "Your 'educational' attitude disappears when someone questions your calls",
+        strategic: "You overthink simple plays until they become complicated mistakes"
+      },
+      image: "serious.jpg",
     }
-  };
+};
   
-  const relationships = {
+const relationships = {
     toxic: {
       egirl: "Your flame comes wrapped in 💖 emojis - somehow making toxicity cute",
       TheBaus: "Your limit testing includes testing teammates' mental limits",
       cryBabyAdc: "You're the reason Riot invented /deafen",
-      boosted: "You flame others while being carried harder than a shopping cart"
+      boosted: "You flame others while being carried harder than a shopping cart",
+      theSmurf: "Your 'educational' smurfing comes with bonus verbal abuse",
+      strategic: "Your 'strategic advice' is just flame in macro terminology",
+      serious: "You take losing more seriously than pros take Worlds"
     },
     egirl: {
       boosted: "Your charm-to-skill ratio defies mathematical logic",
       theSmurf: "Your mastery emotes outnumber your actual mastery",
       toxic: "Even your 'gl hf' sounds like a threat in pink font",
-      TheBaus: "Your roams are either genius or griefing - no in between"
+      TheBaus: "Your roams are either genius or griefing - no in between",
+      cryBabyAdc: "Your pout could be seen from the enemy nexus",
+      strategic: "Your 'game sense' is just following your duo's pings",
+      serious: "You pretend to care about macro but we all know you're here for the skins"
     },
     boosted: {
       egirl: "Your pocket duo is either ride-or-die or hostage situation",
       theSmurf: "The only thing you're smurfing on is the report system",
       TheBaus: "Your gameplay makes boosters question their life choices",
-      cryBabyAdc: "You blame supports while building like a ARAM player"
+      cryBabyAdc: "You blame supports while building like a ARAM player",
+      toxic: "You flame teammates while being carried harder than groceries",
+      strategic: "Your 'big brain plays' are just failed attempts at basic mechanics",
+      serious: "You unironically think watching one pro game makes you understand macro"
     },
     TheBaus: {
       toxic: "Your all-chat essays about wave management mid-int are legendary",
       boosted: "Your gameplay looks like someone let a cat walk on the keyboard... strategically",
       theSmurf: "Either 200IQ plays or proof elo inflation exists",
-      cryBabyAdc: "Your split pushing makes ADCs question life choices"
+      cryBabyAdc: "Your split pushing makes ADCs question life choices",
+      egirl: "Your 'roams' are just excuses to visit other lanes and emote spam",
+      strategic: "Your 'calculated inting' is just regular inting with better vocabulary",
+      serious: "You've convinced yourself your 20 death games are 'educational'"
     },
     cryBabyAdc: {
       egirl: "Your pout could be seen from the enemy nexus",
       toxic: "You type essays between last-hitting... poorly",
       boosted: "The only thing more boosted than your rank is your mental",
-      theSmurf: "You still end up carrying at least, or are you delusional about that too?"
+      theSmurf: "You still end up carrying at least, or are you delusional about that too?",
+      TheBaus: "You demand babysitting while perma running it down mid",
+      strategic: "Your 'positioning' is just hiding behind teammates until you die anyway",
+      serious: "You take every death as a personal insult from Riot Games"
     },
     theSmurf: {
       toxic: "Your 'advice' is just flame in a Harvard hoodie",
       TheBaus: "Your plays make people report you whether you're smurfing or not",
       boosted: "The only thing suspicious is your item builds",
-      egirl: "Your 'educational' stream has suspiciously good lighting"
+      egirl: "Your 'educational' stream has suspiciously good lighting",
+      cryBabyAdc: "You still end up carrying at least, or are you delusional about that too?",
+      strategic: "Your 'coaching' consists of spamming pings and typing '?'",
+      serious: "You pretend to be educational but really just enjoy stomping noobs"
+    },
+    strategic: {
+      toxic: "Your macro knowledge is only used to flame teammates more effectively",
+      egirl: "Your 'game plans' are just following your duo's lead with extra steps",
+      boosted: "Your 'strategic genius' disappears the moment teamfights start",
+      TheBaus: "Your 'calculated plays' are just inting with a PowerPoint presentation",
+      cryBabyAdc: "You ping missing 15 times then tilt when no one rotates",
+      theSmurf: "Your 'educational content' is just you smurfing with extra steps",
+      serious: "You've watched so many guides you forgot to actually play the game"
+    },
+    serious: {
+      toxic: "You take flaming as seriously as you take the game",
+      egirl: "You pretend to care about macro but really just want to look smart",
+      boosted: "You study pro builds but still can't hit skillshots",
+      TheBaus: "Your 'serious gameplay' is just running it down with better excuses",
+      cryBabyAdc: "You analyze every death frame by frame then blame your support",
+      theSmurf: "Your 'educational' attitude disappears when someone questions your calls",
+      strategic: "You overthink simple plays until they become complicated mistakes"
     }
-  };
+};
   
   // Special combined archetype descriptions
   const hybridDescriptions = {
@@ -143,23 +222,27 @@ let archetypes = {
     // }
   };
 
-  const archetypeKeywords = {
+const archetypeKeywords = {
     toxic: "flame lord",
     egirl: "charmer",
     boosted: "wildcard",
     TheBaus: "limit tester",
     cryBabyAdc: "drama carry",
-    theSmurf: "secret prodigy"
-  };
+    theSmurf: "secret prodigy",
+    strategic: "grand tactician",
+    serious: "tryhard virtuoso"
+};
   
-  const archetypePhrases = {
+const archetypePhrases = {
     toxic: "You're a true <span class='color-red'>{keyword}</span>, but even chaos deserves calm. Join us and find your duo.",
     egirl: "You're a natural <span class='color-red'>{keyword}</span>, but even charmers need teammates. Join us and vibe together!",
     boosted: "You're the ultimate <span class='color-red'>{keyword}</span>, but even wildcards shine brightest with a crew. Join us!",
     TheBaus: "You're a fearless <span class='color-red'>{keyword}</span>, but even rebels need a team. Join us and send it together!",
     cryBabyAdc: "You're a passionate <span class='color-red'>{keyword}</span>, but even emotions win more with friends. Join us!",
-    theSmurf: "You're a lowkey <span class='color-red'>{keyword}</span>, but even legends need recognition. Join us and show them!"
-  };
+    theSmurf: "You're a lowkey <span class='color-red'>{keyword}</span>, but even legends need recognition. Join us and show them!",
+    strategic: "You're a brilliant <span class='color-red'>{keyword}</span>, but even the best plans need execution. Join us and lead the charge!",
+    serious: "You're a dedicated <span class='color-red'>{keyword}</span>, but even perfectionists need allies. Join us and climb properly!"
+};
   
   
   const quizContainer = document.getElementById('quiz-container');
@@ -183,7 +266,7 @@ let archetypes = {
   
   async function fetchQuestions() {
     try {
-      const response = await fetch('/questions.html');
+      const response = await fetch('/questions2.html');
       const html = await response.text();
       quizContainer.innerHTML = html;
       questions = quizContainer.querySelectorAll('.question');

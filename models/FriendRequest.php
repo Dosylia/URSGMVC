@@ -177,8 +177,10 @@ class FriendRequest extends DataBase
                 ur.user_game AS receiver_game,
                 ur.user_lastRequestTime AS receiver_lastRequestTime,
                 c.latest_message_date,
-                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(us.user_lastRequestTime) <= 45) AS sender_isOnline,
-                (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_lastRequestTime) <= 45) AS receiver_isOnline,
+                us.user_isOnline AS sender_isOnline,
+                ur.user_isOnline AS receiver_isOnline,
+                us.user_lastSeen AS sender_lastSeen,
+                ur.user_lastSeen AS receiver_lastSeen,
                 (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(us.user_requestIsLooking) <= 300) AS sender_isLookingGame,
                 (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ur.user_requestIsLooking) <= 300) AS receiver_isLookingGame
             FROM

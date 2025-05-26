@@ -79,7 +79,7 @@ class PlayerFinder extends DataBase
             LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
             LEFT JOIN valorant val ON val.user_id = u.user_id
             ORDER BY pf.pf_id DESC
-            LIMIT 7
+            LIMIT 10
         ");
         
         $query->execute();

@@ -123,8 +123,8 @@ function editPlayerPost(postId, desc, newRole, newRank) {
       rankImg.src = newRankPath;
       rankImg.alt = newRank;
 
-      card.dataset.roleName = newRole;
-      card.dataset.rank = newRank;
+      card.dataset.roleNameUser = newRole;
+      card.dataset.rankUser = newRank;
 
       const roleSelect = document.getElementById('editRole');
       const rankSelect = document.getElementById('editRank');
@@ -202,8 +202,8 @@ const applyFilters = () => {
     
     document.querySelectorAll('.playerfinder-card').forEach(card => {
         const game = card.dataset.game;
-        const role = card.dataset.role;
-        const rank = card.dataset.rank;
+        const role = card.dataset.roleUser;
+        const rank = card.dataset.rankUser;
         const voice = card.dataset.voice === 'true';
 
         // Convert filter values to lowercase for comparison

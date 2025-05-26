@@ -45,6 +45,15 @@
         <button id="closeButton_user_picture">X</button>
     </dialog>
     <div id="user-top-container"> <!--Flex column -->
+        <div class="support_ursg">
+            <h3><?= $this->_('support_URSG') ?></h3>
+            <hr class="separators-quiz" style="width: 80%; margin: 0px;"/>
+            <p><?= $this->_('support_URSG_desc') ?></p>
+            <hr class="separators-quiz" style="width: 80%; margin: 0px;"/>
+            <a href="https://ko-fi.com/yoursoulmategamer" target="_blank" class="btn_support_ursg">
+                <?= $this->_('support_URSG_btn') ?>
+            </a>
+        </div>
         <div id="edit-profile-container">
             <div id="menu-links">
                 <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile">
