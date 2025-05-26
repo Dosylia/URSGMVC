@@ -91,6 +91,10 @@ return [
     'footer_links' => 'Liens',
     'footer_copyright' => 'Copyright © URSG. Tous droits réservés.',
     'footer_riot' => 'URSG n’est pas approuvé par Riot Games et ne reflète pas les opinions ou points de vue de Riot Games ni de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.',
+    'partners_perks_title' => 'Avantages des partenaires',
+    'partners_perks_1' => 'Gagnez en visibilité et en reconnaissance au sein de la communauté (affichage sur la page partenaire, badge partenaire sur le site et rôle partenaire sur le serveur Discord).',
+    'partners_perks_2' => 'Œuf de Pâques caché sur le site !',
+    'partners_perks_3' => 'Tous les objets de la boutique sont débloqués.',
 
 
 // home.phtml

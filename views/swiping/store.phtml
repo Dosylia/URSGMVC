@@ -28,27 +28,44 @@
 
 <div class="item-grid">
     <?php foreach($items as $item) : ?>
-        <div class="item-card" data-category="<?= $item['items_category'] ?>">
-        <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
-        <div class="item-info">
-            <h3><?= $item['items_name'] ?></h3>
-            <?php if ($user['user_isVip']) : ?>
-                <p class="price_display"><span class="old-price"><?= $item['items_price']?></span><?= $item['items_price'] * 0.8 ?><img src="public/images/soulhard.png" alt="soulhard"></p>
-            <?php else : ?>
-                <p class="price_display"><?= $item['items_price'] ?><img src="public/images/soulhard.png" alt="soulhard"></p>
-            <?php endif; ?>  
-            <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
-            <div class="buy-button-container">
-                <?php   if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
-        in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
-                    <button class="buy-button-owned" disabled>Owned</button>
+        <div class="item-card" data-category="<?= $item['items_category'] ?>" 
+             <?php if ($item['items_id'] == 6) echo 'id="kitty-frame-card"'; ?>>
+            <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
+            <div class="item-info">
+                <h3><?= $item['items_name'] ?></h3>
+                <?php if ($user['user_isVip']) : ?>
+                    <p class="price_display">
+                        <span class="old-price"><?= $item['items_price']?></span>
+                        <?= $item['items_price'] * 0.8 ?>
+                        <img src="public/images/soulhard.png" alt="soulhard">
+                    </p>
                 <?php else : ?>
-                    <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
-                <?php endif; ?>
+                    <p class="price_display"><?= $item['items_price'] ?><img src="public/images/soulhard.png" alt="soulhard"></p>
+                <?php endif; ?>  
+                <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
+                <div class="buy-button-container">
+                    <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
+                              in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
+                        <button class="buy-button-owned" disabled>Owned</button>
+                    <?php else : ?>
+                        <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                    <?php endif; ?>
+                </div>
             </div>
+            <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
         </div>
-        <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
-    </div>
+
+        <?php if ($item['items_id'] == 6) : ?>
+            <div id="ahris-easter-egg" class="ahris-easter-egg">
+                <h3>🐱 Meow! You found a secret from <strong>Ahristochat</strong>!</h3>
+                <p>This Kitty Frame is in purrtnership with <strong>Ahristochat</strong>, our fabulous feline friend! 😸</p>
+                <img src="/public/images/ahris-cat.gif" alt="Ahristochat">
+                <br><br>
+                <button class="close-easter-egg" onclick="document.getElementById('ahris-easter-egg').style.display='none'">
+                    Close
+                </button>
+            </div>
+        <?php endif; ?>
     <?php endforeach; ?>
 </div>
 

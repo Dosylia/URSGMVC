@@ -97,6 +97,20 @@ function claimDiscordRole() {
 
 // EVENTS
 document.addEventListener("DOMContentLoaded", function() {
+
+    let kittyClicks = 0;
+    const kittyCard = document.getElementById('kitty-frame-card');
+
+    if (kittyCard) {
+        kittyCard.addEventListener('click', () => {
+            kittyClicks++;
+            if (kittyClicks === 3) {
+                document.getElementById('ahris-easter-egg').style.display = 'block';
+                kittyClicks = 0; // reset for replay
+            }
+        });
+    }
+
     buyButtons.forEach(button => {
         button.addEventListener("click", function() {
             const itemId = this.getAttribute('data-item-id');

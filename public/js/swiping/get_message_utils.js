@@ -154,12 +154,14 @@ export function fetchMessages(userId, friendId) {
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
             let messageClass = isCurrentUser ? 'message-from-user' : 'message-to-user';
-            let messagePosition = isCurrentUser  ? 'left' : 'left';
-            let userPosition = isCurrentUser ? 'right' : 'left';
-            let lastMessagePosition = isCurrentUser ? 'flex-end' : 'flex-start';
+            let messagePosition = isCurrentUser  ? 'left' : 'left'; 
+            let userPosition = isCurrentUser ? 'left' : 'left'; // right - left to go back to chat on sides
+            let lastMessagePosition = isCurrentUser ? 'flex-start' : 'flex-start'; // flex-end - flex-start to go back to chat on sides
             let messageUser = isCurrentUser ? user : friend;
             let messageLink = isCurrentUser ? 'userProfile' : 'anotherUser';
-            let timestampPosition = isCurrentUser ? "normal" : "inverted";
+            let timestampPosition = isCurrentUser ? "inverted" : "inverted"; // normal - inverted to go back to chat on sides
+            let replyContainerClass = isCurrentUser ? "normal" : "inverted";
+            let backgroundColor = isCurrentUser ? '#e84056' : '';
             let pictureLink;
             let senderOwnsVIPEmotes = (message.chat_senderId == user.user_id) ? user.ownVIPEmotes : friend.ownVIPEmotes;
     
@@ -221,15 +223,15 @@ export function fetchMessages(userId, friendId) {
                             messageContent = `
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 20px; padding-bottom: 5px; position: relative; z-index: 950;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                <span class="message-text" style="text-align: ${messagePosition}; background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
-                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: 5px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;"
@@ -246,15 +248,15 @@ export function fetchMessages(userId, friendId) {
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
                                     <span class="timestamp-hover">${formattedTime}</span>
-                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                    <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                     ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
-                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                    <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: -10px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;"
@@ -274,16 +276,16 @@ export function fetchMessages(userId, friendId) {
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
                                     <span class="timestamp-hover">${formattedTime}</span>
-                                    <span class="message-text" style="text-align: ${messagePosition};">
+                                    <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">
                                         ${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                         ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
-                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                    <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: -10px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;"
@@ -301,15 +303,15 @@ export function fetchMessages(userId, friendId) {
                             messageContent = `
                             <p class="last-message" style="text-align: ${messagePosition}; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
-                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: -10px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;">
@@ -326,15 +328,15 @@ export function fetchMessages(userId, friendId) {
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                     <span class="timestamp-hover">${formattedTime}</span>
-                                    <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                    <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                     ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                     </span>
-                                    <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                    <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: -10px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;">
@@ -352,15 +354,15 @@ export function fetchMessages(userId, friendId) {
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
-                                <span class="replied-message ${timestampPosition}" style="position: absolute; 
+                                <span class="replied-message ${replyContainerClass}" style="position: absolute; 
                                         top: -10px; 
-                                        ${isCurrentUser ? 'right: 0' : 'left: 0'}; 
+                                        ${isCurrentUser ? 'left: 0' : 'left: 0'}; 
                                         font-size: 0.9em; 
                                         z-index: 999; 
-                                        ${isCurrentUser ? 'text-align: right' : 'text-align: left'}; 
+                                        ${isCurrentUser ? 'text-align: left' : 'text-align: left'}; 
                                         word-wrap: break-word; 
                                         max-width: 100%;
                                         padding: 0 10px;">
@@ -377,7 +379,7 @@ export function fetchMessages(userId, friendId) {
                         messageContent = `
                         <p class="last-message" style="text-align: ${messagePosition};">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                            <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                             ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                             </span>
                         </p>
@@ -390,7 +392,7 @@ export function fetchMessages(userId, friendId) {
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                                 <span class="timestamp-hover">${formattedTime}</span>
-                                <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                                <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                                 ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                                 </span>
                             </p>
@@ -404,7 +406,7 @@ export function fetchMessages(userId, friendId) {
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
-                            <span class="message-text" style="text-align: ${messagePosition};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
+                            <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${user.user_hasChatFilter ? renderEmotes(chatfilter(message.chat_message, senderOwnsVIPEmotes)) : renderEmotes(message.chat_message, senderOwnsVIPEmotes)}
                             ${isCurrentUser ? `<span class="message-status">${messageStatus}</span>` : ""}
                             </span>
                         </p>

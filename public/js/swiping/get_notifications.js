@@ -42,7 +42,7 @@ function fetchFriendRequest(userId) {
                     userId
                 );
                     if (displayMoneyWon) {
-                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.textContent = `500`;
                         displayMoneyWon.style.display = 'block';
 
                         displayMoneyWon.style.animation = 'none';
@@ -100,7 +100,7 @@ function fetchFriendRequest(userId) {
                         userId
                     );
                     if (displayMoneyWon) {
-                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.textContent = `500`;
                         displayMoneyWon.style.display = 'block';
 
                         displayMoneyWon.style.animation = 'none';

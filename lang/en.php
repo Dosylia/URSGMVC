@@ -91,6 +91,10 @@ return [
     'footer_links' => 'Links',
     'footer_copyright' => 'Copyright © URSG. All rights reserved.',
     'footer_riot' => 'URSG isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc. ',
+    'partners_perks_title' => 'Partners Perks',
+    'partners_perks_1' => 'Gain visibility and recognition within the community (Displayed on partner page, partner badge on website and partner role on Discord server).',
+    'partners_perks_2' => 'Hidden easter egg on website!',   
+    'partners_perks_3' => 'All store items unlocked.',
 
     //home.phtml
     'game' => 'Game',

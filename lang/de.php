@@ -91,6 +91,10 @@ return [
     'footer_links' => 'Links',
     'footer_copyright' => 'Copyright © URSG. Alle Rechte vorbehalten.',
     'footer_riot' => 'URSG wird nicht von Riot Games unterstützt und spiegelt nicht die Meinungen oder Ansichten von Riot Games oder von Personen wider, die offiziell an der Produktion oder Verwaltung von Riot Games-Inhalten beteiligt sind. Riot Games und alle zugehörigen Inhalte sind Marken oder eingetragene Marken von Riot Games, Inc.',
+    'partners_perks_title' => 'Partner-Vorteile',
+    'partners_perks_1' => 'Erhalte Sichtbarkeit und Anerkennung in der Community (Anzeige auf der Partnerseite, Partner-Badge auf der Website und Partner-Rolle auf dem Discord-Server).',
+    'partners_perks_2' => 'Verstecktes Easter Egg auf der Website!',
+    'partners_perks_3' => 'Alle Shop-Artikel freigeschaltet.',
 
 
 // home.phtml

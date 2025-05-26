@@ -5,6 +5,13 @@
             <div class="partner">
                 <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
                 <h3><?= htmlspecialchars($partner['username']) ?></h3>
+
+                <?php if ($partner['username'] === 'AerialLiz'): ?>
+                    <div class="liz-easter-egg">
+                        🐾 <span class="liz-tooltip">This ADC tamer comes with a leash! Beware, you might become her next support... 💘</span>
+                    </div>
+                <?php endif; ?>
+
                 <div class="social-links">
                     <?php 
                     $socialLinks = json_decode($partner['social_links'], true);
@@ -18,6 +25,14 @@
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+    <div class="partners-perks">
+        <h3><?= $this->_('partners_perks_title') ?></h3>
+        <div class="perks-list">
+            <p><?= $this->_('partners_perks_1') ?></p> 
+            <p><?= $this->_('partners_perks_2') ?></p> 
+            <p><?= $this->_('partners_perks_3') ?></p>  
+        </div>
     </div>
     <div class="call-to-action">
         <p><?= $this->_('partners_cta') ?> <a target="_blank" href="https://twitter.com/Dosylia"><?= $this->_('contact_us') ?></a></p>
