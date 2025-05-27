@@ -395,6 +395,293 @@ class PlayerFinderController
         ]);
     }
 
+        public function addPlayerFinderPostPhone()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Decode raw JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+    
+        if (!isset($input['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int) $input['userId'];
+        $voiceChat = $input['voiceChat'] ?? null;
+        $role = $input['roleLookingFor'] ?? null;
+        $rank = $input['rankLookingFor'] ?? null;
+        $description = $input['description'] ?? null;
+
+        if ($voiceChat == "true") {
+            $voiceChat = 1;
+        } else {
+            $voiceChat = 0;
+        }
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $user = $this->user->getUserById($userId);
+        $oldTime = $user['user_requestIsLooking'];
+
+        $setStatus = $this->user->userIsLookingForGame($userId);
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
+
+        if ($getPlayerFinderPost) {
+            $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($getPlayerFinderPost['pf_id']);
+
+            if (!$deletePlayerFinderPost) {
+                echo json_encode(['success' => false, 'error' => 'Failed to delete existing Player Finder post']);
+                return;
+            }
+        }
+
+        $addPlayerFinderPost = $this->playerFinder->addPlayerFinderPost(
+            $role,
+            $rank,
+            $description,
+            $voiceChat,
+            $user['user_game'],
+            $userId
+        );
+
+        if ($addPlayerFinderPost) {
+            echo json_encode(['success' => true, 'message' => 'Player Finder post added successfully', 'oldTime' => $oldTime]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to add Player Finder post']);
+        }
+    }
+
+    public function getPlayerFinderPostsPhone()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int) $_POST['userId'];
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $playerFinderPosts = $this->playerFinder->getAllPlayerFinderPost();
+
+        if ($playerFinderPosts) {
+            echo json_encode(['success' => true, 'posts' => $playerFinderPosts]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder posts found']);
+        }
+    }
+
+    public function deletePlayerFinderPostPhone()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int) $_POST['userId'];
+        $postId = $_POST['postId'] ?? null;
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        if ($getPlayerFinderPost['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot delete this post']);
+            return;
+        }
+    
+        $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($postId);
+    
+        if ($deletePlayerFinderPost) {
+            echo json_encode(['success' => true, 'message' => 'Player Finder post deleted successfully']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to delete Player Finder post']);
+        }
+    }
+
+    public function playWithThemPhone() 
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int) $_POST['userId'];
+        $postId = $_POST['postId'] ?? null;
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        if ($getPlayerFinderPost['user_id'] == $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot play with yourself']);
+            return;
+        }
+
+        $interested = json_decode($getPlayerFinderPost['pf_peopleInterest'], true);
+        if (!is_array($interested)) $interested = [];
+
+        $alreadyInterested = false;
+        foreach ($interested as $entry) {
+            if ($entry['userId'] == $userId) {
+                $alreadyInterested = true;
+                break;
+            }
+        }
+
+        if (!$alreadyInterested) {
+            $interested[] = ['userId' => $userId, 'seen' => false];
+        }
+
+        $playWithThem = $this->playerFinder->updatePeopleInterest($postId, $interested);
+    
+        if ($playWithThem) {
+            // Check if they are friends, if yes add isFriend yes, to redirect them to chat on front end
+            $friendRequest = $this->friendrequest->getFriendStatus($userId, $getPlayerFinderPost['user_id']);
+
+            if ($friendRequest === "accepted") {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Redirecting to friend chat',
+                    'isFriend' => true,
+                    'friendId' => $getPlayerFinderPost['user_id']
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'They will know you want to play with them',
+                    'isFriend' => false
+                ]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to play with them']);
+        }
+    }
+    
+    public function getInterestedPeoplePhone()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+
+        $userId = $_POST['userId'] ?? null;
+    
+        if (!isset($userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        // Validate Token for User
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
+
+        if (!$getPlayerFinderPost) {
+            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            return;
+        }
+
+        $interested = json_decode($getPlayerFinderPost['pf_peopleInterest'], true);
+        if (!is_array($interested)) $interested = [];
+
+        $unseenUsers = array_filter($interested, fn($entry) => !$entry['seen']);
+        $unseenIds = array_map(fn($entry) => $entry['userId'], $unseenUsers);
+
+        if (empty($unseenIds)) {
+            echo json_encode(['success' => true, 'interestedUsers' => false]);
+            return;
+        }
+
+        $users = $this->user->getUsersByIds($unseenIds, $userId);
+
+        $notifications = [];
+        foreach ($users as $user) {
+            $notifications[] = [
+                'fr_id' => $getPlayerFinderPost['pf_id'],
+                'userId' => $userId, 
+                'friendId' => $user['user_id'],
+                'user_username' => $user['user_username'],
+                'pf_status' => 'unseen',
+            ];
+        }
+
+        echo json_encode([
+            'success' => true,
+            'interestedUsers' => $notifications
+        ]);
+    }
+
     public function markInterestAsSeen()
     {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
