@@ -166,6 +166,7 @@ $actionMap = [
     'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'uploadChatImage' => [ChatMessageController::class, 'uploadChatImage'],
+    'uploadChatImagePhone' => [ChatMessageController::class, 'uploadChatImagePhone'],
     'deleteChatImage' => [ChatMessageController::class, 'deleteChatImage'],
     'getAllQueuedNotification' => [ChatMessageController::class, 'getAllQueuedNotification'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
@@ -227,6 +228,7 @@ $actionMap = [
     'partners' => [GoogleUserController::class, 'partnersPage'],
     'markInactiveUsersOffline' => [UserController::class, 'markInactiveUsersOffline'],
     'discordClaim' => [DiscordController::class, 'discordClaim'],
+    'getLeaderboardUsers' => [UserController::class, 'getLeaderboardUsers'],
 ];
 
 $action = "home";

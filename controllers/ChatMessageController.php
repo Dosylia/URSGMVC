@@ -564,6 +564,9 @@ class ChatMessageController
 
     public function uploadChatImagePhone(): void
     {
+        error_log("Upload request received");
+        error_log("FILES: " . print_r($_FILES, true));
+        error_log("Headers: " . print_r(getallheaders(), true));
         // Validate Authorization Header
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
     
@@ -573,7 +576,7 @@ class ChatMessageController
         }
     
         $token = $matches[1];
-        $userId = $_SESSION['userId'] ?? null;
+        $userId = $_POST['userId'] ?? null;
     
         if (!$userId || !$this->validateToken($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);

@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {name: 'Irelia', image: 'public/images/champions/Irelia.png'},
         {name: 'Ivern', image: 'public/images/champions/Ivern.png'},
         {name: 'Janna', image: 'public/images/champions/Janna.png'},
-        {name: 'Jarvan IV', image: 'public/images/champions/JarvanIV.png'},
+        {name: 'JarvanIV', image: 'public/images/champions/JarvanIV.png'},
         {name: 'Jax', image: 'public/images/champions/Jax.png'},
         {name: 'Jayce', image: 'public/images/champions/Jayce.png'},
         {name: 'Jhin', image: 'public/images/champions/Jhin.png'},

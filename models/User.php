@@ -274,6 +274,29 @@ class User extends DataBase
         }
     }
 
+    public function getLeaderboardUsers()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                user_id, 
+                user_username, 
+                user_currency, 
+                user_isVip
+            FROM `user` 
+            ORDER BY user_currency DESC 
+            LIMIT 100
+        ");
+        
+        $query->execute();
+        $users = $query->fetchAll();
+        
+        if ($users) {
+            return $users;
+        } else {
+            return false;
+        }
+    }
+
     public function getTopUsers()
     {
         $query = $this->bdd->prepare("

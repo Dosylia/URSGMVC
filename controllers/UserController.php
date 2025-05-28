@@ -165,6 +165,55 @@ class UserController
         }
     }
 
+    public function getLeaderboardUsers()
+    {
+        require 'keys.php';
+        $response = array('message' => 'Error');
+    
+        // Check if the token is provided in the request header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Check if the provided token matches the valid token
+        if ($token !== $validToken) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        // Check if the 'allUsers' POST parameter is set
+        if (isset($_POST['allUsers'])) {
+            $allUsers = $this->user->getLeaderboardUsers();
+    
+            if ($allUsers) {
+                $response = array(
+                    'allUsers' => $allUsers,
+                    'message' => 'Success'
+                );
+    
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            } else {
+                $response = array('message' => 'Could not get all users');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+    
+        } else {
+            $response = array('message' => 'Cannot access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
+        }        
+    }
+
     public function pageLeaderboard()
     {
 
