@@ -7544,6 +7544,10 @@ justify-content: center;
   overflow: hidden;
   color : black;
   display: none;
+}
+
+.minigame-inner {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -7551,7 +7555,8 @@ justify-content: center;
   padding: 20px;
   box-sizing: border-box;
   margin-top: 60px;
-  max-height: 130%
+  max-height: 130%;
+  width: 100%;
 }
 
 .dark-mode .minigame-window {
@@ -7688,6 +7693,61 @@ justify-content: center;
   overflow-wrap: break-word;
   text-align: center;
   width: 100%;
+}
+
+.minigame-window #ignore-permanently-btn {
+  width: 40%;
+  min-width: fit-content;
+  background-color: rgba(142, 142, 142, 0.5);
+  border: none;
+  border-radius: 25px;
+  box-shadow: 0 0 0 1px #2D2D2D;
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  font-weight: normal;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 52px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  margin-bottom: 20px;  
+  white-space: nowrap;
+  padding: 3px 10px;
+}
+
+.button-game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.minigame-window #ignore-permanently-btn:hover {
+  background-color: rgba(142, 142, 142, 0.7);
+  transform: scale(1.05);
+}
+
+#ingame-result {
+  text-align: center;
+  color: var(--main--red);
+  font-size: 1.2em;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+
+.minigame-inner.shake {
+    animation: shake 0.6s ease;
 }
 
 .dark-mode .minigame-window .affiliation-header,  .dark-mode .minigame-window .gender-header, .dark-mode .minigame-window .guess-hint-header{
