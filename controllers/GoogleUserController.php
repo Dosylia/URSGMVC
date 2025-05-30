@@ -1605,8 +1605,13 @@ class GoogleUserController
             // Validate the token
             $deletionData = $this->user->getDeletionToken($token);
 
-            if (!$deletionData || strtotime($deletionData['user_deletionTokenExpiry']) > strtotime('+30 minutes')) {
-                header("location:/?message=Invalid or expired token");
+            if (!$deletionData) {
+                header("location:/?message=Invalid token");
+                exit();
+            }
+
+            if (!strtotime($deletionData['user_deletionTokenExpiry']) > strtotime('+30 minutes')) {
+                header("location:/?message=Expired token");
                 exit();
             }
     

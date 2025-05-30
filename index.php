@@ -65,6 +65,7 @@ $actionMap = [
     'googleDataPhone' => [GoogleUserController::class, 'getGoogleDataPhone'],
     'signup' => [GoogleUserController::class, 'pageSignUp'],
     'basicinfo' => [UserController::class, 'createUser'],
+    'createAccountSkipPreferences' => [UserController::class, 'createAccountSkipPreferences'],
     'createUserPhone' => [UserController::class, 'createUserPhone'],
     'leagueuser' => [LeagueOfLegendsController::class, 'pageLeagueUser'],
     'valorantuser' => [ValorantController::class, 'pageValorantUser'],

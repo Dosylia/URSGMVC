@@ -3144,7 +3144,29 @@ section.siteMap tr:nth-child(even) {
     #send-button:hover {
       background-color: rgba(43, 121, 199,0.7);
     }
+
+    #errorSpan_form {
+      color: var(--main--red);
+      font-size: 1em;
+      font-weight: 600;
+    }
   
+    #skip-preferences-btn {
+      background-color: var(--main--red);
+      color: white;
+      font-size: 2.5rem;
+      font-family: 'Geologica', sans-serif;
+      width: 100%; 
+      border: 0.5px solid black;
+      border-radius: 20px;
+      padding: 10px 0px;
+      cursor: pointer;
+      text-transform: capitalize;
+    }
+
+    #skip-preferences-btn:hover {
+      background-color: var(--dark--red);
+    }
   
     #selected-roles-valorant,
     #selected-ranks-valorant,
@@ -5520,7 +5542,7 @@ section.siteMap tr:nth-child(even) {
     color: rgb(194, 181, 181);
   }
   
-  .dark-mode #send-button {
+  .dark-mode #send-button, .dark-mode #skip-preferences-btn {
     border: 1px solid rgb(207, 192, 192);
   }
   
@@ -7554,7 +7576,6 @@ justify-content: center;
   gap: 20px;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 60px;
   max-height: 130%;
   width: 100%;
 }

@@ -24,6 +24,8 @@ return [
     'form_bio' => 'Petite bio à propos de vous',
     'form_bio_placeholder' => 'Je joue à League depuis... etc.',
     'form_submit' => 'Envoyer',
+    'form_submitCreate' => 'Définir les préférences',
+    'form_submitCreateAndSkip' => 'Créer un compte',
     "main1" => "Main 1",
     "main2" => "Main 2",
     "main3" => "Main 3",

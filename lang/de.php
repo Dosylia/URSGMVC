@@ -24,6 +24,8 @@ return [
     'form_bio' => 'Kurze Beschreibung über dich',
     'form_bio_placeholder' => 'Spiele League seit... usw.',
     'form_submit' => 'Abschicken',
+    'form_submitCreate' => 'Einstellungen festlegen',
+    'form_submitCreateAndSkip' => 'Konto erstellen',
     "main1" => "Main 1",
     "main2" => "Main 2",
     "main3" => "Main 3",

@@ -42,14 +42,15 @@
             </div>
 
             <script nonce="TAJKETR">
-                let googleCooldown = false;
-                
+              let googleCooldown = false;
+
                 function initGoogleSignIn() {
                     window.google.accounts.id.initialize({
                         client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
                         callback: handleCredentialResponse,
                         ux_mode: 'popup',
                         cancel_callback: (error) => {
+                            handleCooldown();
                             if (error.event === 'onetap.card.prompt.cooldown.1') {
                                 handleCooldown();
                             }
@@ -66,6 +67,13 @@
                             });
                         }
                     });
+
+                    setTimeout(() => {
+                        if (!googleCooldown) {
+                            console.warn("One Tap did not respond in time — showing fallback");
+                            handleCooldown();
+                        }
+                    }, 3000);
                 }
 
                 function handleCooldown() {
