@@ -3131,7 +3131,7 @@ section.siteMap tr:nth-child(even) {
   #send-button {
       background-color: rgb(43, 121, 199);
       color: white;
-      font-size: 2.5rem;
+      font-size: 1.7rem;
       font-family: 'Geologica', sans-serif;
       width: 100%; 
       border: 0.5px solid black;
@@ -3139,6 +3139,8 @@ section.siteMap tr:nth-child(even) {
       padding: 10px 0px;
       cursor: pointer;
       text-transform: capitalize;
+      height: fit-content;
+      white-space: normal;
     }
   
     #send-button:hover {
@@ -3154,7 +3156,7 @@ section.siteMap tr:nth-child(even) {
     #skip-preferences-btn {
       background-color: var(--main--red);
       color: white;
-      font-size: 2.5rem;
+      font-size: 1.7rem;
       font-family: 'Geologica', sans-serif;
       width: 100%; 
       border: 0.5px solid black;
@@ -3162,6 +3164,7 @@ section.siteMap tr:nth-child(even) {
       padding: 10px 0px;
       cursor: pointer;
       text-transform: capitalize;
+      height: fit-content;
     }
 
     #skip-preferences-btn:hover {
@@ -8978,6 +8981,11 @@ justify-content: center;
 
 @media only screen and (max-width: 1018px) {
 
+  #champion-picker .champions-picker-column img {
+    width: 50px;
+    height: 50px;
+  }
+
   .header .nav-left img {
     height: 35px;
   }
@@ -9591,6 +9599,22 @@ justify-content: center;
 }
 
 @media (max-width: 768px) {
+
+  .form_container {
+    width: 95%;
+  }
+
+  .form_signup {
+    width: 100%;
+  }
+
+  #send-button {
+    font-size: 1.2rem;
+  }
+
+  #skip-preferences-btn {
+    font-size: 1.2rem;
+  }
 
 .support_ursg {
   gap: 10px;
