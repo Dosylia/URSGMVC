@@ -158,6 +158,36 @@ class LeagueOfLegends extends DataBase
         }
     }
 
+    public function unbindLoLAccount($userId) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `leagueoflegends`
+                                            SET
+                                                `lol_verified` = 0,
+                                                `lol_sUsername` = NULL,
+                                                `lol_sUsernameId` = NULL,
+                                                `lol_sPuuid` = NULL,                                                
+                                                `lol_sLevel` = NULL,
+                                                `lol_sRank` = NULL,
+                                                `lol_sProfileIcon`= NULL,    
+                                                `lol_account` = NULL                                                                                     
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $unbindAccountTest  = $query -> execute([$userId]);
+
+        if($unbindAccountTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function getLeageUserByUsername($lolAccount) 
     {
         $query = $this -> bdd -> prepare("

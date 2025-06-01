@@ -44,6 +44,37 @@
         <?php endif; ?>
         <button id="closeButton_user_picture">X</button>
     </dialog>
+    <div id="riot-modal" class="modal riot-modal-hidden">
+        <div class="modal-content">
+            <span id="close-modal-riot" class="close">&times;</span>
+            <h2><?= $this->_('manage_riot') ?></h2>
+            <p><?= $this->_('manage_riot_desc') ?></p>
+            <p><?= $this->_('manage_riot_desc2') ?></p>
+            <div class="riot-modal-container">
+                <?php if ($user['user_game'] === "League of Legends") : ?>
+                    <?php if ($lolUser['lol_verified'] === 1): ?>
+                        <a class="btn-update-Riot" href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" >
+                            <?= $this->_('refresh_riot') ?>
+                        </a>
+                    <?php else : ?>
+                        <a class="btn-update-Riot" href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" >
+                            <?= $this->_('bind_riot') ?>
+                        </a>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <?php if ($user['user_game'] === "League of Legends") : ?>
+                    <?php if ($lolUser['lol_verified'] === 1): ?>
+                        <form action="/unbindLoLAccount" method="post" class="form-unlink-riot">
+                            <input type="hidden" name="userId" value="<?= htmlspecialchars($user['user_id']) ?>">
+                            <button type="submit" id="submit-riot" data-text="Unlink Riot">
+                                <?= $this->_('unbind_riot') ?>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
     <div id="user-top-container"> <!--Flex column -->
         <div class="support_ursg">
             <h3><?= $this->_('support_URSG') ?></h3>
@@ -72,15 +103,7 @@
                     <i class="fa-solid fa-heart"></i> <span class="menu-text"><?= $this->_('update_interests') ?></span>
                 </a>
                 <?php if ($user['user_game'] === "League of Legends") : ?>
-                    <?php if ($lolUser['lol_verified'] === 1): ?>
-                        <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates_profile" data-text="Bind Riot">
-                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('refresh_riot') ?></span>
-                        </a>
-                    <?php else : ?>
-                        <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates_profile" data-text="Bind Riot">
-                            <i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('bind_riot') ?></span>
-                        </a>
-                    <?php endif; ?>
+                    <button class="btn_user_updates_profile" id="openRiotAccount-btn" data-text="Riot account"><i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('riot_account') ?></span></button>
                 <?php endif; ?>
                 <a href="/personalityTest" class="btn_user_updates_profile" data-text="Do our personality test">
                     <i class="fa-solid fa-question"></i> <span class="menu-text">Quiz LoL</span>
@@ -119,10 +142,10 @@
             <?php if  (($user['user_isVip']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
             <span id="badge-container">
                 <?php if ($user['user_isVip']) : ?>
-                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium" style="padding: 5px 10px;"></span>
                 <?php endif; ?>
                 <?php if ($user['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium" style="padding: 5px 10px;"></span>
                 <?php endif; ?>  
                 <?php if ($user['user_isCertified']) : ?>
                         <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>

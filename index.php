@@ -230,6 +230,7 @@ $actionMap = [
     'markInactiveUsersOffline' => [UserController::class, 'markInactiveUsersOffline'],
     'discordClaim' => [DiscordController::class, 'discordClaim'],
     'getLeaderboardUsers' => [UserController::class, 'getLeaderboardUsers'],
+    'unbindLoLAccount' => [LeagueOfLegendsController::class, 'unbindLoLAccount'],
 ];
 
 $action = "home";

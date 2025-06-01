@@ -1085,6 +1085,34 @@ class LeagueOfLegendsController
 
     }
 
+    public function unbindLoLAccount()
+    {
+        if (isset($_POST['userId'])) 
+        {
+            $userId = $this->validateInput($_POST["userId"]);
+
+            if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+                header("location:/userProfile?message=Token not valid");
+                exit();
+            }
+
+            $this->setUserId($userId);
+
+            $unbindLoLAccount = $this->leagueOfLegends->unbindLoLAccount($this->getUserId());
+
+            if ($unbindLoLAccount)
+            {
+                header("location:/userProfile?message=Unbinded successfully");
+                exit();  
+            }
+            else
+            {
+                header("location:/userProfile?message=Could not unbind");
+                exit();
+            }
+        }
+    }
+
     public function validateTokenWebsite($token, $userId): bool
     {
         $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);

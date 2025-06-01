@@ -605,7 +605,7 @@ class GoogleUserController
 
     public function getGoogleData() 
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => 'Contact an administator');
     
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
