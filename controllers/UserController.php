@@ -228,6 +228,7 @@ class UserController
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
+            $userRank = $this->user->getUserRank($_SESSION['userId']);
             $allUsers = $this-> user -> getTopUsers();
 
             $usersPerPage = 50;

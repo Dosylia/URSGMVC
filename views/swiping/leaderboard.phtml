@@ -15,6 +15,11 @@
 </div>
 
 <div class="leaderboard-section">
+    <?php if (isset($userRank)): ?>
+        <div class="your-rank">
+            <h2>Your Current Rank: <span style="font-weight=800;"><?= $userRank ?><span></h2>
+        </div>
+    <?php endif; ?>
     <div class="leaderboard-wrapper">
         <table class="leaderboard-table">
             <thead>
@@ -32,7 +37,14 @@
                     <tr>
                         <td><?= $rank++ ?></td>
                         <td><a
-                                href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?></a>
+                                href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?>
+                                <?php if ($user['user_isPartner']): ?>
+                                    <span class="vip-badge"><img src="/public/images/partner-badge.png" alt="Partner badge"></span>
+                                <?php endif; ?>
+                                <?php if ($user['user_isCertified']): ?>
+                                    <span class="vip-badge"><img src="/public/images/certified-badge.png" alt="Certified badge"></span>
+                                <?php endif; ?>
+                            </a>
                         </td>
                         <td><?= $user['user_currency'] ?><img src="/public/images/soulhard.png" alt="currency"></td>
                         <td>

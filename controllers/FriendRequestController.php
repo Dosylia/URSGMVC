@@ -354,7 +354,7 @@ class FriendRequestController
         }
 
         setcookie("auth_token", $token, [
-            'expires' => time() + 60 * 60 * 24 * 7,
+            'expires' => time() + 60 * 60 * 24 * 60,
             'path' => '/',
             'secure' => true,
             'httponly' => true,

@@ -318,7 +318,7 @@ class DiscordController
             $_SESSION['masterTokenWebsite'] = $existingUser['google_masterTokenWebsite'];
 
             setcookie("auth_token", $existingUser['google_masterTokenWebsite'], [
-                'expires' => time() + 60 * 60 * 24 * 7,
+                'expires' => time() + 60 * 60 * 24 * 60,
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -442,7 +442,7 @@ class DiscordController
                 $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserDiscord, $token);
 
                 setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 7,
+                    'expires' => time() + 60 * 60 * 24 * 60,
                     'path' => '/',
                     'secure' => true,
                     'httponly' => true,

@@ -1041,6 +1041,8 @@
   font-size: 1em;
   display: flex;
   gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .dark-mode .swiping-buttons-filter {
@@ -7016,9 +7018,26 @@ justify-content: center;
 .vip-badge, .regular-badge {
   display: inline-flex;
   align-items: center;
-  padding: 5px 10px;
   font-size: 1.2rem;
   border-radius: 20px;
+}
+
+.your-rank {
+    background-color: var(--main--red); 
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 0 10px rgba(200, 35, 51, 0.5);
+    font-family: 'Poppins', sans-serif;
+}
+
+.your-rank h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
 }
 
 .badge-container {
@@ -9234,6 +9253,8 @@ justify-content: center;
 
   .vip-badge, .regular-badge {
     justify-content: center;
+    width: 15px;
+    height: 15px;
   }
 
   .frame_around_picture {

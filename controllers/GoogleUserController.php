@@ -192,7 +192,7 @@ class GoogleUserController
 
             // Update cookie expiration
             setcookie("auth_token", $token, [
-                'expires' => time() + 60 * 60 * 24 * 7,
+                'expires' => time() + 60 * 60 * 24 * 60,
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -681,7 +681,7 @@ class GoogleUserController
                         $_SESSION['masterTokenWebsite'] = $token;
 
                         setcookie("auth_token", $token, [
-                            'expires' => time() + 60 * 60 * 24 * 7,
+                            'expires' => time() + 60 * 60 * 24 * 60,
                             'path' => '/',
                             'secure' => true,
                             'httponly' => true,
@@ -868,7 +868,7 @@ class GoogleUserController
                     if ($createToken) {
                         $_SESSION['masterTokenWebsite'] = $token;
                         setcookie("auth_token", $token, [
-                            'expires' => time() + 60 * 60 * 24 * 7,
+                            'expires' => time() + 60 * 60 * 24 * 60,
                             'path' => '/',
                             'secure' => true,
                             'httponly' => true,

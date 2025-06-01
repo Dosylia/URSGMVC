@@ -305,6 +305,8 @@ class User extends DataBase
                                             `user_username`,    
                                             `user_picture`,
                                             `user_isVip`,
+                                            `user_isPartner`,
+                                            `user_isCertified`,
                                             `user_currency`
                                         FROM
                                             `user`
@@ -322,6 +324,27 @@ class User extends DataBase
         } else {
             return false;
         }
+    }
+
+    public function getUserRank($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            COUNT(*) + 1 AS rank
+                                        FROM 
+                                            `user`
+                                        WHERE 
+                                            `user_currency` > (
+                                                SELECT `user_currency` 
+                                                FROM `user` 
+                                                WHERE `user_id` = ?
+                                            );
+        ");
+        
+        $query->execute([$userId]);
+        $rank = $query->fetchColumn();
+        
+        return $rank ?: 0;
     }
     
 
