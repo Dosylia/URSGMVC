@@ -1303,6 +1303,15 @@ class GoogleUserController
             header("location:/?message=You are now offline");
             exit();
         } else {
+            if (isset($_COOKIE['googleId'])) {
+                setcookie('googleId', "", time() - 42000, COOKIEPATH);
+                unset($_COOKIE['googleId']);
+            }
+
+            if (isset($_COOKIE['auth_token'])) {
+                setcookie('auth_token', "", time() - 42000, "/");
+                unset($_COOKIE['auth_token']);
+            }
             header("location:/?message=You are now offline");
             exit();
         }

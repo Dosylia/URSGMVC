@@ -150,6 +150,7 @@ export function fetchMessages(userId, friendId) {
         messagesContainer.innerHTML = ''; // Clear current messages
     
         let previousMessage = null; // Variable to store the previous message
+        let unreadSectionStarted = false;
     
         messages.forEach(message => {
             let isCurrentUser = (message.chat_senderId == userId);
@@ -169,6 +170,18 @@ export function fetchMessages(userId, friendId) {
                 pictureLink = "images/defaultprofilepicture.jpg";
             } else {
                 pictureLink = `upload/${messageUser.user_picture}`;
+            }
+
+            if (!unreadSectionStarted && !isCurrentUser && message.chat_status === 'unread') {
+                // Create separator for unread messages
+                let separator = document.createElement('div');
+                separator.className = 'unread-separator';
+                separator.innerHTML = `
+                    <span>New message</span>
+                    <hr>
+                `;
+                messagesContainer.appendChild(separator);
+                unreadSectionStarted = true;
             }
     
             let messageDiv = document.createElement("div");

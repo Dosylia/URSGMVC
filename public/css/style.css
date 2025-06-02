@@ -4848,6 +4848,22 @@ section.siteMap tr:nth-child(even) {
       background-color: #f4eeee;
     }
 
+    .unread-separator span {
+      display: block;
+      text-align: center;
+      font-size: 1.2em;
+      color: var(--main--red) !important;
+      font-weight: bold;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .unread-separator hr {
+      border: none;
+      border-top: 2px solid var(--main--red);
+      margin: 5px 0;
+      width: 100%;
+    }
+
     .chat_page {
       display: flex;
       gap: 20px;
