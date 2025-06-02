@@ -472,10 +472,12 @@ class ChatMessageController
                     $message = $notification['message'];
                     $user = $this->user->getUserById($notification['user_id']);
                     $senderName = $user['user_username'];
-    
-                    if ($this->sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName)) {
+
+                    $sendResult = $this->sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName);
+
+                    if ($sendResult === true || $sendResult === 'invalid') {
                         $this->chatmessage->deleteQueuedNotification($notification['id']);
-                        echo "✅ Notification served.\n";
+                        echo "✅ Notification processed and removed.\n";
                     }
                 } else {
                     $expoToken = $notification['expoToken'];
@@ -673,7 +675,7 @@ class ChatMessageController
     
     public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) {
         require 'keys.php';
-    
+
         $subscription = \Minishlink\WebPush\Subscription::create([
             'endpoint' => $endPoint,
             'keys' => [
@@ -681,13 +683,13 @@ class ChatMessageController
                 'auth' => $auth
             ]
         ]);
-    
+
         $payload = json_encode([
             'title' => 'New Message from ' . $senderName,
             'body' => $message,
-            'icon' => 'public/images/ursg_round_logo.png', // Optional
+            'icon' => 'public/images/ursg_round_logo.png',
         ]);
-    
+
         try {
             $webPush = new \Minishlink\WebPush\WebPush([
                 'VAPID' => [
@@ -696,27 +698,32 @@ class ChatMessageController
                     'subject' => 'https://ur-sg.com'
                 ]
             ]);
-    
-            // Queue the notification
+
             $webPush->queueNotification($subscription, $payload);
-    
-            // Process and get the results
+
             foreach ($webPush->flush() as $report) {
                 if ($report->isSuccess()) {
                     return true;
                 } else {
-                    error_log('Push Notification failed for: ' . $endPoint . 'message was sent by ' . $senderName);
-                    error_log('Reason: ' . $report->getReason());
+                    $reason = $report->getReason();
+                    error_log("Push Notification failed for: $endPoint; Reason: $reason");
+
+                    if (str_contains($reason, 'Gone') || str_contains($reason, 'Not Found')) {
+                        $this->user->deleteSubscriptionByEndpoint($endPoint);
+                        return 'invalid'; // Will trigger deletion from queue
+                    }
+
                     return false;
                 }
             }
-    
-            return false; // If flush returned nothing
+
+            return false;
         } catch (\Exception $e) {
             error_log('Error sending push notification: ' . $e->getMessage());
             return false;
         }
     }
+
     
 
     public function deleteMessageWebsite(): void

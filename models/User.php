@@ -993,6 +993,28 @@ class User extends DataBase
         }
     }
 
+    public function deleteSubscriptionByEndpoint($endpoint) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_notificationEndPoint` = NULL,
+                                                `user_notificationP256dh` = NULL,
+                                                `user_notificationAuth` = NULL
+                                            WHERE
+                                                `user_notificationEndPoint` = ?
+        ");
+
+        $deleteSubscriptionTest = $query -> execute([$endpoint]);
+
+        if ($deleteSubscriptionTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function saveSubscription($userId, $endpoint, $p256dh, $auth) 
     {
         $query = $this -> bdd -> prepare("
