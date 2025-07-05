@@ -49,4 +49,12 @@
     <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
 </div>
 
+<script nonce="TAJKETR">
+  document.addEventListener("DOMContentLoaded", function() {
+      let token = <?php echo json_encode($_SESSION['masterTokenWebsite'] ?? null); ?>;
+      if (token) {
+          localStorage.setItem('masterTokenWebsite', token);
+      }
+  });
+</script>
 <script type="module" src="public/js/basicinfo.js?<?= time(); ?>"></script>

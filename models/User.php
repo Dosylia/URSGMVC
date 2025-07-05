@@ -871,7 +871,7 @@ class User extends DataBase
             UPDATE user 
             SET user_isOnline = 0 
             WHERE user_isOnline = 1 
-            AND TIMESTAMPDIFF(SECOND, user_lastSeen, NOW()) > 10
+            AND TIMESTAMPDIFF(SECOND, user_lastSeen, NOW()) > 60
         ");
         return $query->execute();
     }

@@ -3767,7 +3767,7 @@ section.siteMap tr:nth-child(even) {
       text-align: center;
   }
 
-  #filter-modal .modal-content, #filter-modal-no-users .modal-content, #lookingfor-modal .modal-content, #signup-modal .modal-content, #riot-modal .modal-content {
+  #filter-modal .modal-content, #filter-modal-no-users .modal-content, #lookingfor-modal .modal-content, #signup-modal .modal-content, #riot-modal .modal-content, #tournament-modal .modal-content {
     position: absolute;
     top: 20%;
     left: 50%;
@@ -3781,6 +3781,13 @@ section.siteMap tr:nth-child(even) {
     color: black;
     text-align: center;
     z-index: 500000;
+  }
+
+  .tournament-image {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
   }
 
   #filter-modal, #filter-modal-no-users, #riot_modal {
@@ -3804,13 +3811,13 @@ section.siteMap tr:nth-child(even) {
     font-weight: 600;
   }
 
-  #report-modal h2, #lookingfor-modal h2, #signup-modal h2, #riot-modal h2 {
+  #report-modal h2, #lookingfor-modal h2, #signup-modal h2, #riot-modal h2, #tournament-modal h2 {
       color: black;
       font-size: 1.5em;
       font-weight: 800;
   }
 
-  #report-modal .report-modal-p, #lookingfor-modal .lookingfor-modal-p, #signup-modal p, #riot-modal p {
+  #report-modal .report-modal-p, #lookingfor-modal .lookingfor-modal-p, #signup-modal p, #riot-modal p, #tournament-modal p {
     color: rgb(77, 73, 73);
     margin-top: 30px;
   }
@@ -3821,16 +3828,16 @@ section.siteMap tr:nth-child(even) {
     cursor: pointer;
   }
 
-  .dark-mode   #report-modal .report-modal-p, .dark-mode #lookingfor-modal .lookingfor-modal-p, .dark-mode #signup-modal p, .dark-mode #riot-modal p {
+  .dark-mode   #report-modal .report-modal-p, .dark-mode #lookingfor-modal .lookingfor-modal-p, .dark-mode #signup-modal p, .dark-mode #riot-modal p, .dark-mode #tournament-modal p {
     color: rgb(184, 170, 170);
     margin-top: 30px;
   }
 
-  .dark-mode #report-modal h2, .dark-mode #lookingfor-modal h2, .dark-mode #signup-modal h2, .dark-mode #riot-modal h2 {
+  .dark-mode #report-modal h2, .dark-mode #lookingfor-modal h2, .dark-mode #signup-modal h2, .dark-mode #riot-modal h2, .dark-mode #tournament-modal h2 {
     color: white;
 }
 
-  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content, .dark-mode #lookingfor-modal .modal-content, .dark-mode #signup-modal .modal-content, .dark-mode #riot-modal .modal-content {
+  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content, .dark-mode #lookingfor-modal .modal-content, .dark-mode #signup-modal .modal-content, .dark-mode #riot-modal .modal-content, .dark-mode #tournament-modal .modal-content {
     background-color: var(--dark-ligher-grey);
     color: white;
 }
@@ -3840,7 +3847,7 @@ section.siteMap tr:nth-child(even) {
   z-index: 9000;
 }
 
-  #report-modal .close, #lookingfor-modal .close, #signup-modal .close, #riot-modal .close {
+  #report-modal .close, #lookingfor-modal .close, #signup-modal .close, #riot-modal .close, #tournament-modal .close {
       position: absolute;
       top: 10px;
       right: 15px;
@@ -3914,7 +3921,7 @@ section.siteMap tr:nth-child(even) {
 }
 
   /* Report Button */
-  #report-modal #submit-report, #lookingfor-modal #submit-lookingfor {
+  #report-modal #submit-report, #lookingfor-modal #submit-lookingfor, .tournament-button {
       margin-top: 15px;
       background-color: var(--main--red);
       color: #fff;
@@ -3952,7 +3959,7 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark--red);
   }
 
-  #report-modal #submit-report:hover, #lookingfor-modal #submit-lookingfor:hover {
+  #report-modal #submit-report:hover, #lookingfor-modal #submit-lookingfor:hover, .tournament-button:hover {
       opacity: 0.9;
   }
 
@@ -3979,7 +3986,7 @@ section.siteMap tr:nth-child(even) {
     margin-top: 10px;
   }
 
-  .report-modal-hidden, .lookingfor-modal-hidden, .signup-modal-hidden, .riot-modal-hidden {
+  .report-modal-hidden, .lookingfor-modal-hidden, .signup-modal-hidden, .riot-modal-hidden, .tournament-modal-hidden{
       display: none;
   }
 
@@ -6922,6 +6929,23 @@ justify-content: center;
   background-color: var(--ligher--grey);
 }
 
+.hat-easter-egg {
+    position: absolute;
+    top: -30px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 70px;
+    z-index: 10;
+}
+
+.hat-message {
+    text-align: center;
+    color: #f472b6;
+    font-size: 14px;
+    font-style: italic;
+}
+
 .ahris-easter-egg {
     display: none;
     position: fixed;
@@ -9664,6 +9688,12 @@ justify-content: center;
 
 @media (max-width: 768px) {
 
+  .hat-easter-egg {
+    top: -20px;
+    width: 70px;
+    height: 30px;
+  }
+
   .form_container {
     width: 95%;
   }
@@ -10280,6 +10310,10 @@ justify-content: center;
 
   @media only screen and (max-width: 600px) {
 
+  .hat-message {
+    margin-left: 50px;
+  }
+
   #unread_message {
     font-size: 8px;
     padding: 2px 3px;
@@ -10777,6 +10811,10 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 350px) {
+
+  .hat-message {
+    margin-left: 0px;
+  }
 
 .support_ursg {
   display: none;

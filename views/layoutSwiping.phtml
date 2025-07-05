@@ -62,11 +62,22 @@
     </nav>
 </header>
     <main>
+        <div id="overlay"></div>
         <?php if (isset($_GET['message'])) : ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
         <?php require $template . ".phtml"; ?>
         <span class="notification-span"></span>
+        <!-- Pop up to promote URSG tournament -->
+        <div id="tournament-modal" class="modal tournament-modal-hidden">
+            <div class="modal-content" style="z-index: 1000000;">
+                <span id="close-modal-tournament" class="close">&times;</span>
+                <h2>URSG Tournament</h2>
+                <p style="margin-bottom: 30px;">Join our exciting URSG tournament and showcase your skills!</p>
+                <img class="tournament-image" src="public/images/ursg-tournament.png" alt="URSG Tournament">
+                <a href="https://forms.gle/m6tAo749x8gsgakz9" target="_blank" class="tournament-button">Join Now</a>
+            </div>
+        </div>
     </main>
     <script src="public/js/swiping/swiping_menu.js?<?= time(); ?>"></script>
     <script src="public/js/swiping/get_notifications.js?<?= time(); ?>"></script>  
@@ -81,5 +92,7 @@
       }
   });
 </script>
+
+<script nonce="TAJKETR" src="public/js/swiping/tournament_modal.js?<?= time(); ?>"></script>
 
 </html>

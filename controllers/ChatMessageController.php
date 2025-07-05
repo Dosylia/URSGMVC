@@ -673,8 +673,15 @@ class ChatMessageController
     }
 
     
-    public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) {
+    public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) 
+    {
         require 'keys.php';
+
+        // Validate before processing
+        if (empty($endPoint) || empty($p256dh) || empty($auth)) {
+            error_log("Invalid subscription data");
+            return 'invalid';
+        }
 
         $subscription = \Minishlink\WebPush\Subscription::create([
             'endpoint' => $endPoint,
@@ -684,19 +691,23 @@ class ChatMessageController
             ]
         ]);
 
+        // Ultra-minimal payload with short keys
         $payload = json_encode([
-            'title' => 'New Message from ' . $senderName,
-            'body' => $message,
-            'icon' => 'public/images/ursg_round_logo.png',
+            't' => mb_substr($senderName, 0, 15), 
+            'm' => mb_substr($message, 0, 80)
         ]);
 
         try {
+            // Critical changes: Use aes128gcm + compression
             $webPush = new \Minishlink\WebPush\WebPush([
                 'VAPID' => [
                     'publicKey' => $webPushPublicKey,
                     'privateKey' => $webPushPrivateKey,
                     'subject' => 'https://ur-sg.com'
                 ]
+            ], [
+                'contentEncoding' => 'aes128gcm',  
+                'compress' => true                 
             ]);
 
             $webPush->queueNotification($subscription, $payload);
@@ -706,24 +717,30 @@ class ChatMessageController
                     return true;
                 } else {
                     $reason = $report->getReason();
-                    error_log("Push Notification failed for: $endPoint; Reason: $reason");
+                    error_log("Push failed: $endPoint; Reason: $reason");
 
-                    if (str_contains($reason, 'Gone') || str_contains($reason, 'Not Found')) {
-                        $this->user->deleteSubscriptionByEndpoint($endPoint);
-                        return 'invalid'; // Will trigger deletion from queue
+                    // Handle Mozilla's 413 specifically
+                    if (strpos($reason, '413') !== false || 
+                        strpos($reason, 'Payload Too Large') !== false) {
+                        return 'invalid'; // Delete from queue
                     }
 
+                    // Handle expired subscriptions
+                    if (strpos($reason, 'Gone') !== false || 
+                        strpos($reason, 'Not Found') !== false) {
+                        $this->user->deleteSubscriptionByEndpoint($endPoint);
+                        return 'invalid';
+                    }
+                    
                     return false;
                 }
             }
-
             return false;
         } catch (\Exception $e) {
-            error_log('Error sending push notification: ' . $e->getMessage());
+            error_log('Push error: ' . $e->getMessage());
             return false;
         }
     }
-
     
 
     public function deleteMessageWebsite(): void

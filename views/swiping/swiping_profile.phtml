@@ -1,5 +1,4 @@
 <section id="user-container"> <!--Flex column -->
-        <div id="overlay"></div>
         <dialog id="favDialogPicture">
         <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
             <p class="title_generalbox"><?= $this->_('add_picture_desc') ?></p>
