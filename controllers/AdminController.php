@@ -9,6 +9,17 @@ use models\GoogleUser;
 use models\ChatMessage;
 use models\Items;
 
+use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
+use Google\Analytics\Data\V1beta\DateRange;
+use Google\Analytics\Data\V1beta\Metric;
+use Google\Analytics\Data\V1beta\FilterExpression;
+use Google\Analytics\Data\V1beta\Filter;
+use Google\Analytics\Data\V1beta\Filter\StringFilter;
+use Google\Analytics\Data\V1beta\Dimension;
+
+
+require 'vendor/autoload.php';
+
 use traits\SecurityController;
 
 class AdminController
@@ -39,7 +50,7 @@ class AdminController
             $this->isConnectWebsite() &&
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf() &&
-            $this->isModerator()
+            ($this->isModerator() || $this->isAdmin() || $this->isMarketing())
         )
         {
 
@@ -53,6 +64,10 @@ class AdminController
             $adminActions = $this-> admin -> getLastAdminActions();
             $dailyActivity = $this-> admin -> dailyActivity();
             $weeklyActivity = $this-> admin -> weeklyActivity();
+            $pageViews = $this->fetchPageViews();
+            $returningUserCount = $this->fetchReturningUserCountByEvent();
+            $matchCreatedCount = $this->fetchMatchCreatedCount();
+            $newUserCount = $this->fetchNewUserCount();
             $dailyActivityJson = json_encode($dailyActivity);
 
             $current_url = "https://ur-sg.com/admin";
@@ -66,6 +81,178 @@ class AdminController
             header("Location: /");
             exit();
         }
+    }
+
+    public function fetchPageViews()
+    {
+        $property_id = '496417395'; 
+        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => $keyFilePath
+        ]);
+
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange([
+                    'start_date' => '7daysAgo',
+                    'end_date' => 'today',
+                ]),
+            ],
+            'metrics' => [
+                new Metric(['name' => 'screenPageViews']),
+            ],
+            'dimensions' => [
+                new Dimension(['name' => 'pagePath']),
+            ],
+            'limit' => 5,
+        ]);
+
+        $results = [];
+        foreach ($response->getRows() as $row) {
+            $results[] = [
+                'page' => $row->getDimensionValues()[0]->getValue(),
+                'views' => $row->getMetricValues()[0]->getValue(),
+            ];
+        }
+
+        return $results;
+    }
+
+    public function fetchReturningUserCountByEvent()
+    {
+        $property_id = '496417395';
+        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => $keyFilePath
+        ]);
+
+        $dimensionFilter = new FilterExpression([
+            'filter' => new Filter([
+                'field_name' => 'eventName',
+                'string_filter' => new StringFilter([
+                    'value' => 'returning_user',
+                ]),
+            ]),
+        ]);
+
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange([
+                    'start_date' => '90daysAgo',
+                    'end_date' => 'today',
+                ]),
+            ],
+            'dimensions' => [new Dimension(['name' => 'eventName'])], // This was missing!
+            'metrics' => [new Metric(['name' => 'eventCount'])],
+            'dimensionFilter' => $dimensionFilter,
+        ]);
+
+        $count = 0;
+        $rows = $response->getRows();
+        
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $metricValues = $row->getMetricValues();
+                if (!empty($metricValues) && $metricValues[0] !== null) {
+                    $count += intval($metricValues[0]->getValue());
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    public function fetchNewUserCount()
+    {
+        $property_id = '496417395';
+        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => $keyFilePath
+        ]);
+
+        $dimensionFilter = new FilterExpression([
+            'filter' => new Filter([
+                'field_name' => 'eventName',
+                'string_filter' => new StringFilter([
+                    'value' => 'new_user',
+                ]),
+            ]),
+        ]);
+
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange([
+                    'start_date' => '90daysAgo',
+                    'end_date' => 'today',
+                ]),
+            ],
+            'dimensions' => [new Dimension(['name' => 'eventName'])],
+            'metrics' => [new Metric(['name' => 'eventCount'])],
+            'dimensionFilter' => $dimensionFilter,
+        ]);
+
+        $count = 0;
+        $rows = $response->getRows();
+        
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $metricValues = $row->getMetricValues();
+                if (!empty($metricValues) && $metricValues[0] !== null) {
+                    $count += intval($metricValues[0]->getValue());
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    public function fetchMatchCreatedCount()
+    {
+        $property_id = '496417395';
+        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => $keyFilePath
+        ]);
+
+        $dimensionFilter = new FilterExpression([
+            'filter' => new Filter([
+                'field_name' => 'eventName',
+                'string_filter' => new StringFilter([
+                    'value' => 'match_created',
+                ]),
+            ]),
+        ]);
+
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange([
+                    'start_date' => '90daysAgo',
+                    'end_date' => 'today',
+                ]),
+            ],
+            'dimensions' => [new Dimension(['name' => 'eventName'])],
+            'metrics' => [new Metric(['name' => 'eventCount'])],
+            'dimensionFilter' => $dimensionFilter,
+        ]);
+
+        $count = 0;
+        $rows = $response->getRows();
+        
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $metricValues = $row->getMetricValues();
+                if (!empty($metricValues) && $metricValues[0] !== null) {
+                    $count += intval($metricValues[0]->getValue());
+                }
+            }
+        }
+
+        return $count;
     }
 
     public function adminGamePage(): void
@@ -406,7 +593,7 @@ class AdminController
             $this->isConnectWebsite() &&
             ($this->isConnectLeague() || $this->isConnectValorant()) && 
             $this->isConnectLf() &&
-            $this->isModerator()
+            ($this->isModerator() || $this->isAdmin() || $this->isMarketing())
         )
         {
 

@@ -2,7 +2,6 @@
 <h1 class="admin-title">Admin Panel</h1>
 
 <div class="admin-dashboard">
-
   <div>
     <h2>Active Users</h2>
     <div class="online-users-container">
@@ -21,36 +20,81 @@
     </div>
   </div>
 
-<div class="online-users-graph-container">
-    <h2>User Activity Today</h2>
-    <canvas id="userActivityGraph"></canvas>
-    <input type="hidden" id="hourlyData" value='<?= json_encode($dailyActivity); ?>'>
-</div>
-
-<div class="online-users-graph-container">
-    <h2 style="color: rgba(54, 162, 235, 1);">User Activity This Week</h2>
-    <canvas id="weeklyUserActivityGraph"></canvas>
-    <input type="hidden" id="weeklyData" value='<?= json_encode($weeklyActivity); ?>'>
-</div>
-
-  <div class="purchase-container">
-    <h2>Total Purchases</h2>
-    <p><?= $purchases ?></p>
+  <div class="online-users-graph-container">
+      <h2>User Activity Today</h2>
+      <canvas id="userActivityGraph"></canvas>
+      <input type="hidden" id="hourlyData" value='<?= json_encode($dailyActivity); ?>'>
   </div>
 
-  <div class="reports-container">
-    <h2>Pending Reports</h2>
-    <p><?= $pendingReports ?></p>
-    <button><a href="adminReports">View Reports</a></button>
+  <div class="online-users-graph-container">
+      <h2 style="color: rgba(54, 162, 235, 1);">User Activity This Week</h2>
+      <canvas id="weeklyUserActivityGraph"></canvas>
+      <input type="hidden" id="weeklyData" value='<?= json_encode($weeklyActivity); ?>'>
   </div>
+    
+  <?php if ($this->isAdmin() || $this->isMarketing()) : ?>
 
-  <div class="system-status-container">
+    <div class="purchase-container">
+      <h2>Total Purchases</h2>
+      <p><?= $purchases ?></p>
+    </div>
+
+    <div class="returning-container">
+      <h2>Returning users last 90 days</h2>
+      <p><?= $returningUserCount ?></p>
+    </div>
+
+    <div class="match-created-container">
+      <h2>Matches Created last 90 days</h2>
+      <p><?= $matchCreatedCount ?></p>
+    </div>
+
+    <div class="new-user-container">
+      <h2>New user last 90 days</h2>
+      <p><?= $newUserCount ?></p>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($this->isAdmin() || $this->isModerator()) : ?>
+    <div class="reports-container">
+      <h2>Pending Reports</h2>
+      <p><?= $pendingReports ?></p>
+      <button><a href="adminReports">View Reports</a></button>
+    </div>
+  <?php endif; ?>
+
+  <!-- <div class="system-status-container">
     <h2>System Status</h2>
     <p>All systems operational.</p>
     <button>View Logs</button>
-  </div>
+  </div> -->
 </div>
 
+<?php if ($this->isAdmin() || $this->isMarketing()) : ?>
+  <div class="admin-actions-container" style="width: fit-content; margin: 2rem;">
+    <div class="ga4-page-views">
+      <h2>Top Pages (Last 7 Days)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Page Path</th>
+            <th>Views</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($pageViews as $view): ?>
+            <tr>
+              <td><?= htmlspecialchars($view['page']) ?></td>
+              <td><?= htmlspecialchars($view['views']) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<?php endif; ?>
+
+<?php if ($this->isAdmin() || $this->isModerator()) : ?>
 <div class="admin-actions-container">
   <h2>Last Admin Actions</h2>
   
@@ -83,6 +127,7 @@
     <?php endforeach; ?>
   </ul>
 </div>
+<?php endif; ?>
 
 <script src="public/js/admin/userActivityGraph.js"></script>
 

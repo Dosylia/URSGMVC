@@ -8151,6 +8151,76 @@ justify-content: center;
   font-size: 14px;
 }
 
+/* Admin analytics */
+
+.ga4-page-views {
+  max-width: 800px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 8px;
+}
+
+.ga4-page-views h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.ga4-page-views table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ga4-page-views th, .ga4-page-views td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.ga4-page-views th {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+}
+
+.ga4-page-views tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+.ga4-page-views td:first-child {
+  font-weight: 500;
+  color: #34495e;
+}
+
+/* Dark mode overrides */
+.dark-mode .ga4-page-views {
+  color: var(--white);
+}
+
+.dark-mode .ga4-page-views h2 {
+  color: var(--main--red);
+}
+
+.dark-mode .ga4-page-views th {
+  background-color: var(--dark--red);
+  color: var(--white);
+  border-bottom: 1px solid var(--main--red);
+}
+
+.dark-mode .ga4-page-views td, 
+.dark-mode .ga4-page-views th {
+  border-color: var(--main--red);
+}
+
+.dark-mode .ga4-page-views tbody tr:hover {
+  background-color: var(--dark-ligher-grey);
+}
+
+.dark-mode .ga4-page-views td:first-child {
+  color: var(--gold);
+}
+
 /* Admin Header */
 .admin-header {
   background-color: #333;

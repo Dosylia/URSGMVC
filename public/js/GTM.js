@@ -69,10 +69,6 @@ function sendNewUserEvent() {
     pushEvent('new_user', 'User', 'New User');
 }
 
-function sendLandingpageView() {
-    pushEvent('landing_page_view', 'Page', 'Landing Page Viewed');
-}
-
 function sendReturningUserEvent() {
     if (isReturningUser()) {
         pushEvent('returning_user', 'User', 'Returning User');
@@ -83,5 +79,4 @@ function sendReturningUserEvent() {
 window.sendPageView = sendPageView;
 window.sendMatchCreated = sendMatchCreated;
 window.sendNewUserEvent = sendNewUserEvent;
-window.sendLandingpageView = sendLandingpageView;
 window.sendReturningUserEvent = sendReturningUserEvent;

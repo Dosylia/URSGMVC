@@ -19,10 +19,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a href="/">Home Website</a></li>
       <li><a href="admin">Home Admin</a></li>
       <li><a href="adminUsers">Users</a></li>
-      <li><a href="adminGame">Game</a></li>
-      <li><a href="adminReports">Reports</a></li>
-      <li><a href="adminStats">Statistics</a></li>
-      <li><a href="adminSettings">Settings</a></li>
+      <?php if ($this->isAdmin() || $this->isModerator()) : ?>
+        <li><a href="adminGame">Game</a></li>
+        <li><a href="adminReports">Reports</a></li>
+      <?php endif; ?>
+      <!-- <li><a href="adminStats">Statistics</a></li>
+      <li><a href="adminSettings">Settings</a></li> -->
     </ul>
   </nav>
 </header>
