@@ -1,5 +1,8 @@
 <?php require "views/layout.phtml"; ?>
-
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3XDDBJQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <?php if (isset($_SESSION['mode'])) : ?>
     <body class="<?= ($_SESSION['mode'] === 'dark') ? 'dark-mode' : '' ?>">
 <?php else : ?>
@@ -52,6 +55,20 @@
         </div>
     </div>   
 </footer>
+
+    <!-- Triggers for tracking scritps -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            // Send page view event
+            if (typeof sendPageView === 'function') {
+                sendPageView('swiping_page');
+            }
+            // Check if user is returning and send event
+            if (typeof sendReturningUserEvent === 'function') {
+                sendReturningUserEvent();
+            }
+        });
+     </script>
 
 </body>
 
