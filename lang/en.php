@@ -135,6 +135,7 @@ return [
     'manage_riot' => 'Manage Riot account',
     'manage_riot_desc' => 'You can manage your Riot account here. If you want to change your account, please unbind it first and then bind the new one.',
     'manage_riot_desc2' => 'Before binding, make sure you are logged in to the right Riot account. Check here : <a href="https://account.riotgames.com/">https://account.riotgames.com</a>.',
+    'manage_riot_desc3' => 'Also make sure your region on URSG matches the region on your account.',
     'bind_riot' => 'Bind Riot account',
     'about_me' => 'About me',
     'about_others' => 'About them',

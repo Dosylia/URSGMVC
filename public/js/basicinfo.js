@@ -101,7 +101,7 @@ function skipPreferences(event) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '/swiping';
+                window.location.href = '/swiping?createdUser=true';
             } else {
                 const spanError = document.createElement('span');
                 spanError.className = 'form-error';

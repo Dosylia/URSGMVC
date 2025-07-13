@@ -136,6 +136,7 @@ return [
     'manage_riot' => 'Gestionar cuenta de Riot',
     'manage_riot_desc' => 'Puedes gestionar tu cuenta de Riot aquí. Si deseas cambiar de cuenta, por favor desvincúlala primero y luego vincula la nueva.',
     'manage_riot_desc2' => 'Antes de vincular, asegúrate de haber iniciado sesión en la cuenta de Riot correcta. Verifica aquí: <a href="https://account.riotgames.com/?locale=es_ES">https://account.riotgames.com</a>.',
+    'manage_riot_desc3' => 'También asegúrate de que tu región en URSG coincida con la región de tu cuenta.',
     'bind_riot' => 'Vincular Rcuenta de Riot',
     'about_me' => 'Sobre mí',
     'about_others' => 'Sobre el usuario',

@@ -7,7 +7,6 @@
     </span>
     <?php endif; ?>
 
-
     <div class="minigame-window hidden" id="minigameWindow">
         <div class="minigame-inner">
             <div class="exit-button-container">
@@ -266,3 +265,14 @@
 <script src="public/js/swiping/report.js?<?= time(); ?>"></script>
 <script type="module" src="public/js/swiping/game.js?<?= time(); ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('createdUser')) {
+            trackNewUser();
+            urlParams.delete('createdUser');
+            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+            window.history.replaceState({}, '', newUrl);
+        }
+    });
+</script>

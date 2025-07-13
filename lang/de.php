@@ -137,6 +137,7 @@ return [
     'manage_riot' => 'Riot-Konto verwalten',
     'manage_riot_desc' => 'Du kannst dein Riot-Konto hier verwalten. Wenn du dein Konto ändern möchtest, trenne es zuerst und verknüpfe dann das neue.',
     'manage_riot_desc2' => 'Before binding, make sure you are logged in to the right Riot account. Check here : <a href="https://account.riotgames.com/">https://account.riotgames.com</a>.',
+    'manage_riot_desc3' => 'Stelle außerdem sicher, dass deine Region auf URSG mit der Region deines Kontos übereinstimmt.',
     'bind_riot' => 'Riot-Konto verbinden',
     'about_me' => 'Über mich',
     'about_others' => 'Über diesen Benutzer',

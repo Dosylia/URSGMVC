@@ -40,17 +40,17 @@
     </div>
 
     <div class="returning-container">
-      <h2>Returning users last 90 days</h2>
+      <h2>Returning users last month</h2>
       <p><?= $returningUserCount ?></p>
     </div>
 
     <div class="match-created-container">
-      <h2>Matches Created last 90 days</h2>
+      <h2>Matches Created last month</h2>
       <p><?= $matchCreatedCount ?></p>
     </div>
 
     <div class="new-user-container">
-      <h2>New user last 90 days</h2>
+      <h2>New user last month</h2>
       <p><?= $newUserCount ?></p>
     </div>
   <?php endif; ?>
@@ -71,25 +71,69 @@
 </div>
 
 <?php if ($this->isAdmin() || $this->isMarketing()) : ?>
-  <div class="admin-actions-container" style="width: fit-content; margin: 2rem;">
-    <div class="ga4-page-views">
-      <h2>Top Pages (Last 7 Days)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Page Path</th>
-            <th>Views</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($pageViews as $view): ?>
+  <div class="admin-container-row">
+    <div class="admin-actions-container" style="width: fit-content; margin: 2rem;">
+      <div class="ga4-page-views">
+        <h2>Top Pages (Last 7 Days)</h2>
+        <table>
+          <thead>
             <tr>
-              <td><?= htmlspecialchars($view['page']) ?></td>
-              <td><?= htmlspecialchars($view['views']) ?></td>
+              <th>Page Path</th>
+              <th>Views</th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php foreach ($pageViews as $view): ?>
+              <tr>
+                <td><?= htmlspecialchars($view['page']) ?></td>
+                <td><?= htmlspecialchars($view['views']) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-actions-container" style="width: fit-content; margin: 2rem;">
+      <h2 class="ga4-page-views">🔁 Funnel Conversion Rates (Last month)</h2>
+
+      <?php
+        $steps = [
+          [
+            'step' => 'Landing → Signup',
+            'from' => $funnelConversions['totals']['landing'],
+            'to' => $funnelConversions['totals']['signup'],
+            'percent' => $funnelConversions['landingToSignup']
+          ],
+          [
+            'step' => 'Signup → Login',
+            'from' => $funnelConversions['totals']['signup'],
+            'to' => $funnelConversions['totals']['login'],
+            'percent' => $funnelConversions['signupToLogin']
+          ],
+          [
+            'step' => 'Signup → Match',
+            'from' => $funnelConversions['totals']['signup'],
+            'to' => $funnelConversions['totals']['signupToMatch'],
+            'percent' => $funnelConversions['signupToMatch']
+          ],
+          [
+            'step' => 'Login → Match',
+            'from' => $funnelConversions['totals']['login'],
+            'to' => $funnelConversions['totals']['match'],
+            'percent' => $funnelConversions['loginToMatch']
+          ],
+        ];
+      ?>
+
+      <?php foreach ($steps as $step): ?>
+        <div class="funnel-step">
+          <div class="funnel-label"><?= $step['step'] ?> (<?= $step['to'] ?> of <?= $step['from'] ?>)</div>
+          <div class="funnel-bar-container">
+            <div class="funnel-bar" style="width: <?= $step['percent'] ?>%;"></div>
+          </div>
+        </div>
+      <?php endforeach; ?>
     </div>
   </div>
 <?php endif; ?>

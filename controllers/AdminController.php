@@ -68,8 +68,8 @@ class AdminController
             $returningUserCount = $this->fetchReturningUserCountByEvent();
             $matchCreatedCount = $this->fetchMatchCreatedCount();
             $newUserCount = $this->fetchNewUserCount();
+            $funnelConversions = $this->getFunnelConversion();
             $dailyActivityJson = json_encode($dailyActivity);
-
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
             $picture = "ursg-preview-small";
@@ -141,7 +141,7 @@ class AdminController
             'property' => 'properties/' . $property_id,
             'dateRanges' => [
                 new DateRange([
-                    'start_date' => '90daysAgo',
+                    'start_date' => '30daysAgo',
                     'end_date' => 'today',
                 ]),
             ],
@@ -186,7 +186,7 @@ class AdminController
             'property' => 'properties/' . $property_id,
             'dateRanges' => [
                 new DateRange([
-                    'start_date' => '90daysAgo',
+                    'start_date' => '30daysAgo',
                     'end_date' => 'today',
                 ]),
             ],
@@ -231,7 +231,7 @@ class AdminController
             'property' => 'properties/' . $property_id,
             'dateRanges' => [
                 new DateRange([
-                    'start_date' => '90daysAgo',
+                    'start_date' => '30daysAgo',
                     'end_date' => 'today',
                 ]),
             ],
@@ -253,6 +253,129 @@ class AdminController
         }
 
         return $count;
+    }
+
+    public function getFunnelConversion($startDate = '30daysAgo')
+    {
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json'
+        ]);
+        $property_id = '496417395';
+
+        // Update: Add 'customEvent:page_path' to dimensions
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange(['start_date' => $startDate, 'end_date' => 'today']),
+            ],
+            'dimensions' => [
+                new Dimension(['name' => 'customEvent:visitor_id']),
+                new Dimension(['name' => 'eventName']),
+                new Dimension(['name' => 'pagePath']),
+            ],
+            'metrics' => [
+                new Metric(['name' => 'eventCount']),
+            ],
+            'limit' => 10000,
+        ]);
+
+        $rows = $response->getRows();
+
+        if (count($rows) === 0) {
+            return [
+                'landingToSignup' => 0,
+                'signupToLogin' => 0,
+                'loginToMatch' => 0,
+                'signupToMatch' => 0,
+                'totals' => [
+                    'landing' => 0,
+                    'signup' => 0,
+                    'login' => 0,
+                    'match' => 0,
+                    'signupToMatch' => 0,
+                ]
+            ];
+        }
+
+        $users = [];
+        $eventCounts = [];
+
+        foreach ($rows as $index => $row) {
+            $dimensionValues = $row->getDimensionValues();
+            $metricValues = $row->getMetricValues();
+
+            if (count($dimensionValues) >= 3 && count($metricValues) >= 1) {
+                $visitorId = $dimensionValues[0]->getValue();
+                $eventName = $dimensionValues[1]->getValue();
+                $pagePath = $dimensionValues[2]->getValue();
+                $eventCount = intval($metricValues[0]->getValue());
+
+                if ($index < 10) {
+                    error_log("Row $index: visitor_id='$visitorId', event='$eventName', path='$pagePath', count=$eventCount");
+                }
+
+                // Count event totals
+                $eventKey = $eventName . ($pagePath ? " @ $pagePath" : '');
+                if (!isset($eventCounts[$eventKey])) {
+                    $eventCounts[$eventKey] = 0;
+                }
+                $eventCounts[$eventKey] += $eventCount;
+
+                if (!empty($visitorId) && $visitorId !== '(not set)') {
+                    if (!isset($users[$visitorId])) {
+                        $users[$visitorId] = [];
+                    }
+
+                    // Push event — distinguish landing page view
+                    if ($eventName === 'page_view' && $pagePath === '/') {
+                        $users[$visitorId][] = 'landing_page_view';
+                    } else {
+                        $users[$visitorId][] = $eventName;
+                    }
+                }
+            }
+        }
+
+        // Funnel logic
+        $totalLanding = 0;
+        $totalSignup = 0;
+        $totalLogin = 0;
+        $totalMatch = 0;
+        $totalSignupToMatch = 0;
+
+        foreach ($users as $visitorId => $events) {
+            $uniqueEvents = array_unique($events);
+
+            $hasLanding = in_array('landing_page_view', $uniqueEvents);
+            $hasNewUser = in_array('new_user', $uniqueEvents);
+            $hasLogin = in_array('login', $uniqueEvents);
+            $hasMatch = in_array('match_created', $uniqueEvents);
+
+            if ($hasLanding) $totalLanding++;
+            if ($hasLanding && $hasNewUser) $totalSignup++;
+            if ($hasLanding && $hasNewUser && $hasLogin) $totalLogin++;
+            if ($hasLanding && $hasNewUser && $hasLogin && $hasMatch) $totalMatch++;
+            if ($hasLanding && $hasNewUser && $hasMatch) $totalSignupToMatch++;
+        }
+
+        $conversion1 = $totalLanding ? round(($totalSignup / $totalLanding) * 100, 1) : 0;
+        $conversion2 = $totalSignup ? round(($totalLogin / $totalSignup) * 100, 1) : 0;
+        $conversion3 = $totalLogin ? round(($totalMatch / $totalLogin) * 100, 1) : 0;
+        $conversionSignupToMatch = $totalSignup ? round(($totalSignupToMatch / $totalSignup) * 100, 1) : 0;
+
+        return [
+            'landingToSignup' => $conversion1,
+            'signupToLogin' => $conversion2,
+            'loginToMatch' => $conversion3,
+            'signupToMatch' => $conversionSignupToMatch,
+            'totals' => [
+                'landing' => $totalLanding,
+                'signup' => $totalSignup,
+                'login' => $totalLogin,
+                'match' => $totalMatch,
+                'signupToMatch' => $totalSignupToMatch,
+            ]
+        ];
     }
 
     public function adminGamePage(): void

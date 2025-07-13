@@ -65,8 +65,12 @@ function sendMatchCreated() {
     pushEvent('match_created', 'Match', 'Match Created');
 }
 
-function sendNewUserEvent() {
+function trackNewUser() {
     pushEvent('new_user', 'User', 'New User');
+}
+
+function trackLogin() {
+  pushEvent('login', 'Engagement', 'User Login');
 }
 
 function sendReturningUserEvent() {
@@ -78,5 +82,6 @@ function sendReturningUserEvent() {
 // Expose globally if needed
 window.sendPageView = sendPageView;
 window.sendMatchCreated = sendMatchCreated;
-window.sendNewUserEvent = sendNewUserEvent;
+window.trackNewUser = trackNewUser;
 window.sendReturningUserEvent = sendReturningUserEvent;
+window.trackLogin = trackLogin;

@@ -56,6 +56,7 @@ function handleCredentialResponse(response) {
                 // Store token in local storage
                 localStorage.setItem('masterTokenWebsite', token);
                 console.log("Server response indicates success:", data);
+                trackLogin();
                 window.location.href = '/signup';
             } else {
                 const spanError = document.createElement('span');
