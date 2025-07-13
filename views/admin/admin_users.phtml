@@ -91,7 +91,7 @@
         <?php foreach ($users as $user) : ?>
             <tr>
                 <td class="userIdTable"><?= $user['user_id'] ?></td>
-                <td class="username"><?= htmlspecialchars($user['user_username']) ?></td>
+                <td class="username"><a target="_blank" href="anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?></a></td>
                 <td class="gender"><?= htmlspecialchars($user['user_gender']) ?></td>
                 <td><?= htmlspecialchars($user['user_age']) ?></td>
                 <td class="gamer-type"><?= htmlspecialchars($user['user_kindOfGamer']) ?></td>

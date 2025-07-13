@@ -274,6 +274,29 @@ class User extends DataBase
         }
     }
 
+    public function getLeaderboardUsers()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                user_id, 
+                user_username, 
+                user_currency, 
+                user_isVip
+            FROM `user` 
+            ORDER BY user_currency DESC 
+            LIMIT 100
+        ");
+        
+        $query->execute();
+        $users = $query->fetchAll();
+        
+        if ($users) {
+            return $users;
+        } else {
+            return false;
+        }
+    }
+
     public function getTopUsers()
     {
         $query = $this->bdd->prepare("
@@ -282,6 +305,8 @@ class User extends DataBase
                                             `user_username`,    
                                             `user_picture`,
                                             `user_isVip`,
+                                            `user_isPartner`,
+                                            `user_isCertified`,
                                             `user_currency`
                                         FROM
                                             `user`
@@ -299,6 +324,27 @@ class User extends DataBase
         } else {
             return false;
         }
+    }
+
+    public function getUserRank($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            COUNT(*) + 1 AS rank
+                                        FROM 
+                                            `user`
+                                        WHERE 
+                                            `user_currency` > (
+                                                SELECT `user_currency` 
+                                                FROM `user` 
+                                                WHERE `user_id` = ?
+                                            );
+        ");
+        
+        $query->execute([$userId]);
+        $rank = $query->fetchColumn();
+        
+        return $rank ?: 0;
     }
     
 
@@ -825,7 +871,7 @@ class User extends DataBase
             UPDATE user 
             SET user_isOnline = 0 
             WHERE user_isOnline = 1 
-            AND TIMESTAMPDIFF(SECOND, user_lastSeen, NOW()) > 10
+            AND TIMESTAMPDIFF(SECOND, user_lastSeen, NOW()) > 60
         ");
         return $query->execute();
     }
@@ -942,6 +988,28 @@ class User extends DataBase
 
         if ($endpoint) {
             return $endpoint['user_notificationEndPoint'];
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteSubscriptionByEndpoint($endpoint) 
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_notificationEndPoint` = NULL,
+                                                `user_notificationP256dh` = NULL,
+                                                `user_notificationAuth` = NULL
+                                            WHERE
+                                                `user_notificationEndPoint` = ?
+        ");
+
+        $deleteSubscriptionTest = $query -> execute([$endpoint]);
+
+        if ($deleteSubscriptionTest) {
+            return true;
         } else {
             return false;
         }

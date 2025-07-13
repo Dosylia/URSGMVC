@@ -1,5 +1,13 @@
 let selectedUser = null;
 
+function shakeMinigameWindow() {
+    const minigameWindow = document.querySelector('.minigame-inner');
+    minigameWindow.classList.add('shake');
+    setTimeout(() => {
+        minigameWindow.classList.remove('shake');
+    }, 500);
+}
+
 function getGameUser(userId, game, tryCount) {
     const token = localStorage.getItem('masterTokenWebsite');
 
@@ -15,8 +23,9 @@ function getGameUser(userId, game, tryCount) {
     .then(data => {
         const elements = getElements(); // Assuming this retrieves UI element references
         const ignore = localStorage.getItem('ignoreGame');
+        const ignorePermanently = localStorage.getItem('ignoreGamePermanently');
 
-        if (ignore === "1") {
+        if (ignore === "1" || ignorePermanently === "1") {
             elements.minigameWindow.style.display = "none";
             return;
         } else {
@@ -143,14 +152,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     let restoreGame = document.getElementById('restore-game-container');
     let restoreGameBtn = document.getElementById('restore-game-container');
     const ignore = localStorage.getItem('ignoreGame');
+    const ignorePermanentlyBtn = document.getElementById('ignore-permanently-btn');
+    const ignorePermanently = localStorage.getItem('ignoreGamePermanently');
 
-    if (ignore === "1" && localStorage.getItem('gameWon') !== "1") {
+    ignorePermanentlyBtn?.addEventListener("click", () => {
+        localStorage.setItem('ignoreGamePermanently', 1);
+        overlay.style.display = "none";
+        elements.minigameWindow.style.display = "none";
+        restoreGame.style.display = "block";
+    });
+
+    if ((ignore === "1" || ignorePermanently === "1") && localStorage.getItem('gameWon') !== "1") {
         restoreGame.style.display = "block";
     }
 
     restoreGameBtn?.addEventListener("click", () => {
         overlay.style.display = "none";
         localStorage.setItem('ignoreGame', 0);
+        localStorage.setItem('ignoreGamePermanently', 0);
         getGameUser(userId, "League of Legends", tryCount)
         restoreGame.style.display = "none";
     });
@@ -223,6 +242,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     userId
                 );
                 // elements.minigameWindow.style.display = "none";
+                const inGameResultSpan = document.getElementById("ingame-result"); 
+                inGameResultSpan.innerText = "";
                 elements.playerImg.src = `public/images/game/${data.gameUser.game_username}.jpg`;
                 
                 elements.hintContainer.innerHTML = "";
@@ -233,11 +254,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 localStorage.setItem('gameWon', 1);
                 elements.resultTitle.innerText = `Well done!`;
                 elements.resultText.innerText = `The answer was ${data.gameUser.game_username}`;
+            } else if (data.message === "Close") {
+                updateHint(elements, data.hint);
+                const inGameResultSpan = document.getElementById("ingame-result"); 
+                inGameResultSpan.innerText = "Close guess! Try again!";
+                shakeMinigameWindow();
             } else if (data.message === "Game Over") {
                 displayNotification(
                     `Game Over! The correct user was ${data.gameUser.game_username}`,
                     userId
                 );
+                const inGameResultSpan = document.getElementById("ingame-result"); 
+                inGameResultSpan.innerText = "Wrong guess!";
                 elements.playerImg.src = `public/images/game/${data.gameUser.game_username}.jpg`;
                 elements.hintContainer.innerHTML = "";
                 elements.resultContainer.style.display = "flex";
@@ -245,6 +273,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 elements.resultText.innerText = `The answer was ${data.gameUser.game_username}`;
             } else {
                 updateHint(elements, data.hint);
+                const inGameResultSpan = document.getElementById("ingame-result"); 
+                inGameResultSpan.innerText = "Wrong guess! Try again!";
+                shakeMinigameWindow();
             }
         })
         .catch(error => {

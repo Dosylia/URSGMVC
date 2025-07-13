@@ -33,7 +33,6 @@ function onClickBtnSubmit(event)
 
 
 document.addEventListener("DOMContentLoaded",function(){
-
         btnSubmit = document.getElementById("send-button");
         btnSubmit.addEventListener("click",onClickBtnSubmit);
 

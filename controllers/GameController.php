@@ -195,7 +195,47 @@ class GameController
             $gameUser = $this->game->getGameUser($date, $gameData);
     
             if ($gameUser) {
-                if (strtolower($guess) === strtolower($gameUser['game_username'])) {
+                $correct = false;
+                $close = false;
+
+                $normalizedCorrect = $this->normalizeGuess($gameUser['game_username']);
+                $normalizedGuess = $this->normalizeGuess($guess);
+
+                if ($normalizedGuess === $normalizedCorrect) {
+                    $correct = true;
+                } else {
+                    $words = $this->splitIntoWords($gameUser['game_username']);
+
+                    foreach ($words as $word) {
+                        // Accept as correct only if:
+                        // - exact match
+                        // - word is at least 5 chars
+                        // - guess and correct name are close in length (e.g., same word chunk)
+                        if (
+                            $normalizedGuess === $word &&
+                            mb_strlen($word) >= 5 &&
+                            abs(mb_strlen($word) - mb_strlen($normalizedCorrect)) <= 3
+                        ) {
+                            $correct = true;
+                            break;
+                        }
+                    }
+
+                    // 3. Check similarity ratio (Levenshtein)
+                    if (!$correct) {
+                        if (mb_strlen($normalizedGuess) >= 5 && mb_strlen($normalizedCorrect) >= 5) {
+                            $distance = levenshtein($normalizedGuess, $normalizedCorrect);
+                            $minLength = min(mb_strlen($normalizedGuess), mb_strlen($normalizedCorrect));
+                            $similarityRatio = $minLength > 0 ? $distance / $minLength : 1;
+
+                            if ($similarityRatio <= 0.3) {
+                                $close = true;
+                            }
+                        }
+                    }
+                }
+
+                if ($correct) {
                     // Calculate currency reward
                     $baseReward = 500; // Reward for one-shot guess
                     $penaltyPerTry = 100; // Penalty for each additional attempt
@@ -215,10 +255,7 @@ class GameController
                     } else {
                         $response = array('message' => 'Contact an administrator');
                     }
-    
                 } else {
-                    // Incorrect guess, provide a hint
-                    $hint = $this->getHint($gameUser, $tryCount);
                     if ($tryCount >= 4) {
                         $markAsPlayed = $this->user->markGameAsPlayed($userId, $date);
                         $this->game->updateTotalCompletedGame($userId);
@@ -227,20 +264,26 @@ class GameController
                             'gameUser' => $gameUser
                         );
                     } else {
-                        $response = array(
-                            'message' => 'Incorrect',
-                            'hint' => $hint
-                        );
+                        $hint = $this->getHint($gameUser, $tryCount);
+                        if ($close) {
+                            $response = [
+                                'message' => 'Close',
+                                'hint' => $hint
+                            ];
+                        } else {
+                            $response = [
+                                'message' => 'Incorrect',
+                                'hint' => $hint
+                            ];
+                        }
                     }
                 }
-    
                 header('Content-Type: application/json');
                 echo json_encode($response);
                 exit;
             }
         }
     
-        // Error response if required data isn't provided
         $response = array('message' => 'Invalid request');
         header('Content-Type: application/json');
         echo json_encode($response);
@@ -255,6 +298,34 @@ class GameController
             3 => ['guess' => $gameUser['hint_guess']],
         );
         return isset($hints[$tryCount]) ? $hints[$tryCount] : [];
+    }
+
+    public function normalizeGuess($str) 
+    {
+        $str = mb_strtolower($str, 'UTF-8');
+        $str = preg_replace('/[^\p{L}\p{N}]/u', '', $str);
+        return $str;
+    }
+
+    public function splitIntoWords($str) 
+    {
+        // Split by non-alphanumeric characters
+        $parts = preg_split('/[^\p{L}\p{N}]+/u', $str, -1, PREG_SPLIT_NO_EMPTY);
+        $result = [];
+        
+        foreach ($parts as $part) {
+            // Split camelCase words
+            $subParts = preg_split('/(?<=\p{Ll})(?=\p{Lu})|(?<=\p{N})(?=\p{Lu})|(?<=\p{L})(?=\p{N})/u', $part);
+            $result = array_merge($result, $subParts);
+        }
+        
+        // Normalize and filter short words
+        $result = array_map([$this, 'normalizeGuess'], $result);
+        $result = array_filter($result, function($word) { 
+            return mb_strlen($word) >= 3; 
+        });
+        
+        return array_values($result);
     }
 
     public function validateToken($token, $userId): bool

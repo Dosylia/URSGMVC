@@ -25,116 +25,121 @@
     </div>
   </div>
 
+<?php if (isset($playerFinderPost) && isset($user)): ?>
   <!-- Modal for Showing Interested Users -->
-<div id="interestedModal-<?= $playerFinderPost['pf_id'] ?>" class="interested-modal hidden">
-  <div class="interested-modal-content">
-    <h3>People Interested</h3>
-    <div class="interested-users-list">
-      <?php foreach ($interestedData as $userInterest): ?>
-        <?php
-          $isLoL = $userInterest['user_game'] === 'League of Legends';
-          $roleRaw = $isLoL ? $userInterest['lol_role'] : $userInterest['valorant_role'];
-          $role = strtolower(str_replace(' ', '', $roleRaw));
-          $rank = $isLoL ? $userInterest['lol_rank'] : $userInterest['valorant_rank'];
-          $server = $isLoL ? $userInterest['lol_server'] : $userInterest['valorant_server'];
-          $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
-          $roleExt = $isLoL ? 'png' : 'webp';
-        ?>
-        <div class="interested-user">
-          <?php if (isset($userInterest['user_picture']) && $userInterest['user_picture'] !== null): ?>
-          <img src="public/upload/<?= htmlspecialchars($userInterest['user_picture']) ?>" alt="User Profile Picture" class="user-pic">
-          <?php else: ?>
-            <img src="public/images/defaultprofilepicture.jpg" alt="Default Profile Picture" class="user-pic">
-          <?php endif; ?>
-          <span class="username"><?= htmlspecialchars($userInterest['user_username']) ?></span>
-          <span class="server"><?= $regionAbbreviations[$server] ?? $server ?></span>
-          <span class="role-img">
-            <img src="public/images/roles/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
-          </span>
-          <span class="rank-img">
-            <img src="public/images/<?= $rankFolder ?>/<?= $rank ?>.png" alt="<?= htmlspecialchars($rank) ?>">
-          </span>
-          <?php if ($userInterest['is_friend']): ?>
-            <a 
-              class="interested-accept-btn" 
-              href="/persoChat&friend_id=<?= $userInterest['user_id'] ?>">Chat</a>
-          <?php else : ?>
-            <button 
-              class="interested-accept-btn add-and-chat-btn" 
-              data-friend-id="<?= $userInterest['user_id'] ?>"
-              data-user-id="<?= $user['user_id'] ?>"
-            >
-              Add and Chat
-            </button>
-          <?php endif; ?>
-        </div>
-      <?php endforeach; ?>
-    </div>
-    <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $playerFinderPost['pf_id'] ?>">Close</button>
-  </div>
-</div>
-
-  <!-- Modal -->
-  <div id="playerfinder-modal" class="playerfinder-modal hidden">
-  <div class="playerfinder-modal-content">
-    <h3>Create a Post</h3>
-    <hr class="separators-quiz">
-    <div class="form-group">
-      <label class="toggle-wrapper" for="voiceChat">
-        <div class="voice-row">
-          <p>Want Voice Chat?</p>
-          <div class="switch">
-            <input type="checkbox" id="voiceChat">
-            <span class="slider"></span>
+  <div id="interestedModal-<?= $playerFinderPost['pf_id'] ?>" class="interested-modal hidden">
+    <div class="interested-modal-content">
+      <h3>People Interested</h3>
+      <div class="interested-users-list">
+        <?php foreach ($interestedData as $userInterest): ?>
+          <?php
+            $isLoL = $userInterest['user_game'] === 'League of Legends';
+            $roleRaw = $isLoL ? $userInterest['lol_role'] : $userInterest['valorant_role'];
+            $role = strtolower(str_replace(' ', '', $roleRaw));
+            $rank = $isLoL ? $userInterest['lol_rank'] : $userInterest['valorant_rank'];
+            $server = $isLoL ? $userInterest['lol_server'] : $userInterest['valorant_server'];
+            $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
+            $roleExt = $isLoL ? 'png' : 'webp';
+          ?>
+          <div class="interested-user">
+            <?php if (isset($userInterest['user_picture']) && $userInterest['user_picture'] !== null): ?>
+            <img src="public/upload/<?= htmlspecialchars($userInterest['user_picture']) ?>" alt="User Profile Picture" class="user-pic">
+            <?php else: ?>
+              <img src="public/images/defaultprofilepicture.jpg" alt="Default Profile Picture" class="user-pic">
+            <?php endif; ?>
+            <span class="username"><?= htmlspecialchars($userInterest['user_username']) ?></span>
+            <span class="server"><?= $regionAbbreviations[$server] ?? $server ?></span>
+            <span class="role-img">
+              <img src="public/images/roles/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
+            </span>
+            <span class="rank-img">
+              <img src="public/images/<?= $rankFolder ?>/<?= $rank ?>.png" alt="<?= htmlspecialchars($rank) ?>">
+            </span>
+            <?php if ($userInterest['is_friend']): ?>
+              <a 
+                class="interested-accept-btn" 
+                href="/persoChat&friend_id=<?= $userInterest['user_id'] ?>">Chat</a>
+            <?php else : ?>
+              <button 
+                class="interested-accept-btn add-and-chat-btn" 
+                data-friend-id="<?= $userInterest['user_id'] ?>"
+                data-user-id="<?= $user['user_id'] ?>"
+              >
+                Add and Chat
+              </button>
+            <?php endif; ?>
           </div>
-        </div>
-      </label>
-    </div>
-
-     <?php if (
-          ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
-          $user['user_game'] === "Valorant"
-      ) : ?>
-      <div class="form-group">
-        <label for="lookingfor-account">Your LoL/Valorant account</label>
-        <input type="text" id="lookingfor-account" placeholder="Enter your account's name">
+        <?php endforeach; ?>
       </div>
-      <?php endif; ?>
-
-    <div class="form-group">
-      <label for="eloLookingFor">Role Looking For</label>
-      <select id="eloLookingFor">
-          <option value="Any">Any</option>
-        <?php foreach ($availableRolesCreate as $role): ?>
-        <option value="<?= $role ?>"><?= $role ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="rankLookingFor">Rank Looking For</label>
-      <select id="rankLookingFor">
-        <option value="Any">Any</option>
-        <?php foreach ($availableRanksCreate as $rank): ?>
-        <option value="<?= $rank ?>"><?= $rank ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" required maxlength="130" rows="3"></textarea>
-      <p id="descError" class="error-message hidden">Please enter a description.</p>
-    </div>
-
-    <hr class="separators-quiz">
-
-    <div class="form-actions">
-      <button type="button" id="submitPostBtn">Submit</button>
-      <button id="closeModalBtn" class="secondary">Close</button>
+      <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $playerFinderPost['pf_id'] ?>">Close</button>
     </div>
   </div>
-</div>
+<?php endif; ?>
+
+
+<!-- Modal -->
+<?php if (isset($user) && $user['user_id'] !== null): ?>
+  <div id="playerfinder-modal" class="playerfinder-modal hidden">
+    <div class="playerfinder-modal-content">
+      <h3>Create a Post</h3>
+      <hr class="separators-quiz">
+      <div class="form-group">
+        <label class="toggle-wrapper" for="voiceChat">
+          <div class="voice-row">
+            <p>Want Voice Chat?</p>
+            <div class="switch">
+              <input type="checkbox" id="voiceChat">
+              <span class="slider"></span>
+            </div>
+          </div>
+        </label>
+      </div>
+
+        <?php if (
+            ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
+            $user['user_game'] === "Valorant"
+        ) : ?>
+        <div class="form-group">
+          <label for="lookingfor-account">Your LoL/Valorant account</label>
+          <input type="text" id="lookingfor-account" placeholder="Enter your account's name">
+        </div>
+        <?php endif; ?>
+
+      <div class="form-group">
+        <label for="eloLookingFor">Role Looking For</label>
+        <select id="eloLookingFor">
+            <option value="Any">Any</option>
+          <?php foreach ($availableRolesCreate as $role): ?>
+          <option value="<?= $role ?>"><?= $role ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="rankLookingFor">Rank Looking For</label>
+        <select id="rankLookingFor">
+          <option value="Any">Any</option>
+          <?php foreach ($availableRanksCreate as $rank): ?>
+          <option value="<?= $rank ?>"><?= $rank ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" required maxlength="130" rows="3"></textarea>
+        <p id="descError" class="error-message hidden">Please enter a description.</p>
+      </div>
+
+      <hr class="separators-quiz">
+
+      <div class="form-actions">
+        <button type="button" id="submitPostBtn">Submit</button>
+        <button id="closeModalBtn" class="secondary">Close</button>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
 
   <!-- Layout -->
   <div class="playerfinder-container">

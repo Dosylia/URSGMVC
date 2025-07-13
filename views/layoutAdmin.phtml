@@ -5,6 +5,11 @@
     <body>
 <?php endif; ?>
 
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3XDDBJQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
 <input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
 <input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
 
@@ -14,10 +19,12 @@
       <li><a href="/">Home Website</a></li>
       <li><a href="admin">Home Admin</a></li>
       <li><a href="adminUsers">Users</a></li>
-      <li><a href="adminGame">Game</a></li>
-      <li><a href="adminReports">Reports</a></li>
-      <li><a href="adminStats">Statistics</a></li>
-      <li><a href="adminSettings">Settings</a></li>
+      <?php if ($this->isAdmin() || $this->isModerator()) : ?>
+        <li><a href="adminGame">Game</a></li>
+        <li><a href="adminReports">Reports</a></li>
+      <?php endif; ?>
+      <!-- <li><a href="adminStats">Statistics</a></li>
+      <li><a href="adminSettings">Settings</a></li> -->
     </ul>
   </nav>
 </header>

@@ -472,10 +472,12 @@ class ChatMessageController
                     $message = $notification['message'];
                     $user = $this->user->getUserById($notification['user_id']);
                     $senderName = $user['user_username'];
-    
-                    if ($this->sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName)) {
+
+                    $sendResult = $this->sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName);
+
+                    if ($sendResult === true || $sendResult === 'invalid') {
                         $this->chatmessage->deleteQueuedNotification($notification['id']);
-                        echo "✅ Notification served.\n";
+                        echo "✅ Notification processed and removed.\n";
                     }
                 } else {
                     $expoToken = $notification['expoToken'];
@@ -564,6 +566,9 @@ class ChatMessageController
 
     public function uploadChatImagePhone(): void
     {
+        error_log("Upload request received");
+        error_log("FILES: " . print_r($_FILES, true));
+        error_log("Headers: " . print_r(getallheaders(), true));
         // Validate Authorization Header
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
     
@@ -573,7 +578,7 @@ class ChatMessageController
         }
     
         $token = $matches[1];
-        $userId = $_SESSION['userId'] ?? null;
+        $userId = $_POST['userId'] ?? null;
     
         if (!$userId || !$this->validateToken($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -668,9 +673,16 @@ class ChatMessageController
     }
 
     
-    public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) {
+    public function sendPushNotification($endPoint, $p256dh, $auth, $message, $senderName) 
+    {
         require 'keys.php';
-    
+
+        // Validate before processing
+        if (empty($endPoint) || empty($p256dh) || empty($auth)) {
+            error_log("Invalid subscription data");
+            return 'invalid';
+        }
+
         $subscription = \Minishlink\WebPush\Subscription::create([
             'endpoint' => $endPoint,
             'keys' => [
@@ -678,39 +690,54 @@ class ChatMessageController
                 'auth' => $auth
             ]
         ]);
-    
+
+        // Ultra-minimal payload with short keys
         $payload = json_encode([
-            'title' => 'New Message from ' . $senderName,
-            'body' => $message,
-            'icon' => 'public/images/ursg_round_logo.png', // Optional
+            't' => mb_substr($senderName, 0, 15), 
+            'm' => mb_substr($message, 0, 80)
         ]);
-    
+
         try {
+            // Critical changes: Use aes128gcm + compression
             $webPush = new \Minishlink\WebPush\WebPush([
                 'VAPID' => [
                     'publicKey' => $webPushPublicKey,
                     'privateKey' => $webPushPrivateKey,
                     'subject' => 'https://ur-sg.com'
                 ]
+            ], [
+                'contentEncoding' => 'aes128gcm',  
+                'compress' => true                 
             ]);
-    
-            // Queue the notification
+
             $webPush->queueNotification($subscription, $payload);
-    
-            // Process and get the results
+
             foreach ($webPush->flush() as $report) {
                 if ($report->isSuccess()) {
                     return true;
                 } else {
-                    error_log('Push Notification failed for: ' . $endPoint . 'message was sent by ' . $senderName);
-                    error_log('Reason: ' . $report->getReason());
+                    $reason = $report->getReason();
+                    error_log("Push failed: $endPoint; Reason: $reason");
+
+                    // Handle Mozilla's 413 specifically
+                    if (strpos($reason, '413') !== false || 
+                        strpos($reason, 'Payload Too Large') !== false) {
+                        return 'invalid'; // Delete from queue
+                    }
+
+                    // Handle expired subscriptions
+                    if (strpos($reason, 'Gone') !== false || 
+                        strpos($reason, 'Not Found') !== false) {
+                        $this->user->deleteSubscriptionByEndpoint($endPoint);
+                        return 'invalid';
+                    }
+                    
                     return false;
                 }
             }
-    
-            return false; // If flush returned nothing
+            return false;
         } catch (\Exception $e) {
-            error_log('Error sending push notification: ' . $e->getMessage());
+            error_log('Push error: ' . $e->getMessage());
             return false;
         }
     }

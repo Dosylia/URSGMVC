@@ -318,7 +318,7 @@ class DiscordController
             $_SESSION['masterTokenWebsite'] = $existingUser['google_masterTokenWebsite'];
 
             setcookie("auth_token", $existingUser['google_masterTokenWebsite'], [
-                'expires' => time() + 60 * 60 * 24 * 7,
+                'expires' => time() + 60 * 60 * 24 * 60,
                 'path' => '/',
                 'secure' => true,
                 'httponly' => true,
@@ -442,7 +442,7 @@ class DiscordController
                 $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserDiscord, $token);
 
                 setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 7,
+                    'expires' => time() + 60 * 60 * 24 * 60,
                     'path' => '/',
                     'secure' => true,
                     'httponly' => true,
@@ -486,6 +486,153 @@ class DiscordController
         $userId = (int)$_POST['userId'];
 
         if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $user = $this->user->getUserById($userId);
+
+        $oldTimeRaw = $_POST['oldTime'] ?? null;
+        $oldTimeFormatted = str_replace('+', ' ', $oldTimeRaw);
+        $oldTime = strtotime($oldTimeFormatted);
+
+        if (time() - $oldTime < 120) {
+            echo json_encode(['success' => false, 'error' => 'Please wait before sending another request']);
+            return;
+        }
+
+        $account = $_POST['account'] ?? null;
+        $extraMessage = $_POST['extraMessage'] ?? null;
+        $server = "Unknown";
+
+        if (!isset($user['user_game'])) {
+            echo json_encode(['success' => false, 'error' => 'User game not defined']);
+            return;
+        }
+
+        $game = $user['user_game'];
+
+        if ($game === 'League of Legends') {
+            if ($user['lol_verified'] == 1) {
+                $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
+                if ($lolUser) {
+                    $account = $lolUser['lol_account'];
+                    $server = $lolUser['lol_server'];
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'No League account found for verified user']);
+                    return;
+                }
+            } else {
+                if (!$account) {
+                    echo json_encode(['success' => false, 'error' => 'No League account provided for unverified user']);
+                    return;
+                } else {
+                    $server = $user['lol_server'] ?? 'Unknown';
+                }
+            }
+        } elseif ($game === 'Valorant') {
+            if (!$account) {
+                echo json_encode(['success' => false, 'error' => 'No Valorant account provided']);
+                return;
+            } else {
+                $server = $user['valorant_server'] ?? 'Unknown';
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Unsupported game type']);
+            return;
+        }
+
+        require_once 'keys.php';
+        $botToken = $discordToken;
+
+        if ($game == 'League of Legends') {
+            $channelId = "1263123769866850406";
+        } elseif ($game == 'Valorant') {
+            $channelId = "1263123785716858880";
+        }
+
+        $playerFinder = $_POST['playerfinder'] ?? null;
+        $voiceChat = $_POST['voiceChat'] ?? null;
+        $roleLookingFor = $_POST['roleLookingFor'] ?? null;
+        $rankLookingFor = $_POST['rankLookingFor'] ?? null;
+
+        // Build embed fields
+        $embedFields = [
+            [
+                "name" => "🌍 Server",
+                "value" => $server ? $server : "Not specified",
+                "inline" => true
+            ],
+            [
+                "name" => "🎮 Account",
+                "value" => "`$account`",
+                "inline" => true
+            ]
+        ];
+
+        if ($playerFinder) {
+            $embedFields[] = [
+                "name" => "🎧 Voice Chat",
+                "value" => $voiceChat ? "🎤 Looking for voice chat" : "🙊 Not looking for voice chat",
+                "inline" => false
+            ];
+            $embedFields[] = [
+                "name" => "🧩 Role looking for",
+                "value" => $roleLookingFor ? $roleLookingFor : "Not specified",
+                "inline" => true
+            ];
+            $embedFields[] = [
+                "name" => "📈 Rank looking for",
+                "value" => $rankLookingFor ? $rankLookingFor : "Not specified",
+                "inline" => true
+            ];
+        }
+
+        $embed = [
+            "title" => "{$user['user_username']} is looking for players!",
+            "color" => hexdec("F47FFF"), // A pinkish embed color
+            "fields" => $embedFields,
+            "timestamp" => date("c")
+        ];
+
+        if (!empty($extraMessage)) {
+            $embed["description"] = "📣 *$extraMessage*";
+        }
+
+        $data = [
+            "username" => "URSG bot",
+            "embeds" => [$embed]
+        ];
+
+        $url = "https://discord.com/api/v10/channels/{$channelId}/messages";
+        $response = $this->makeDiscordRequest($url, $data, $botToken);
+
+        if (isset($response['id'])) {
+            echo json_encode(['success' => true, 'messageId' => $response['id']]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
+        }
+    }
+
+    public function sendMessageDiscordPhone()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+
+        $token = $matches[1];
+
+        if (!isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $userId = (int)$_POST['userId'];
+
+        if (!$this->validateToken($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
@@ -710,8 +857,17 @@ class DiscordController
     }
 
 
+    public function validateToken($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
     
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
     
+        return false;
+    }
 
     public function validateTokenWebsite($token, $userId): bool
     {

@@ -238,7 +238,7 @@ class RiotController
                                 }
 
                                 setcookie("auth_token", $token, [
-                                    'expires' => time() + 60 * 60 * 24 * 7,
+                                    'expires' => time() + 60 * 60 * 24 * 60,
                                     'path' => '/',
                                     'secure' => true,
                                     'httponly' => true,
@@ -377,7 +377,7 @@ class RiotController
                                 $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserRiot, $token);
 
                                 setcookie("auth_token", $token, [
-                                    'expires' => time() + 60 * 60 * 24 * 7,
+                                    'expires' => time() + 60 * 60 * 24 * 60,
                                     'path' => '/',
                                     'secure' => true,
                                     'httponly' => true,

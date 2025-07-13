@@ -42,7 +42,7 @@ function fetchFriendRequest(userId) {
                     userId
                 );
                     if (displayMoneyWon) {
-                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.textContent = `500`;
                         displayMoneyWon.style.display = 'block';
 
                         displayMoneyWon.style.animation = 'none';
@@ -100,7 +100,7 @@ function fetchFriendRequest(userId) {
                         userId
                     );
                     if (displayMoneyWon) {
-                        displayMoneyWon.textContent = `5000`;
+                        displayMoneyWon.textContent = `500`;
                         displayMoneyWon.style.display = 'block';
 
                         displayMoneyWon.style.animation = 'none';
@@ -274,7 +274,7 @@ function fillNotificationCenter() {
         modalContent.appendChild(notifItem);
 
         // Add click event listener for redirection
-        notifTextElement.addEventListener('click', () => {
+        notifTextElement.addEventListener('click', async () => {
             if (notification.type === 'accepted') {
                 document.getElementById(`notif-${notification.fr_id}`)?.remove();
 
@@ -288,7 +288,7 @@ function fillNotificationCenter() {
                 };
         
                 // Handle the backend update
-                handleNotificationClose(dataDelete);
+                await handleNotificationClose(dataDelete);
                 window.location.href = `/persoChat?friend_id=${notification.fr_receiverId}`;
             } else if (notification.type === 'pending') {
                 window.location.href = `/userProfile`;
@@ -303,7 +303,7 @@ function fillNotificationCenter() {
                     }
                 };
 
-                handleNotificationClose(dataDelete);
+                await handleNotificationClose(dataDelete);
                 window.location.href = `/persoChat?friend_id=${notification.friendId}`;
             }
         });
@@ -347,22 +347,21 @@ function createNotificationModal() {
 }
 
 // Function to handle notification close actions
-function handleNotificationClose(target) {
+async function handleNotificationClose(target) {
     const frId = target.dataset.frId;
     const userId = target.dataset.userId;
     const typeBtn = target.dataset.type;
 
     if (typeBtn === 'pending') {
-        console.log("Type", typeBtn);
         updateNotificationFriendRequestPending(frId, userId);
+        return Promise.resolve();
     } else if (typeBtn === 'accepted') {
-        console.log("Type", typeBtn);
-        updateNotificationFriendRequestAccepted(frId, userId);
+        return await updateNotificationFriendRequestAccepted(frId, userId);
     } else if (typeBtn === 'interested') {
-        console.log("Type", typeBtn);
-        updateNotificationPlayerFinder(frId, userId);
+        return await updateNotificationPlayerFinder(frId, userId);
     } else {
         console.log('Unknown notification type');
+        return Promise.resolve(); // nothing to wait for
     }
 }
 
@@ -397,17 +396,59 @@ function clearAllNotifications() {
     });
 }
 
-function updateNotificationPlayerFinder(frId, userId, type) {
-    fetch('/markInterestAsSeen', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `postId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(userId)}`
-    })
-    .then(response => response.json())
-    .then(data => {
+async function updateNotificationPlayerFinder(frId, userId) {
+    try {
+        const response = await fetch('/markInterestAsSeen', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `postId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(userId)}`
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Notification updated successfully');
+
+            const notifItem = document.getElementById(`notif-${frId}`);
+            if (notifItem) notifItem.remove();
+
+            const notifBadge = document.getElementById('notif-badge');
+            let currentCount = parseInt(notifBadge.textContent, 10) || 0;
+
+            if (currentCount > 1) {
+                notifBadge.textContent = currentCount - 1;
+            } else {
+                notifBadge.style.display = 'none';
+                const notifBell = document.getElementById('notification-bell');
+                if (notifBell) notifBell.style.display = 'none';
+
+                const modal = document.getElementById('notif-modal');
+                if (modal) modal.classList.add('hidden');
+            }
+        } else {
+            console.log('Failed to update notification');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+}
+
+async function updateNotificationFriendRequestAccepted(frId, userId) {
+    try {
+        const response = await fetch('/updateNotificationFriendRequestAcceptedWebsite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `frId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(userId)}`
+        });
+
+        const data = await response.json();
+
         if (data.success) {
             console.log('Notification updated successfully');
 
@@ -420,78 +461,28 @@ function updateNotificationPlayerFinder(frId, userId, type) {
             let currentCount = parseInt(notifBadge.textContent, 10) || 0;
 
             if (currentCount > 1) {
-                notifBadge.textContent = currentCount - 1; // Decrease count
+                notifBadge.textContent = currentCount - 1;
             } else {
-                notifBadge.style.display = 'none'; // Hide if no notifications left
+                notifBadge.style.display = 'none';
 
-                // Hide the bell icon if no notifications are left
                 const notifBell = document.getElementById('notification-bell');
-                if (notifBell) {
-                    notifBell.style.display = 'none'; // Hide bell icon
-                }
+                if (notifBell) notifBell.style.display = 'none';
 
-                // Hide the modal if no notifications remain
                 const modal = document.getElementById('notif-modal');
-                if (modal) {
-                    modal.classList.add('hidden'); // Hide the modal
-                }
+                if (modal) modal.classList.add('hidden');
             }
+
+            return true; // Optional: indicate success
         } else {
             console.log('Failed to update notification');
+            return false;
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Fetch error:', error);
-    });
+        return false;
+    }
 }
 
-function updateNotificationFriendRequestAccepted(frId, userId, type) {
-    fetch('/updateNotificationFriendRequestAcceptedWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `frId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(userId)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Notification updated successfully');
-
-            // Remove only the dismissed notification row
-            const notifItem = document.getElementById(`notif-${frId}`);
-            if (notifItem) notifItem.remove();
-
-            // Update the notification count dynamically
-            const notifBadge = document.getElementById('notif-badge');
-            let currentCount = parseInt(notifBadge.textContent, 10) || 0;
-
-            if (currentCount > 1) {
-                notifBadge.textContent = currentCount - 1; // Decrease count
-            } else {
-                notifBadge.style.display = 'none'; // Hide if no notifications left
-
-                // Hide the bell icon if no notifications are left
-                const notifBell = document.getElementById('notification-bell');
-                if (notifBell) {
-                    notifBell.style.display = 'none'; // Hide bell icon
-                }
-
-                // Hide the modal if no notifications remain
-                const modal = document.getElementById('notif-modal');
-                if (modal) {
-                    modal.classList.add('hidden'); // Hide the modal
-                }
-            }
-        } else {
-            console.log('Failed to update notification');
-        }
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
-}
 
 function updateNotificationFriendRequestPending(frId, userId, type) {
     fetch('/updateNotificationFriendRequestPendingWebsite', {

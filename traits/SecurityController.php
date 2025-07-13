@@ -66,7 +66,7 @@ trait SecurityController
 
     public function isAdmin()
     {
-        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158 || $_SESSION['userId'] == 158)
+        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158)
         {
             return true;
         }
@@ -79,6 +79,18 @@ trait SecurityController
     public function isModerator()
     {
         if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158 || $_SESSION['userId'] == 161  || $_SESSION['userId'] == 198)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function isMarketing()
+    {
+        if($_SESSION['userId'] == 4009)
         {
             return true;
         }

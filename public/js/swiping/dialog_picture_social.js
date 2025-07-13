@@ -28,6 +28,23 @@ const placeholderMessage = document.getElementById('placeholder-message');
 //   favDialogSocialLinks.close();
 // }
 
+const showRiotModalbtn = document.getElementById('openRiotAccount-btn');
+const riotModal = document.getElementById('riot-modal');
+const closeRiotModal = document.getElementById('close-modal-riot');
+
+showRiotModalbtn?.addEventListener('click', function() {
+    riotModal.classList.remove('riot-modal-hidden');
+    const overlay = document.getElementById("overlay");
+    overlay.style.display = "block";
+});
+
+closeRiotModal?.addEventListener('click', function() {
+    riotModal.classList.add('riot-modal-hidden');
+    const overlay = document.getElementById("overlay");
+    overlay.style.display = "none";
+});
+
+
 const showButtonPicture = document.getElementById('opendialog_update_picture');
 const favDialogPicture = document.getElementById('favDialogPicture');
 const cancelButtonPicture = favDialogPicture.querySelector('#closeButton_user_picture');

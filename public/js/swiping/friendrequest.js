@@ -122,6 +122,7 @@ function addActionListeners() {
     acceptButtons.forEach(button => {
         button.addEventListener('click', function (event) {
             event.preventDefault();
+            sendMatchCreated();
             const frId = button.getAttribute('data-fr-id');
             let userId = document.getElementById('userId').value;
             const status = button.getAttribute('data-status');

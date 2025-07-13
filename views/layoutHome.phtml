@@ -1,5 +1,9 @@
 <?php require "views/layout.phtml"; ?>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3XDDBJQ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="overlay"></div>
 <div id="signup-modal" class="modal signup-modal-hidden">
     <div class="modal-content">
@@ -42,14 +46,15 @@
             </div>
 
             <script nonce="TAJKETR">
-                let googleCooldown = false;
-                
+              let googleCooldown = false;
+
                 function initGoogleSignIn() {
                     window.google.accounts.id.initialize({
                         client_id: "666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com",
                         callback: handleCredentialResponse,
                         ux_mode: 'popup',
                         cancel_callback: (error) => {
+                            handleCooldown();
                             if (error.event === 'onetap.card.prompt.cooldown.1') {
                                 handleCooldown();
                             }
@@ -66,6 +71,13 @@
                             });
                         }
                     });
+
+                    setTimeout(() => {
+                        if (!googleCooldown) {
+                            console.warn("One Tap did not respond in time — showing fallback");
+                            handleCooldown();
+                        }
+                    }, 3000);
                 }
 
                 function handleCooldown() {
@@ -183,6 +195,20 @@
 
     <script src="public/js/signUpModal.js?<?= time(); ?>"></script>
     <script src="public/js/referal.js"></script>
+
+    <!-- Triggers for tracking scritps -->
+     <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            // Send page view event
+            if (typeof sendPageView === 'function') {
+                sendPageView('home_page');
+            }
+            // Check if user is returning and send event
+            if (typeof sendReturningUserEvent === 'function') {
+                sendReturningUserEvent();
+            }
+        });
+     </script>
 </body>
 
 </html>

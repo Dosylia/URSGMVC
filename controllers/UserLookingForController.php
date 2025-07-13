@@ -370,7 +370,7 @@ class UserLookingForController
                         
                             $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
         
-                        header("location:/swiping");
+                        header("location:/swiping?createdUser=true");
                         exit();
                     }
 
@@ -495,7 +495,7 @@ class UserLookingForController
                         
                             $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
         
-                        header("location:/swiping");
+                        header("location:/swiping?createdUser=true");
                         exit();
                     } else {
                         header("location:/signup?message=Could not create looking for user");

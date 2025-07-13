@@ -165,6 +165,55 @@ class UserController
         }
     }
 
+    public function getLeaderboardUsers()
+    {
+        require 'keys.php';
+        $response = array('message' => 'Error');
+    
+        // Check if the token is provided in the request header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        // Check if the provided token matches the valid token
+        if ($token !== $validToken) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        // Check if the 'allUsers' POST parameter is set
+        if (isset($_POST['allUsers'])) {
+            $allUsers = $this->user->getLeaderboardUsers();
+    
+            if ($allUsers) {
+                $response = array(
+                    'allUsers' => $allUsers,
+                    'message' => 'Success'
+                );
+    
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            } else {
+                $response = array('message' => 'Could not get all users');
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+    
+        } else {
+            $response = array('message' => 'Cannot access this');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
+        }        
+    }
+
     public function pageLeaderboard()
     {
 
@@ -179,6 +228,7 @@ class UserController
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
+            $userRank = $this->user->getUserRank($_SESSION['userId']);
             $allUsers = $this-> user -> getTopUsers();
 
             $usersPerPage = 50;
@@ -213,6 +263,161 @@ class UserController
             exit();
         }
     }
+
+    public function createAccountSkipPreferences()
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'message' => 'Missing parameter']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        if (!isset($data->googleId)) {
+            echo json_encode(['success' => false, 'message' => 'Google ID is required']);
+            return;
+        }
+
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'message' => 'Authorization header missing or malformed']);
+            return;
+        }
+
+        $token = $matches[1];
+        $authToken = $_COOKIE['auth_token'] ?? null;
+
+        if (!$authToken || $token !== $authToken) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized token']);
+            return;
+        }
+
+        if (!isset($data->username, $data->gender, $data->age, $data->kindOfGamer, $data->game, $data->shortBio)) {
+            echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+            return;
+        }
+
+        $googleUserId = $this->validateInput($data->googleId);
+        $this->setGoogleUserId($googleUserId);
+        $username = $this->validateInput($data->username);
+        $this->setUsername($username);
+        $gender = $this->validateInput($data->gender);
+        $this->setGender($gender);
+        $age = $this->validateInput($data->age);
+        $this->setAge($age);
+        $kindofgamer = $this->validateInput($data->kindOfGamer);
+        $this->setKindOfGamer($kindofgamer);
+        $game = $this->validateInput($data->game);
+        $this->setGame($game);
+        $shortBio = $this->validateInput($data->shortBio);
+        $this->setShortBio($shortBio);
+
+        if ($this->emptyInputSignup($username, $age, $shortBio)) {
+            echo json_encode(['success' => false, 'message' => 'Inputs cannot be empty']);
+            return;
+        }
+
+        if ($this->user->getUserByUsername($username)) {
+            echo json_encode(['success' => false, 'message' => 'Username already exists']);
+            return;
+        }
+
+        if ($this->invalidUid($username)) {
+            echo json_encode(['success' => false, 'message' => 'Username is not valid']);
+            return;
+        }
+
+        if ($age < 13 || $age > 99) {
+            echo json_encode(['success' => false, 'message' => 'Age must be between 13 and 99']);
+            return;
+        }
+
+        if (strlen($shortBio) > 200) {
+            echo json_encode(['success' => false, 'message' => 'Short bio exceeds 200 characters']);
+            return;
+        }
+
+        $createUser = $this->user->createUser($googleUserId, $username, $gender, $age, $kindofgamer, $shortBio, $game);
+
+        if (!$createUser) {
+            echo json_encode(['success' => false, 'message' => 'Failed to create user']);
+            return;
+        }
+
+        $user = $this->user->getUserByUsername($username);
+        if (!$user) {
+            echo json_encode(['success' => false, 'message' => 'User was created but cannot be fetched']);
+            return;
+        }
+
+        if (session_status() == PHP_SESSION_NONE) {
+            $lifetime = 7 * 24 * 60 * 60;
+            session_set_cookie_params($lifetime);
+            session_start();
+        }
+
+        $_SESSION['userId'] = $user['user_id'];
+        $_SESSION['username'] = $user['user_username'];
+
+        // Game-specific setup
+        $statusChampion = 1;
+        $statusChampionLf = 1;
+        $main1 = $main2 = $main3 = "";
+        $main1Lf = $main2Lf = $main3Lf = "";
+        $rank = $role = $server = "Unknown";
+        $genderLf = $rankLf = $roleLf = "Any";
+        $kindOfGamerLf = "Competition and Chill";
+
+        if ($user['user_game'] === "League of Legends") {
+            $createGameAccount = $this->leagueoflegends->createLoLUser($user['user_id'], $main1, $main2, $main3, $rank, $role, $server, $statusChampion);
+            $createGameAccountLf = $this->userlookingfor->createLookingForUser($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
+
+            if (!$createGameAccount || !$createGameAccountLf) {
+                echo json_encode(['success' => false, 'message' => 'Could not create League of Legends account or preferences']);
+                return;
+            }
+
+            $lolUser = $this->leagueoflegends->getLeageAccountByLeagueId($createGameAccount);
+            $lolLookingFor = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            if (!$lolUser || !$lolLookingFor) {
+                echo json_encode(['success' => false, 'message' => 'Could not retrieve League of Legends account or preferences']);
+                return;
+            }
+
+            $_SESSION['lol_id'] = $lolUser['lol_id'];
+            $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
+            echo json_encode(['success' => true]);
+            return;
+        }
+
+        if ($user['user_game'] === "Valorant") {
+            $createGameAccount = $this->valorant->createValorantUser($user['user_id'], $main1, $main2, $main3, $rank, $role, $server, $statusChampion);
+            $createGameAccountLf = $this->userlookingfor->createLookingForUserValorant($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
+
+            if (!$createGameAccount || !$createGameAccountLf) {
+                echo json_encode(['success' => false, 'message' => 'Could not create Valorant account or preferences']);
+                return;
+            }
+
+            $valorantUser = $this->valorant->getValorantAccountByValorantId($createGameAccount);
+            $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+
+            if (!$valorantUser || !$valorantLookingFor) {
+                echo json_encode(['success' => false, 'message' => 'Could not retrieve Valorant account or preferences']);
+                return;
+            }
+
+            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
+            $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
+            echo json_encode(['success' => true]);
+            return;
+        }
+
+        // Fallback catch if game is unknown
+        echo json_encode(['success' => false, 'message' => 'Unsupported game']);
+        return;
+    }
+
 
     public function createUserPhone()
     {
@@ -1842,7 +2047,7 @@ class UserController
             $serverColumn = ($user['user_game'] == "League of Legends") ? "lol_server" : "valorant_server";
     
             // Define all servers if no filters
-            $allServers = ["Europe West", "North America", "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia", "Turkey", "Japan", "Korea"];
+            $allServers = ["Europe West", "North America", "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia", "Turkey", "Japan", "Korea", "Unknown"];
             $serverList = empty($filteredServer) ? $allServers : $filteredServer;
 
             $postGender = isset($_POST['gender']) ? json_decode($_POST['gender'], true) : [];
@@ -2091,12 +2296,9 @@ class UserController
         {
             if (isset($_GET['username']))
             {
-                if($_GET['username'] !== $_SESSION['username']) 
-                {
-                    $username = $_GET['username'];
-                    header("Location: /anotherUser&username=" . $username);
-                    exit();                    
-                }
+                $username = $_GET['username'];
+                header("Location: /anotherUser&username=" . $username);
+                exit();                    
             }
             else 
             {
