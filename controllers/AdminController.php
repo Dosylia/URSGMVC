@@ -68,6 +68,7 @@ class AdminController
             $returningUserCount = $this->fetchReturningUserCountByEvent();
             $matchCreatedCount = $this->fetchMatchCreatedCount();
             $newUserCount = $this->fetchNewUserCount();
+            $LoggedOnUserCount = $this->fetchLoggedOnUser();
             $funnelConversions = $this->getFunnelConversion();
             $dailyActivityJson = json_encode($dailyActivity);
             $current_url = "https://ur-sg.com/admin";
@@ -255,6 +256,51 @@ class AdminController
         return $count;
     }
 
+    public function fetchLoggedOnUser()
+    {
+        $property_id = '496417395';
+        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+        $client = new BetaAnalyticsDataClient([
+            'credentials' => $keyFilePath
+        ]);
+
+        $dimensionFilter = new FilterExpression([
+            'filter' => new Filter([
+                'field_name' => 'eventName',
+                'string_filter' => new StringFilter([
+                    'value' => 'login',
+                ]),
+            ]),
+        ]);
+
+        $response = $client->runReport([
+            'property' => 'properties/' . $property_id,
+            'dateRanges' => [
+                new DateRange([
+                    'start_date' => '30daysAgo',
+                    'end_date' => 'today',
+                ]),
+            ],
+            'dimensions' => [new Dimension(['name' => 'eventName'])],
+            'metrics' => [new Metric(['name' => 'eventCount'])],
+            'dimensionFilter' => $dimensionFilter,
+        ]);
+
+        $count = 0;
+        $rows = $response->getRows();
+        
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $metricValues = $row->getMetricValues();
+                if (!empty($metricValues) && $metricValues[0] !== null) {
+                    $count += intval($metricValues[0]->getValue());
+                }
+            }
+        }
+
+        return $count;        
+    }
+
     public function getFunnelConversion($startDate = '30daysAgo')
     {
         $client = new BetaAnalyticsDataClient([
@@ -353,8 +399,8 @@ class AdminController
 
             if ($hasLanding) $totalLanding++;
             if ($hasLanding && $hasNewUser) $totalSignup++;
-            if ($hasLanding && $hasNewUser && $hasLogin) $totalLogin++;
-            if ($hasLanding && $hasNewUser && $hasLogin && $hasMatch) $totalMatch++;
+            if ($hasLogin) $totalLogin++;
+            if ($hasLogin && $hasMatch) $totalMatch++;
             if ($hasLanding && $hasNewUser && $hasMatch) $totalSignupToMatch++;
         }
 

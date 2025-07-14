@@ -113,7 +113,7 @@ class RiotController
                                 $profileIconId = $summonerProfile['profileIconId'];
 
                                 // Fetch ranked stats
-                                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+                                $summonerRankedStats = $this->getSummonerRankedStats($puuid, $selectedRegionValue, $apiKey);
 
                                 if (isset($summonerRankedStats)) {
                                     // Default to 'Unranked'
@@ -144,7 +144,7 @@ class RiotController
                                     // Save updated summoner data to the database
                                     $updateSummoner = $this->leagueOfLegends->updateSummonerData(
                                         $userData['gameName'], 
-                                        $summonerProfile['id'],
+                                        'Removed',
                                         $puuid,
                                         $summonerProfile['summonerLevel'], 
                                         $rankAndTier,
@@ -530,50 +530,57 @@ class RiotController
     // Fetch the summoner profile details
     public function getSummonerProfile($puuid, $server, $apiKey) {
         $url = "https://". strtolower($server) .".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{$puuid}?api_key={$apiKey}";
+        error_log("Fetching Summoner Profile from: $url");
+
         $context = stream_context_create([
             'http' => [
                 'ignore_errors' => true
             ]
         ]);
-    
+
         $response = @file_get_contents($url, false, $context);
-    
-        // Check for HTTP errors
+
         if (isset($http_response_header)) {
             preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
             $statusCode = $match[1] ?? 0;
-    
+
             if ($statusCode != '200') {
-                error_log("Riot API error");
+                error_log("Riot API error when fetching summoner profile.");
                 return null;
             }
+        } else {
+            error_log("No HTTP response header found for summoner profile request.");
+            return null;
         }
-    
+
         return json_decode($response, true);
     }
 
     // Fetch ranked stats for the summoner
-    public function getSummonerRankedStats($summonerId, $server, $apiKey) {
-        $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
+    public function getSummonerRankedStats($puuid, $server, $apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-puuid/{$puuid}?api_key={$apiKey}";
+
         $context = stream_context_create([
             'http' => [
                 'ignore_errors' => true
             ]
         ]);
-    
+
         $response = @file_get_contents($url, false, $context);
-    
-        // Check for HTTP errors
+
         if (isset($http_response_header)) {
             preg_match('{HTTP/\S*\s(\d{3})}', $http_response_header[0], $match);
             $statusCode = $match[1] ?? 0;
-    
+
             if ($statusCode != '200') {
-                error_log("Riot API error");
+                error_log("Riot API error when fetching ranked stats.");
                 return null;
             }
+        } else {
+            error_log("No HTTP response header found for ranked stats request.");
+            return null;
         }
-    
+
         return json_decode($response, true);
     }
 
@@ -659,7 +666,7 @@ class RiotController
                             $profileIconId = $summonerProfile['profileIconId'];
 
                             // Fetch ranked stats
-                            $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+                            $summonerRankedStats = $this->getSummonerRankedStats($puuid, $selectedRegionValue, $apiKey);
 
                             if (isset($summonerRankedStats)) {
                                 // Default to 'Unranked'
@@ -686,7 +693,7 @@ class RiotController
                                 // Save updated summoner data to the database
                                 $this->leagueOfLegends->updateSummonerData(
                                     $userData['gameName'], 
-                                    $summonerProfile['id'],
+                                    'Removed',
                                     $puuid,
                                     $summonerProfile['summonerLevel'], 
                                     $rankAndTier,
@@ -777,7 +784,6 @@ class RiotController
                 return $responseBody['access_token'];
             }
 
-            error_log('Access token not found in response: ' . json_encode($responseBody));
             return null;
         } catch (RequestException $e) {
             // Log the error message for debugging

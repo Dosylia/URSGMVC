@@ -348,7 +348,7 @@ class LeagueOfLegendsController
             {
 
 
-                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $server, $apiKey);
+                $summonerRankedStats = $this->getSummonerRankedStats($puudId, $server, $apiKey);
 
                 // Default to 'Unranked'
                 $rankAndTier = 'Unranked';
@@ -374,7 +374,7 @@ class LeagueOfLegendsController
                     // Save updated summoner data to the database
                     $this->leagueOfLegends->updateSummonerData(
                         $username, 
-                        $summonerProfile['id'],
+                        'Removed',
                         $puudId,
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
@@ -451,7 +451,7 @@ class LeagueOfLegendsController
             {
 
 
-                $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+                $summonerRankedStats = $this->getSummonerRankedStats($puudId, $selectedRegionValue, $apiKey);
 
                 // Default to 'Unranked'
                 $rankAndTier = 'Unranked';
@@ -477,7 +477,7 @@ class LeagueOfLegendsController
                     // Save updated summoner data to the database
                     $this->leagueOfLegends->updateSummonerData(
                         $username, 
-                        $summonerProfile['id'],
+                        'Removed',
                         $puudId,
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
@@ -490,7 +490,7 @@ class LeagueOfLegendsController
                         'status' => 'success',
                         'message' => 'Account verified successfully!',
                         'summonerName' => $username,
-                        'summonerId' => $summonerProfile['id'],
+                        'summonerId' => 'Removed',
                         'puuId' => $puudId,
                         'summonerLevel' => $summonerProfile['summonerLevel'],
                         'rankAndTier' => $rankAndTier,
@@ -533,8 +533,8 @@ class LeagueOfLegendsController
         return json_decode($response, true);
     }
     
-    public function getSummonerRankedStats($summonerId, $server, $apiKey) {
-        $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-summoner/{$summonerId}?api_key={$apiKey}";
+    public function getSummonerRankedStats($puudId, $server, $apiKey) {
+        $url = "https://". strtolower($server) .".api.riotgames.com/lol/league/v4/entries/by-puuid/{$puudId}?api_key={$apiKey}";
         $context = stream_context_create([
             'http' => [
                 'ignore_errors' => true
@@ -630,7 +630,7 @@ class LeagueOfLegendsController
     
                 if ($summonerProfile)
                 {
-                    $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+                    $summonerRankedStats = $this->getSummonerRankedStats($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
 
                     if ($summonerRankedStats) {
                         $rankAndTier = $this->determineRankAndTier($summonerRankedStats);
@@ -647,7 +647,7 @@ class LeagueOfLegendsController
     
                     $this->leagueOfLegends->updateSummonerData(
                         $username, 
-                        $summonerProfile['id'],
+                        'Removed',
                         $puudId,
                         $summonerProfile['summonerLevel'], 
                         $rankAndTier,
@@ -844,7 +844,7 @@ class LeagueOfLegendsController
                         $profileIconId = $summonerProfile['profileIconId'];
 
                         // Fetch ranked stats
-                        $summonerRankedStats = $this->getSummonerRankedStats($summonerProfile['id'], $selectedRegionValue, $apiKey);
+                        $summonerRankedStats = $this->getSummonerRankedStats($puuid, $selectedRegionValue, $apiKey);
 
                         if (isset($summonerRankedStats)) {
                             // Default to 'Unranked'
@@ -873,7 +873,7 @@ class LeagueOfLegendsController
                             // Save updated summoner data to the database
                             $bindAccount = $this->leagueOfLegends->updateSummonerData(
                                 $_SESSION['full_name'], 
-                                $summonerProfile['id'],
+                                'Removed',
                                 $puuid,
                                 $summonerProfile['summonerLevel'], 
                                 $rankAndTier,

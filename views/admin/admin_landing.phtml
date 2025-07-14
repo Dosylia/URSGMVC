@@ -53,6 +53,11 @@
       <h2>New user last month</h2>
       <p><?= $newUserCount ?></p>
     </div>
+
+    <div class="logged-on-user-container">
+      <h2>Logged on users last month</h2>
+      <p><?= $LoggedOnUserCount ?></p>
+    </div>
   <?php endif; ?>
 
   <?php if ($this->isAdmin() || $this->isModerator()) : ?>
@@ -104,12 +109,6 @@
             'from' => $funnelConversions['totals']['landing'],
             'to' => $funnelConversions['totals']['signup'],
             'percent' => $funnelConversions['landingToSignup']
-          ],
-          [
-            'step' => 'Signup → Login',
-            'from' => $funnelConversions['totals']['signup'],
-            'to' => $funnelConversions['totals']['login'],
-            'percent' => $funnelConversions['signupToLogin']
           ],
           [
             'step' => 'Signup → Match',
