@@ -1654,7 +1654,7 @@ class GoogleUserController
                     unset($_COOKIE['googleId']);
                 }
     
-                header("location:/?message=Account deleted, Email: ".$deletionData['google_email']);
+                header("location:/?message=Account deleted, Email: ".$deletionData['google_email']."&deleted=true");
                 exit();
             } else {
                 header("location:/?message=Account not found");

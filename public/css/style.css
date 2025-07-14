@@ -8153,6 +8153,11 @@ justify-content: center;
 
 /* Admin analytics */
 
+.returning-explain {
+  font-size: 10px !important;
+  color: #666363 !important;
+}
+
 .admin-container-row {
   display: flex;
 }
@@ -9779,6 +9784,15 @@ justify-content: center;
 }
 
 @media (max-width: 768px) {
+
+  .admin-container-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .admin-container-row .admin-actions-container {
+    width: 100%;
+  }
 
   .hat-easter-egg {
     top: -20px;

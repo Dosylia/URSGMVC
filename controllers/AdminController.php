@@ -14,6 +14,7 @@ use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\FilterExpression;
 use Google\Analytics\Data\V1beta\Filter;
+use Google\Analytics\Data\V1beta\FilterExpressionList;
 use Google\Analytics\Data\V1beta\Filter\StringFilter;
 use Google\Analytics\Data\V1beta\Dimension;
 
@@ -65,11 +66,13 @@ class AdminController
             $dailyActivity = $this-> admin -> dailyActivity();
             $weeklyActivity = $this-> admin -> weeklyActivity();
             $pageViews = $this->fetchPageViews();
-            $returningUserCount = $this->fetchReturningUserCountByEvent();
-            $matchCreatedCount = $this->fetchMatchCreatedCount();
-            $newUserCount = $this->fetchNewUserCount();
-            $LoggedOnUserCount = $this->fetchLoggedOnUser();
             $funnelConversions = $this->getFunnelConversion();
+            $eventCounts = $this->fetchMultipleEventCounts();
+            $returningUserCount   = $eventCounts['returning_user'] ?? 0;
+            $matchCreatedCount    = $eventCounts['match_created'] ?? 0;
+            $newUserCount         = $eventCounts['new_user'] ?? 0;
+            $LoggedOnUserCount    = $eventCounts['login'] ?? 0;
+            $deletedAccountCount  = $eventCounts['deleted_account'] ?? 0;
             $dailyActivityJson = json_encode($dailyActivity);
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
@@ -84,14 +87,20 @@ class AdminController
         }
     }
 
+    private function getAnalyticsClient()
+    {
+        static $client = null;
+        if ($client === null) {
+            $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+            $client = new BetaAnalyticsDataClient(['credentials' => $keyFilePath]);
+        }
+        return $client;
+    }
+
     public function fetchPageViews()
     {
-        $property_id = '496417395'; 
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
+        $client = $this->getAnalyticsClient();
+        $property_id = '496417395';
 
         $response = $client->runReport([
             'property' => 'properties/' . $property_id,
@@ -121,191 +130,54 @@ class AdminController
         return $results;
     }
 
-    public function fetchReturningUserCountByEvent()
+    public function fetchMultipleEventCounts()
     {
+        $client = $this->getAnalyticsClient();
         $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
 
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'returning_user',
-                ]),
-            ]),
-        ]);
+        $eventNames = [
+            'returning_user',
+            'new_user',
+            'match_created',
+            'login',
+            'deleted_account'
+        ];
+
+        // Build OR filter for events
+        $expressions = array_map(function ($name) {
+            return new FilterExpression([
+                'filter' => new Filter([
+                    'field_name' => 'eventName',
+                    'string_filter' => new StringFilter(['value' => $name]),
+                ])
+            ]);
+        }, $eventNames);
 
         $response = $client->runReport([
             'property' => 'properties/' . $property_id,
             'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
-            ],
-            'dimensions' => [new Dimension(['name' => 'eventName'])], // This was missing!
-            'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
-        }
-
-        return $count;
-    }
-
-    public function fetchNewUserCount()
-    {
-        $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
-
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'new_user',
-                ]),
-            ]),
-        ]);
-
-        $response = $client->runReport([
-            'property' => 'properties/' . $property_id,
-            'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
+                new DateRange(['start_date' => '30daysAgo', 'end_date' => 'today']),
             ],
             'dimensions' => [new Dimension(['name' => 'eventName'])],
             'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
-        }
-
-        return $count;
-    }
-
-    public function fetchMatchCreatedCount()
-    {
-        $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
-
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'match_created',
-                ]),
+            'dimensionFilter' => new FilterExpression([
+                'or_group' => new FilterExpressionList(['expressions' => $expressions])
             ]),
         ]);
 
-        $response = $client->runReport([
-            'property' => 'properties/' . $property_id,
-            'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
-            ],
-            'dimensions' => [new Dimension(['name' => 'eventName'])],
-            'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
+        $results = array_fill_keys($eventNames, 0);
+        foreach ($response->getRows() as $row) {
+            $eventName = $row->getDimensionValues()[0]->getValue();
+            $count = $row->getMetricValues()[0]->getValue();
+            $results[$eventName] = (int)$count;
         }
 
-        return $count;
-    }
-
-    public function fetchLoggedOnUser()
-    {
-        $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
-
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'login',
-                ]),
-            ]),
-        ]);
-
-        $response = $client->runReport([
-            'property' => 'properties/' . $property_id,
-            'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
-            ],
-            'dimensions' => [new Dimension(['name' => 'eventName'])],
-            'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
-        }
-
-        return $count;        
+        return $results;
     }
 
     public function getFunnelConversion($startDate = '30daysAgo')
     {
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json'
-        ]);
+        $client = $this->getAnalyticsClient();
         $property_id = '496417395';
 
         // Update: Add 'customEvent:page_path' to dimensions
@@ -318,6 +190,7 @@ class AdminController
                 new Dimension(['name' => 'customEvent:visitor_id']),
                 new Dimension(['name' => 'eventName']),
                 new Dimension(['name' => 'pagePath']),
+                new Dimension(['name' => 'date']),
             ],
             'metrics' => [
                 new Metric(['name' => 'eventCount']),
@@ -345,19 +218,23 @@ class AdminController
 
         $users = [];
         $eventCounts = [];
+        $landingViewTimestamps = [];
 
         foreach ($rows as $index => $row) {
             $dimensionValues = $row->getDimensionValues();
             $metricValues = $row->getMetricValues();
 
-            if (count($dimensionValues) >= 3 && count($metricValues) >= 1) {
+            if (count($dimensionValues) >= 4 && count($metricValues) >= 1) {
                 $visitorId = $dimensionValues[0]->getValue();
                 $eventName = $dimensionValues[1]->getValue();
                 $pagePath = $dimensionValues[2]->getValue();
+                $eventTimestampStr = $dimensionValues[3]->getValue(); // ISO 8601 format
+                $eventTimestamp = strtotime($eventTimestampStr);
+
                 $eventCount = intval($metricValues[0]->getValue());
 
                 if ($index < 10) {
-                    error_log("Row $index: visitor_id='$visitorId', event='$eventName', path='$pagePath', count=$eventCount");
+                    error_log("Row $index: visitor_id='$visitorId', event='$eventName', path='$pagePath', time='$eventTimestampStr', count=$eventCount");
                 }
 
                 // Count event totals
@@ -372,9 +249,16 @@ class AdminController
                         $users[$visitorId] = [];
                     }
 
-                    // Push event — distinguish landing page view
                     if ($eventName === 'page_view' && $pagePath === '/') {
-                        $users[$visitorId][] = 'landing_page_view';
+                        // Only count landing_page_view once per visitor every 7 days
+                        $lastLanding = $landingViewTimestamps[$visitorId] ?? null;
+                        $date = $dimensionValues[3]->getValue();
+                        $eventDate = \DateTime::createFromFormat('Ymd', $date)->getTimestamp();
+
+                        if (!$lastLanding || ($eventDate - $lastLanding) >= (7 * 24 * 60 * 60)) {
+                            $users[$visitorId][] = 'landing_page_view';
+                            $landingViewTimestamps[$visitorId] = $eventDate;
+                        }
                     } else {
                         $users[$visitorId][] = $eventName;
                     }
