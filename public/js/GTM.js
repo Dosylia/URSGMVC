@@ -45,12 +45,12 @@ function pushEvent(eventName, eventCategory, eventLabel, extraParams = {}) {
         visitor_id: visitorId,
         ...extraParams,
     });
-    // console.log(`Event pushed: ${eventName}`, {
-    //     event_category: eventCategory,
-    //     event_label: eventLabel,
-    //     visitor_id: visitorId,
-    //     ...extraParams,
-    // });
+    console.log(`Event pushed: ${eventName}`, {
+        event_category: eventCategory,
+        event_label: eventLabel,
+        visitor_id: visitorId,
+        ...extraParams,
+    });
 }
 
 function sendPageView(siteLocation) {
