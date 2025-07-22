@@ -6823,10 +6823,11 @@ justify-content: center;
   background-color: var(--main--red);
   color: white;
   border: none;
-  font-size: 2em;
-  padding: 10px 50px;
   border-radius: 30px;
   cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  padding: 5px 10px;
 }
 
 .claimPremium:hover {
@@ -6835,9 +6836,10 @@ justify-content: center;
 
 #placeholder-message, .placeholder-message {
   color: var(--main--red);
-  font-size: 2em;
+  font-size: 1.2em;
   padding: 20px;
   font-weight: 600;
+  text-align: center;
 }
 
 .old-price {
