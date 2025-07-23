@@ -1,0 +1,58 @@
+<div class="admin-users-container">
+  <h1>Partners</h1>
+
+  <form method="post" action="adminAddPartnerFromPage" enctype="multipart/form-data" class="partner-form">
+    <label for="partnerUsername">Partner Username:</label>
+    <input type="text" id="partnerUsername" name="partnerUsername" required>
+
+    <p class="hint">Leave fields blank if the partner has no social links</p>
+
+    <label for="partnerX">Partner Twitter:</label>
+    <input type="url" id="partnerX" name="partnerX">
+
+    <label for="partnerInstagram">Partner Instagram:</label>
+    <input type="url" id="partnerInstagram" name="partnerInstagram">
+
+    <label for="partnerYouTube">Partner YouTube:</label>
+    <input type="url" id="partnerYouTube" name="partnerYouTube">
+
+    <label for="partnerTikTok">Partner TikTok:</label>
+    <input type="url" id="partnerTikTok" name="partnerTikTok">
+
+    <label for="partnerTwitch">Partner Twitch:</label>
+    <input type="url" id="partnerTwitch" name="partnerTwitch">
+
+    <label for="partnerPicture">Partner Picture:</label>
+    <input type="file" id="partnerPicture" name="partnerPicture" accept="image/*">
+
+    <button type="submit">Add Partner</button>
+  </form>
+</div>
+
+<section id="partners">
+    <h2><?= $this->_('partners_title') ?></h2>
+    <div class="partners-container">
+        <?php foreach ($partners as $partner): ?>
+            <div class="partner">
+                <img src="public/images/partners/<?= htmlspecialchars($partner['picture_path']) ?>" alt="<?= htmlspecialchars($partner['username']) ?>" class="partner-img">
+                <h3><?= htmlspecialchars($partner['username']) ?></h3>
+
+                <div class="social-links">
+                    <?php 
+                    $socialLinks = json_decode($partner['social_links'], true);
+                    foreach ($socialLinks as $social => $link): 
+                        $logoPath = $this->getSocialNetworkLogo($social);
+                    ?>
+                        <a href="<?= htmlspecialchars($link) ?>" target="_blank" class="social-link" aria-label="<?= $this->_('social_link_aria_' . strtolower($social)) ?>">
+                            <img src="<?= htmlspecialchars($logoPath) ?>" alt="<?= htmlspecialchars($social) ?>" class="social-logo">
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <form method="post" action="adminRemovePartnerFromPage" class="inline-form">
+                    <input type="hidden" name="partnerId" value="<?= $partner['id'] ?>">
+                    <button id="removePartnerButton" type="submit" name="removePartner">Remove</button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>

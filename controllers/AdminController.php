@@ -8,6 +8,8 @@ use models\User;
 use models\GoogleUser;
 use models\ChatMessage;
 use models\Items;
+use models\Partners;
+use traits\Translatable;
 
 use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
@@ -26,6 +28,7 @@ use traits\SecurityController;
 class AdminController
 {
     use SecurityController;
+    use Translatable;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -33,6 +36,7 @@ class AdminController
     private ChatMessage $chatmessage;
     private Admin $admin;
     private Items $items;
+    private Partners $partners;
 
     public function __construct()
     {
@@ -42,6 +46,7 @@ class AdminController
         $this->chatmessage = new ChatMessage();
         $this->admin = new Admin();
         $this->items = new Items();
+        $this -> partners = new Partners();
     }
 
     public function adminLandingPage(): void
@@ -390,7 +395,7 @@ class AdminController
                     $pictureFileName = "public/images/game/{$gameUsername}.jpg";
     
                     // Resize and save the image
-                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 50, 50)) {
+                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 250, 250)) {
                         $addChar = $this->admin->addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $gameDate, $gameGame
                         );
     
@@ -420,55 +425,224 @@ class AdminController
         }
     }
 
-    public function resizeAndSaveImage($sourcePath, $destinationPath, $width, $height)
-{
-    try {
-        $imageInfo = getimagesize($sourcePath);
-        if (!$imageInfo) {
-            throw new Exception("Failed to get image size.");
+    public function adminPartnerPage(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing()|| $this->isAdmin())
+        ) {
+            $this->initializeLanguage();
+            $partners = $this -> partners -> getPartners();
+            $current_url = "https://ur-sg.com/adminPartners";
+            $template = "views/admin/admin_partners";
+            $picture = "ursg-preview-small";
+            $page_title = "URSG - Admin Partners";
+            require "views/layoutAdmin.phtml";
+        } else {
+            header("Location: /");
+            exit();
         }
-    
-        switch ($imageInfo[2]) {
-            case IMAGETYPE_JPEG:
-                $srcImage = imagecreatefromjpeg($sourcePath);
-                break;
-            case IMAGETYPE_PNG:
-                $srcImage = imagecreatefrompng($sourcePath);
-                break;
-            case IMAGETYPE_GIF:
-                $srcImage = imagecreatefromgif($sourcePath);
-                break;
-            default:
-                throw new Exception("Unsupported image type.");
-        }
-    
-        $dstImage = imagecreatetruecolor($width, $height);
-        if (!$dstImage) {
-            throw new Exception("Failed to create true color image.");
-        }
-    
-        $resampled = imagecopyresampled(
-            $dstImage,
-            $srcImage,
-            0, 0, 0, 0,
-            $width, $height,
-            $imageInfo[0], $imageInfo[1]
-        );
-        if (!$resampled) {
-            throw new Exception("Failed to resample the image.");
-        }
-    
-        $saved = imagejpeg($dstImage, $destinationPath, 90);
-        if (!$saved) {
-            throw new Exception("Failed to save the image.");
-        }
-    
-        return true;
-    } catch (Exception $e) {
-        error_log("Image processing error: " . $e->getMessage());
-        return false;
     }
-}
+
+    public function adminRemovePartnerFromPage() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing()|| $this->isAdmin())
+        ) {
+            if (isset($_POST['partnerId'])) {
+                $partnerId = $_POST['partnerId'];
+                $removePartner = $this->partners->removePartner($partnerId);
+
+                if ($removePartner) {
+                    $this->admin->logAdminAction($_SESSION['userId'], null, "Removed Partner");
+                    header("Location: /adminPartnerPage?message=Partner removed successfully");
+                    exit();
+                } else {
+                    header("Location: /adminPartnerPage?message=Error removing partner");
+                    exit();
+                }
+            } else {
+                header("Location: /adminPartnerPage?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminAddPartnerFromPage()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing() || $this->isAdmin())
+        ) {
+            if (isset($_POST['partnerUsername'])) {
+                $partnerUsername = trim($_POST['partnerUsername']);
+                $socialLinks = [];
+
+                // Define regex for each social platform
+                $socialPatterns = [
+                    "X" => '/^https?:\/\/(www\.)?(x\.com|twitter\.com)\/[A-Za-z0-9_]+(\/|\?.*)?$/',
+                    "Instagram" => '/^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9_.]+(\/)?$/',
+                    "YouTube" => '/^https?:\/\/(www\.)?(youtube\.com\/(channel|c|user|@)[\/@]?[A-Za-z0-9_-]+|youtu\.be\/[A-Za-z0-9_-]+)/',
+                    "TikTok" => '/^https?:\/\/(www\.)?tiktok\.com\/@?[A-Za-z0-9_.]+(\/)?$/',
+                    "Twitch" => '/^https?:\/\/(www\.)?twitch\.tv\/[A-Za-z0-9_]+(\/)?$/'
+                ];
+
+                // Validate each social field
+                foreach ($socialPatterns as $key => $pattern) {
+                    $formKey = 'partner' . $key;
+                    if (!empty($_POST[$formKey]) && preg_match($pattern, $_POST[$formKey])) {
+                        $socialLinks[$key] = $_POST[$formKey];
+                    }
+                }
+
+                // Handle the uploaded picture
+                if (isset($_FILES['partnerPicture']) && $_FILES['partnerPicture']['error'] === UPLOAD_ERR_OK) {
+                    $pictureTmpName = $_FILES['partnerPicture']['tmp_name'];
+                    $imageInfo = getimagesize($pictureTmpName);
+
+                    if (!$imageInfo) {
+                        throw new \Exception("Invalid image file.");
+                    }
+
+                    switch ($imageInfo[2]) {
+                        case IMAGETYPE_JPEG:
+                            $extension = 'jpg';
+                            break;
+                        case IMAGETYPE_PNG:
+                            $extension = 'png';
+                            break;
+                        case IMAGETYPE_GIF:
+                            $extension = 'gif';
+                            break;
+                        default:
+                            throw new \Exception("Unsupported image type.");
+                    }
+
+                    $pictureFileName = "public/images/partners/{$partnerUsername}.{$extension}";
+                    $pictureFileDb = "{$partnerUsername}.{$extension}";
+
+                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 250, 250)) {
+                        $addPartner = $this->partners->addPartner($partnerUsername, json_encode($socialLinks, JSON_UNESCAPED_SLASHES), $pictureFileDb);
+
+                        if ($addPartner) {
+                            $this->admin->logAdminAction($_SESSION['userId'], null, "Added Partner");
+                            header("Location: /adminPartnerPage?message=Partner added successfully");
+                            exit();
+                        } else {
+                            header("Location: /adminPartnerPage?message=Error adding partner");
+                            exit();
+                        }
+                    } else {
+                        header("Location: /adminPartnerPage?message=Error resizing image");
+                        exit();
+                    }
+                } else {
+                    header("Location: /adminPartnerPage?message=Image upload failed");
+                    exit();
+                }
+            } else {
+                header("Location: /adminPartnerPage?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function resizeAndSaveImage($sourcePath, $destinationPath, $maxWidth, $maxHeight)
+    {
+        try {
+            $imageInfo = getimagesize($sourcePath);
+            if (!$imageInfo) {
+                throw new \Exception("Failed to get image size.");
+            }
+
+            list($originalWidth, $originalHeight) = $imageInfo;
+            $mimeType = $imageInfo['mime'];
+
+            // Calculate new size preserving aspect ratio
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+            $newWidth = (int)($originalWidth * $ratio);
+            $newHeight = (int)($originalHeight * $ratio);
+
+            // Create image from source
+            switch ($imageInfo[2]) {
+                case IMAGETYPE_JPEG:
+                    $srcImage = imagecreatefromjpeg($sourcePath);
+                    $format = 'jpeg';
+                    break;
+                case IMAGETYPE_PNG:
+                    $srcImage = imagecreatefrompng($sourcePath);
+                    $format = 'png';
+                    break;
+                case IMAGETYPE_GIF:
+                    $srcImage = imagecreatefromgif($sourcePath);
+                    $format = 'gif';
+                    break;
+                default:
+                    throw new \Exception("Unsupported image type.");
+            }
+
+            // Create destination image
+            $dstImage = imagecreatetruecolor($newWidth, $newHeight);
+
+            // Handle transparency
+            if ($format === 'png' || $format === 'gif') {
+                imagecolortransparent($dstImage, imagecolorallocatealpha($dstImage, 0, 0, 0, 127));
+                imagealphablending($dstImage, false);
+                imagesavealpha($dstImage, true);
+            }
+
+            // Resize
+            $resampled = imagecopyresampled(
+                $dstImage,
+                $srcImage,
+                0, 0, 0, 0,
+                $newWidth, $newHeight,
+                $originalWidth, $originalHeight
+            );
+            if (!$resampled) {
+                throw new \Exception("Failed to resample the image.");
+            }
+
+            // Save in same format
+            switch ($format) {
+                case 'jpeg':
+                    $saved = imagejpeg($dstImage, $destinationPath, 90);
+                    break;
+                case 'png':
+                    $saved = imagepng($dstImage, $destinationPath);
+                    break;
+                case 'gif':
+                    $saved = imagegif($dstImage, $destinationPath);
+                    break;
+            }
+
+            if (!$saved) {
+                throw new \Exception("Failed to save the image.");
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            error_log("Image processing error: " . $e->getMessage());
+            return false;
+        }
+    }
     
 
     public function adminUpdateCurrency()
@@ -1062,5 +1236,20 @@ class AdminController
             exit();
         }
     }
+
+    private function getSocialNetworkLogo($social)
+    {
+        $logos = [
+            'facebook' => 'public/images/facebook-logo.png',
+            'x' => 'public/images/twitter_user.png',
+            'instagram' => 'public/images/instagram-logo.png',
+            'twitch' => 'public/images/twitch_user.png',
+            'youtube' => 'public/images/youtube_user.png',
+            'tiktok' => 'public/images/tiktok.png',
+        ];
+
+        return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
+    }
+
     
 }

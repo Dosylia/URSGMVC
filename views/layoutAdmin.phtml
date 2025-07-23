@@ -23,6 +23,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="adminGame">Game</a></li>
         <li><a href="adminReports">Reports</a></li>
       <?php endif; ?>
+      <?php if ($this->isAdmin() || $this->isMarketing()) : ?>
+        <li><a href="adminPartnerPage">Partners</a></li>
+      <?php endif; ?>
       <!-- <li><a href="adminStats">Statistics</a></li>
       <li><a href="adminSettings">Settings</a></li> -->
     </ul>
