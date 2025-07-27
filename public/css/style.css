@@ -8701,6 +8701,72 @@ justify-content: center;
 
 /* End admin partner page */
 
+/* Discord Bot Controls */
+
+#discord-bot-controls {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+#discord-bot-controls h2 {
+  text-align: center;
+  color: var(--main--red);
+  margin-bottom: 1rem;
+}
+
+.dark-mode #discord-bot-controls {
+  background-color: var(--ligher--grey);
+}
+
+#discord-bot-controls button {
+  align-self: flex-start;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  background-color: var(--main--red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#discord-bot-controls button:hover {
+  opacity: 0.85;
+}
+
+#discordCommandInput {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.dark-mode #discordCommandInput {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+#discordBotResponse {
+  font-size: 0.9rem;
+  color: #444;
+  margin-top: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.dark-mode #discordBotResponse {
+  color: #ccc;
+}
+
 /* Statistics Section */
 .game-stats {
   display: flex;

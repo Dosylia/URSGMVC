@@ -114,6 +114,8 @@
                     <div class='actions'>
                         <?php if ($this->isAdmin()) : ?>
                             <button class='delete censorBioYes' onclick="openConfirmationPopupBanUser('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Ban</button>
+                        <?php endif; ?>
+                        <?php if ($this->isAdmin() || $this->isMarketing()) : ?>
                             <button class='delete addPartner' onclick="openConfirmationPopupAddPartner('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Add Partner</button>
                             <button class='delete removePartner' onclick="openConfirmationPopupRemovePartner('<?= $user['user_id'] ?>', '<?= $user['user_username'] ?>')">Remove Partner</button>
                         <?php endif; ?>

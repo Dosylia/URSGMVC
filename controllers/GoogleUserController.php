@@ -708,6 +708,12 @@ class GoogleUserController
                         $user = $this->user->getUserByUsername($googleUser['user_username']);
                         if ($user)
                         {
+                            $adminToken = '';
+                            if ($user['user_id'] === 157 || $user['user_id'] === 158) {
+                                require 'keys.php';
+                                $adminToken = $adminTokenSecret;
+                            }
+
                             $_SESSION['userId'] = $user['user_id'];
                             $_SESSION['username'] = $user['user_username'];
                             $_SESSION['gender'] = $user['user_gender'];
@@ -742,8 +748,9 @@ class GoogleUserController
                                             'user' => $user,
                                             'leagueUser' => $lolUser,
                                             'lookingForUser' => $lfUser,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
-                                        );                                
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                            'adminToken' => $adminToken
+                                        );
                                     } else {
                                         $response = array(
                                             'message' => 'Success',
@@ -754,7 +761,8 @@ class GoogleUserController
                                             'googleUser' => $testGoogleUser,
                                             'user' => $user,
                                             'leagueUser' => $lolUser,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                            'adminToken' => $adminToken
                                         );
                                     }
                                 } else {
@@ -765,7 +773,8 @@ class GoogleUserController
                                         'user' => $user,
                                         'userExists' => true,
                                         'leagueUserExists' => false,
-                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                        'adminToken' => $adminToken
                                     );
                                 }
                             } else {
@@ -791,7 +800,8 @@ class GoogleUserController
                                             'valorantUser' => $valorantUser,
                                             'lookingForUser' => $lfUser,
                                             'valorantUserExists' => true,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                            'adminToken' => $adminToken
                                         );                                
                                     } else {
                                         $response = array(
@@ -804,7 +814,8 @@ class GoogleUserController
                                             'user' => $user,
                                             'valorantUser' => $valorantUser,
                                             'valorantUserExists' => true,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                            'adminToken' => $adminToken
                                         );
                                     }
                                 } else {
@@ -816,7 +827,8 @@ class GoogleUserController
                                         'userExists' => true,
                                         'leagueUserExists' => false,
                                         'valorantUserExists' => false,
-                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                        'adminToken' => $adminToken
                                     );
                                 }
                             }
@@ -826,7 +838,8 @@ class GoogleUserController
                                 'newUser' => false,
                                 'googleUser' => $testGoogleUser,
                                 'userExists' => false,
-                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                                'adminToken' => $adminToken
                             );
                         }
                     } else {
@@ -835,7 +848,8 @@ class GoogleUserController
                             'newUser' => false,
                             'googleUser' => $testGoogleUser,
                             'userExists' => false,
-                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                            'adminToken' => $adminToken
                         );
                     }
                 }
@@ -862,7 +876,6 @@ class GoogleUserController
                 if($createGoogleUser) 
                 {
                     require 'keys.php';
-    
                     $this->setGoogleUserId($createGoogleUser);
     
                     $lifetime = 7 * 24 * 60 * 60;

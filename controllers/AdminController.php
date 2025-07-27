@@ -24,6 +24,7 @@ use Google\Analytics\Data\V1beta\Dimension;
 require 'vendor/autoload.php';
 
 use traits\SecurityController;
+use services\DiscordBotService;
 
 class AdminController
 {
@@ -1249,6 +1250,105 @@ class AdminController
         ];
 
         return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
+    }
+
+    public function adminDiscordBotPage(): void
+    {
+        if ($this->isAdmin()) {
+            $this->initializeLanguage();
+            $current_url = "https://ur-sg.com/adminDiscordBot";
+            $template = "views/admin/admin_discord_bot";
+            $picture = "ursg-preview-small";
+            $page_title = "URSG - Admin Discord Bot";
+            require "views/layoutAdmin.phtml";
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function discordBotStatus()
+    {
+        // Validate Authorization Header
+        require 'keys.php';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if ($token !== $adminTokenSecret) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+        $result = \services\DiscordBotService::status();
+        echo json_encode($result);
+        exit();
+    }
+
+    public function discordBotControl()
+    {
+        // Validate Authorization Header
+        require 'keys.php';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if ($token !== $adminTokenSecret) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+        $action = $_POST['action'] ?? '';
+        $result = null;
+
+        switch ($action) {
+            case 'start':
+                $result = DiscordBotService::start();
+                break;
+            case 'stop':
+                $result = DiscordBotService::stop();
+                break;
+            case 'restart':
+                $result = DiscordBotService::restart();
+                break;
+            default:
+                $result = ['success' => false, 'message' => 'Unknown action'];
+        }
+
+        echo json_encode($result);
+        exit();
+    }
+
+    public function discordBotCommand()
+    {
+        // Validate Authorization Header
+        require 'keys.php';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if ($token !== $adminTokenSecret) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+        $command = $_POST['command'] ?? '';
+        $result = DiscordBotService::sendCommand($command);
+
+        echo json_encode($result);
+        exit();
     }
 
     

@@ -234,6 +234,10 @@ $actionMap = [
     'discordClaim' => [DiscordController::class, 'discordClaim'],
     'getLeaderboardUsers' => [UserController::class, 'getLeaderboardUsers'],
     'unbindLoLAccount' => [LeagueOfLegendsController::class, 'unbindLoLAccount'],
+    'adminDiscordBot' => [AdminController::class, 'adminDiscordBotPage'],
+    'discordBotControl' => [AdminController::class, 'discordBotControl'],
+    'discordBotCommand' => [AdminController::class, 'discordBotCommand'],
+    'discordBotStatus' => [AdminController::class, 'discordBotStatus'],
 ];
 
 $action = "home";
