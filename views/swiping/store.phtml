@@ -46,10 +46,10 @@
                 <div class="buy-button-container">
                     <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
                               in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
-                        <?php if (($item['items_category'] === 'role')) : ?>
+                        <?php if (($item['items_category'] === 'role') && $user['user_isVip'] === 1) : ?>
                             <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get premium on Discord</button>
                         <?php else : ?>
-                            <button class="buy-button-owned" disabled>Owned</button>
+                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
                         <?php endif; ?>
                     <?php else : ?>
                         <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>

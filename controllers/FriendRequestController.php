@@ -196,11 +196,22 @@ class FriendRequestController
 
             if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
+                // add 100 to add for each day of streak
+                $streak = $user['user_streak'];
+                $rewardAmount += $streak * 100;
                 $this->user->addCurrency($userId, $rewardAmount);
                 $this->user->markUserOnline($userId);
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
+                     // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
+                    $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $yesterday = date('Y-m-d', strtotime('-1 day'));
+                    if ($lastRewardDate == $yesterday) {
+                        $this->user->incrementStreak($userId);
+                    } else {
+                        $this->user->resetStreak($userId);
+                    }
                 }
             }
 
@@ -1257,11 +1268,22 @@ class FriendRequestController
 
             if (date('Y-m-d', $lastRequestTimeReward) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
+                // add 100 to add for each day of streak
+                $streak = $user['user_streak'];
+                $rewardAmount += $streak * 100;
                 $this->user->addCurrency($userId, $rewardAmount);
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
                     $givenRequestReward = true;
+                    // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
+                    $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $yesterday = date('Y-m-d', strtotime('-1 day'));
+                    if ($lastRewardDate == $yesterday) {
+                        $this->user->incrementStreak($userId);
+                    } else {
+                        $this->user->resetStreak($userId);
+                    }
                 }
             }
     

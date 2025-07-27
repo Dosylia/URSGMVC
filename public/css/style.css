@@ -2418,6 +2418,18 @@ font-size: 0.7em;
   max-width: 90%;
 }
 
+#showMatchingUser {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#showMatchingUser h3 {
+  font-size: 2rem;
+  color: var(--main--red);
+  margin-bottom: 1rem;
+}
+
 /* Progress Bar Container */
 #progressBarContainer {
   width: 100%;

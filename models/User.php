@@ -1097,6 +1097,46 @@ class User extends DataBase
         }
     }
 
+    public function incrementStreak($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_streak` = `user_streak` + 1
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $incrementStreakTest = $query -> execute([$userId]);
+
+        if ($incrementStreakTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function resetStreak($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_streak` = 0
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $resetStreakTest = $query -> execute([$userId]);
+
+        if ($resetStreakTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function savePersonalityTestResult($userId, $result)
     {
         $query = $this -> bdd -> prepare("
@@ -1115,6 +1155,30 @@ class User extends DataBase
         } else {
             return false;
         }
+    }
+
+    public function getMatchingPersonalityUser($personalityType)
+    {
+        $query = $this->bdd->prepare("
+            SELECT
+                u.user_id,
+                u.user_username,
+                u.user_picture,
+                JSON_UNQUOTE(JSON_EXTRACT(u.user_personalityTestResult, ?)) AS score
+            FROM
+                `user` u
+            WHERE
+                JSON_EXTRACT(u.user_personalityTestResult, ?) IS NOT NULL
+            ORDER BY
+                score DESC,
+                RAND()
+            LIMIT 1
+        ");
+
+        $jsonPath = '$.' . $personalityType;
+
+        $query->execute([$jsonPath, $jsonPath]);
+        return $query->fetch();
     }
 
     public function getPersonalityTestResult($userId)

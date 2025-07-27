@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    discordRoleButton.addEventListener('click', function() {
+    discordRoleButton?.addEventListener('click', function() {
         const itemId = this.getAttribute('data-item-id');
         getDiscordRole(itemId);
     });
