@@ -8,12 +8,15 @@ use models\User;
 use models\GoogleUser;
 use models\ChatMessage;
 use models\Items;
+use models\Partners;
+use traits\Translatable;
 
 use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\FilterExpression;
 use Google\Analytics\Data\V1beta\Filter;
+use Google\Analytics\Data\V1beta\FilterExpressionList;
 use Google\Analytics\Data\V1beta\Filter\StringFilter;
 use Google\Analytics\Data\V1beta\Dimension;
 
@@ -25,6 +28,7 @@ use traits\SecurityController;
 class AdminController
 {
     use SecurityController;
+    use Translatable;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -32,6 +36,7 @@ class AdminController
     private ChatMessage $chatmessage;
     private Admin $admin;
     private Items $items;
+    private Partners $partners;
 
     public function __construct()
     {
@@ -41,6 +46,7 @@ class AdminController
         $this->chatmessage = new ChatMessage();
         $this->admin = new Admin();
         $this->items = new Items();
+        $this -> partners = new Partners();
     }
 
     public function adminLandingPage(): void
@@ -65,10 +71,13 @@ class AdminController
             $dailyActivity = $this-> admin -> dailyActivity();
             $weeklyActivity = $this-> admin -> weeklyActivity();
             $pageViews = $this->fetchPageViews();
-            $returningUserCount = $this->fetchReturningUserCountByEvent();
-            $matchCreatedCount = $this->fetchMatchCreatedCount();
-            $newUserCount = $this->fetchNewUserCount();
             $funnelConversions = $this->getFunnelConversion();
+            $eventCounts = $this->fetchMultipleEventCounts();
+            $returningUserCount   = $eventCounts['returning_user'] ?? 0;
+            $matchCreatedCount    = $eventCounts['match_created'] ?? 0;
+            $newUserCount         = $eventCounts['new_user'] ?? 0;
+            $LoggedOnUserCount    = $eventCounts['login'] ?? 0;
+            $deletedAccountCount  = $eventCounts['deleted_account'] ?? 0;
             $dailyActivityJson = json_encode($dailyActivity);
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
@@ -83,14 +92,20 @@ class AdminController
         }
     }
 
+    private function getAnalyticsClient()
+    {
+        static $client = null;
+        if ($client === null) {
+            $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
+            $client = new BetaAnalyticsDataClient(['credentials' => $keyFilePath]);
+        }
+        return $client;
+    }
+
     public function fetchPageViews()
     {
-        $property_id = '496417395'; 
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
+        $client = $this->getAnalyticsClient();
+        $property_id = '496417395';
 
         $response = $client->runReport([
             'property' => 'properties/' . $property_id,
@@ -120,146 +135,54 @@ class AdminController
         return $results;
     }
 
-    public function fetchReturningUserCountByEvent()
+    public function fetchMultipleEventCounts()
     {
+        $client = $this->getAnalyticsClient();
         $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
 
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'returning_user',
-                ]),
-            ]),
-        ]);
+        $eventNames = [
+            'returning_user',
+            'new_user',
+            'match_created',
+            'login',
+            'deleted_account'
+        ];
+
+        // Build OR filter for events
+        $expressions = array_map(function ($name) {
+            return new FilterExpression([
+                'filter' => new Filter([
+                    'field_name' => 'eventName',
+                    'string_filter' => new StringFilter(['value' => $name]),
+                ])
+            ]);
+        }, $eventNames);
 
         $response = $client->runReport([
             'property' => 'properties/' . $property_id,
             'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
-            ],
-            'dimensions' => [new Dimension(['name' => 'eventName'])], // This was missing!
-            'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
-        }
-
-        return $count;
-    }
-
-    public function fetchNewUserCount()
-    {
-        $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
-
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'new_user',
-                ]),
-            ]),
-        ]);
-
-        $response = $client->runReport([
-            'property' => 'properties/' . $property_id,
-            'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
+                new DateRange(['start_date' => '30daysAgo', 'end_date' => 'today']),
             ],
             'dimensions' => [new Dimension(['name' => 'eventName'])],
             'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
-        }
-
-        return $count;
-    }
-
-    public function fetchMatchCreatedCount()
-    {
-        $property_id = '496417395';
-        $keyFilePath = __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json';
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => $keyFilePath
-        ]);
-
-        $dimensionFilter = new FilterExpression([
-            'filter' => new Filter([
-                'field_name' => 'eventName',
-                'string_filter' => new StringFilter([
-                    'value' => 'match_created',
-                ]),
+            'dimensionFilter' => new FilterExpression([
+                'or_group' => new FilterExpressionList(['expressions' => $expressions])
             ]),
         ]);
 
-        $response = $client->runReport([
-            'property' => 'properties/' . $property_id,
-            'dateRanges' => [
-                new DateRange([
-                    'start_date' => '30daysAgo',
-                    'end_date' => 'today',
-                ]),
-            ],
-            'dimensions' => [new Dimension(['name' => 'eventName'])],
-            'metrics' => [new Metric(['name' => 'eventCount'])],
-            'dimensionFilter' => $dimensionFilter,
-        ]);
-
-        $count = 0;
-        $rows = $response->getRows();
-        
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $metricValues = $row->getMetricValues();
-                if (!empty($metricValues) && $metricValues[0] !== null) {
-                    $count += intval($metricValues[0]->getValue());
-                }
-            }
+        $results = array_fill_keys($eventNames, 0);
+        foreach ($response->getRows() as $row) {
+            $eventName = $row->getDimensionValues()[0]->getValue();
+            $count = $row->getMetricValues()[0]->getValue();
+            $results[$eventName] = (int)$count;
         }
 
-        return $count;
+        return $results;
     }
 
     public function getFunnelConversion($startDate = '30daysAgo')
     {
-        $client = new BetaAnalyticsDataClient([
-            'credentials' => __DIR__ . '/../config/ursg-389213-9698aca8b0a6.json'
-        ]);
+        $client = $this->getAnalyticsClient();
         $property_id = '496417395';
 
         // Update: Add 'customEvent:page_path' to dimensions
@@ -272,6 +195,7 @@ class AdminController
                 new Dimension(['name' => 'customEvent:visitor_id']),
                 new Dimension(['name' => 'eventName']),
                 new Dimension(['name' => 'pagePath']),
+                new Dimension(['name' => 'date']),
             ],
             'metrics' => [
                 new Metric(['name' => 'eventCount']),
@@ -299,19 +223,23 @@ class AdminController
 
         $users = [];
         $eventCounts = [];
+        $landingViewTimestamps = [];
 
         foreach ($rows as $index => $row) {
             $dimensionValues = $row->getDimensionValues();
             $metricValues = $row->getMetricValues();
 
-            if (count($dimensionValues) >= 3 && count($metricValues) >= 1) {
+            if (count($dimensionValues) >= 4 && count($metricValues) >= 1) {
                 $visitorId = $dimensionValues[0]->getValue();
                 $eventName = $dimensionValues[1]->getValue();
                 $pagePath = $dimensionValues[2]->getValue();
+                $eventTimestampStr = $dimensionValues[3]->getValue(); // ISO 8601 format
+                $eventTimestamp = strtotime($eventTimestampStr);
+
                 $eventCount = intval($metricValues[0]->getValue());
 
                 if ($index < 10) {
-                    error_log("Row $index: visitor_id='$visitorId', event='$eventName', path='$pagePath', count=$eventCount");
+                    error_log("Row $index: visitor_id='$visitorId', event='$eventName', path='$pagePath', time='$eventTimestampStr', count=$eventCount");
                 }
 
                 // Count event totals
@@ -326,9 +254,16 @@ class AdminController
                         $users[$visitorId] = [];
                     }
 
-                    // Push event — distinguish landing page view
                     if ($eventName === 'page_view' && $pagePath === '/') {
-                        $users[$visitorId][] = 'landing_page_view';
+                        // Only count landing_page_view once per visitor every 7 days
+                        $lastLanding = $landingViewTimestamps[$visitorId] ?? null;
+                        $date = $dimensionValues[3]->getValue();
+                        $eventDate = \DateTime::createFromFormat('Ymd', $date)->getTimestamp();
+
+                        if (!$lastLanding || ($eventDate - $lastLanding) >= (7 * 24 * 60 * 60)) {
+                            $users[$visitorId][] = 'landing_page_view';
+                            $landingViewTimestamps[$visitorId] = $eventDate;
+                        }
                     } else {
                         $users[$visitorId][] = $eventName;
                     }
@@ -353,8 +288,8 @@ class AdminController
 
             if ($hasLanding) $totalLanding++;
             if ($hasLanding && $hasNewUser) $totalSignup++;
-            if ($hasLanding && $hasNewUser && $hasLogin) $totalLogin++;
-            if ($hasLanding && $hasNewUser && $hasLogin && $hasMatch) $totalMatch++;
+            if ($hasLogin) $totalLogin++;
+            if ($hasLogin && $hasMatch) $totalMatch++;
             if ($hasLanding && $hasNewUser && $hasMatch) $totalSignupToMatch++;
         }
 
@@ -460,7 +395,7 @@ class AdminController
                     $pictureFileName = "public/images/game/{$gameUsername}.jpg";
     
                     // Resize and save the image
-                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 50, 50)) {
+                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 250, 250)) {
                         $addChar = $this->admin->addCharacterGame($gameUsername, $gameMain, $hintAffiliation, $hintGender, $hintGuess, $gameDate, $gameGame
                         );
     
@@ -490,55 +425,224 @@ class AdminController
         }
     }
 
-    public function resizeAndSaveImage($sourcePath, $destinationPath, $width, $height)
-{
-    try {
-        $imageInfo = getimagesize($sourcePath);
-        if (!$imageInfo) {
-            throw new Exception("Failed to get image size.");
+    public function adminPartnerPage(): void
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing()|| $this->isAdmin())
+        ) {
+            $this->initializeLanguage();
+            $partners = $this -> partners -> getPartners();
+            $current_url = "https://ur-sg.com/adminPartners";
+            $template = "views/admin/admin_partners";
+            $picture = "ursg-preview-small";
+            $page_title = "URSG - Admin Partners";
+            require "views/layoutAdmin.phtml";
+        } else {
+            header("Location: /");
+            exit();
         }
-    
-        switch ($imageInfo[2]) {
-            case IMAGETYPE_JPEG:
-                $srcImage = imagecreatefromjpeg($sourcePath);
-                break;
-            case IMAGETYPE_PNG:
-                $srcImage = imagecreatefrompng($sourcePath);
-                break;
-            case IMAGETYPE_GIF:
-                $srcImage = imagecreatefromgif($sourcePath);
-                break;
-            default:
-                throw new Exception("Unsupported image type.");
-        }
-    
-        $dstImage = imagecreatetruecolor($width, $height);
-        if (!$dstImage) {
-            throw new Exception("Failed to create true color image.");
-        }
-    
-        $resampled = imagecopyresampled(
-            $dstImage,
-            $srcImage,
-            0, 0, 0, 0,
-            $width, $height,
-            $imageInfo[0], $imageInfo[1]
-        );
-        if (!$resampled) {
-            throw new Exception("Failed to resample the image.");
-        }
-    
-        $saved = imagejpeg($dstImage, $destinationPath, 90);
-        if (!$saved) {
-            throw new Exception("Failed to save the image.");
-        }
-    
-        return true;
-    } catch (Exception $e) {
-        error_log("Image processing error: " . $e->getMessage());
-        return false;
     }
-}
+
+    public function adminRemovePartnerFromPage() 
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing()|| $this->isAdmin())
+        ) {
+            if (isset($_POST['partnerId'])) {
+                $partnerId = $_POST['partnerId'];
+                $removePartner = $this->partners->removePartner($partnerId);
+
+                if ($removePartner) {
+                    $this->admin->logAdminAction($_SESSION['userId'], null, "Removed Partner");
+                    header("Location: /adminPartnerPage?message=Partner removed successfully");
+                    exit();
+                } else {
+                    header("Location: /adminPartnerPage?message=Error removing partner");
+                    exit();
+                }
+            } else {
+                header("Location: /adminPartnerPage?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminAddPartnerFromPage()
+    {
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf() &&
+            ($this->isMarketing() || $this->isAdmin())
+        ) {
+            if (isset($_POST['partnerUsername'])) {
+                $partnerUsername = trim($_POST['partnerUsername']);
+                $socialLinks = [];
+
+                // Define regex for each social platform
+                $socialPatterns = [
+                    "X" => '/^https?:\/\/(www\.)?(x\.com|twitter\.com)\/[A-Za-z0-9_]+(\/|\?.*)?$/',
+                    "Instagram" => '/^https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9_.]+(\/)?$/',
+                    "YouTube" => '/^https?:\/\/(www\.)?(youtube\.com\/(channel|c|user|@)[\/@]?[A-Za-z0-9_-]+|youtu\.be\/[A-Za-z0-9_-]+)/',
+                    "TikTok" => '/^https?:\/\/(www\.)?tiktok\.com\/@?[A-Za-z0-9_.]+(\/)?$/',
+                    "Twitch" => '/^https?:\/\/(www\.)?twitch\.tv\/[A-Za-z0-9_]+(\/)?$/'
+                ];
+
+                // Validate each social field
+                foreach ($socialPatterns as $key => $pattern) {
+                    $formKey = 'partner' . $key;
+                    if (!empty($_POST[$formKey]) && preg_match($pattern, $_POST[$formKey])) {
+                        $socialLinks[$key] = $_POST[$formKey];
+                    }
+                }
+
+                // Handle the uploaded picture
+                if (isset($_FILES['partnerPicture']) && $_FILES['partnerPicture']['error'] === UPLOAD_ERR_OK) {
+                    $pictureTmpName = $_FILES['partnerPicture']['tmp_name'];
+                    $imageInfo = getimagesize($pictureTmpName);
+
+                    if (!$imageInfo) {
+                        throw new \Exception("Invalid image file.");
+                    }
+
+                    switch ($imageInfo[2]) {
+                        case IMAGETYPE_JPEG:
+                            $extension = 'jpg';
+                            break;
+                        case IMAGETYPE_PNG:
+                            $extension = 'png';
+                            break;
+                        case IMAGETYPE_GIF:
+                            $extension = 'gif';
+                            break;
+                        default:
+                            throw new \Exception("Unsupported image type.");
+                    }
+
+                    $pictureFileName = "public/images/partners/{$partnerUsername}.{$extension}";
+                    $pictureFileDb = "{$partnerUsername}.{$extension}";
+
+                    if ($this->resizeAndSaveImage($pictureTmpName, $pictureFileName, 250, 250)) {
+                        $addPartner = $this->partners->addPartner($partnerUsername, json_encode($socialLinks, JSON_UNESCAPED_SLASHES), $pictureFileDb);
+
+                        if ($addPartner) {
+                            $this->admin->logAdminAction($_SESSION['userId'], null, "Added Partner");
+                            header("Location: /adminPartnerPage?message=Partner added successfully");
+                            exit();
+                        } else {
+                            header("Location: /adminPartnerPage?message=Error adding partner");
+                            exit();
+                        }
+                    } else {
+                        header("Location: /adminPartnerPage?message=Error resizing image");
+                        exit();
+                    }
+                } else {
+                    header("Location: /adminPartnerPage?message=Image upload failed");
+                    exit();
+                }
+            } else {
+                header("Location: /adminPartnerPage?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function resizeAndSaveImage($sourcePath, $destinationPath, $maxWidth, $maxHeight)
+    {
+        try {
+            $imageInfo = getimagesize($sourcePath);
+            if (!$imageInfo) {
+                throw new \Exception("Failed to get image size.");
+            }
+
+            list($originalWidth, $originalHeight) = $imageInfo;
+            $mimeType = $imageInfo['mime'];
+
+            // Calculate new size preserving aspect ratio
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+            $newWidth = (int)($originalWidth * $ratio);
+            $newHeight = (int)($originalHeight * $ratio);
+
+            // Create image from source
+            switch ($imageInfo[2]) {
+                case IMAGETYPE_JPEG:
+                    $srcImage = imagecreatefromjpeg($sourcePath);
+                    $format = 'jpeg';
+                    break;
+                case IMAGETYPE_PNG:
+                    $srcImage = imagecreatefrompng($sourcePath);
+                    $format = 'png';
+                    break;
+                case IMAGETYPE_GIF:
+                    $srcImage = imagecreatefromgif($sourcePath);
+                    $format = 'gif';
+                    break;
+                default:
+                    throw new \Exception("Unsupported image type.");
+            }
+
+            // Create destination image
+            $dstImage = imagecreatetruecolor($newWidth, $newHeight);
+
+            // Handle transparency
+            if ($format === 'png' || $format === 'gif') {
+                imagecolortransparent($dstImage, imagecolorallocatealpha($dstImage, 0, 0, 0, 127));
+                imagealphablending($dstImage, false);
+                imagesavealpha($dstImage, true);
+            }
+
+            // Resize
+            $resampled = imagecopyresampled(
+                $dstImage,
+                $srcImage,
+                0, 0, 0, 0,
+                $newWidth, $newHeight,
+                $originalWidth, $originalHeight
+            );
+            if (!$resampled) {
+                throw new \Exception("Failed to resample the image.");
+            }
+
+            // Save in same format
+            switch ($format) {
+                case 'jpeg':
+                    $saved = imagejpeg($dstImage, $destinationPath, 90);
+                    break;
+                case 'png':
+                    $saved = imagepng($dstImage, $destinationPath);
+                    break;
+                case 'gif':
+                    $saved = imagegif($dstImage, $destinationPath);
+                    break;
+            }
+
+            if (!$saved) {
+                throw new \Exception("Failed to save the image.");
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            error_log("Image processing error: " . $e->getMessage());
+            return false;
+        }
+    }
     
 
     public function adminUpdateCurrency()
@@ -1132,5 +1236,20 @@ class AdminController
             exit();
         }
     }
+
+    private function getSocialNetworkLogo($social)
+    {
+        $logos = [
+            'facebook' => 'public/images/facebook-logo.png',
+            'x' => 'public/images/twitter_user.png',
+            'instagram' => 'public/images/instagram-logo.png',
+            'twitch' => 'public/images/twitch_user.png',
+            'youtube' => 'public/images/youtube_user.png',
+            'tiktok' => 'public/images/tiktok.png',
+        ];
+
+        return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
+    }
+
     
 }

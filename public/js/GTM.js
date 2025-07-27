@@ -31,7 +31,7 @@ function isReturningUser() {
     localStorage.setItem('visitData', JSON.stringify(userVisitData));
 
     // Define "returning" as: user who first visited 1+ days ago AND last visited over 6 hours ago
-    return daysSinceFirstVisit >= 1 && hoursSinceLastVisit >= 6;
+     return daysSinceFirstVisit >= 7 && hoursSinceLastVisit >= 6;
 }
 
 function pushEvent(eventName, eventCategory, eventLabel, extraParams = {}) {
@@ -45,12 +45,12 @@ function pushEvent(eventName, eventCategory, eventLabel, extraParams = {}) {
         visitor_id: visitorId,
         ...extraParams,
     });
-    // console.log(`Event pushed: ${eventName}`, {
-    //     event_category: eventCategory,
-    //     event_label: eventLabel,
-    //     visitor_id: visitorId,
-    //     ...extraParams,
-    // });
+    console.log(`Event pushed: ${eventName}`, {
+        event_category: eventCategory,
+        event_label: eventLabel,
+        visitor_id: visitorId,
+        ...extraParams,
+    });
 }
 
 function sendPageView(siteLocation) {
@@ -73,6 +73,13 @@ function trackLogin() {
   pushEvent('login', 'Engagement', 'User Login');
 }
 
+// Collect email, so we might contact the user later
+function trackDeleteAccount(email) {
+    pushEvent('delete_account', 'User', 'Account Deleted', {
+        user_email: email || 'unknown',
+    });
+}
+
 function sendReturningUserEvent() {
     if (isReturningUser()) {
         pushEvent('returning_user', 'User', 'Returning User');
@@ -85,3 +92,4 @@ window.sendMatchCreated = sendMatchCreated;
 window.trackNewUser = trackNewUser;
 window.sendReturningUserEvent = sendReturningUserEvent;
 window.trackLogin = trackLogin;
+window.trackDeleteAccount = trackDeleteAccount;

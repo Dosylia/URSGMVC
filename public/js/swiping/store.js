@@ -88,6 +88,16 @@ function buyRole(itemId, userId) {
     });
 }
 
+function getDiscordRole(itemId) {
+    console.log(`Getting Discord role for item ID: ${itemId}`);
+    const placeholderMessage = document.getElementById(`placeholder-message-${itemId}`);
+     placeholderMessage.innerHTML = `
+                Already got role but not on discord?<br/>
+                <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
+                <button onclick="claimDiscordRole()" class="claimPremium">Claim Premium Role on Discord</button>
+            `;
+}
+
 function claimDiscordRole() {
     window.open(
         'https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordClaim&scope=identify',
@@ -100,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let kittyClicks = 0;
     const kittyCard = document.getElementById('kitty-frame-card');
+    const discordRoleButton = document.getElementById('getRoleDiscord');
 
     if (kittyCard) {
         kittyCard.addEventListener('click', () => {
@@ -110,6 +121,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    discordRoleButton.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-item-id');
+        getDiscordRole(itemId);
+    });
 
     buyButtons.forEach(button => {
         button.addEventListener("click", function() {

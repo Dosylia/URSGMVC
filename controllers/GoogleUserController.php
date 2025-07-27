@@ -242,9 +242,9 @@ class GoogleUserController
     private function getSocialNetworkLogo($social)
     {
         $logos = [
-            'facebook' => 'path/to/facebook-logo.png',
+            'facebook' => 'public/images/facebook-logo.png',
             'x' => 'public/images/twitter_user.png',
-            'instagram' => 'path/to/instagram-logo.png',
+            'instagram' => 'public/images/instagram-logo.png',
             'twitch' => 'public/images/twitch_user.png',
             'youtube' => 'public/images/youtube_user.png',
             'tiktok' => 'public/images/tiktok.png',
@@ -1654,7 +1654,7 @@ class GoogleUserController
                     unset($_COOKIE['googleId']);
                 }
     
-                header("location:/?message=Account deleted, Email: ".$deletionData['google_email']);
+                header("location:/?message=Account deleted, Email: ".$deletionData['google_email']."&deleted=true");
                 exit();
             } else {
                 header("location:/?message=Account not found");

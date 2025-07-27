@@ -31,7 +31,20 @@ function updateFriend(frId, userId, status) {
             friendRequestSpan.innerText = '';
             if (data.success) {
                 friendRequestSpan.innerText = data.message;
-
+                // Test that function exist before calling it
+                if (typeof sendMatchCreated === 'function') {
+                    sendMatchCreated();
+                }     
+                // Update requests-badge removing -1 to total or removing it fully if 0
+                const requestsBadge = document.getElementById('requests-badge');
+                if (requestsBadge) {
+                    const currentCount = parseInt(requestsBadge.textContent, 10);
+                    if (currentCount > 1) {
+                        requestsBadge.textContent = currentCount - 1;
+                    } else {
+                        requestsBadge.remove();
+                    }
+                }
                 // Update the friendRequests array and re-render     
                 frId = Number(frId); 
                 friendRequests = friendRequests.filter(request => request.fr_id !== frId);
@@ -121,8 +134,7 @@ function addActionListeners() {
 
     acceptButtons.forEach(button => {
         button.addEventListener('click', function (event) {
-            event.preventDefault();
-            sendMatchCreated();
+            event.preventDefault();         
             const frId = button.getAttribute('data-fr-id');
             let userId = document.getElementById('userId').value;
             const status = button.getAttribute('data-status');

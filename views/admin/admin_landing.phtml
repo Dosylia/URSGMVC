@@ -40,7 +40,8 @@
     </div>
 
     <div class="returning-container">
-      <h2>Returning users last month</h2>
+      <h2>Returning* users last month</h2>
+      <p class="returning-explain">* : Users comming back after being inactive for 7 days</p>
       <p><?= $returningUserCount ?></p>
     </div>
 
@@ -52,6 +53,16 @@
     <div class="new-user-container">
       <h2>New user last month</h2>
       <p><?= $newUserCount ?></p>
+    </div>
+
+    <div class="logged-on-user-container">
+      <h2>Logged on users last month</h2>
+      <p><?= $LoggedOnUserCount ?></p>
+    </div>
+
+    <div class="delete_account-container">
+      <h2>Deleted accounts last month</h2>
+      <p><?= $deletedAccountCount ?></p>
     </div>
   <?php endif; ?>
 
@@ -104,12 +115,6 @@
             'from' => $funnelConversions['totals']['landing'],
             'to' => $funnelConversions['totals']['signup'],
             'percent' => $funnelConversions['landingToSignup']
-          ],
-          [
-            'step' => 'Signup → Login',
-            'from' => $funnelConversions['totals']['signup'],
-            'to' => $funnelConversions['totals']['login'],
-            'percent' => $funnelConversions['signupToLogin']
           ],
           [
             'step' => 'Signup → Match',

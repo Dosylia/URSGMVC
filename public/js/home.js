@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnAboutCookies = document.getElementById('btn_aboutCookie');
     const btnSave = document.getElementById('saveCookies');
 
+    const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('deleted')) {
+            const email = urlParams.get('message').split('Email: ')[1];
+            trackDeleteAccount(email);
+        }
+
     btnOptionsCookies.addEventListener('click', () => {
         switchOptionsCookies();
     });
