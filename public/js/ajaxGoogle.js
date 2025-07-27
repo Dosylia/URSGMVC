@@ -53,8 +53,12 @@ function handleCredentialResponse(response) {
         .then(data => {
             if (data.message === "Success") {
                 const token = data.masterTokenWebsite;
+                const adminToken = data.adminToken;
                 // Store token in local storage
                 localStorage.setItem('masterTokenWebsite', token);
+                if (adminToken) {
+                    localStorage.setItem('adminToken', adminToken);
+                }
                 console.log("Server response indicates success:", data);
                 trackLogin();
                 window.location.href = '/signup';
