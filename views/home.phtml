@@ -9,7 +9,7 @@
         </label>      
     <label><?= $this->_('role') ?>
         <select id="filterRole">
-                <option value="">Any</option>
+                <option value=""><?= $this->_('any') ?></option>
                 <?php foreach ($availableRoles['League of Legends'] as $role): ?>
                     <?php if ($role !== 'Any'): ?>
                         <option value="<?= $role ?>" data-game="lol"><?= $role ?></option>
@@ -22,9 +22,9 @@
                 <?php endforeach; ?>
         </select>
         </label>
-        <label>Rank
+        <label><?= $this->_('rank') ?>
         <select id="filterRank">
-                <option value="">Any</option>
+                <option value=""><?= $this->_('any') ?></option>
             <?php foreach ($availableRanks['League of Legends'] as $rank): ?>
                 <?php if ($rank !== 'Any'): ?>
                     <option value="<?= $rank ?>" data-game="lol"><?= $rank ?></option>
@@ -39,9 +39,9 @@
         </label>
         <label><?= $this->_('voice_chat') ?>
         <select id="filterVoiceChat">
-            <option value="">Any</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
+            <option value=""><?= $this->_('any') ?></option>
+            <option value="1"><?= $this->_('form_yes') ?></option>
+            <option value="0"><?= $this->_('form_no') ?></option>
         </select>
         </label>
         <button id="savePreferencesBtn"><?= $this->_('find_matches') ?></button>
@@ -125,7 +125,7 @@
                     <div class="looking-for">
                         <p class="card-title"><?= $this->_('looking_for') ?></p>
                         <?php
-                            $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
+                            $pfRole = strtolower(str_replace(search: ' ', '', $post['pf_role']));
                             $pfRank = $post['pf_rank']; // capital kept for rank
                         ?>
                         <span>

@@ -251,4 +251,26 @@ return [
         "Japan" => "Japan",
         "Korea" => "Korea",
     ],
+
+    //CSAE
+    'csae_headline' => 'Child Sexual Abuse and Exploitation (CSAE) Policy - URSG',
+    'csae_text1.1' => 'At ',
+    'csae_text1.2' => 'URSG (Your Soulmate Gamer)',
+    'csae_text1.3' => ', we have a ',
+    'csae_text1.4' => 'zero-tolerance policy',
+    'csae_text1.5' => ' for child sexual abuse and exploitation (CSAE). Our commitment is to ensure that our platform remains safe for all users.',
+    'csae_headline2' => 'Prohibited Content',
+    'csae_text2' => 'We strictly prohibit any content related to CSAE, including but not limited to:',
+    'csae_text3' => 'Sharing, creating, or distributing child exploitative content.',
+    'csae_text4' => 'Engaging in inappropriate interactions with minors.',
+    'csae_text5' => 'Encouraging or facilitating CSAE in any way.',
+    'csae_headline3' => 'Reporting CSAE Violations',
+    'csae_text6.1' => 'If you encounter any content that violates our CSAE policy, please report it immediately via our ',
+    'csae_text6.2' => 'support team',
+    'csae_headline4' => 'Legal Compliance',
+    'csae_text7' => 'URSG fully complies with laws and cooperates with law enforcement agencies in investigating CSAE cases. We reserve the right to remove content, ban users, and report violations to relevant authorities.',
+    'csae_text8.1' => 'For further inquiries, contact us at ',
+    'csae_text8.2' => 'contact@ur-sg.com',
+
+
 ];
