@@ -4446,9 +4446,17 @@ section.siteMap tr:nth-child(even) {
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      width: 100%;
-      padding: 0 20px;
+      width: 95%;
+      padding: 10px 20px;
       box-sizing: border-box;
+      background-color: #e1d0d0;
+      border-radius: 20px;
+      width: 95%;
+      margin: 0 auto 10px auto;
+    }
+
+    .dark-mode .friend_request_ctn {
+      background-color: #474242;
     }
 
 

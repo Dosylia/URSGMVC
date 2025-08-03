@@ -33,18 +33,21 @@ function fetchFriendRequest(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success && data.pendingRequests) {
+            const displayMoneyWon = document.getElementById('displayMoneyWon');
             numberOfFailsPending = 0;   
             // Filter out existing pending notifications
             if (data.givenDailyReward || data.givenRequestReward) {
                 if (data.givenDailyReward) {
                 displayNotification(
-                    `You just won 500 credits for connecting today!`,
+                    `You just won ${data.amountGivenDailyReward} credits for connecting today!`,
                     userId
                 );
                     if (displayMoneyWon) {
-                        displayMoneyWon.textContent = `500`;
+                            displayMoneyWon.innerHTML = `
+                                ${data.amountGivenDailyReward}
+                                <div style="font-size:14px;margin-top:5px;">Streak: ${data.streak}</div>
+                            `;
                         displayMoneyWon.style.display = 'block';
-
                         displayMoneyWon.style.animation = 'none';
                         displayMoneyWon.offsetHeight;
                         displayMoneyWon.style.animation = 'rewardBounce 5s ease-out forwards';
@@ -54,7 +57,6 @@ function fetchFriendRequest(userId) {
                         }, 7000);
                     }
                 } else if (data.givenRequestReward) {
-                    const displayMoneyWon = document.getElementById('displayMoneyWon');
                     if (displayMoneyWon) {
                         console.log('Money won:', data.amountGiven);
                         displayMoneyWon.textContent = `+ ${data.amountGiven}`;
