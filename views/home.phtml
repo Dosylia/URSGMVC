@@ -125,7 +125,7 @@
                     <div class="looking-for">
                         <p class="card-title"><?= $this->_('looking_for') ?></p>
                         <?php
-                            $pfRole = strtolower(str_replace(search: ' ', '', $post['pf_role']));
+                            $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
                             $pfRank = $post['pf_rank']; // capital kept for rank
                         ?>
                         <span>
