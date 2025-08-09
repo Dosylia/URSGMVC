@@ -1,7 +1,7 @@
 <?php
 
 use Dotenv\Dotenv;
-require __DIR__ . '/../vendor/autoload.php';
+require 'vendor/autoload.php';
 
 // Detect which env file to load
 $env = getenv('APP_ENV') ?: 'local';
@@ -17,8 +17,14 @@ switch ($env) {
         break;
 };
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../', $envFile);
+$dotenv = Dotenv::createImmutable(__DIR__, $envFile);
 $dotenv->load();
+
+error_log("ENV FILE: " . $envFile);
+error_log("db_server: " . ($_ENV['db_server'] ?? 'NOT SET'));
+error_log("db_name: " . ($_ENV['db_name'] ?? 'NOT SET'));
+error_log("db_user: " . ($_ENV['db_user'] ?? 'NOT SET'));
+error_log("db_password: " . ($_ENV['db_password'] ?? 'NOT SET'));
 
 // Set session cookie parameters
 $cookieParams = session_get_cookie_params();
