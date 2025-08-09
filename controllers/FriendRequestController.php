@@ -196,11 +196,22 @@ class FriendRequestController
 
             if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
+                // add 100 to add for each day of streak
+                $streak = $user['user_streak'];
+                $rewardAmount += $streak * 100;
                 $this->user->addCurrency($userId, $rewardAmount);
                 $this->user->markUserOnline($userId);
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
+                     // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
+                    $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $yesterday = date('Y-m-d', strtotime('-1 day'));
+                    if ($lastRewardDate == $yesterday) {
+                        $this->user->incrementStreak($userId);
+                    } else {
+                        $this->user->resetStreak($userId);
+                    }
                 }
             }
 
@@ -685,12 +696,6 @@ class FriendRequestController
             }
     
             $receiverId = $this->validateInput($_POST["receiverId"]);
-            
-            // Validate token for user
-            if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                return;
-            }
     
             $this->setSenderId((int)$senderId);
             $this->setReceiverId((int)$receiverId);
@@ -1254,14 +1259,26 @@ class FriendRequestController
             $amountGiven = 0;
             $givenRequestReward = false;
             $rewardAmount = 0;
+            $updateLastRewardTime = false;
+            $streak = $user['user_streak'];
 
             if (date('Y-m-d', $lastRequestTimeReward) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;
+                // add 100 to add for each day of streak
+                $rewardAmount += $streak * 100;
                 $this->user->addCurrency($userId, $rewardAmount);
                 $updateLastRewardTime = $this->user->updateLastRewardTime($userId);
                 if ($updateLastRewardTime) {
                     $givenDailyReward = true;
                     $givenRequestReward = true;
+                    $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $yesterday = date('Y-m-d', strtotime('-1 day'));
+                    // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
+                    if ($lastRewardDate == $yesterday) {
+                        $this->user->incrementStreak($userId);
+                    } else {
+                        $this->user->resetStreak($userId);
+                    }
                 }
             }
     
@@ -1292,6 +1309,8 @@ class FriendRequestController
                     'givenDailyReward' => $givenDailyReward,
                     'givenRequestReward' => $givenRequestReward,
                     'amountGiven' => $amountGiven,
+                    'amountGivenDailyReward' => $rewardAmount,
+                    'streak' => $streak,
                 ];
     
                 echo json_encode($data);
@@ -1423,6 +1442,58 @@ class FriendRequestController
             header('Content-Type: application/json');
             echo json_encode($response);
             exit(); 
+        }
+    }
+
+    public function addAsFriendWebsite()
+    {
+
+        if (isset($_POST['senderId']) && isset($_POST['receiverId'])) {
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $this->setSenderId((int)$senderId);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            $this->setReceiverId((int)$receiverId);
+            $date = date("Y-m-d H:i:s");
+
+            $userId = $this->getSenderId();
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            // Check if pending
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                }
+            }
+
+
+
+            $status = 'pending';
+            $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $date, $status);
+
+            if ($swipeStatusYes) {
+                echo json_encode(['success' => true, 'error' => 'Successfully sent friend request']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to send friend request']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No form']);
         }
     }
 

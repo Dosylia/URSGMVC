@@ -658,6 +658,56 @@
   height: 60px;
 }
 
+.user-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#add-friend-container-profile-other {
+  margin: 0 20px;
+}
+
+.add-friend-button-profile-other {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: var(--main--red);
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.add-friend-button-profile-other img {
+    width: 18px;
+    height: 18px;
+}
+
+.add-friend-button-profile-other:hover {
+    background-color: var(--dark--red);
+    transform: translateY(-2px);
+}
+
+.add-friend-button-profile-other:disabled {
+    background-color: #6c6c6c;
+    cursor: default;
+    transform: none;
+}
+
+.dark-mode .add-friend-button-profile-other {
+    background-color: var(--main--red);
+    color: white;
+}
+
+.dark-mode .add-friend-button-profile-other:hover {
+    background-color: var(--dark--red);
+}
+
 .dark-mode .social-container-column {
   background-color: #1a1919;
   border: 1px solid var(--ligher--grey);
@@ -2416,6 +2466,18 @@ font-size: 0.7em;
 .lol-quiz canvas {
   margin: auto;
   max-width: 90%;
+}
+
+#showMatchingUser {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#showMatchingUser h3 {
+  font-size: 2rem;
+  color: var(--main--red);
+  margin-bottom: 1rem;
 }
 
 /* Progress Bar Container */
@@ -4434,9 +4496,17 @@ section.siteMap tr:nth-child(even) {
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      width: 100%;
-      padding: 0 20px;
+      width: 95%;
+      padding: 10px 20px;
       box-sizing: border-box;
+      background-color: #e1d0d0;
+      border-radius: 20px;
+      width: 95%;
+      margin: 0 auto 10px auto;
+    }
+
+    .dark-mode .friend_request_ctn {
+      background-color: #474242;
     }
 
 
@@ -10610,6 +10680,15 @@ justify-content: center;
 }
 
   @media only screen and (max-width: 600px) {
+
+  #add-friend-container-profile-other {
+    margin: unset;
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    flex-direction: column;
+    gap: 10px;
+  }
 
   .hat-message {
     margin-left: 50px;

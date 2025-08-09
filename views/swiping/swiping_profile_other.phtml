@@ -1,9 +1,40 @@
 <section id="user-container"> <!--Flex column -->
-    <div class="swiping-buttons" style="margin: 20px;"> <!-- Buttons (report, filter) Display row -->
-        <button class="swiping-buttons-report" id="report-button" type="button">
-            <img src="public/images/report.svg" alt="Report an user">
-        </button>
+    <div class="user-profile-header">
+        <div class="swiping-buttons" style="margin: 20px;"> <!-- Buttons (report, filter) Display row -->
+            <button class="swiping-buttons-report" id="report-button" type="button">
+                <img src="public/images/report.svg" alt="Report an user">
+            </button>
+        </div>
+        <!-- Adding new section, allowing people to add each other as friends. Need to check if user exists, and if yes, if they are already friends -->
+        <div id="add-friend-container-profile-other">
+            <?php if (isset($user) ) :?>
+                <?php if ($anotherUser['user_id'] !== $user['user_id']): ?>
+                    <?php if (!$checkIfFriend): ?>
+                        <button id="add-friend-button-user" class="add-friend-button-profile-other" type="button" data-user-id="<?= $user['user_id'] ?>" data-other-user-id="<?= $anotherUser['user_id'] ?>">
+                            Add as friend
+                            <img src="public/images/friends.png" alt="add as friend">
+                        </button>
+                    <?php endif; ?>
+                <?php endif; ?>
+            <?php else: ?>
+            <!-- Prompt user to get online to add as friend -->
+                <button id="add-friend-button-no-user" class="add-friend-button-profile-other" type="button">
+                    Add as friend
+                    <img src="public/images/friends.png" alt="add as friend">
+                </button>
+            <?php endif; ?>
+        </div>
     </div>
+
+    <!-- Modal for offline users -->
+    <div id="offlineModal" class="offline-modal hidden">
+        <div class="offline-modal-content">
+            <h3>You need to be online to do this action</h3>
+            <a href="/?triggerSignUp=true">Go to Sign Up</a>
+            <button type="button" class="close-modal-btn" data-modal="offlineModal">Close</button>
+        </div>
+    </div>
+
     <div id="user-top-container"> <!--Flex column -->
         <input id="receiverId" type="hidden" name="receiver_id" value="<?= $anotherUser['user_id'] ?>">
             <!-- Modal Structure -->
@@ -407,3 +438,4 @@
 <script src="public/js/swiping/copy_username.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/profile_updateRiotPic.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/report.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/add_friend_otherProfile.js?<?= time(); ?>"></script>

@@ -2379,6 +2379,10 @@ class UserController
                     {
                         $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
                     }
+
+                    if (isset($user) && $user != null) {
+                        $checkIfFriend = $this->friendrequest->checkIfFriend($user['user_id'], $anotherUser['user_id']);
+                    }
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
@@ -2983,9 +2987,43 @@ class UserController
         $savePersonalityTestResult = $this->user->savePersonalityTestResult($userId, json_encode($result));
     
         if ($savePersonalityTestResult) {
-            echo json_encode(['success' => true]);
+            echo json_encode(['success' => true, 'userFitting' => $savePersonalityTestResult]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Database save failed']);
+        }
+    }
+
+    public function getMatchingPersonalityUser()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+    
+        $token = $matches[1];
+    
+        if (!isset($_POST['userId']) || !isset($_POST['personalityType'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+    
+        $userId = (int)$_POST['userId'];
+        $personalityType = $_POST['personalityType'] ?? null;
+    
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+    
+        $matchingPersonalityUser = $this->user->getMatchingPersonalityUser($personalityType);
+    
+        if ($matchingPersonalityUser !== false) {
+            echo json_encode(['success' => true, 'result' => $matchingPersonalityUser]);
+        } else {
+            echo json_encode(['success' => true, 'error' => 'Could not get matching personality user', 'result' => false]);
         }
     }
     
