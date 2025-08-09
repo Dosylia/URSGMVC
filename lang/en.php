@@ -183,6 +183,9 @@ return [
     'swipe_more' => 'Swipe more',
     'show_online_only' => 'Show Online Friends Only',
     'search_friends' => 'Search for friends...',
+    'rate_friend_title' => 'Rate a Friend',
+    'rate_friend_message' => 'You can rate a friend after playing with them.',
+    'rate_friend_submit' => 'Rate',
 
     //leaderboard page
     'store' => 'Store',

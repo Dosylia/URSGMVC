@@ -15,6 +15,10 @@ export const chatInput = document.getElementById("message_text");
 export let clearImageVar = false;
 let numberofFail = 0;
 let lastFriendStatus = null;
+const RatingModal = document.getElementById('rating-modal');
+const closeRatingModalBtn = document.getElementById('close-rating-modal');
+const RatingButton = document.getElementById('rating-button');
+const submitRating = document.getElementById('submit-rating');
 
 
 // Function to fetch messages
@@ -916,9 +920,27 @@ export function fetchMessages(userId, friendId) {
     }
 
     function showRatingModal(friendId, matchId, onSubmit) {
-        const rating = prompt(`Rate your match with friend ${friendId} (1-5 stars):`);
-        if (rating) onSubmit(parseInt(rating));
+        RatingModal.classList.remove('hidden');
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
+
+        submitRating.onclick = () => {
+            const rating = document.querySelector('input[name="rating"]:checked');
+            if (rating) {
+                onSubmit(parseInt(rating.value));
+                closeRatingModal();
+            }
+        };
     }
+
+    // Close the rating modal
+    function closeRatingModal() {
+        RatingModal.classList.add('hidden');
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
+    }
+
+
 
     function sendRating(friendId, matchId, rating) {
         const token = localStorage.getItem('masterTokenWebsite');

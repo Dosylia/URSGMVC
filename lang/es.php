@@ -184,6 +184,9 @@ return [
     'swipe_more' => 'Deslizar más',
     'show_online_only' => 'Mostrar solo amigos en línea',
     'search_friends' => 'Buscar amigos...',
+    'rate_friend_title' => 'Evaluar a un amigo',
+    'rate_friend_message' => 'Puedes evaluar a un amigo después de haber jugado con él.',
+    'rate_friend_submit' => 'Evaluar',
 
     //leaderboard page
     'store' => 'Tienda',

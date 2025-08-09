@@ -2377,6 +2377,9 @@ class UserController
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                        if ($lolUser['lol_verified'] == 1) {
+                            $userRating = $this->rating->getAverageRatingForUser($user['user_id']);
+                        }
                     }
                     else 
                     {

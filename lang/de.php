@@ -185,6 +185,9 @@ return [
     'swipe_more' => 'Weiter wischen',
     'show_online_only' => 'Nur Online-Freunde anzeigen',
     'search_friends' => 'Freunde suchen...',
+    'rate_friend_title' => 'Freund bewerten',
+    'rate_friend_message' => 'Du kannst einen Freund bewerten, nachdem du mit ihm gespielt hast.',
+    'rate_friend_submit' => 'Bewerten',
 
     //leaderboard page
     'store' => 'Shop',

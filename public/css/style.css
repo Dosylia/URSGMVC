@@ -3829,7 +3829,7 @@ section.siteMap tr:nth-child(even) {
       text-align: center;
   }
 
-  #filter-modal .modal-content, #filter-modal-no-users .modal-content, #lookingfor-modal .modal-content, #signup-modal .modal-content, #riot-modal .modal-content, #tournament-modal .modal-content {
+  #filter-modal .modal-content, #filter-modal-no-users .modal-content, #lookingfor-modal .modal-content, #signup-modal .modal-content, #riot-modal .modal-content, #tournament-modal .modal-content, #rating-modal .modal-content {
     position: absolute;
     top: 20%;
     left: 50%;
@@ -3843,6 +3843,18 @@ section.siteMap tr:nth-child(even) {
     color: black;
     text-align: center;
     z-index: 500000;
+  }
+
+  #rating-score {
+    width: 100%;
+    height: 50px;
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    background-color: var(--main--red);
+    color: white;
   }
 
   .tournament-image {
@@ -3873,33 +3885,33 @@ section.siteMap tr:nth-child(even) {
     font-weight: 600;
   }
 
-  #report-modal h2, #lookingfor-modal h2, #signup-modal h2, #riot-modal h2, #tournament-modal h2 {
+  #report-modal h2, #lookingfor-modal h2, #signup-modal h2, #riot-modal h2, #tournament-modal h2, #rating-modal h2 {
       color: black;
       font-size: 1.5em;
       font-weight: 800;
   }
 
-  #report-modal .report-modal-p, #lookingfor-modal .lookingfor-modal-p, #signup-modal p, #riot-modal p, #tournament-modal p {
+  #report-modal .report-modal-p, #lookingfor-modal .lookingfor-modal-p, #signup-modal p, #riot-modal p, #tournament-modal p, #rating-modal p {
     color: rgb(77, 73, 73);
     margin-top: 30px;
   }
 
-  #lookingfor-modal .lookingfor-modal-p a, #riot-modal p a {
+  #lookingfor-modal .lookingfor-modal-p a, #riot-modal p a, #rating-modal p a {
     color: var(--main--red);
     text-decoration: none;
     cursor: pointer;
   }
 
-  .dark-mode   #report-modal .report-modal-p, .dark-mode #lookingfor-modal .lookingfor-modal-p, .dark-mode #signup-modal p, .dark-mode #riot-modal p, .dark-mode #tournament-modal p {
+  .dark-mode   #report-modal .report-modal-p, .dark-mode #lookingfor-modal .lookingfor-modal-p, .dark-mode #signup-modal p, .dark-mode #riot-modal p, .dark-mode #tournament-modal p, .dark-mode #rating-modal p {
     color: rgb(184, 170, 170);
     margin-top: 30px;
   }
 
-  .dark-mode #report-modal h2, .dark-mode #lookingfor-modal h2, .dark-mode #signup-modal h2, .dark-mode #riot-modal h2, .dark-mode #tournament-modal h2 {
+  .dark-mode #report-modal h2, .dark-mode #lookingfor-modal h2, .dark-mode #signup-modal h2, .dark-mode #riot-modal h2, .dark-mode #tournament-modal h2, .dark-mode #rating-modal h2 {
     color: white;
 }
 
-  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content, .dark-mode #lookingfor-modal .modal-content, .dark-mode #signup-modal .modal-content, .dark-mode #riot-modal .modal-content, .dark-mode #tournament-modal .modal-content {
+  .dark-mode #report-modal .modal-content, .dark-mode #filter-modal .modal-content, .dark-mode #filter-modal-no-users .modal-content, .dark-mode #lookingfor-modal .modal-content, .dark-mode #signup-modal .modal-content, .dark-mode #riot-modal .modal-content, .dark-mode #tournament-modal .modal-content, .dark-mode #rating-modal .modal-content {
     background-color: var(--dark-ligher-grey);
     color: white;
 }
@@ -3909,7 +3921,7 @@ section.siteMap tr:nth-child(even) {
   z-index: 9000;
 }
 
-  #report-modal .close, #lookingfor-modal .close, #signup-modal .close, #riot-modal .close, #tournament-modal .close {
+  #report-modal .close, #lookingfor-modal .close, #signup-modal .close, #riot-modal .close, #tournament-modal .close, #rating-modal .close {
       position: absolute;
       top: 10px;
       right: 15px;
@@ -3983,7 +3995,7 @@ section.siteMap tr:nth-child(even) {
 }
 
   /* Report Button */
-  #report-modal #submit-report, #lookingfor-modal #submit-lookingfor, .tournament-button {
+  #report-modal #submit-report, #lookingfor-modal #submit-lookingfor, .tournament-button, #rating-modal #submit-rating {
       margin-top: 15px;
       background-color: var(--main--red);
       color: #fff;
@@ -4021,7 +4033,7 @@ section.siteMap tr:nth-child(even) {
     background-color: var(--dark--red);
   }
 
-  #report-modal #submit-report:hover, #lookingfor-modal #submit-lookingfor:hover, .tournament-button:hover {
+  #report-modal #submit-report:hover, #lookingfor-modal #submit-lookingfor:hover, .tournament-button:hover, #rating-modal #submit-rating:hover {
       opacity: 0.9;
   }
 

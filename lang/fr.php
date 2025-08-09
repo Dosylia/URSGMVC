@@ -185,6 +185,10 @@ return [
     'swipe_more' => 'Swiper encore',
     'show_online_only' => 'Afficher uniquement les amis en ligne',
     'search_friends' => 'Rechercher des amis...',
+    'rate_friend_title' => 'Évaluer un ami',
+    'rate_friend_message' => 'Vous pouvez évaluer un ami après avoir joué avec lui',
+    'rate_friend_submit' => 'Évaluer',
+
 
     //leaderboard page
     'store' => 'Boutique',
