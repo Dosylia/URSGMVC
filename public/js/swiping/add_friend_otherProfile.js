@@ -1,7 +1,7 @@
 // Variables
 const addFriendButton = document.getElementById('add-friend-button-user');
 const offlineModal = document.getElementById('offlineModal');
-const addFriendNoUser = document.getElementById('add-friend-no-user');
+const addFriendNoUser = document.getElementById('add-friend-button-no-user');
 
 // Functions to handle friend requests
 function showOfflineModal() {
@@ -61,5 +61,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addFriendNoUser?.addEventListener('click', function() {
         showOfflineModal();
+    });
+
+    document.querySelectorAll('.close-modal-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const modalId = this.getAttribute('data-modal');
+        document.getElementById(modalId).classList.add('hidden');
+      });
     });
 });
