@@ -188,6 +188,7 @@ return [
     'rate_friend_title' => 'Freund bewerten',
     'rate_friend_message' => 'Du kannst einen Freund bewerten, nachdem du mit ihm gespielt hast.',
     'rate_friend_submit' => 'Bewerten',
+    'rate_friend_score' => 'Punkte',
 
     //leaderboard page
     'store' => 'Shop',

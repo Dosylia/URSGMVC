@@ -16,7 +16,7 @@ export let clearImageVar = false;
 let numberofFail = 0;
 let lastFriendStatus = null;
 const RatingModal = document.getElementById('rating-modal');
-const closeRatingModalBtn = document.getElementById('close-rating-modal');
+export const closeRatingModalBtn = document.getElementById('close-rating-modal');
 const RatingButton = document.getElementById('rating-button');
 const submitRating = document.getElementById('submit-rating');
 
@@ -925,7 +925,7 @@ export function fetchMessages(userId, friendId) {
         overlay.style.display = "block";
 
         submitRating.onclick = () => {
-            const rating = document.querySelector('input[name="rating"]:checked');
+            const rating = document.getElementById('rating-score');
             if (rating) {
                 onSubmit(parseInt(rating.value));
                 closeRatingModal();
@@ -934,7 +934,7 @@ export function fetchMessages(userId, friendId) {
     }
 
     // Close the rating modal
-    function closeRatingModal() {
+    export function closeRatingModal() {
         RatingModal.classList.add('hidden');
         const overlay = document.getElementById("overlay");
         overlay.style.display = "none";

@@ -54,6 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
     setVhVariable();
     checkScreenSize();
 
+    closeRatingModalBtn.addEventListener('click', () => {
+        closeRatingModal();
+    });
+
     window.addEventListener("resize", () => {
         setVhVariable();
         checkScreenSize();

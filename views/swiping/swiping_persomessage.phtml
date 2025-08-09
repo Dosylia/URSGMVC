@@ -24,15 +24,16 @@
                 <input type="hidden" id="rating-friend-id" name="friend_id" value="">
                 <label for="rating-score"><?= $this->_('rate_friend_score') ?></label>
                 <select id="rating-score" name="score">
-                    <option value="1">1</option>
+                    <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-                <button id="submit-rating" type="submit"><?= $this->_('rate_friend_submit') ?></button>
+                <button id="submit-rating" type="button"><?= $this->_('rate_friend_submit') ?></button>
             </form>
         </div>
+    </div>
     <?php if (isset($_GET['firstFriend'])) : ?>
         <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
     <?php endif; ?>
