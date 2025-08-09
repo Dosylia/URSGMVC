@@ -1,4 +1,4 @@
-import { fetchMessages, friendId, chatInterface, messageContainer, replyPreviewContainer, chatInput, clearImageTrue } from './get_message_utils.js';
+import { fetchMessages, friendId, chatInterface, messageContainer, replyPreviewContainer, chatInput, clearImageTrue, closeRatingModalBtn, closeRatingModal, submitRating, sendRating} from './get_message_utils.js';
 let actualFriendId = friendId;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -56,6 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     closeRatingModalBtn.addEventListener('click', () => {
         closeRatingModal();
+    });
+
+    submitRating.addEventListener('click', (event) => {
+        sendRating();
     });
 
     window.addEventListener("resize", () => {
