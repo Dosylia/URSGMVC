@@ -5,34 +5,40 @@ namespace config;
 
 class DataBase
 {
-    private string $server;
-    private string $db;
-    private string $user;
-    private string $password;
-    private string $port;
+    private static string $server = 'localhost:3306';
+    private static string $db = 'default_db_name';
+    private static string $user = 'root';
+    private static string $password = '';
 
     private \PDO $bdd;
 
-    public function __construct()
-    {
-        $this->server   = $_ENV['DB_SERVER'];
-        $this->db       = $_ENV['DB_NAME'];
-        $this->user     = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASSWORD'];
-        $this->port     = $_ENV['DB_PORT'];
-    }
-
     public function getBdd(): ?\PDO
     {
+        if (!empty($_ENV['db_server'])) {
+            self::$server = $_ENV['db_server'];
+        }
+        if (!empty($_ENV['db_name'])) {
+            self::$db = $_ENV['db_name'];
+        }
+        if (!empty($_ENV['db_user'])) {
+            self::$user = $_ENV['db_user'];
+        }
+        if (!empty($_ENV['db_password'])) {
+            self::$password = $_ENV['db_password'];
+        }
+        
         try {
+            $dsn = 'mysql:host=' . self::$server . ';dbname=' . self::$db . ';charset=utf8mb4';
+
             $this->bdd = new \PDO(
-                "mysql:host={$this->server};dbname={$this->db};port={$this->port};charset=utf8mb4",
-                $this->user,
-                $this->password,
+                $dsn,
+                self::$user,
+                self::$password,
                 [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
             );
         } catch (\Exception $e) {
-            die('Database connection error: ' . $e->getMessage());
+            error_log('Database connection error: ' . $e->getMessage());
+            die('Error message is : ' . $e->getMessage());
         }
 
         return $this->bdd;
