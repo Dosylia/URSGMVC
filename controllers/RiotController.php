@@ -871,8 +871,8 @@ class RiotController
             }
 
             // Get match IDs
-            $userMatches = $this->getMatchIds($user['lol_sPuuid'], $selectedRegionValue);
-            $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue);
+            $userMatches = $this->getMatchIds($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
+            $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue, $apiKey);
 
             if (!$userMatches || !$friendMatches) {
                 echo json_encode(['success' => false, 'error' => 'Could not retrieve match history']);
@@ -893,9 +893,8 @@ class RiotController
         }
     }
 
-    public function getMatchIds($puuid, $region)
+    public function getMatchIds($puuid, $region, $apiKey)
     {
-        require_once 'keys.php';
 
         // Riot API call to get last 20 matches
         $url = "https://{$region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{$puuid}/ids?start=0&count=20&api_key={$apiKey}";

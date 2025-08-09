@@ -117,6 +117,11 @@
             <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
                 <div class="profile">
                     <?php if ($lolUser['lol_verified'] === 1): ?>
+                        <?php if(isset($userRating)): ?>
+                            <div class="user-rating">
+                                <p>Rating: <?= $userRating ?></p>
+                            </div>
+                        <?php endif; ?>
                         <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
                     <?php else : ?>
                         <img src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
