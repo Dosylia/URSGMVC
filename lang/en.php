@@ -186,6 +186,7 @@ return [
     'rate_friend_title' => 'Rate a Friend',
     'rate_friend_message' => 'You can rate a friend after playing with them.',
     'rate_friend_submit' => 'Rate',
+    'rate_friend_score' => 'Points',
 
     //leaderboard page
     'store' => 'Store',

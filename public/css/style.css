@@ -3857,6 +3857,10 @@ section.siteMap tr:nth-child(even) {
     color: white;
   }
 
+  #rating-score:hover {
+    background-color: white;
+  }
+
   .tournament-image {
     width: 100%;
     height: auto;

@@ -188,6 +188,7 @@ return [
     'rate_friend_title' => 'Évaluer un ami',
     'rate_friend_message' => 'Vous pouvez évaluer un ami après avoir joué avec lui',
     'rate_friend_submit' => 'Évaluer',
+    'rate_friend_score' => 'Points',
 
 
     //leaderboard page
