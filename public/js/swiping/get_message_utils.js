@@ -869,7 +869,7 @@ export function fetchMessages(userId, friendId) {
         console.log("clearImageVar set to false");
     }
 
-    function checkIfUsersPlayedTogether(userId, friendId) {
+    function checkIfUsersPlayedTogether(friendId, userId) {
         const token = localStorage.getItem('masterTokenWebsite');
         fetch('/checkIfUsersPlayedTogether', {
             method: 'POST',
