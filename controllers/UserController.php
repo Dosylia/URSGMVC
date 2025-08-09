@@ -12,6 +12,7 @@ use models\MatchingScore;
 use models\Items;
 use models\GoogleUser;
 use models\Report;
+use models\RatingGames;
 use traits\SecurityController;
 use traits\Translatable;
 
@@ -30,6 +31,7 @@ class UserController
     private Items $items;
     private GoogleUser $googleUser;
     private Report $report;
+    private RatingGames $rating;
     private $googleUserId;
     private $userId;
     private $username;
@@ -82,6 +84,7 @@ class UserController
         $this -> items = new Items();
         $this -> googleUser = new GoogleUser();
         $this -> report = new Report();
+        $this -> rating = new RatingGames();
     }
 
     public function getAllUsers()
@@ -3024,6 +3027,68 @@ class UserController
             echo json_encode(['success' => true, 'result' => $matchingPersonalityUser]);
         } else {
             echo json_encode(['success' => true, 'error' => 'Could not get matching personality user', 'result' => false]);
+        }
+    }
+
+    public function rateFriendWebsite()
+    {
+        // Check POST parameters
+        if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'])) {
+            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            return;
+        }
+
+        $friendId = intval($_POST['friendId']);
+        $matchId = trim($_POST['matchId']);
+        $rating = intval($_POST['rating']);
+
+        // Validate rating range (e.g. 1 to 5)
+        if ($rating < 1 || $rating > 5) {
+            echo json_encode(['success' => false, 'error' => 'Invalid rating value']);
+            return;
+        }
+
+        // Get Authorization header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+        $token = $matches[1];
+
+        // Validate token and get rater's userId
+        $raterId = $this->validateTokenWebsiteReturnUserId($token);
+        if (!$raterId) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Prevent rating yourself
+        if ($raterId === $friendId) {
+            echo json_encode(['success' => false, 'error' => 'Cannot rate yourself']);
+            return;
+        }
+
+        // Check friend exists
+        $friend = $this->user->getUserById($friendId);
+        if (!$friend) {
+            echo json_encode(['success' => false, 'error' => 'Friend not found']);
+            return;
+        }
+
+        // Insert or update rating
+        $result = $this->rating->insertOrUpdateRating($raterId, $friendId, $matchId, $rating);
+
+        if ($result) {
+            // Return updated average rating & count
+            $avgData = $this->rating->getAverageRatingForUser($friendId);
+            echo json_encode([
+                'success' => true,
+                'averageRating' => $avgData['average'],
+                'ratingsCount' => $avgData['count']
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Database error']);
         }
     }
     

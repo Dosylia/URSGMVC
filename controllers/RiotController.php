@@ -812,4 +812,114 @@ class RiotController
 
         return json_decode($response, true);
     }
+
+    public function checkIfUsersPlayedTogether()
+    {
+        if (isset($_POST['friendId']) && isset($_POST['userId'])) {
+            $friendId = $_POST['friendId'];
+            $userId = $_POST['userId'];
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+
+            $token = $matches[1];
+
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            // Get user data
+            $user = $this->user->getUserById($userId);
+            $friend = $this->user->getUserById($friendId);
+            if (!$user || !$friend) {
+                echo json_encode(['success' => false, 'error' => 'User or friend not found']);
+                return;
+            }
+
+            // Check if both have LoL accounts
+            if (!$user['lol_verified'] || !$friend['lol_verified']) {
+                echo json_encode(['success' => false, 'error' => 'One or both users do not have a verified League of Legends account']);
+                return;
+            }
+
+            require_once 'keys.php';
+            $regionMap = [
+                "Europe West" => "europe",
+                "North America" => "americas",
+                "Europe Nordic" => "europe",
+                "Brazil" => "americas",
+                "Latin America North" => "americas",
+                "Latin America South" => "americas",
+                "Oceania" => "sea",
+                "Russia" => "europe",
+                "Turkey" => "europe",
+                "Japan" => "asia",
+                "Korea" => "asia",
+            ];
+
+            $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+
+            if (!$selectedRegionValue) {
+                echo json_encode(['success' => false, 'error' => 'Invalid region']);
+                return;
+            }
+
+            // Get match IDs
+            $userMatches = $this->getMatchIds($user['lol_sPuuid'], $selectedRegionValue);
+            $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue);
+
+            if (!$userMatches || !$friendMatches) {
+                echo json_encode(['success' => false, 'error' => 'Could not retrieve match history']);
+                return;
+            }
+
+            // Check intersection
+            $commonMatches = array_intersect($userMatches, $friendMatches);
+            $playedTogether = count($commonMatches) > 0;
+
+            echo json_encode([
+                'success' => true,
+                'playedTogether' => $playedTogether,
+                'commonMatches' => array_values($commonMatches) // optional, useful for debugging
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        }
+    }
+
+    public function getMatchIds($puuid, $region)
+    {
+        require_once 'keys.php';
+
+        // Riot API call to get last 20 matches
+        $url = "https://{$region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{$puuid}/ids?start=0&count=20&api_key={$apiKey}";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $matchIds = json_decode($response, true);
+
+        return (is_array($matchIds) && !empty($matchIds)) ? $matchIds : false;
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
+    
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
 }

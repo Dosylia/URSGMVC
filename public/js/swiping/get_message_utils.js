@@ -729,6 +729,8 @@ export function fetchMessages(userId, friendId) {
         let gamemode = '';
     
         if (friend.lol_verified === 1) {
+
+            checkIfUsersPlayedTogether(friend.user_id, userId);
             friendLeagueStatus = await getGameStatusLoL(friend.user_id);
             if (friendLeagueStatus) {
                 friendGameStatus = true;
@@ -865,5 +867,77 @@ export function fetchMessages(userId, friendId) {
     export function clearImageFalse() {
         clearImageVar = false;
         console.log("clearImageVar set to false");
+    }
+
+    function checkIfUsersPlayedTogether(userId, friendId) {
+        const token = localStorage.getItem('masterTokenWebsite');
+        fetch('/checkIfUsersPlayedTogether', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(parseInt(friendId))}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.playedTogether) {
+                handleRatingPrompt(friendId, data.commonMatches);
+            } else {
+                console.error('Error checking played together:', data.error);
+            }
+        })
+        .catch(error => console.error('Fetch error:', error));
+    }
+
+    function handleRatingPrompt(friendId, commonMatches) {
+        const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+        const friendData = ratingData[`friendId_${friendId}`] || { ratedMatches: {}, lastRatingTime: 0 };
+        const oneWeek = 7 * 24 * 60 * 60 * 1000;
+        const now = Date.now();
+
+        // Don't ask if rated in the last week
+        if (now - friendData.lastRatingTime < oneWeek) return;
+
+        // Find a matchId that hasn't been rated yet
+        const newMatchId = commonMatches.find(id => !friendData.ratedMatches[id]);
+        if (!newMatchId) return; // No new matches to rate
+
+        // Show modal (example)
+        showRatingModal(friendId, newMatchId, (rating) => {
+            sendRating(friendId, newMatchId, rating);
+
+            // Update localStorage
+            friendData.ratedMatches[newMatchId] = now;
+            friendData.lastRatingTime = now;
+            ratingData[`friendId_${friendId}`] = friendData;
+            localStorage.setItem('ratingData', JSON.stringify(ratingData));
+        });
+    }
+
+    function showRatingModal(friendId, matchId, onSubmit) {
+        const rating = prompt(`Rate your match with friend ${friendId} (1-5 stars):`);
+        if (rating) onSubmit(parseInt(rating));
+    }
+
+    function sendRating(friendId, matchId, rating) {
+        const token = localStorage.getItem('masterTokenWebsite');
+        fetch('/rateFriendWebsite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Rating successful:', data);
+            } else {
+                console.error('Rating failed:', data.error);
+            }
+        })
+        .catch(error => console.error('Fetch error:', error));
     }
     
