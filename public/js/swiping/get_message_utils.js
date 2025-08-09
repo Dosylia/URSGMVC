@@ -18,7 +18,7 @@ let lastFriendStatus = null;
 const RatingModal = document.getElementById('rating-modal');
 export const closeRatingModalBtn = document.getElementById('close-rating-modal');
 const RatingButton = document.getElementById('rating-button');
-const submitRating = document.getElementById('submit-rating');
+export const submitRating = document.getElementById('submit-rating');
 
 
 // Function to fetch messages
@@ -908,29 +908,16 @@ export function fetchMessages(userId, friendId) {
         if (!newMatchId) return; // No new matches to rate
 
         // Show modal (example)
-        showRatingModal(friendId, newMatchId, (rating) => {
-            sendRating(friendId, newMatchId, rating);
-
-            // Update localStorage
-            friendData.ratedMatches[newMatchId] = now;
-            friendData.lastRatingTime = now;
-            ratingData[`friendId_${friendId}`] = friendData;
-            localStorage.setItem('ratingData', JSON.stringify(ratingData));
-        });
+        showRatingModal(friendId, newMatchId);
     }
 
-    function showRatingModal(friendId, matchId, onSubmit) {
+    function showRatingModal(friendId, matchId) {
         RatingModal.classList.remove('hidden');
         const overlay = document.getElementById("overlay");
         overlay.style.display = "block";
-
-        submitRating.onclick = () => {
-            const rating = document.getElementById('rating-score');
-            if (rating) {
-                onSubmit(parseInt(rating.value));
-                closeRatingModal();
-            }
-        };
+        // add data friendId, and MatchId to submitRating as data-friend-id and data-match-id attributes
+        submitRating.setAttribute('data-friend-id', friendId);
+        submitRating.setAttribute('data-match-id', matchId);
     }
 
     // Close the rating modal
@@ -942,7 +929,11 @@ export function fetchMessages(userId, friendId) {
 
 
 
-    function sendRating(friendId, matchId, rating) {
+    export function sendRating() {
+        const friendId = submitRating.getAttribute('data-friend-id');
+        const matchId = submitRating.getAttribute('data-match-id');
+        const rating = document.getElementById('rating-score').value;
+
         const token = localStorage.getItem('masterTokenWebsite');
         fetch('/rateFriendWebsite', {
             method: 'POST',

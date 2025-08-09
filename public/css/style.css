@@ -3857,8 +3857,8 @@ section.siteMap tr:nth-child(even) {
     color: white;
   }
 
-  #rating-score:hover {
-    background-color: white;
+  #rating-score option {
+    color: white;
   }
 
   .tournament-image {
