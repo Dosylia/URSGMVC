@@ -1,5 +1,25 @@
 <?php
 
+use Dotenv\Dotenv;
+require __DIR__ . '/../vendor/autoload.php';
+
+// Detect which env file to load
+$env = getenv('APP_ENV') ?: 'local';
+switch ($env) {
+    case 'production':
+        $envFile = '.env.prod';
+        break;
+    case 'development':
+        $envFile = '.env.dev';
+        break;
+    default:
+        $envFile = '.env.local';
+        break;
+};
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../', $envFile);
+$dotenv->load();
+
 // Set session cookie parameters
 $cookieParams = session_get_cookie_params();
 $lifetime = 7 * 24 * 60 * 60;

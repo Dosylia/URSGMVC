@@ -5,26 +5,37 @@ namespace config;
 
 class DataBase
 {
-    private const SERVER = "localhost";
-    private const DB = "ursgpoo";
-    private const USER = "root";
-    private const MDP = "root";
-    private const PORT = "3306";
-    
-    private \PDO $bdd; 
-    
-    public function getBdd(): ? \PDO
+    private string $server;
+    private string $db;
+    private string $user;
+    private string $password;
+    private string $port;
+
+    private \PDO $bdd;
+
+    public function __construct()
     {
-        try
-        {
-            $this -> bdd = new \PDO('mysql:host='.self::SERVER.';dbname='.self::DB.';charset=utf8mb4', self::USER, self::MDP, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+        $this->server   = $_ENV['DB_SERVER'];
+        $this->db       = $_ENV['DB_NAME'];
+        $this->user     = $_ENV['DB_USER'];
+        $this->password = $_ENV['DB_PASSWORD'];
+        $this->port     = $_ENV['DB_PORT'];
+    }
+
+    public function getBdd(): ?\PDO
+    {
+        try {
+            $this->bdd = new \PDO(
+                "mysql:host={$this->server};dbname={$this->db};port={$this->port};charset=utf8mb4",
+                $this->user,
+                $this->password,
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
+            );
+        } catch (\Exception $e) {
+            die('Database connection error: ' . $e->getMessage());
         }
-        catch(\Exception $message)
-        {
-            die('Error message is : '.$message -> getMessage());
-        }
- 
-        return $this -> bdd;
+
+        return $this->bdd;
     }
 }
 
