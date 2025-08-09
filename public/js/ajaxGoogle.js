@@ -60,6 +60,8 @@ function handleCredentialResponse(response) {
                     localStorage.setItem('adminToken', adminToken);
                 }
                 console.log("Server response indicates success:", data);
+                // No tracking if on test server 
+                
                 trackLogin();
                 window.location.href = '/signup';
             } else {

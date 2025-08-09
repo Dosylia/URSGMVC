@@ -66,6 +66,8 @@
         <!-- End Google Tag Manager -->
 
         <script src="public/js/GTM.js?<?= time(); ?>" defer></script>
+    <?php else: ?>
+        <script src="public/js/GTM_dev.js?<?= time(); ?>" defer></script>
     <?php endif; ?>
 </head>
 
