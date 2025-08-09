@@ -2379,6 +2379,10 @@ class UserController
                     {
                         $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
                     }
+
+                    if (isset($user) && $user != null) {
+                        $checkIfFriend = $this->friendrequest->checkIfFriend($user['user_id'], $anotherUser['user_id']);
+                    }
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";

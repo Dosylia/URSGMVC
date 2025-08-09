@@ -172,6 +172,7 @@ $actionMap = [
     'getAllQueuedNotification' => [ChatMessageController::class, 'getAllQueuedNotification'],
     'deleteFriendRequestAfterWeek' => [FriendRequestController::class, 'deleteFriendRequestAfterWeek'],
     'updateFriendWebsite' => [FriendRequestController::class, 'updateFriendWebsite'],
+    'addAsFriendWebsite' => [FriendRequestController::class, 'addAsFriendWebsite'],
     'signUpBypass' => [GoogleUserController::class, 'signUpBypass'],
     'notFound' => [GoogleUserController::class, 'notFoundPage'],
     'unsubscribeMails' => [GoogleUserController::class, 'unsubscribeMails'],

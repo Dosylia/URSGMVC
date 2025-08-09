@@ -619,4 +619,30 @@ class FriendRequest extends DataBase
         }
     }
 
+    public function checkIfFriend($userId, $anotherUserId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT 
+                                            *
+                                        FROM 
+                                            `friendrequest`
+                                        WHERE 
+                                            (fr_senderId = ? AND fr_receiverId = ?) OR (fr_senderId = ? AND fr_receiverId = ?)
+                                        AND 
+                                            `fr_status` = 'accepted'
+        ");
+    
+        $query->execute([$userId, $anotherUserId, $anotherUserId, $userId]);
+        $checkIfFriendTest = $query->fetch();
+        
+        if ($checkIfFriendTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+    }
+
 }

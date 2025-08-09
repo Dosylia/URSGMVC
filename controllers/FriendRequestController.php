@@ -696,12 +696,6 @@ class FriendRequestController
             }
     
             $receiverId = $this->validateInput($_POST["receiverId"]);
-            
-            // Validate token for user
-            if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                return;
-            }
     
             $this->setSenderId((int)$senderId);
             $this->setReceiverId((int)$receiverId);
@@ -1448,6 +1442,58 @@ class FriendRequestController
             header('Content-Type: application/json');
             echo json_encode($response);
             exit(); 
+        }
+    }
+
+    public function addAsFriendWebsite()
+    {
+
+        if (isset($_POST['senderId']) && isset($_POST['receiverId'])) {
+            $senderId = $this->validateInput($_POST["senderId"]);
+            $this->setSenderId((int)$senderId);
+            $receiverId = $this->validateInput($_POST["receiverId"]);
+            $this->setReceiverId((int)$receiverId);
+            $date = date("Y-m-d H:i:s");
+
+            $userId = $this->getSenderId();
+
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+    
+            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                return;
+            }
+        
+            $token = $matches[1];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $senderId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
+
+            // Check if pending
+            $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
+
+            if ($checkIfPending) {
+                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                if ($updateFriendRequest) {
+                    echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                }
+            }
+
+
+
+            $status = 'pending';
+            $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $date, $status);
+
+            if ($swipeStatusYes) {
+                echo json_encode(['success' => true, 'error' => 'Successfully sent friend request']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to send friend request']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No form']);
         }
     }
 
