@@ -2379,7 +2379,7 @@ class UserController
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
                         if ($lolUser['lol_verified'] == 1) {
-                            $userRating = $this->rating->getAverageRatingForUser($user['user_id']);
+                            $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
                         }
                     }
                     else 
@@ -2417,16 +2417,23 @@ class UserController
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
+                $userRating = 0;
                 if ($anotherUser)
                 {
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                        if ($lolUser['lol_verified'] == 1) {
+                            $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
+                        }
                     }
                     else 
                     {
                         $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
                     }
+                    $maxStars = 5;
+                    $fullStars = intval($userRating);
+                    $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
