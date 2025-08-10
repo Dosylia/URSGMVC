@@ -171,7 +171,17 @@ class User extends DataBase
                                             lf.*,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
                                             g.google_email,
-                                            g.google_createdWithRSO
+                                            g.google_createdWithRSO,
+                                            (
+                                                SELECT ROUND(AVG(rating), 0)
+                                                FROM user_ratings
+                                                WHERE rated_user_id = u.user_id
+                                            ) AS user_rating,
+                                            (
+                                                SELECT COUNT(*)
+                                                FROM user_ratings
+                                                WHERE rated_user_id = u.user_id
+                                            ) AS rating_count
                                         FROM
                                             `user` AS u
                                         LEFT JOIN

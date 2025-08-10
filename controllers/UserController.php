@@ -2193,6 +2193,7 @@ class UserController
                                         'user_isVip' => $userMatched['user_isVip'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
+                                        'user_rating' => $userMatched['user_rating'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],
                                         'lol_main3' => $userMatched['lol_main3'],
@@ -2276,9 +2277,13 @@ class UserController
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $userRating = 0;
             if ($user['user_game'] == "League of Legends")
             {
                 $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+                if ($lolUser['lol_verified'] == 1) {
+                    $userRating = $this->rating->getAverageRatingForUser($user['user_id']);
+                }
             }
             else 
             {
@@ -2288,7 +2293,9 @@ class UserController
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-
+            $maxStars = 5;
+            $fullStars = intval($userRating);
+            $emptyStars = $maxStars - $fullStars;
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
