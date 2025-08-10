@@ -917,8 +917,9 @@ function showRatingModal(friendId, matchId) {
 }
 
 export function closeRatingModal(type) {
-    RatingModal.classList.add('hidden');
-    document.getElementById("overlay").style.display = "none";
+    RatingModal.classList.add('rating-modal-hidden');
+    const overlay = document.getElementById("overlay");
+    overlay.style.display = "none";
 
     const friendId = submitRating.getAttribute('data-friend-id');
     const friendKey = `friendId_${friendId}`;
