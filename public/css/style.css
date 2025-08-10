@@ -4064,7 +4064,7 @@ section.siteMap tr:nth-child(even) {
     margin-top: 10px;
   }
 
-  .report-modal-hidden, .lookingfor-modal-hidden, .signup-modal-hidden, .riot-modal-hidden, .tournament-modal-hidden, #rating-modal-hidden {
+  .report-modal-hidden, .lookingfor-modal-hidden, .signup-modal-hidden, .riot-modal-hidden, .tournament-modal-hidden, .rating-modal-hidden {
       display: none;
   }
 

@@ -873,7 +873,7 @@ export function fetchMessages(userId, friendId) {
         console.log("clearImageVar set to false");
     }
 
-    function checkIfUsersPlayedTogether(userId, friendId) {
+    function checkIfUsersPlayedTogether(friendId, userId) {
         const token = localStorage.getItem('masterTokenWebsite');
         fetch('/checkIfUsersPlayedTogether', {
             method: 'POST',
@@ -905,14 +905,16 @@ export function fetchMessages(userId, friendId) {
 
         // Find a matchId that hasn't been rated yet
         const newMatchId = commonMatches.find(id => !friendData.ratedMatches[id]);
-        if (!newMatchId) return; // No new matches to rate
+        if (!newMatchId) {
+            return;
+        }
 
         // Show modal (example)
         showRatingModal(friendId, newMatchId);
     }
 
     function showRatingModal(friendId, matchId) {
-        RatingModal.classList.remove('hidden');
+        RatingModal.classList.remove('rating-modal-hidden');
         const overlay = document.getElementById("overlay");
         overlay.style.display = "block";
         // add data friendId, and MatchId to submitRating as data-friend-id and data-match-id attributes
@@ -921,10 +923,21 @@ export function fetchMessages(userId, friendId) {
     }
 
     // Close the rating modal
-    export function closeRatingModal() {
+    export function closeRatingModal(type) {
         RatingModal.classList.add('hidden');
         const overlay = document.getElementById("overlay");
         overlay.style.display = "none";
+
+        if (type !== 'success') {
+            // set local storage to not re-open it for this user until next week
+            const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+            const friendId = submitRating.getAttribute('data-friend-id');
+            ratingData[`friendId_${friendId}`] = {
+                ratedMatches: {},
+                lastRatingTime: Date.now()
+            };
+            localStorage.setItem('ratingData', JSON.stringify(ratingData));
+        }
     }
 
 
@@ -941,12 +954,13 @@ export function fetchMessages(userId, friendId) {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `Bearer ${token}`,
             },
-            body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}`
+            body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 console.log('Rating successful:', data);
+                closeRatingModal('success');
             } else {
                 console.error('Rating failed:', data.error);
             }

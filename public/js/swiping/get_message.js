@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             modalDiscord.style.display = 'none'; // Hide the modal
             actualFriendId = newFriendId; // Update the recipient ID
             replyPreviewContainer.style.display = "none"; // Hide the reply preview
+            closeRatingModal();
             chatInput.dataset.replyTo = ""; // Clear the reply context
             let messageInput = document.getElementById("message_text");
             const username = messageInput.dataset.username;

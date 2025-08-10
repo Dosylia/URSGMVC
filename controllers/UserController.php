@@ -3036,7 +3036,7 @@ class UserController
     public function rateFriendWebsite()
     {
         // Check POST parameters
-        if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'])) {
+        if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'], $_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Missing parameters']);
             return;
         }
@@ -3060,14 +3060,14 @@ class UserController
         $token = $matches[1];
 
         // Validate token and get rater's userId
-        $raterId = $this->validateTokenWebsiteReturnUserId($token);
-        if (!$raterId) {
+        $userId = intval($_POST['userId']);
+        if (!$this->validateTokenWebsite($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
         }
 
         // Prevent rating yourself
-        if ($raterId === $friendId) {
+        if ($userId === $friendId) {
             echo json_encode(['success' => false, 'error' => 'Cannot rate yourself']);
             return;
         }
@@ -3079,8 +3079,25 @@ class UserController
             return;
         }
 
-        // Insert or update rating
-        $result = $this->rating->insertOrUpdateRating($raterId, $friendId, $matchId, $rating);
+        // Check if rating already exists
+        $existingRating = $this->rating->getRatingByUserAndFriend($userId, $friendId, $matchId);
+        $result = false;
+
+        if ($existingRating) {
+            // Update existing rating
+            $result = $this->rating->updateRating($userId, $friendId, $matchId, $rating);
+            if (!$result) {
+                echo json_encode(['success' => false, 'error' => 'Database error']);
+                return;
+            }
+        } else {
+            // Insert new rating
+            $result = $this->rating->insertFirstRating($userId, $friendId, $matchId, $rating);
+            if (!$result) {
+                echo json_encode(['success' => false, 'error' => 'Database error']);
+                return;
+            }
+        }
 
         if ($result) {
             // Return updated average rating & count

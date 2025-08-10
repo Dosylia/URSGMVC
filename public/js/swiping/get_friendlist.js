@@ -47,65 +47,27 @@ function getFriendList(userId, page = 1) {
         });
 }
 
-function checkIfUsersPlayedTogether(userId, friendId) {
-    const token = localStorage.getItem('masterTokenWebsite');
-    fetch('/checkIfUsersPlayedTogether', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(parseInt(friendId))}`
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Add a rating system
-                const rating = data.rating;
-                const ratingElement = document.getElementById(`rating_${friendId}`);
-                if (ratingElement) {
-                    ratingElement.textContent = `Rating: ${rating}`;
-                } else {
-                    const newRatingElement = document.createElement('span');
-                    newRatingElement.id = `rating_${friendId}`;
-                    newRatingElement.textContent = `Rating: ${rating}`;
-                    const friendElement = document.querySelector(`[data-friend-id="${friendId}"]`);
-                    if (friendElement) {
-                        const detailsDiv = friendElement.querySelector('.friend-details');
-                        detailsDiv.appendChild(newRatingElement);
-                    }
-                }
-            } else {
-                console.error('Error checking played together:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
-}
-
 function updateOnlineStatus(friendList) {
     friendList.forEach(friend => {
         const friendElement = document.querySelector(`[data-friend-id="${friend.friend_id}"]`);
-        if (!friendElement) return;
-        if (friendElement) {
-            const onlineStatus = friendElement.querySelector('.online-status');
-            const lookingForGame = friendElement.querySelector('.looking-game-status');
+        const chatName = friendElement.querySelector('.chat-name');
+        if (!friendElement || !chatName) return;
+        const onlineStatus = friendElement.querySelector('.online-status');
+        const lookingForGame = friendElement.querySelector('.looking-game-status');
 
-            // Clear old status
-            if (onlineStatus) onlineStatus.remove();
-            if (lookingForGame) lookingForGame.remove();
+        // Clear old status
+        if (onlineStatus) onlineStatus.remove();
+        if (lookingForGame) lookingForGame.remove();
 
-            // Update new status
-            if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
-                const newLookingForGame = document.createElement('span');
-                newLookingForGame.className = 'looking-game-status';
-                friendElement.querySelector('.chat-name').appendChild(newLookingForGame);
-            } else if (friend.friend_online === 1) {
-                const newOnlineStatus = document.createElement('span');
-                newOnlineStatus.className = 'online-status';
-                friendElement.querySelector('.chat-name').appendChild(newOnlineStatus);
-            }
+        // Update new status
+        if (friend.friend_online === 1 && friend.friend_isLookingGame === 1) {
+            const newLookingForGame = document.createElement('span');
+            newLookingForGame.className = 'looking-game-status';
+            friendElement.querySelector('.chat-name').appendChild(newLookingForGame);
+        } else if (friend.friend_online === 1) {
+            const newOnlineStatus = document.createElement('span');
+            newOnlineStatus.className = 'online-status';
+            friendElement.querySelector('.chat-name').appendChild(newOnlineStatus);
         }
     });
 }
