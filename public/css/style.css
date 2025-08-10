@@ -826,6 +826,7 @@
   width: 80%;
   justify-content: space-between;
   position: relative;
+  margin-top: 20px;
 }
 
 .aboutme-match.champions-row {
@@ -948,14 +949,14 @@
 .aboutme-match .champions .lol-account {
   color: white;
   position: absolute;
-  top: 5px;
+  top: 0px;
   left: 10px;
 }
 
 .aboutme-match .champions .user-rating {
   position: absolute;
-  bottom: 5px;
-  left: 10px;
+  bottom: 15px;
+  left: 15%;
 }
 
 .other-data-profile {
@@ -3877,11 +3878,11 @@ section.siteMap tr:nth-child(even) {
   }
 
   .full-star {
-      color: var(--main--red);
+      color: var(--main--red) !important;
   }
 
   .empty-star {
-      color: rgba(96, 91, 91, 0.5);
+      color: rgba(96, 91, 91, 0.5) !important;
   }
 
   .tournament-image {
