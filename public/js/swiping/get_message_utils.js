@@ -894,77 +894,80 @@ export function fetchMessages(userId, friendId) {
         .catch(error => console.error('Fetch error:', error));
     }
 
-    function handleRatingPrompt(friendId, commonMatches) {
-        const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
-        const friendData = ratingData[`friendId_${friendId}`] || { ratedMatches: {}, lastRatingTime: 0 };
-        const oneWeek = 7 * 24 * 60 * 60 * 1000;
-        const now = Date.now();
+function handleRatingPrompt(friendId, commonMatches) {
+    const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+    const friendKey = `friendId_${friendId}`;
+    const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
 
-        // Don't ask if rated in the last week
-        if (now - friendData.lastRatingTime < oneWeek) return;
+    // Don't ask if rated in the last week
+    if (now - friendData.lastRatingTime < oneWeek) return;
 
-        // Find a matchId that hasn't been rated yet
-        const newMatchId = commonMatches.find(id => !friendData.ratedMatches[id]);
-        if (!newMatchId) {
-            return;
-        }
+    // Find a matchId that hasn't been rated yet
+    const newMatchId = commonMatches.find(id => !friendData.ratedMatches[id]);
+    if (!newMatchId) return;
 
-        // Show modal (example)
-        showRatingModal(friendId, newMatchId);
+    showRatingModal(friendId, newMatchId);
+}
+
+function showRatingModal(friendId, matchId) {
+    RatingModal.classList.remove('rating-modal-hidden');
+    document.getElementById("overlay").style.display = "block";
+    submitRating.setAttribute('data-friend-id', friendId);
+    submitRating.setAttribute('data-match-id', matchId);
+}
+
+export function closeRatingModal(type) {
+    RatingModal.classList.add('hidden');
+    document.getElementById("overlay").style.display = "none";
+
+    const friendId = submitRating.getAttribute('data-friend-id');
+    const friendKey = `friendId_${friendId}`;
+    let ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+    const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
+
+    // Only update if not a successful rating
+    if (type !== 'success') {
+        friendData.lastRatingTime = Date.now();
+        ratingData[friendKey] = friendData;
+        localStorage.setItem('ratingData', JSON.stringify(ratingData));
     }
+}
 
-    function showRatingModal(friendId, matchId) {
-        RatingModal.classList.remove('rating-modal-hidden');
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "block";
-        // add data friendId, and MatchId to submitRating as data-friend-id and data-match-id attributes
-        submitRating.setAttribute('data-friend-id', friendId);
-        submitRating.setAttribute('data-match-id', matchId);
-    }
+export function sendRating() {
+    const friendId = submitRating.getAttribute('data-friend-id');
+    const matchId = submitRating.getAttribute('data-match-id');
+    const rating = document.getElementById('rating-score').value;
+    const token = localStorage.getItem('masterTokenWebsite');
 
-    // Close the rating modal
-    export function closeRatingModal(type) {
-        RatingModal.classList.add('hidden');
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "none";
+    fetch('/rateFriendWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+            const friendKey = `friendId_${friendId}`;
+            const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
 
-        if (type !== 'success') {
-            // set local storage to not re-open it for this user until next week
-            const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
-            const friendId = submitRating.getAttribute('data-friend-id');
-            ratingData[`friendId_${friendId}`] = {
-                ratedMatches: {},
-                lastRatingTime: Date.now()
-            };
+            friendData.ratedMatches[matchId] = rating;
+            friendData.lastRatingTime = Date.now();
+
+            ratingData[friendKey] = friendData;
             localStorage.setItem('ratingData', JSON.stringify(ratingData));
+
+            closeRatingModal('success');
+        } else {
+            console.error('Rating failed:', data.error);
         }
-    }
+    })
+    .catch(error => console.error('Fetch error:', error));
+}
 
-
-
-    export function sendRating() {
-        const friendId = submitRating.getAttribute('data-friend-id');
-        const matchId = submitRating.getAttribute('data-match-id');
-        const rating = document.getElementById('rating-score').value;
-
-        const token = localStorage.getItem('masterTokenWebsite');
-        fetch('/rateFriendWebsite', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Rating successful:', data);
-                closeRatingModal('success');
-            } else {
-                console.error('Rating failed:', data.error);
-            }
-        })
-        .catch(error => console.error('Fetch error:', error));
-    }
     
