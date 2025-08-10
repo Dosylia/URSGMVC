@@ -952,6 +952,12 @@
   left: 10px;
 }
 
+.aboutme-match .champions .user-rating {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+}
+
 .other-data-profile {
   display: flex;
   justify-content: space-between;
@@ -3862,7 +3868,7 @@ section.siteMap tr:nth-child(even) {
     }
 
     .user-rating {
-      font-size: 1.5em;
+      font-size: 1em;
   }
 
   .star {
@@ -3875,7 +3881,7 @@ section.siteMap tr:nth-child(even) {
   }
 
   .empty-star {
-      color: lightgray;
+      color: rgba(96, 91, 91, 0.5);
   }
 
   .tournament-image {
