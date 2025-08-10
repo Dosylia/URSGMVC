@@ -3857,8 +3857,25 @@ section.siteMap tr:nth-child(even) {
     color: white;
   }
 
-  #rating-score option {
-    color: white;
+    #rating-score option {
+      color: white;
+    }
+
+    .user-rating {
+      font-size: 1.5em;
+  }
+
+  .star {
+      font-size: 1.5em;
+      margin-right: 2px;
+  }
+
+  .full-star {
+      color: var(--main--red);
+  }
+
+  .empty-star {
+      color: lightgray;
   }
 
   .tournament-image {

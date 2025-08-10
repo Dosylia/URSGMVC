@@ -62,18 +62,18 @@ class RatingGames extends DataBase
     public function getAverageRatingForUser($userId)
     {
         $query = $this->bdd->prepare("
-                                    SELECT AVG(rating) AS average, COUNT(*) AS count
-                                    FROM user_ratings
-                                    WHERE rated_user_id = ?
+                                        SELECT AVG(rating) AS average
+                                        FROM user_ratings
+                                        WHERE rated_user_id = ?
         ");
         
         $query->execute([$userId]);
         $getAverageRatingForUser = $query->fetch();
 
         if ($getAverageRatingForUser) {
-            return round(floatval($getAverageRatingForUser['average']), 2);
+            return (int) round($getAverageRatingForUser['average']);
         } else {
-            return false;
+            return 0;
         }
         
     }
