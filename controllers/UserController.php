@@ -3122,8 +3122,6 @@ class UserController
             $avgData = $this->rating->getAverageRatingForUser($friendId);
             echo json_encode([
                 'success' => true,
-                'averageRating' => $avgData['average'],
-                'ratingsCount' => $avgData['count']
             ]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Database error']);
