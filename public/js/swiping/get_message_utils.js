@@ -887,8 +887,6 @@ export function fetchMessages(userId, friendId) {
         .then(data => {
             if (data.success && data.playedTogether) {
                 handleRatingPrompt(friendId, data.commonMatches);
-            } else {
-                console.error('Error checking played together:', data.error);
             }
         })
         .catch(error => console.error('Fetch error:', error));
