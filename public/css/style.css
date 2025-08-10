@@ -1156,6 +1156,13 @@
   line-height: 1;       
 }
 
+#user-rating-stars {
+  position: absolute;
+  font-size: 0.6em !important;
+  left: 0;
+  bottom: -20px;
+}
+
 .swiping-game-info {
   display: flex;
   margin-top: 10px;
@@ -1173,6 +1180,7 @@
   padding: 0 40px 0 30px;  
   font-size: 1.5em;
   gap: 5px;
+  position: relative;
 }
 
 .swiping-game-info > :first-child {
