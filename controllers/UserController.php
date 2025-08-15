@@ -2276,7 +2276,6 @@ class UserController
             require_once 'keys.php';
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
             $userRating = 0;
             if ($user['user_game'] == "League of Legends")
             {

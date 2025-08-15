@@ -16,9 +16,7 @@ class ChatMessage extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                c.chat_receiverId,
                                                 c.chat_senderId,
-                                                c.chat_message,
                                                 u.user_username,
                                                 u.user_picture,
                                                 COUNT(*) AS `unread_count`

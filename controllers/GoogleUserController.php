@@ -120,7 +120,11 @@ class GoogleUserController
                 'Valorant' => array_merge(['Any'], $valorant_ranks)
             ];
             $playerFinderLasts = $this->playerFinder->getPlayerFinderLasts();
-            $totalPosts = count($playerFinderLasts);
+            if (is_array($playerFinderLasts) && count($playerFinderLasts) > 0) {
+                $totalPosts = count($playerFinderLasts);
+            } else {
+                $totalPosts = 0;
+            }
             $visibleCards = 3;
             $centerStart = max(0, floor(($totalPosts - $visibleCards) / 2));
             $centerEnd = $centerStart + $visibleCards - 1;
@@ -614,7 +618,12 @@ class GoogleUserController
             $idToken = $googleData->idToken ?? null;
 
             if ($idToken) {
-                $verificationResult = $this->verifyGoogleToken($idToken);
+                if ($_ENV['environment'] === 'local') {
+                    // Local environment specific code
+                    $verificationResult = true;
+                } else {
+                    $verificationResult = $this->verifyGoogleToken($idToken);
+                }
 
                 if (!$verificationResult) {
                     $response = array('message' => 'Invalid token');
