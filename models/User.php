@@ -297,6 +297,31 @@ class User extends DataBase
         }
     }
 
+    public function getLeaderboardFriends()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                user_id, 
+                user_username, 
+                user_currency, 
+                user_isVip
+            FROM `user` 
+            INNER JOIN
+                `friendrequest` as fr ON fr_status = 'accepted' AND (fr.senderId = user_Id OR fr.receiverId = fr.senderId)
+            ORDER BY user_currency DESC 
+            LIMIT 100
+        ");
+        
+        $query->execute();
+        $users = $query->fetchAll();
+        
+        if ($users) {
+            return $users;
+        } else {
+            return false;
+        }
+    }
+
     public function getTopUsers()
     {
         $query = $this->bdd->prepare("
