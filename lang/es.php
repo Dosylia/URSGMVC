@@ -117,6 +117,10 @@ return [
     'swipe_home_text3' => 'Los mensajes en la app hacen fácil formar equipo y lanzarse al juego',
     'swipe_home_text4' => 'Demuestra tu esfuerzo: sincroniza tu cuenta de Riot y deja que brillen tus estadísticas',
 
+    //sign up page
+    'sign_up_title' => 'Registrarse',
+    'sign_up_text' => 'Crea una cuenta para encontrar a tu compañero de juego perfecto.',
+
     // settings.phtml
     'settings' => 'Configuración',
     'chat_filter' => 'Filtro de chat',
