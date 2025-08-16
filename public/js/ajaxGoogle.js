@@ -41,7 +41,6 @@ function handleCredentialResponse(response) {
     }
 
     async function sendUserData(userData) {
-        console.log("User data:", userData);
         await fetch('/googleTest', {
             method: 'POST',
             headers: {
@@ -59,9 +58,6 @@ function handleCredentialResponse(response) {
                 if (adminToken) {
                     localStorage.setItem('adminToken', adminToken);
                 }
-                console.log("Server response indicates success:", data);
-                // No tracking if on test server 
-                
                 trackLogin();
                 window.location.href = '/signup';
             } else {

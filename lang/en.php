@@ -98,6 +98,10 @@ return [
     'partners_perks_2' => 'Hidden easter egg on website!',   
     'partners_perks_3' => 'All store items unlocked.',
 
+    //sign up page
+    'sign_up_title' => 'Sign up',
+    'sign_up_text' => 'Create an account to find your perfect gaming partner.',
+
     //home.phtml
     'game' => 'Game',
     'any' => 'Any',
