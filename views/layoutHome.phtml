@@ -139,6 +139,57 @@
         <?php require $template . ".phtml"; ?>
     </main>
 
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-group">
+                <div class="footer-links">
+                    <p><?= $this->_('footer_links') ?></p>
+                    <nav class="footer-nav-links">
+                        <a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a>
+                        <a href="/termsOfService"><?= $this->_('tos') ?></a>
+                        <a href="/CSAE"><?= $this->_('csae') ?></a>
+                    </nav>
+                </div>
+
+                <div class="footer-socials">
+                    <p><?= $this->_('footer_socials') ?></p>
+                    <nav class="footer-nav-socials">
+                        <a href="https://twitter.com/MeetURSG" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.reddit.com/r/URSG/" target="_blank" aria-label="<?= $this->_('social_link_aria_reddit') ?>"><i class="fa-brands fa-reddit-alien"></i></a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="footer-group">
+                <div class="footer-creators">
+                    <p><?= $this->_('footer_madeby') ?></p>
+                    <nav class="footer-nav-creators">
+                        <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_dosylia') ?>">Dosylia</a>
+                    </nav>
+                </div>
+
+                <div class="footer-languages">
+                    <p><?= $this->_('footer_language') ?></p>
+                    <form method="POST" action="/changeLanguage" class="language-switcher">
+                        <label for="lang">🌐</label>
+                        <select name="lang" id="lang" onchange="this.form.submit()">
+                            <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
+                            <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
+                            <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
+                            <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-copyright">
+            <p>&copy; <?= date('Y') ?> <?= $this->_('footer_copyright') ?></p>
+            <p class="legal"><?= $this->_('footer_riot') ?></p>
+        </div>
+    </footer>
+
     <script src="public/js/signUpModal.js?<?= time(); ?>"></script>
     <script src="public/js/referal.js"></script>
 
