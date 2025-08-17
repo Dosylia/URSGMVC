@@ -166,8 +166,8 @@ class GoogleUserController
         $this->initializeLanguage();
         $current_url = "https://ur-sg.com/hiring";
         $template = "views/hiring";
-        $title = "Apply as Dev";
-        $page_title = "URSG - Apply as developer";
+        $title = "Apply to the team";
+        $page_title = "URSG - Apply to the team";
         $picture = "ursg-preview-small";
         $page_css = ['hiring'];
         if (
@@ -1759,7 +1759,12 @@ class GoogleUserController
 
     public function submitCandidature()
     {
-        if (isset($_POST['email'])) {
+        if (isset($_POST['name']) &&
+            isset($_POST['email']) &&
+            isset($_POST['role']) &&
+            isset($_POST['skills']) &&
+            isset($_POST['portfolio'])
+            ) {
 
             require 'keys.php';
             $emailToSend = "contact@ur-sg.com";
