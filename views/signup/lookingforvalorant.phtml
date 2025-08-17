@@ -5,72 +5,75 @@
         <p class="errorsForm"><?= $_GET['error'] ?></p>
         <?php endif; ?>
 
-        <label for="gender">Gender you are looking for</label>
-        <select id="gender" name="gender" required>
-            <option value="" disabled selected>Choose a gender...</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Non Binary">Non binary</option>
-            <option value="Male and Female">Male and Female</option>
-            <option value="All">All</option>
-        </select>
+        <div class="form-step active">
+            <label for="gender">Gender you are looking for</label>
+            <select id="gender" name="gender" required>
+                <option value="" disabled selected>Choose a gender...</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Non Binary">Non binary</option>
+                <option value="Male and Female">Male and Female</option>
+                <option value="All">All</option>
+            </select>
 
-            <label for="kindofgamer">What kind of gamer are you looking for?</label>
-        <select id="kindofgamer" name="kindofgamer" required>
-            <option value="" disabled selected>Chose what kind you are looking for...</option>
-            <option value="Chill">Chill / Normal games</option>
-            <option value="Competition">Competition / Ranked</option>
-            <option value="Competition and Chill">Competition/Ranked and chill</option>
-        </select>
+                <label for="kindofgamer">What kind of gamer are you looking for?</label>
+            <select id="kindofgamer" name="kindofgamer" required>
+                <option value="" disabled selected>Chose what kind you are looking for...</option>
+                <option value="Chill">Chill / Normal games</option>
+                <option value="Competition">Competition / Ranked</option>
+                <option value="Competition and Chill">Competition/Ranked and chill</option>
+            </select>
+        </div>
                 
-        <div id="champion-picker">
-            <div class="champions-picker-column">
-                <img src="public/images/valorant_champions/Viper_icon.webp" alt="Viper" class="champion-picker-img picker-main1">
-                <p id="main1-name">Main 1</p>
+        <div class="form-step">
+            <div id="champion-picker">
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/Viper_icon.webp" alt="Viper" class="champion-picker-img picker-main1">
+                    <p id="main1-name">Main 1</p>
+                </div>
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/Omen_icon.webp" alt="Omen" class="champion-picker-img picker-main2">
+                    <p id="main2-name">Main 2</p>
+                </div>
+                <div class="champions-picker-column">
+                    <img src="public/images/valorant_champions/Sova_icon.webp" alt="Sova" class="champion-picker-img picker-main3">
+                    <p id="main3-name">Main 3</p>
+                </div>
+                <div class="champions-picker-column">
+                    <button type="button" id="skipSelection-btn">Skip</button>
+                </div>
+                <input type="hidden" id="main1" name="main1" value="" class="notranslate champion-picker-input">
+                <input type="hidden" id="main2" name="main2" value="" class="notranslate champion-picker-input">
+                <input type="hidden" id="main3" name="main3" value="" class="notranslate champion-picker-input">
+                <input type="hidden" id="skipSelection" name="skipSelection" value="0" data-page="create">
             </div>
-            <div class="champions-picker-column">
-                <img src="public/images/valorant_champions/Omen_icon.webp" alt="Omen" class="champion-picker-img picker-main2">
-                <p id="main2-name">Main 2</p>
-            </div>
-            <div class="champions-picker-column">
-                <img src="public/images/valorant_champions/Sova_icon.webp" alt="Sova" class="champion-picker-img picker-main3">
-                <p id="main3-name">Main 3</p>
-            </div>
-            <div class="champions-picker-column">
-                <button type="button" id="skipSelection-btn">Skip</button>
-            </div>
-            <input type="hidden" id="main1" name="main1" value="" class="notranslate champion-picker-input">
-            <input type="hidden" id="main2" name="main2" value="" class="notranslate champion-picker-input">
-            <input type="hidden" id="main3" name="main3" value="" class="notranslate champion-picker-input">
-            <input type="hidden" id="skipSelection" name="skipSelection" value="0" data-page="create">
-        </div>
 
-        <!-- Champion Selection Modals -->
-        <div id="modal-main1" class="champion-modal">
-            <div class="modal-content">
-                <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
-                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
-                <div id="champion-list-main1" class="champion-list"></div>
+            <!-- Champion Selection Modals -->
+            <div id="modal-main1" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+                    <div id="champion-list-main1" class="champion-list"></div>
+                </div>
             </div>
-        </div>
 
-        <div id="modal-main2" class="champion-modal">
-            <div class="modal-content">
-                <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
-                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
-                <div id="champion-list-main2" class="champion-list"></div>
+            <div id="modal-main2" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+                    <div id="champion-list-main2" class="champion-list"></div>
+                </div>
             </div>
-        </div>
 
-        <div id="modal-main3" class="champion-modal">
-            <div class="modal-content">
-                <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
-                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
-                <div id="champion-list-main3" class="champion-list"></div>
+            <div id="modal-main3" class="champion-modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+                    <div id="champion-list-main3" class="champion-list"></div>
+                </div>
             </div>
-        </div>
 
-        <script src="public/js/champions-picker-valorant.js?<?= time(); ?>"></script>
+            <script src="public/js/champions-picker-valorant.js?<?= time(); ?>"></script>
 
             <label for="rank_valorant">Rank you are looking for</label>
             <select id="rank_valorant" name="rank_valorant">
@@ -109,13 +112,21 @@
             <input type="hidden" name="game" value="Valorant"> 
 
             <?php if($this->isConnectWebsite()) : ?>
-            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
-        <?php endif ; ?>
+                <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+            <?php endif ; ?>
 
-        <input name="submit" id="send-button" type="submit" value="Send">
+            <input name="submit" id="send-button" type="submit" value="Send">
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="form-navigation">
+            <button type="button" id="prevBtn">Previous</button>
+            <button type="button" id="nextBtn">Next</button>
+        </div>
     </form>
     <img class="picture_with_form" src="public/images/jett.png" alt="Jett from Valorant">
 </div>
 
 <script type="module" src="public/js/valorantinfo.js?<?= time(); ?>"></script>
+<script type="module" src="public/js/signup_navigation.js?<?= time(); ?>"></script>
 

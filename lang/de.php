@@ -117,7 +117,10 @@ return [
     'swipe_home_text3' => 'In-App-Nachrichten erleichtern die Teambildung und den Spieleinstieg',
     'swipe_home_text4' => 'Beweise deinen Einsatz – synchronisiere deinen Riot-Account und zeig deine Stats',
 
-    
+    //sign up page
+    'sign_up_title' => 'Registrieren',
+    'sign_up_text' => 'Erstelle ein Konto, um deinen perfekten Gaming-Partner zu finden.',
+
     // settings.phtml
     'settings' => 'Einstellungen',
     'chat_filter' => 'Chat-Filter',

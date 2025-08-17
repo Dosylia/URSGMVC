@@ -117,6 +117,10 @@ return [
     'swipe_home_text3' => 'La messagerie intégrée facilite la création d’équipe et le lancement en jeu',
     'swipe_home_text4' => 'Prouve ton grind – synchronise ton compte Riot et fais briller tes stats',
 
+    //sign up page
+    'sign_up_title' => 'S’inscrire',
+    'sign_up_text' => 'Créez un compte pour trouver votre partenaire de jeu idéal.',
+
 
     // settings.phtml
     'settings' => 'Paramètres',

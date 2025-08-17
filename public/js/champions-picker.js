@@ -229,7 +229,7 @@ function selectChampion(pickerClass, champName, champImage) {
     }
 
     document.querySelector(`.${pickerClass}`).src = champImage;
-    document.querySelector(`.${pickerClass}`).style.border = "5px solid #5cd34f";
+    document.querySelector(`.${pickerClass}`).style.border = "3px solid #5cd34f";
     inputElement.value = champName;
     selectedChampions.add(champName);
 
@@ -255,7 +255,7 @@ function handleSkipSelection() {
     if (skipInput.value === '0') {
         // Activate "Skip Mode": Clear champions and darken images
         pickerImages.forEach(img => img.classList.add('shadow'));
-        pickerImages.forEach(img => img.style.border = "5px solid #e74057");
+        pickerImages.forEach(img => img.style.border = "3px solid #e74057");
         pickerInputs.forEach(input => {
             if (input.value) {
                 selectedChampions.delete(input.value);
@@ -282,11 +282,11 @@ const skipInput = document.getElementById('skipSelection'); // Get the hidden in
 if (skipInput.value == '1') {  // Check if skipSelection is active
     console.log('Skip mode is active');
     pickerImages.forEach(img => img.classList.add('shadow'));
-    pickerImages.forEach(img => img.style.border = "5px solid #e74057");
+    pickerImages.forEach(img => img.style.border = "3px solid #e74057");
 } else if(skipSelection?.dataset.page === "create" && skipSelection?.value === "0") {
-    pickerImages.forEach(img => img.style.border = "5px solid #e74057");
+    pickerImages.forEach(img => img.style.border = "3px solid #e74057");
 } else {
-    pickerImages.forEach(img => img.style.border = "5px solid #5cd34f");
+    pickerImages.forEach(img => img.style.border = "3px solid #5cd34f");
 }
 
 

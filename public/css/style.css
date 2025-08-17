@@ -2991,6 +2991,76 @@ section.siteMap tr:nth-child(even) {
     align-items: center;
   }
 
+  .form-step {
+    display: none;
+    width: 100%;
+  }
+
+  .form-step.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+.form-navigation {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.form-navigation {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-start; /* default: left */
+  width: 100%;
+  gap: 10px; /* spacing between buttons */
+}
+
+.form-navigation button:last-child {
+  margin-left: auto; /* push Next to the right */
+}
+
+/* When only one button is visible, align it right */
+.form-navigation button:only-child {
+  margin-left: auto;
+}
+
+/* Button base styles */
+.form-navigation button {
+  background: var(--main--red);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.form-navigation button:hover {
+  background: var(--dark--red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+.form-navigation button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Previous button styling */
+.form-navigation #prevBtn {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.form-navigation #prevBtn:hover {
+  background: #cfcfcf;
+}
+
   .server-btn {
     padding: 8px 12px;
     margin: 5px;
@@ -3065,11 +3135,20 @@ section.siteMap tr:nth-child(even) {
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+.form-error-message {
+    display: none;
+    background-color: rgba(255, 100, 100, 1);
+    color: white;
+    padding: 1em;
+    border: 5px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
   
   .form_signup p, .form_signup_mail p {
   font-size: 1.5vh;
   font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 10px;
   }
   
   .form_signup a, .form_signup_mail a {
@@ -3084,7 +3163,7 @@ section.siteMap tr:nth-child(even) {
       }
   
   .form_signup label, .form_signup_mail label {
-      margin: 30px 0px 10px 0px;
+      margin: 5px 0px;
       font-family: 'Geologica', sans-serif;  
       font-size: 3vh;
   }
@@ -3122,7 +3201,7 @@ section.siteMap tr:nth-child(even) {
 }
 
 #champion-picker {
-    margin-top: 50px;
+    margin-top: 20px;
     display: flex;
     gap: 20px;
     align-items: center;
@@ -3161,7 +3240,6 @@ section.siteMap tr:nth-child(even) {
     font-family: 'Geologica', sans-serif;
     font-weight: 500;
     cursor: pointer;
-    margin-left: 20px;
 }
 
 .champion-modal {
@@ -3236,25 +3314,6 @@ section.siteMap tr:nth-child(even) {
       justify-content: center;
       align-items: center;
   }
-  
-  #send-button {
-      background-color: rgb(43, 121, 199);
-      color: white;
-      font-size: 1.7rem;
-      font-family: 'Geologica', sans-serif;
-      width: 100%; 
-      border: 0.5px solid black;
-      border-radius: 20px;
-      padding: 10px 0px;
-      cursor: pointer;
-      text-transform: capitalize;
-      height: fit-content;
-      white-space: normal;
-    }
-  
-    #send-button:hover {
-      background-color: rgba(43, 121, 199,0.7);
-    }
 
     #errorSpan_form {
       color: var(--main--red);
@@ -3262,23 +3321,46 @@ section.siteMap tr:nth-child(even) {
       font-weight: 600;
     }
   
-    #skip-preferences-btn {
-      background-color: var(--main--red);
-      color: white;
-      font-size: 1.7rem;
-      font-family: 'Geologica', sans-serif;
-      width: 100%; 
-      border: 0.5px solid black;
-      border-radius: 20px;
-      padding: 10px 0px;
-      cursor: pointer;
-      text-transform: capitalize;
-      height: fit-content;
-    }
+  #send-button,
+  #skip-preferences-btn {
+    background: rgb(43, 121, 199); /* default for send */
+    color: white;
+    font-size: 1.1rem;
+    font-family: 'Geologica', sans-serif;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    margin-top: 15px;
+    width: auto;          /* not full width anymore */
+    min-width: 180px;     /* consistent button size */
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
 
-    #skip-preferences-btn:hover {
-      background-color: var(--dark--red);
-    }
+  /* Primary button (send) */
+  #send-button {
+    background: rgb(43, 121, 199);
+  }
+
+  #send-button:hover {
+    background: rgba(43, 121, 199, 0.85);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
+
+  /* Secondary button (skip) */
+  #skip-preferences-btn {
+    background: var(--main--red);
+  }
+
+  #skip-preferences-btn:hover {
+    background: var(--dark--red);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
   
     #selected-roles-valorant,
     #selected-ranks-valorant,
@@ -9446,6 +9528,11 @@ justify-content: center;
 
 @media only screen and (max-width: 1150px) {
 
+    #champion-picker .champions-picker-column img {
+    width: 70px;
+    height: 70px;
+  }
+
   .footer_black, .footer_grey {
     font-size: 0.8em;
     flex-wrap: wrap;
@@ -9504,11 +9591,6 @@ justify-content: center;
 }
 
 @media only screen and (max-width: 1018px) {
-
-  #champion-picker .champions-picker-column img {
-    width: 50px;
-    height: 50px;
-  }
 
   .header .nav-left img {
     height: 35px;
@@ -10468,10 +10550,6 @@ justify-content: center;
     display: none;
   }
 
-  #champion-picker {
-    flex-direction: column;
-}
-
   .btn_updateProfile {
     min-height: 40px;
     padding: 0 5px;
@@ -11118,6 +11196,10 @@ justify-content: center;
 
 @media only screen and (max-width: 500px) {
 
+ #champion-picker .champions-picker-column img {
+    width: 30px;
+    height: 30px;
+  }
 .swipe-home-card {
   height: 150px;
 }

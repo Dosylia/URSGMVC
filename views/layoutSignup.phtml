@@ -4,112 +4,89 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3XDDBJQ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<header>
-    <section class="main_section_small">
-        <div class="top_main_section"> 
-            <div class="top_left_main_section">
-                <a href="/">
-                    <img class="logo_ursg" src="public/images/logo_ursg_white.png" alt="logo">
-                </a>
-            </div> 
 
-            <div class="top_right_main_section">
-                <div class="toggle-container">
-                            <div title="Dark mode" id="toggle-button" class="toggle-button"></div>
+    <header class="header">
+        <section class="header-top">
+            <nav>
+                <div class="nav-left">
+                    <a href="/">
+                        <img class="logo_ursg" src="public/images/ursg-side.png" alt="logo">
+                    </a>
                 </div>
-                <nav>
-                <!-- PHP TO SHOW ALL DIFFERENT BUTTONS DEPENDING ON SESSION -->
-                                            
-                    <?php if(
-                                $this->isConnectGoogle() && 
-                                $this->isConnectWebsite() && 
-                                (
-                                    ($this->isConnectLeague() && !$this->isConnectValorant()) || 
-                                    ($this->isConnectValorant() && !$this->isConnectLeague())
-                                ) && 
-                                $this->isConnectLf()
-                            )  :?>  <!-- Connected to all -->
-                        <a href="/logout" id="fix_mobile_signup" class="signup_button" title="Log in"> <!-- Log out button -->
-                                Log out
-                        </a>
-                        <a href="/userProfile?<?= ucfirst($user['user_username'])?>" title="Profile" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>  
-                    <?php elseif(
-                                    $this->isConnectGoogle() && 
-                                    $this->isConnectWebsite() && 
-                                    (
-                                        ($this->isConnectLeague() && !$this->isConnectValorant()) || 
-                                        ($this->isConnectValorant() && !$this->isConnectLeague())
-                                    ) && 
-                                    !$this->isConnectLf()
-                                ) : ?>  <!-- No session for looking for -->
-                        <a href="/logout"  class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>   
-                    <?php elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && !$this->isConnectValorant() && !$this->isConnectLf()): ?>  <!-- No session for looking for and league -->
-                        <a href="/logout" class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / name = username -->
-                            <?= ucfirst($user['user_username']) ?>
-                        </a>   
-                    <?php elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) : ?>
-                        <a href="/logout" class="fix_mobile_signup signup_button" title="Log in"> <!-- Log out button -->
-                            Log out
-                        </a>
-                        <a href="/signup" title="Sign up" class="fix_mobile_signup signup_button notranslate"> <!-- User page / Diff name-->
-                            <?= ucfirst($googleUser['google_fullName']) ?>
-                        </a>
-                    <?php else : ?>
-                        <input value="Sign up/Log in" type="text" title="Sign up/Sign in" id="signup_button">
-                    <?php endif; ?>
-                </nav>
+                <div class="nav-rest">
+                    <a href="playerfinder"><?= $this->_('player_finder') ?></a>
+                    <a href="https://discord.gg/Bfpkws74V3" target="_blank"><?= $this->_('discord') ?></a>
+                    <a href="/partners" target="_blank"><?= $this->_('partners') ?></a>
+                    <a href="/logout"><?= $this->_('logout') ?></a>
+                </div>
+            </nav>
+        </section>
+        <section class="header-bottom">
+            <div class="header-bottom-content">
+                <h2><?= $this->_('sign_up_title') ?></h2>
+                <p><?= $this->_('sign_up_text') ?></p>
             </div>
-        </div>
-
-        <div class="mid_main_section_signup">
-            <p><?= $title ?></p>
-        </div>   
-    </section>
-</header>
+        </section>
+    </header>
 
     <main>
         <?php if(isset($_GET['message'])) :?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
+        <div class="form-error-message"></div>
         <?php require $template.".phtml"; ?> 
     </main>
 
-<footer>
-    <div class="footer_black">
-        <div class="top_footer">
-            <p>Copyright © 2025 URSG</p>
-            <p>Your Soulmate gamer</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-group">
+                <div class="footer-links">
+                    <p><?= $this->_('footer_links') ?></p>
+                    <nav class="footer-nav-links">
+                        <a href="/legalNotice"><?= $this->_('legal_notice_privacy_policy') ?></a>
+                        <a href="/termsOfService"><?= $this->_('tos') ?></a>
+                        <a href="/CSAE"><?= $this->_('csae') ?></a>
+                    </nav>
+                </div>
+
+                <div class="footer-socials">
+                    <p><?= $this->_('footer_socials') ?></p>
+                    <nav class="footer-nav-socials">
+                        <a href="https://twitter.com/MeetURSG" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.reddit.com/r/URSG/" target="_blank" aria-label="<?= $this->_('social_link_aria_reddit') ?>"><i class="fa-brands fa-reddit-alien"></i></a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="footer-group">
+                <div class="footer-creators">
+                    <p><?= $this->_('footer_madeby') ?></p>
+                    <nav class="footer-nav-creators">
+                        <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_dosylia') ?>">Dosylia</a>
+                    </nav>
+                </div>
+
+                <div class="footer-languages">
+                    <p><?= $this->_('footer_language') ?></p>
+                    <form method="POST" action="/changeLanguage" class="language-switcher">
+                        <label for="lang">🌐</label>
+                        <select name="lang" id="lang" onchange="this.form.submit()">
+                            <option value="en" <?= ($_SESSION['lang'] ?? 'en') === 'en' ? 'selected' : '' ?>>EN</option>
+                            <option value="fr" <?= ($_SESSION['lang'] ?? 'en') === 'fr' ? 'selected' : '' ?>>FR</option>
+                            <option value="de" <?= ($_SESSION['lang'] ?? 'en') === 'de' ? 'selected' : '' ?>>DE</option>
+                            <option value="es" <?= ($_SESSION['lang'] ?? 'en') === 'es' ? 'selected' : '' ?>>ES</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="mid_footer">
-        <p><a href="/legalNotice">Legal notice/Privacy policy, </a><a href="/termsOfService">ToS, </a><a href="/CSAE">CSAE</a></p>
-        <a href="/siteMap"> Site map</a>
+        <div class="footer-copyright">
+            <p>&copy; <?= date('Y') ?> <?= $this->_('footer_copyright') ?></p>
+            <p class="legal"><?= $this->_('footer_riot') ?></p>
         </div>
-
-        <div class="social_footer">
-            <a href="https://discord.gg/Bfpkws74V3" target="_blank">
-                <img src="public/images/discord2.png" alt="logo discord" loading="lazy"></a>
-            <a href="https://twitter.com/Dosylia" target="_blank">
-                <img src="public/images/twitter2.png" alt="logo twitter/x" loading="lazy"></a>
-        </div>
-
-        <div class="bot_footer">
-            <p>Made by :  <a href="https://www.dosylia.com/">Dosylia</a> and <a href="https://https://x.com/seenfront/">Seenfront</a></p>
-            <p>Design Lead :  <a href="https://https://x.com/CinderellaKuru/">Kuru</a></p>  
-            <p>Artwork by :  <a href="https://twitter.com/ShadowLilithArt/">ShadowLilithArt</a></p> 
-        </div>
-    </div>   
-</footer>
+    </footer>
 
     <!-- Triggers for tracking scritps -->
     <script>
