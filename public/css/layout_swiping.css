@@ -73,6 +73,45 @@ nav .scaleNoRound:hover {
     transform: scale(1.1);
 }
 
+.chat_nav,
+.chat_profile {
+    position: relative;
+}
+
+.language-switcher label {
+    color: #333;
+}
+
+.language-switcher select {
+    background-color: #f9f9f9;
+    color: #111;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.language-switcher select:hover {
+    background-color: #fff;
+    border-color: #999;
+}
+
+.dark-mode .language-switcher label {
+    color: #ccc;
+}
+
+.dark-mode .language-switcher select {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    border: 1px solid #444;
+}
+
+.dark-mode .language-switcher select:hover {
+    background-color: #2a2a2a;
+    border-color: #666;
+}
+
 @media only screen and (max-width: 1420px) {
     .swiping_row {
         width: 80%;

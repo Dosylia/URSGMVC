@@ -49,6 +49,7 @@ class FriendRequestController
             $allUsers = $this->user->getAllUsers();
             $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
             $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
+            $page_css = ['friendlist'];
             $current_url = "https://ur-sg.com/friendlistPage";
             $template = "views/swiping/swiping_friendlist";
             $picture = "ursg-preview-small";

@@ -80,6 +80,7 @@ class AdminController
             $LoggedOnUserCount    = $eventCounts['login'] ?? 0;
             $deletedAccountCount  = $eventCounts['deleted_account'] ?? 0;
             $dailyActivityJson = json_encode($dailyActivity);
+            $page_css = ['profile'];
             $current_url = "https://ur-sg.com/admin";
             $template = "views/admin/admin_landing";
             $picture = "ursg-preview-small";
@@ -436,6 +437,7 @@ class AdminController
             ($this->isMarketing()|| $this->isAdmin())
         ) {
             $this->initializeLanguage();
+            $page_css = ['partner'];
             $partners = $this -> partners -> getPartners();
             $current_url = "https://ur-sg.com/adminPartners";
             $template = "views/admin/admin_partners";

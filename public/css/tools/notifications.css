@@ -1,0 +1,29 @@
+.unread_message,
+#unread_message_header,
+#unread_message {
+    background-color: rgb(202, 69, 69);
+    border-radius: 50px;
+    border: none;
+    color: white;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+#pending_friend_requests_container,
+#unread_messages_container {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+}
+
+@media only screen and (max-width: 600px) {
+    #unread_message {
+        font-size: 8px;
+        padding: 2px 3px;
+    }
+
+    .unread_message,
+    #unread_message {
+        padding: 1px 4px;
+    }
+}

@@ -1,0 +1,322 @@
+/* PARTNER SECTION */
+#partners {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, var(--main--red), #bd3d48);
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+#partners h2 {
+    font-size: 3rem;
+    color: white;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.partners-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.partner {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.partner:hover {
+    transform: translateY(-8px);
+}
+
+.partner-img {
+    width: 100%;
+    max-width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.partner h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-logo {
+    width: 32px;
+    height: 32px;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease, transform 0.2s ease;
+}
+
+.social-logo:hover {
+    filter: grayscale(0%);
+    transform: scale(1.1);
+}
+
+.partners-perks {
+    margin-top: 60px;
+    padding: 30px;
+    border-radius: 16px;
+    background: white;
+    max-width: 900px;
+    margin-inline: auto;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .partners-perks {
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+    color: white;
+}
+
+.partners-perks h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #bd3d48;
+}
+
+.liz-easter-egg {
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 8px;
+    top: 10px;
+    left: 10px;
+}
+
+.liz-tooltip {
+    visibility: hidden;
+    width: 220px;
+    background-color: #fff;
+    color: #222;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.liz-easter-egg:hover .liz-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.dark-mode .liz-tooltip {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.05);
+}
+
+.perks-list p {
+    font-size: 1.1rem;
+    margin: 12px 0;
+    color: #444;
+    text-align: left;
+}
+
+.dark-mode .perks-list p {
+    color: #ddd;
+}
+
+.call-to-action {
+    margin-top: 40px;
+}
+
+.call-to-action p {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.call-to-action a {
+    margin-left: 5px;
+    background-color: white;
+    color: #bd3d48;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.call-to-action a:hover {
+    background-color: #fff;
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* Admin partners page */
+
+/* Partner form styling */
+.partner-form {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dark-mode .partner-form {
+    background-color: var(--ligher--grey);
+}
+
+.partner-form label {
+    font-weight: bold;
+    color: #333;
+}
+
+.dark-mode .partner-form label {
+    color: white;
+}
+
+.partner-form input[type='text'],
+.partner-form input[type='url'],
+.partner-form input[type='file'] {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.dark-mode .partner-form input[type='text'],
+.dark-mode .partner-form input[type='url'],
+.dark-mode .partner-form input[type='file'] {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.partner-form .hint {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dark-mode .partner-form .hint {
+    color: #bbb;
+}
+
+.partner-form button {
+    align-self: flex-start;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background-color: var(--main--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.partner-form button:hover {
+    opacity: 0.85;
+}
+
+/* Partner list section */
+.partner-list {
+    list-style: none;
+    padding: 0;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.partner-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--dark-ligher-grey);
+    color: white;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.partner-list a {
+    color: #a9d3ff;
+    text-decoration: underline;
+    font-size: 0.95rem;
+}
+
+.partner-list .inline-form {
+    margin-left: 1rem;
+}
+
+.partner-list .inline-form button {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+    background-color: #dc3545;
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+#removePartnerButton {
+    background-color: var(--main--red);
+    margin-top: 20px;
+    padding: 5px 10px;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 10px;
+}
+
+.partner-list .inline-form button:hover {
+    opacity: 0.85;
+}
+
+/* End admin partner page */
+
+.dark-mode .partner {
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .partner h3 {
+    color: white;
+}
+
+@media only screen and (max-width: 900px) {
+    #partners h2 {
+        margin-bottom: 50px;
+        padding: 15px 30px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .partner {
+        flex: 1 1 100%;
+    }
+
+    #partners h2 {
+        font-size: 4vh;
+        margin-bottom: 40px;
+    }
+}

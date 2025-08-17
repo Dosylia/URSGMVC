@@ -1,0 +1,69 @@
+.friendlist-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.friendlist-page .tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.friendlist-page .tab-button {
+    padding: 8px 16px;
+    cursor: pointer;
+    background-color: unset;
+    border: none;
+    color: black;
+}
+
+.dark-mode .friendlist-page .tab-button {
+    color: white;
+}
+
+.friendlist-page .tab-button.active {
+    color: var(--main--red);
+}
+
+.friendlist-page .friendlist-section {
+    display: none;
+}
+
+.friendlist-page .friendlist-section.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+
+.friendlist-page .friend-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.friendlist-page .friend-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.friendlist-page .friend-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.friendlist-page .friend-info {
+    margin-left: 15px;
+}
+
+.friendlist-page .friend-actions {
+    display: flex;
+    gap: 20px;
+}

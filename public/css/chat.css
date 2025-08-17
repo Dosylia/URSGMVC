@@ -1,0 +1,224 @@
+.chat_box {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, white, #f5f2f2);
+    width: 100%;
+    text-align: center;
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, white, #ede8e8);
+    min-height: 87.5vh;
+}
+
+.chat_box .title_generalbox {
+    font-size: 3vh;
+    font-family: 'Geologica', sans-serif;
+    color: #cb5242;
+    text-shadow: 0.5px 0.5px 1px black;
+}
+
+.chat_box a {
+    text-decoration: none;
+}
+
+.chat-image {
+    width: 300px;
+    height: auto;
+    cursor: pointer;
+}
+
+span.chat-name,
+span.friendlist-name a {
+    text-decoration: none;
+    color: black;
+    width: fit-content;
+}
+
+.chat-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+span.chat-name,
+span.friendlist-name {
+    transition: transform 1s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: fit-content;
+    gap: 10px;
+}
+
+span.chat-name.friendlist-page,
+span.friendlist-name.friendlist-page {
+    transition: transform 1s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+span.chat-name span.friendlist-name {
+    transform: scale(1.3);
+}
+
+#submit_chat {
+    width: 30%;
+    margin: 10px;
+    border: 0.5px solid black;
+    background-color: white;
+    padding: 10px 0;
+    display: none;
+}
+
+.chat_page {
+    display: flex;
+    gap: 20px;
+    min-height: 90vh;
+}
+
+.chat_page .friend-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-link-relative {
+    right: 40px;
+    border-radius: 20px;
+}
+
+.chat-link {
+    position: fixed;
+    right: 40px;
+}
+
+.chat-link a {
+    display: inline-block;
+    padding: 2px 5px;
+    background-color: rgb(189, 23, 23);
+    font-family: 'Geologica', sans-serif;
+    color: white;
+    font-size: 1.5vh;
+    text-decoration: none;
+    border-radius: 50px;
+}
+
+.chat-interface {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+#buttonSwitchChat {
+    display: none;
+}
+
+.username_chat_friend {
+    text-decoration: none;
+    color: black;
+}
+
+#friendTop .username_chat_friend {
+    color: white;
+}
+
+.username_chat_friend strong {
+    font-size: 1.4vh;
+}
+
+.dark-mode .chat-link-relative {
+    background-color: #19181a;
+}
+
+.dark-mode .chat_box {
+    background: linear-gradient(135deg, var(--dark-ligher-grey), #1e1d1d);
+}
+
+.dark-mode span.chat-name a {
+    color: white;
+}
+
+.dark-mode .chat-interface {
+    background-color: var(--dark-grey);
+}
+
+.dark-mode .chat-interface-big {
+    background-color: var(--dark-grey);
+}
+
+.dark-mode #buttonSwitchChat {
+    color: white;
+}
+
+@media only screen and (max-width: 1420px) {
+    .chat-interface {
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 20px;
+    }
+}
+
+@media only screen and (max-width: 1018px) {
+    .chat_box {
+        width: 80%;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
+
+    .chat_page {
+        gap: 10px;
+        min-height: unset;
+    }
+
+    .chat-link-relative {
+        min-height: 88vh;
+    }
+
+    .chat-interface {
+        width: 90%;
+        margin: 10 10px 0 10px;
+        border-radius: 20px;
+    }
+
+    .chat-interface-big {
+        width: 90%;
+        margin: 10px 10px 0 10px;
+    }
+
+    #buttonSwitchChat {
+        display: block;
+        margin: 5px;
+        background: none;
+        background-color: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    #buttonSwitchChat:hover {
+        color: #e74057;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .chat-image {
+        width: 200px;
+        height: auto;
+        cursor: pointer;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .chat-image {
+        width: 150px;
+    }
+}

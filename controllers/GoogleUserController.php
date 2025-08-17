@@ -141,6 +141,7 @@ class GoogleUserController
     public function partnersPage()
     {
         $this->initializeLanguage();
+        $page_css = ['partner'];
         $partners = $this -> partners -> getPartners();
         $current_url = "https://ur-sg.com/partners";
         $template = "views/partners";
