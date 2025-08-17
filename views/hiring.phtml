@@ -1,46 +1,46 @@
 <section class="hiring">
   <div class="hiring-banner">
     <div class="hiring-banner-content">
-      <h1>Join Our Team</h1>
-      <p>We’re looking for passionate people—whether you’re a Developer, Artist, Tester, or Marketing Expert—who want to learn, grow, and gain experience.</p>
-      <a href="#application-form" class="hiring-cta">Apply Now</a>
+      <h1><?= $this->_('join_team') ?></h1>
+      <p><?= $this->_('hiring_text_main') ?></p>
+      <a href="#application-form" class="hiring-cta"><?= $this->_('apply_now') ?></a>
     </div>
   </div>
 
   <!-- Application Form -->
   <div class="hiring-form-container" id="application-form">
-    <h2>Application Form</h2>
+    <h2><?= $this->_('application_form') ?></h2>
     <form method="post" action="/submitCandidature" class="hiring-form">
       <div class="form-group">
-        <label for="name">Username</label>
-        <input type="text" id="name" name="name" required placeholder="Your name">
+        <label for="name"><?= $this->_('username_hiring') ?></label>
+        <input type="text" id="name" name="name" required placeholder="<?= $this->_('hiring_PH_username') ?>">
       </div>
 
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email"><?= $this->_('email_hiring') ?></label>
         <input type="email" id="email" name="email" required placeholder="your@email.com">
       </div>
 
       <div class="form-group">
-        <label for="role">Apply As</label>
+        <label for="role"><?= $this->_('apply_as') ?></label>
         <select id="role" name="role" required>
-          <option selected disabled>-- Select a Role --</option>
-          <option value="Developer">Developer</option>
-          <option value="Artist">Artist</option>
-          <option value="Tester">Tester</option>
-          <option value="Marketing Expert">Marketing Expert</option>
-          <option value="Security Specialist">Security Specialist</option>
-          <option value="Other">Other</option>
+          <option selected disabled><?= $this->_('select_hiring') ?></option>
+          <option value="Developer"><?= $this->_('developer') ?></option>
+          <option value="Artist"><?= $this->_('artist') ?></option>
+          <option value="Tester"><?= $this->_('tester') ?></option>
+          <option value="Marketing Expert"><?= $this->_('marketing_expert') ?></option>
+          <option value="Security Specialist"><?= $this->_('security_specialist') ?></option>
+          <option value="Other"><?= $this->_('other') ?></option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="skills">Your Skills</label>
-        <textarea id="skills" name="skills" rows="4" placeholder="Tell us about your skills and experience..."></textarea>
+        <label for="skills"><?= $this->_('your_skills') ?></label>
+        <textarea id="skills" name="skills" rows="4" placeholder="<?= $this->_('tell_your_skills') ?>"></textarea>
       </div>
 
       <div class="form-group">
-        <label for="portfolio">Any link you would like to share with us like a github or an Art portfolio</label>
+        <label for="portfolio"><?= $this->_('link_hiring') ?></label>
         <input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/yourname">
       </div>
 
@@ -48,10 +48,10 @@
         <input type="hidden" name="ursg_username" value="<?= $_SESSION['username']  ?>">
       <?php endif ; ?>
 
-      <button type="submit" class="hiring-submit">Submit Application</button>
+      <button type="submit" class="hiring-submit"><?= $this->_('submit_application') ?></button>
 
       <div class="hiring-twitter">
-        <text>You can also contact us here:</text>
+        <text><?= $this->_('contact_hiring') ?></text>
         <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
         <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
       </div>

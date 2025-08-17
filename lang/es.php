@@ -91,12 +91,36 @@ return [
     'footer_madeby' => 'Hecho por',
     'footer_language' => 'Idioma',
     'footer_links' => 'Enlaces',
+    'join_our_team' => 'Únete a nuestro equipo',
     'footer_copyright' => 'Copyright © URSG. Todos los derechos reservados.',
     'footer_riot' => 'URSG no está respaldado por Riot Games ni refleja las opiniones o puntos de vista de Riot Games o de cualquier persona involucrada oficialmente en la producción o gestión de los productos de Riot Games. Riot Games y todas las propiedades asociadas son marcas comerciales o marcas registradas de Riot Games, Inc.',
     'partners_perks_title' => 'Ventajas para socios',
     'partners_perks_1' => 'Gana visibilidad y reconocimiento dentro de la comunidad (Apareces en la página de socios, insignia de socio en la web y rol de socio en el servidor de Discord).',
     'partners_perks_2' => '¡Huevo de pascua oculto en la web!',
     'partners_perks_3' => 'Todos los artículos de la tienda desbloqueados.',
+
+    //hiring page
+    'join_team' => 'Únete a nuestro equipo',
+    'hiring_text_main' => 'Estamos buscando personas apasionadas – ya sea que seas Desarrollador, Artista, Probador o Experto en marketing – que quieran aprender, crecer y adquirir experiencia.',
+    'apply_now' => 'Postular ahora',
+    'application_form' => 'Formulario de solicitud',
+    'username_hiring' => 'Nombre de usuario',
+    'hiring_PH_username' => 'Tu nombre',
+    'email_hiring' => 'Dirección de correo electrónico',
+    'apply_as' => 'Postular como',
+    'select_hiring' => '-- Selecciona un rol --',
+    'developer' => 'Desarrollador',
+    'artist' => 'Artista',
+    'tester' => 'Probador',
+    'marketing_expert' => 'Experto en marketing',
+    'security_specialist' => 'Especialista en seguridad',
+    'other' => 'Otro',
+    'your_skills' => 'Tus habilidades',
+    'tell_your_skills' => 'Cuéntanos sobre tus habilidades y tu experiencia...',
+    'link_hiring' => 'Cualquier enlace que quieras compartir con nosotros, como un GitHub o un portafolio artístico',
+    'submit_application' => 'Enviar solicitud',
+    'contact_hiring' => 'También puedes contactarnos aquí:',
+
 
 
 // home.phtml
