@@ -1,0 +1,435 @@
+/* NEW SWIPING PAGE */
+.swiping-ctn {
+    width: 100%;
+    max-width: 1200px;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    font-family: 'Geologica', sans-serif;
+    color: black;
+}
+
+.dark-mode .swiping-ctn {
+    color: white;
+}
+
+.swiping-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.swiping-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.swiping-buttons {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 20px;
+}
+
+.swiping-buttons div {
+    display: flex;
+    gap: 20px;
+}
+
+.swiping-buttons-filter {
+    background-color: rgba(240, 233, 233, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+    color: var(--main--red);
+    text-transform: uppercase;
+    border-radius: 5px;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.dark-mode .swiping-buttons-filter {
+    background-color: rgba(42, 40, 40, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+}
+
+.swiping-buttons img {
+    width: 25px;
+    height: 25px;
+}
+
+.swiping-buttons-report {
+    background-color: rgba(240, 233, 233, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 100%;
+}
+
+.swiping-buttons-report img {
+    width: 20px;
+    height: 20px;
+}
+
+.dark-mode .swiping-buttons-report {
+    background-color: rgba(42, 40, 40, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+}
+
+.swiping-buttons button p {
+    color: var(--main--red);
+}
+
+.swiping-username-age {
+    display: flex;
+    gap: 20px;
+    align-items: first baseline;
+    margin-top: 20px;
+}
+
+.swiping-username-age #user_page_username {
+    font-weight: bold;
+    line-height: 1;
+}
+
+.swiping-username-age #age_user {
+    line-height: 1;
+}
+
+#user-rating-stars {
+    position: absolute;
+    font-size: 0.6em !important;
+    left: 0;
+    bottom: -20px;
+}
+
+.swiping-game-info {
+    display: flex;
+    margin-top: 10px;
+}
+
+.swiping-game-info > *:not(:last-child) {
+    border-right: 2px solid rgb(97, 96, 96);
+}
+
+.swiping-game-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0 40px 0 30px;
+    font-size: 1.5em;
+    gap: 5px;
+    position: relative;
+}
+
+.swiping-game-info > :first-child {
+    padding-left: 20px;
+}
+
+.swiping-game-column .swiping-normal {
+    font-size: 1.1em;
+}
+
+.swiping-game-column .swiping-grey {
+    color: rgb(97, 96, 96);
+    font-size: 0.7em;
+}
+
+.swiping-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.swiping-middle #shortBio {
+    margin-top: 10px;
+    font-size: 1.2em;
+    width: 80%;
+    text-align: center;
+}
+
+.swiping_champions {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+.swiping_champions img {
+    border: 4px solid var(--main--red);
+    border-radius: 20px;
+    height: auto;
+    width: 200px;
+    object-fit: cover;
+}
+
+.swiping_filters {
+    display: flex;
+    gap: 10px;
+}
+
+.swiping_filters span {
+    border: 1px solid rgb(97, 96, 96);
+    background-color: none;
+}
+
+.swiping_filters_row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.swiping_filters_row img {
+    width: 20px;
+    height: 20px;
+}
+
+.swiping_filters_server {
+    color: var(--main--red) !important;
+    text-transform: uppercase;
+    background-color: rgba(240, 233, 233, 0.5);
+}
+
+.dark-mode .swiping_filters_server {
+    color: var(--main--red) !important;
+    text-transform: uppercase;
+    background-color: rgba(42, 40, 40, 0.5);
+}
+
+.swiping_filters_others {
+    color: #e0ad66 !important;
+}
+
+#filter-modal .swiping_filters_row i,
+#filter-modal .swiping_filters_row img,
+#filter-modal-no-users .swiping_filters_row i,
+#filter-modal-no-users .swiping_filters_row img {
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+
+#filter-modal .swiping_filters_row i,
+#filter-modal-no-users .swiping_filters_row i {
+    font-size: 20px;
+    line-height: 20px;
+}
+
+#filter-modal .filter-options,
+#filter-modal-no-users .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+#filter-modal .filter-btn,
+#filter-modal-no-users .filter-btn {
+    color: var(--ligher--grey);
+    border: 1px solid var(--ligher--grey);
+    background: rgb(248, 246, 246);
+    padding: 2px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-content: center;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#filter-modal .filter-btn img,
+#filter-modal-no-users .filter-btn img {
+    width: 20px;
+    height: 20px;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+#filter-modal .filter-btn.gamemode-active img,
+#filter-modal-no-users .filter-btn.gamemode-active img,
+#filter-modal .filter-btn.gender-active img,
+#filter-modal-no-users .filter-btn.gender-active img,
+#filter-modal .filter-btn.server-active img,
+#filter-modal-no-users .filter-btn.server-active img {
+    filter: none;
+}
+
+#filter-modal .separator-filters,
+#filter-modal-no-users .separator-filters,
+.separators-quiz {
+    margin: 20px 0;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--main--red),
+        transparent
+    );
+    border: none;
+}
+
+.dark-mode #filter-modal .filter-btn,
+.dark-mode #filter-modal-no-users .filter-btn {
+    background: #333;
+    color: var(--ligher--grey);
+    border: 1px solid var(--ligher--grey);
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: unset;
+}
+
+#filter-modal .filter-btn.active,
+#filter-modal-no-users .filter-btn.active {
+    color: #e0ad66;
+}
+
+#filter-modal .filter-btn[data-filter='server'] {
+    text-transform: uppercase;
+}
+
+#filter-modal .filter-btn.server-active,
+#filter-modal-no-users .filter-btn.server-active {
+    color: var(--main--red);
+}
+
+#filter-modal .filter-btn.gamemode-active,
+#filter-modal-no-users .filter-btn.gamemode-active,
+#filter-modal .filter-btn.gender-active,
+#filter-modal-no-users .filter-btn.gender-active {
+    color: #e0ad66;
+}
+
+#filter-modal #update-filter,
+#filter-modal-no-users #update-filter-no-users {
+    background: var(--main--red);
+    color: white;
+    padding: 10px 50px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+#filter-modal h2,
+#filter-modal-no-users h2 {
+    margin: 10px 0;
+    font-size: 2em;
+    color: var(--main--red);
+}
+
+#filter-modal h3,
+#filter-modal-no-users h3 {
+    margin: 20px 0;
+}
+
+#picture-selector {
+    width: 100%;
+}
+
+#view-toggle {
+    display: none;
+    gap: 10px;
+    margin: 0 auto;
+    border-bottom: 1px solid rgba(166, 14, 35, 0.5);
+    padding-bottom: 10px;
+    justify-content: center;
+}
+
+.view-toggle-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: rgba(166, 14, 35, 0.5);
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.view-toggle-btn.active {
+    color: var(--main--red);
+    font-weight: 700;
+}
+
+.frame-swiping {
+    opacity: 0;
+}
+
+.dark-mode .button_swiping {
+    background-color: var(--dark-grey);
+}
+
+/* END OF SWIPING PAGE */
+
+@media only screen and (max-width: 600px) {
+    .swiping-game-column .swiping-normal {
+        font-size: 0.9em;
+    }
+
+    .swiping-username-age {
+        gap: 5px;
+        margin-top: 15px;
+    }
+
+    .swiping-buttons-filter {
+        padding: 5px 15px;
+        font-size: 0.8em;
+        gap: 7px;
+    }
+
+    .swiping-buttons img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .swiping_filters {
+        flex-direction: column;
+    }
+
+    .swiping-middle #shortBio {
+        font-size: 1em;
+    }
+
+    .swiping-ctn {
+        margin: 10px auto;
+    }
+
+    .user-picture-swiping {
+        width: 150px;
+        height: 150px;
+    }
+
+    .swiping-buttons {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .swiping-buttons button p {
+        display: none;
+    }
+}
