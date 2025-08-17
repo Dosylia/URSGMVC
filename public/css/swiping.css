@@ -67,28 +67,6 @@
     height: 25px;
 }
 
-.swiping-buttons-report {
-    background-color: rgba(240, 233, 233, 0.5);
-    border: 1px solid rgb(97, 96, 96);
-    border-radius: 5px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    height: 100%;
-}
-
-.swiping-buttons-report img {
-    width: 20px;
-    height: 20px;
-}
-
-.dark-mode .swiping-buttons-report {
-    background-color: rgba(42, 40, 40, 0.5);
-    border: 1px solid rgb(97, 96, 96);
-}
-
 .swiping-buttons button p {
     color: var(--main--red);
 }
@@ -276,8 +254,7 @@
 }
 
 #filter-modal .separator-filters,
-#filter-modal-no-users .separator-filters,
-.separators-quiz {
+#filter-modal-no-users .separator-filters {
     margin: 20px 0;
     height: 3px;
     background: linear-gradient(
@@ -383,6 +360,20 @@
 
 /* END OF SWIPING PAGE */
 
+@media only screen and (max-width: 1150px) {
+    .swiping_champions img {
+        width: 200px;
+        height: auto;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .swiping_champions img {
+        width: 90px;
+        height: auto;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     .swiping-game-column .swiping-normal {
         font-size: 0.9em;
@@ -408,8 +399,17 @@
         flex-direction: column;
     }
 
+    .swiping_filters_row {
+        gap: 5px;
+        padding: 3px 10px;
+    }
+
     .swiping-middle #shortBio {
         font-size: 1em;
+    }
+
+    .swiping-middle {
+        gap: 15px;
     }
 
     .swiping-ctn {
@@ -431,5 +431,15 @@
 
     .swiping-buttons button p {
         display: none;
+    }
+
+    .swiping_champions img {
+        width: 60px;
+        height: auto;
+    }
+
+    .swiping-top {
+        flex-direction: column;
+        gap: 10px;
     }
 }

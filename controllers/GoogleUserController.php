@@ -128,6 +128,7 @@ class GoogleUserController
             $visibleCards = 3;
             $centerStart = max(0, floor(($totalPosts - $visibleCards) / 2));
             $centerEnd = $centerStart + $visibleCards - 1;
+            $page_css = ['playerfinder', 'home'];
             $current_url = "https://ur-sg.com/";
             $template = "views/home";
             $title = $this->_('join_now');

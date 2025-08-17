@@ -60,6 +60,19 @@ main {
     position: relative;
 }
 
+/* Separators are on many pages */
+.separators-hr {
+    margin: 20px 0;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--main--red),
+        transparent
+    );
+    border: none;
+}
+
 /* NEW FOOTER */
 
 .header nav {
@@ -5678,6 +5691,28 @@ dialog .title_generalbox {
     border-radius: 20px;
 }
 
+.swiping-buttons-report {
+    background-color: rgba(240, 233, 233, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 100%;
+}
+
+.swiping-buttons-report img {
+    width: 20px;
+    height: 20px;
+}
+
+.dark-mode .swiping-buttons-report {
+    background-color: rgba(42, 40, 40, 0.5);
+    border: 1px solid rgb(97, 96, 96);
+}
+
 #user-container #badge-container img,
 .badge-container-swiping img {
     width: 30px;
@@ -6210,7 +6245,7 @@ dialog .title_generalbox {
 /* GAME */
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .minigame-window {
@@ -7592,10 +7627,6 @@ dialog .title_generalbox {
     color: gray;
 }
 
-.dark-mode .item-card {
-    background-color: var(--dark-ligher-grey);
-}
-
 .dark-mode .leaderboard-table td a {
     color: white;
 }
@@ -8164,10 +8195,6 @@ dialog .title_generalbox {
         margin: 60px 0px;
         width: unset;
         height: unset;
-    }
-
-    .item-card {
-        width: calc(50% - 20px);
     }
 
     .currency {
@@ -8915,10 +8942,6 @@ dialog .title_generalbox {
     .footer_black,
     .footer_grey {
         flex-direction: column;
-    }
-
-    .item-card {
-        width: 100%;
     }
 
     .setting-option i {

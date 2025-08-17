@@ -1,4 +1,10 @@
-<?php require "views/layout.phtml"; ?>
+<?php
+    if (!isset($page_css) || !is_array($page_css)) {
+        $page_css = [];
+    }
+    array_unshift($page_css, 'layout_swiping');
+    require "views/layout.phtml"; 
+?>
 
 <?php 
     if (!isset($_COOKIE['auth_token'])) {

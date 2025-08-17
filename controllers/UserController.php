@@ -253,7 +253,7 @@ class UserController
             });
             
             $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
-
+            $page_css = ['store_leaderboard'];
             $current_url = "https://ur-sg.com/leaderboard";
             $template = "views/swiping/leaderboard";
             $page_title = "URSG - Leaderboard";
@@ -801,6 +801,7 @@ class UserController
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
+            $page_css = ['personalitytest'];
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
             $page_title = "URSG - What kind of League player";
@@ -1877,7 +1878,7 @@ class UserController
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-
+            $page_css = ['swiping'];
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
@@ -2317,44 +2318,6 @@ class UserController
         }
     }
 
-    // public function pageUserProfileTest(): void
-    // {
-    //     if (
-    //         $this->isConnectGoogle() &&
-    //         $this->isConnectWebsite() &&
-    //         ($this->isConnectLeague() || $this->isConnectValorant()) && 
-    //         $this->isConnectLf() &&
-    //         $this->isAdmin()
-    //     ) {
-    //         require_once 'keys.php';
-    //         $user = $this-> user -> getUserById($_SESSION['userId']);
-    //         $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-    //         if ($user['user_game'] == "League of Legends")
-    //         {
-    //             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-    //         }
-    //         else 
-    //         {
-    //             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-    //         }
-    //         $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
-    //         $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-    //         $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-    //         $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-    //         $bonusPictures = $this->user->getBonusPictures($this->getUsername());
-
-
-    //         $current_url = "https://ur-sg.com/chatTest";
-    //         $template = "views/swiping/message_test";
-    //         $page_title = "URSG - Chat";
-    //         $picture = "ursg-preview-small";
-    //         require "views/layoutSwiping.phtml";
-    //     } else {
-    //         header("Location: /");
-    //         exit();
-    //     }
-    // }
-
     public function pageAnotherUserProfile()
     {
 
@@ -2400,6 +2363,7 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $page_css = ['tools/offline_modal'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -2441,6 +2405,7 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $page_css = ['tools/offline_modal'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;

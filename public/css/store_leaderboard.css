@@ -244,3 +244,19 @@
 .modal.store button:hover {
     background-color: var(--ligher--grey);
 }
+
+.dark-mode .item-card {
+    background-color: var(--dark-ligher-grey);
+}
+
+@media only screen and (max-width: 900px) {
+    .item-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .item-card {
+        width: 100%;
+    }
+}

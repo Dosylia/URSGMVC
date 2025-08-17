@@ -18,8 +18,8 @@
 }
 
 .nav_swiping img {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
 }
 
 .nav_swiping a {
@@ -75,11 +75,6 @@
     .swiping-ctn {
         max-width: 1000px;
     }
-
-    .swiping_champions img {
-        width: 200px;
-        height: auto;
-    }
 }
 
 @media only screen and (max-width: 1018px) {
@@ -117,8 +112,8 @@
     }
 
     .nav_swiping img {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
     }
 
     .swiping-ctn #bonus-picture-container {
@@ -138,7 +133,7 @@
     .nav_swiping {
         align-items: center;
         gap: 10px;
-        padding: 0 10px;
+        padding: 10px;
     }
 
     .badge-container-swiping {
@@ -147,17 +142,10 @@
     }
 }
 
-@media only screen and (max-width: 768px) {
-    .swiping_champions img {
-        width: 90px;
-        height: auto;
-    }
-}
-
 @media only screen and (max-width: 600px) {
     .nav_swiping img {
-        width: 30px;
-        height: 30px;
+        width: 20px;
+        height: 20px;
     }
 
     .nav_swiping i {
@@ -182,25 +170,6 @@
     .swiping-ctn {
         width: 100%;
         max-width: unset;
-    }
-
-    .swiping-top {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .swiping_champions img {
-        width: 60px;
-        height: auto;
-    }
-
-    .swiping_filters_row {
-        gap: 5px;
-        padding: 3px 10px;
-    }
-
-    .swiping-middle {
-        gap: 15px;
     }
 }
 
