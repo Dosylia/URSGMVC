@@ -6382,34 +6382,6 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 1018px) {
-    .header .nav-left img {
-        height: 35px;
-    }
-
-    .header .nav-rest a {
-        font-size: 1em;
-        gap: 15px;
-    }
-
-    .header .header-bottom-content {
-        width: 70%;
-        padding: 6% 0;
-    }
-
-    .header .header-bottom-content h2 {
-        font-size: 2em;
-    }
-
-    .header .header-bottom-content p {
-        font-size: 0.95em;
-    }
-
-    .header .header-bottom-buttons {
-        flex-direction: column;
-        gap: 15px;
-        width: fit-content;
-    }
-
     #messages {
         height: unset;
         max-height: 68vh;
@@ -6900,29 +6872,6 @@ dialog .title_generalbox {
 
     .header .nav-rest a {
         font-size: 0.95em;
-    }
-
-    .header .header-bottom-content {
-        width: 90%;
-        padding: 8% 0;
-        align-items: center;
-        text-align: center;
-    }
-
-    .header .header-bottom-content h2 {
-        font-size: 1.8em;
-        text-align: center;
-    }
-
-    .header .header-bottom-content p {
-        font-size: 0.9em;
-        text-align: center;
-    }
-
-    .header .header-bottom-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
     }
 
     .interested-button {
