@@ -159,6 +159,30 @@ class GoogleUserController
         }
     }
 
+
+    public function hiringPage()
+    {
+        $this->initializeLanguage();
+        $current_url = "https://ur-sg.com/hiring";
+        $template = "views/hiring";
+        $title = "Apply as Dev";
+        $page_title = "URSG - Apply as developer";
+        $picture = "ursg-preview-small";
+        $page_css = ['hiring'];
+        if (
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            $this->isConnectLf()
+        ) {
+            $user = $this-> user -> getUserById($_SESSION['userId']);
+            require "views/layoutSwiping.phtml";
+        } else {
+            require "views/layoutSwiping_noheader.phtml";
+        }
+    }
+
+
     public function changeLanguage()
     {
         $allowedLangs = ['en', 'fr', 'de', 'es'];
@@ -1729,6 +1753,59 @@ class GoogleUserController
         {
             header("location:/deleteAccount?message=You need to be online to delete a Riot account");
             exit(); 
+        }
+    }
+
+    public function submitCandidature()
+    {
+        if (isset($_POST['email'])) {
+
+            require 'keys.php';
+            $emailToSend = "contact@ur-sg.com";
+    
+            $mail = new PHPMailer;
+            $mail->isSMTP();
+            $mail->Host = 'smtp.ionos.de';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'contact@ur-sg.com';
+            $mail->Password = $password_gmail;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+    
+            $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
+            $mail->addAddress($emailToSend);
+            $mail->Subject = 'Application Form';
+            $mail->isHTML(true);
+            
+            $fullName = $_POST['name'];
+            $userMail = $_POST['email'];
+            $role = $_POST['role'];
+            $skills = $_POST['skills'];
+            $link = $_POST['portfolio'];
+
+            $mail->Body = "
+            <html>
+            <head>...</head>
+            <body>
+                <p>A new Application was sent on the form!</p>
+                <p>Here is the form Data:</p>
+                <br>
+                Full Name: $fullName<br>
+                Email: $userMail<br>
+                Role to apply for: $role<br>
+                About the skills: $skills<br>
+                Links: $link<br>
+                <br><br>
+            </body>
+            </html>";
+    
+            if (!$mail->send()) {
+                header("location:/hiring?message=Could not send mail");
+                exit();
+            } else {
+                header("location:/hiring?message=We got your candidature and will answer soon!");
+                exit();
+            }
         }
     }
 

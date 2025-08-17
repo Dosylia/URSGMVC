@@ -246,6 +246,33 @@
 
   /* END NEW LANDING PAGE */
 
+  /* ApplyAsDev */
+  /* This CSS is for home.phtml */
+ .applyAsDev-home {
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  .applyAsDev-home a {
+    background: var(--main--red);
+    color: #fff;
+    padding: 0.5em 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    margin: 20px 0 0 0;
+    width: 90%;
+    min-width: fit-content;
+  }
+
+  .applyAsDev-home a:hover {
+    background: var(--dark--red);
+  }
+
+  /* END ApplyAsDev */
+
+
   /* NEW FOOTER */
 
   .footer {

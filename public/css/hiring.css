@@ -1,0 +1,112 @@
+.applyAsDev-banner {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url('/images/dev-banner.jpg') center/cover no-repeat;
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+}
+
+.applyAsDev-banner-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.applyAsDev-banner-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.applyAsDev-cta {
+    text-align: center;
+    margin: 40px 0;
+    background: var(--main--red);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    margin: 20px 0 0 0;
+    width: 80%;
+    min-width: fit-content;
+}
+.applyAsDev-cta:hover {
+  background: var(--dark--red);
+}
+
+.applyAsDev-form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+}
+
+.applyAsDev-form-container h2 {
+  margin-bottom: 40px;
+}
+
+.applyAsDev-form .form-group {
+  margin-bottom: 15px;
+}
+
+.applyAsDev-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #151515;
+}
+
+.dark-mode .applyAsDev-form label, 
+.dark-mode .applyAsDev-form text{
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.applyAsDev-form input,
+.applyAsDev-form textarea, 
+.applyAsDev-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.applyAsDev-submit {
+    text-align: center;
+    margin: 40px 0;
+    background: var(--main--red);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    margin: 20px auto 0 auto;
+    display: block;
+    width: fit-content;
+    min-width: fit-content;
+  }
+  
+.applyAsDev-submit:hover {
+  background: var(--dark--red);
+}
+
+.applyAsDev-twitter {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.applyAsDev-twitter a {
+  color: inherit; 
+  padding-left: 10px;
+}
+
+.dark-mode .applyAsDev-twitter a {
+  color: white; 
+}
+
+.applyAsDev-twitter a:hover {
+  color: var(--main--red); /* optional: highlight on hover */
+}
+
+

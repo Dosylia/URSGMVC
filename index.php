@@ -262,6 +262,8 @@ $actionMap = [
     'discordBotStatus' => [AdminController::class, 'discordBotStatus'],
     'checkIfUsersPlayedTogether' => [RiotController::class, 'checkIfUsersPlayedTogether'],
     'rateFriendWebsite' => [UserController::class, 'rateFriendWebsite'],
+    'hiring' => [GoogleUserController::class, 'hiringPage'],
+    'submitCandidature' => [GoogleUserController::class, 'submitCandidature'],
 ];
 
 $action = "home";
