@@ -1,50 +1,62 @@
 <div class="form_container"> 
     <form class="form_signup" method="post" action="/basicinfo">
-        <?php if (isset($_GET['error'])) : ?>
-        <p class="errorsForm"><?= $_GET['error'] ?></p>
-        <?php endif; ?>
 
-        <label for="uid"><?= $this->_('form_username') ?></label>
-        <input type="text" id="username" name="username" placeholder="<?= $this->_('form_username_placeholder') ?>" required> 
+        <!-- STEP 1 -->
+        <div class="form-step active">
+            <label for="username"><?= $this->_('form_username') ?></label>
+            <input type="text" id="username" name="username" placeholder="<?= $this->_('form_username_placeholder') ?>" value="<?= str_replace(' ', '', $googleUser['google_fullName']) ?>" required> 
 
-        <label for="gender"><?= $this->_('form_gender') ?></label>
-        <select id="gender" name="gender" required>
-            <option value="" disabled selected><?= $this->_('form_gender_choose') ?></option>
-            <option value="Male"><?= $this->_('form_gender_male') ?></option>
-            <option value="Female"><?= $this->_('form_gender_female') ?></option>
-            <option value="Non Binary"><?= $this->_('form_gender_nb') ?></option>
-            <option value="Trans Male"><?= $this->_('form_gender_tm') ?></option>
-            <option value="Trans Woman"><?= $this->_('form_gender_tw') ?></option>
-        </select>    
+            <label for="gender"><?= $this->_('form_gender') ?></label>
+            <select id="gender" name="gender" required>
+                <option value="" disabled selected><?= $this->_('form_gender_choose') ?></option>
+                <option value="Male"><?= $this->_('form_gender_male') ?></option>
+                <option value="Female"><?= $this->_('form_gender_female') ?></option>
+                <option value="Non Binary"><?= $this->_('form_gender_nb') ?></option>
+                <option value="Trans Male"><?= $this->_('form_gender_tm') ?></option>
+                <option value="Trans Woman"><?= $this->_('form_gender_tw') ?></option>
+            </select>    
 
-        <label for="age"><?= $this->_('form_age') ?></label>
-        <input type="text" id="age" name="age" placeholder="<?= $this->_('form_age_placeholder') ?>" maxlength="2" required>
+            <label for="age"><?= $this->_('form_age') ?></label>
+            <input type="text" id="age" name="age" placeholder="<?= $this->_('form_age_placeholder') ?>" maxlength="2" required>
+        </div>
 
-        <label for="kindofgamer"><?= $this->_('form_gamertype') ?></label>
-        <select id="kindofgamer" name="kindofgamer" required>
-            <option value="" disabled selected><?= $this->_('form_gamertype_choose') ?></option>
-            <option value="Chill"><?= $this->_('form_gamertype_chill') ?></option>
-            <option value="Competition"><?= $this->_('form_gamertype_competitive') ?></option>
-            <option value="Competition and Chill"><?= $this->_('form_gamertype_both') ?></option>
-        </select>
+        <!-- STEP 2 -->
+        <div class="form-step">
+            <label for="kindofgamer"><?= $this->_('form_gamertype') ?></label>
+            <select id="kindofgamer" name="kindofgamer" required>
+                <option value="" disabled selected><?= $this->_('form_gamertype_choose') ?></option>
+                <option value="Chill"><?= $this->_('form_gamertype_chill') ?></option>
+                <option value="Competition"><?= $this->_('form_gamertype_competitive') ?></option>
+                <option value="Competition and Chill"><?= $this->_('form_gamertype_both') ?></option>
+            </select>
 
-        <label for="game"><?= $this->_('form_game') ?></label>
-        <p><?= $this->_('form_game_note') ?></p>
-        <select id="game" name="game" required>
-            <option value="" disabled selected><?= $this->_('form_game_choose') ?></option>
-            <option value="League of Legends"><?= $this->_('form_game_lol') ?></option>
-            <option value="Valorant"><?= $this->_('form_game_valorant') ?></option>
-        </select>
+            <label for="game"><?= $this->_('form_game') ?></label>
+            <p><?= $this->_('form_game_note') ?></p>
+            <select id="game" name="game" required>
+                <option value="" disabled><?= $this->_('form_game_choose') ?></option>
+                <option value="League of Legends" selected><?= $this->_('form_game_lol') ?></option>
+                <option value="Valorant"><?= $this->_('form_game_valorant') ?></option>
+            </select>
+        </div>
 
-        <label for="short_bio"><?= $this->_('form_bio') ?></label>
-        <textarea type="text" id="short_bio" name="short_bio" placeholder="<?= $this->_('form_bio_placeholder') ?>" required></textarea>
+        <!-- STEP 3 -->
+        <div class="form-step">
+            <label for="short_bio"><?= $this->_('form_bio') ?></label>
+            <textarea type="text" id="short_bio" name="short_bio" placeholder="<?= $this->_('form_bio_placeholder') ?>" required></textarea>
 
-        <?php if($this->isConnectGoogle()) : ?>
-            <input type="hidden" name="googleId" value="<?= $googleUser['google_userId'] ?>">  
-        <?php endif ; ?>
-        <span id="errorSpan_form"></span>
-        <input name="submit" id="send-button" type="submit" value="<?= $this->_('form_submitCreate') ?>">
-        <button type="button" id="skip-preferences-btn"><?= $this->_('form_submitCreateAndSkip') ?></button>
+            <?php if($this->isConnectGoogle()) : ?>
+                <input type="hidden" name="googleId" value="<?= $googleUser['google_userId'] ?>">  
+            <?php endif ; ?>
+            <span id="errorSpan_form"></span>
+            <input name="submit" id="send-button" type="submit" value="<?= $this->_('form_submitCreate') ?>">
+            <button type="button" id="skip-preferences-btn"><?= $this->_('form_submitCreateAndSkip') ?></button>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="form-navigation">
+            <button type="button" id="prevBtn">Previous</button>
+            <button type="button" id="nextBtn">Next</button>
+        </div>
     </form>
     <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
 </div>
@@ -58,3 +70,4 @@
   });
 </script>
 <script type="module" src="public/js/basicinfo.js?<?= time(); ?>"></script>
+<script type="module" src="public/js/signup_navigation.js?<?= time(); ?>"></script>

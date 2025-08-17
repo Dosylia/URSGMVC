@@ -1,4 +1,10 @@
-<?php require "views/layout.phtml"; ?>
+<?php
+    if (!isset($page_css) || !is_array($page_css)) {
+        $page_css = [];
+    }
+    array_unshift($page_css, 'layout_swiping');
+    require "views/layout.phtml"; 
+?>
 
 <?php 
     if (!isset($_COOKIE['auth_token'])) {
@@ -24,7 +30,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <nav>
         <div class="nav_swiping">
             <div>
-                <a href="/"><img title="Home" class="scale" src="public/images/favicon/favicon.ico" alt="logo_ursg"></a>
+                <a href="/"><img title="Home" class="scale" src="public/images/favicon/android-chrome-512x512.png" alt="logo_ursg"></a>
             </div>
 
             <div class="nav-swiping-row">

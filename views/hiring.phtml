@@ -1,0 +1,56 @@
+<section class="applyAsDev">
+  <div class="applyAsDev-banner">
+    <div class="applyAsDev-banner-content">
+      <h1>Join Our Team</h1>
+      <p>We’re looking for passionate people—whether you’re a Developer, Artist, Tester, or Marketing Expert—who want to learn, grow, and gain experience.</p>
+      <a href="#application-form" class="applyAsDev-cta">Apply Now</a>
+    </div>
+  </div>
+
+  <!-- Application Form -->
+  <div class="applyAsDev-form-container" id="application-form">
+    <h2>Application Form</h2>
+    <form method="post" action="/submitCandidature" class="applyAsDev-form">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required placeholder="Your name">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required placeholder="your@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="role">Apply As</label>
+        <select id="role" name="role" required>
+          <option value="">-- Select a Role --</option>
+          <option value="developer">Developer</option>
+          <option value="artist">Artist</option>
+          <option value="tester">Tester</option>
+          <option value="marketing">Marketing Expert</option>
+          <option value="securityspecialist">Security Specialist</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="skills">Your Skills</label>
+        <textarea id="skills" name="skills" rows="4" placeholder="Tell us about your skills and experience..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="portfolio">Any link you would like to share with us like a github or an Art portfolio</label>
+        <input type="url" id="portfolio" name="portfolio" placeholder="https://github.com/yourname">
+      </div>
+
+      <button type="submit" class="applyAsDev-submit">Submit Application</button>
+
+      <div class="applyAsDev-twitter">
+        <text>You can also contact us here:</text>
+        <a href="https://twitter.com/Dosylia" target="_blank" aria-label="<?= $this->_('social_link_aria_twitter') ?>"><i class="fa-brands fa-twitter"></i></a>
+        <a href="https://discord.gg/Bfpkws74V3" target="_blank" aria-label="<?= $this->_('social_link_aria_discord') ?>"><i class="fa-brands fa-discord"></i></a>
+      </div>
+    </form>
+  </div>
+</section>

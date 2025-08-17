@@ -89,6 +89,7 @@ class PlayerFinderController
                 $availableRolesCreate = $valorant_roles;
             }
             $this->initializeLanguage();
+            $page_css = ['playerfinder', 'tools/offline_modal'];
             $playerFinderAll = $this->playerFinder->getAllPlayerFinderPost();
             $current_url = "https://ur-sg.com/playerFinder";
             $template = "views/swiping/playerfinder";
@@ -128,6 +129,7 @@ class PlayerFinderController
                 'Valorant' => array_merge(['Any'], $valorant_ranks)
             ];
             $this->initializeLanguage();
+            $page_css = ['playerfinder', 'tools/offline_modal'];
             $current_url = "https://ur-sg.com/playerFinder";
             $template = "views/swiping/playerfinder";
             $page_title = "URSG - Player Finder";

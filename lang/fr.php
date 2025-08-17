@@ -117,6 +117,10 @@ return [
     'swipe_home_text3' => 'La messagerie intégrée facilite la création d’équipe et le lancement en jeu',
     'swipe_home_text4' => 'Prouve ton grind – synchronise ton compte Riot et fais briller tes stats',
 
+    //sign up page
+    'sign_up_title' => 'S’inscrire',
+    'sign_up_text' => 'Créez un compte pour trouver votre partenaire de jeu idéal.',
+
 
     // settings.phtml
     'settings' => 'Paramètres',
@@ -185,6 +189,11 @@ return [
     'swipe_more' => 'Swiper encore',
     'show_online_only' => 'Afficher uniquement les amis en ligne',
     'search_friends' => 'Rechercher des amis...',
+    'rate_friend_title' => 'Évaluer un ami',
+    'rate_friend_message' => 'Vous pouvez évaluer un ami après avoir joué avec lui',
+    'rate_friend_submit' => 'Évaluer',
+    'rate_friend_score' => 'Points',
+
 
     //leaderboard page
     'store' => 'Boutique',
@@ -254,4 +263,24 @@ return [
         "Japan" => "Japon",
         "Korea" => "Corée",
     ],
+
+    // CSAE
+    'csae_headline' => 'Normes contre l\'exploitation et les abus sexuels sur mineurs (EASM) - URSG',
+    'csae_text1.1' => 'Chez ', 
+    'csae_text1.2' => 'URSG (Your Soulmate Gamer)',
+    'csae_text1.3' => ', nous appliquons une ',
+    'csae_text1.4' => 'politique de tolérance zéro',
+    'csae_text1.5' => ' à l\'égard des abus et de l\'exploitation sexuelle des enfants (ASE). Nous nous engageons à faire en sorte que notre plateforme reste sûre pour tous les utilisateurs.',
+    'csae_headline2' => 'Contenu interdit',
+    'csae_text2' => 'Nous interdisons strictement tout contenu lié à la EASM, y compris, mais sans s\'y limiter:',
+    'csae_text3' => 'Partager, créer ou distribuer des contenus exploitant les enfants.',
+    'csae_text4' => 'Se livrer à des interactions inappropriées avec des mineurs.',
+    'csae_text5' => 'Encourager ou faciliter la EASM de quelque manière que ce soit.',
+    'csae_headline3' => 'Signalement d\'une violation des normes EASM',
+    'csae_text6.1' => 'Si vous rencontrez un contenu qui enfreint la politique de la EASM, veuillez le signaler immédiatement à notre ',
+    'csae_text6.2' => 'équipe d\'assistance',
+    'csae_headline4' => 'Conformité juridique',
+    'csae_text7' => 'URSG respecte pleinement les lois et coopère avec les autorités chargées de l\'application de la loi dans le cadre des enquêtes sur les cas de EASM. Nous nous réservons le droit de supprimer du contenu, d\'interdire des utilisateurs et de signaler des violations aux autorités compétentes. We reserve the right to remove content, ban users, and report violations to relevant authorities.',
+    'csae_text8.1' => 'Pour de plus amples informations, veuillez nous contacter à l\'adresse suivante ', 
+    'csae_text8.2' => 'contact@ur-sg.com',
 ];

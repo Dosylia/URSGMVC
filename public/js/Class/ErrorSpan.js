@@ -10,11 +10,10 @@ class ErrorSpan
     
     displaySpan()
     {
-        let span = document.createElement("span");
-        span.classList.add("form-error");
-        span.textContent = this._message;
-        
-        document.getElementById(this._id).after(span);
+        const errorSpan = document.querySelector('.form-error-message');
+        errorSpan.style.display = 'block';
+        errorSpan.innerText = this._message;
+        console.log(this._message);
     }
 }
 export default ErrorSpan;

@@ -4,7 +4,12 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <link href="public/css/style.css?37" rel="stylesheet">
+    <link href="public/css/style.css?40" rel="stylesheet">
+    <?php if (isset($page_css) && is_array($page_css)): ?>
+         <?php foreach ($page_css as $css) : ?>
+            <link rel="stylesheet" href="/public/css/<?= htmlspecialchars($css) ?>.css?40">
+        <?php endforeach; ?>     
+    <?php endif; ?>
     <title><?= $page_title ?></title>
 
     <!-- Primary Meta Tags -->
@@ -56,15 +61,19 @@
 
     <script src="public/js/dark-mode.js?<?= time(); ?>"></script>
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-P3XDDBJQ');</script>
-    <!-- End Google Tag Manager -->
+    <?php if ($_ENV['environment'] === 'production'): ?>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P3XDDBJQ');</script>
+        <!-- End Google Tag Manager -->
 
-    <script src="public/js/GTM.js?<?= time(); ?>" defer></script>
+        <script src="public/js/GTM.js?<?= time(); ?>" defer></script>
+    <?php else: ?>
+        <script src="public/js/GTM_dev.js?<?= time(); ?>" defer></script>
+    <?php endif; ?>
 </head>
 
 

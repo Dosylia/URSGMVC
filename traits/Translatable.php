@@ -8,11 +8,9 @@ trait Translatable
 
     public function loadLanguage($lang)
     {
-        // Get the root directory of your project
-        $rootDir = $_SERVER['DOCUMENT_ROOT'];  // Or use the appropriate root directory
+        $rootDir = $_ENV['environment'] === 'local' ? dirname(__DIR__) : $_SERVER['DOCUMENT_ROOT'];
 
-        // Construct the relative path to the lang directory
-        $path = $rootDir . '/lang/' . $lang . '.php';  // Assuming lang/ is in the root directory
+        $path = $rootDir . '/lang/' . $lang . '.php'; 
 
         // Check if the language file exists
         if (file_exists($path)) {

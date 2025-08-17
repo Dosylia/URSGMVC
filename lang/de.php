@@ -117,7 +117,10 @@ return [
     'swipe_home_text3' => 'In-App-Nachrichten erleichtern die Teambildung und den Spieleinstieg',
     'swipe_home_text4' => 'Beweise deinen Einsatz – synchronisiere deinen Riot-Account und zeig deine Stats',
 
-    
+    //sign up page
+    'sign_up_title' => 'Registrieren',
+    'sign_up_text' => 'Erstelle ein Konto, um deinen perfekten Gaming-Partner zu finden.',
+
     // settings.phtml
     'settings' => 'Einstellungen',
     'chat_filter' => 'Chat-Filter',
@@ -185,6 +188,10 @@ return [
     'swipe_more' => 'Weiter wischen',
     'show_online_only' => 'Nur Online-Freunde anzeigen',
     'search_friends' => 'Freunde suchen...',
+    'rate_friend_title' => 'Freund bewerten',
+    'rate_friend_message' => 'Du kannst einen Freund bewerten, nachdem du mit ihm gespielt hast.',
+    'rate_friend_submit' => 'Bewerten',
+    'rate_friend_score' => 'Punkte',
 
     //leaderboard page
     'store' => 'Shop',
@@ -254,4 +261,25 @@ return [
         "Japan" => "Japan",
         "Korea" => "Korea",
     ],
+
+    // CSAE
+    'csae_headline' => ' Richtlinien gegen den sexuellen Missbrauch und die sexuelle Ausbeutung von Kindern (CSAE) - URSG',
+    'csae_text1.1' => 'Bei ',
+    'csae_text1.2' => 'URSG (Your Soulmate Gamer)',
+    'csae_text1.3' => ' verfolgen wir eine ',
+    'csae_text1.4' => 'Null-Toleranz-Politik',
+    'csae_text1.5' => ' gegenüber sexuellem Missbrauch und Ausbeutung von Kindern (CSAE). Unser Ziel ist es, dafür zu sorgen, dass unsere Plattform für alle Benutzer sicher bleibt.',
+    'csae_headline2' => 'Verbotene Inhalte',
+    'csae_text2' => 'Wir verbieten strikt jegliche Inhalte, die mit CSAE in Verbindung stehen, einschließlich, aber nicht beschränkt auf:',
+    'csae_text3' => 'Teilen, Erstellen oder Verbreiten von ausbeuterischen Inhalten für Kinder.',
+    'csae_text4' => 'Unangemessene Interaktionen mit Minderjährigen.',
+    'csae_text5' => 'Ermutigung oder Unterstützung von CSAE in irgendeiner Form.',
+    'csae_headline3' => 'Meldung eines CSAE-Verstoßes',
+    'csae_text6.1' => 'Wenn Sie auf Inhalte stoßen, die gegen unsere CSAE-Richtlinien verstoßen, melden Sie diese bitte umgehend an unser ',
+    'csae_text6.2' => 'Support-Team',
+    'csae_headline4' => 'Rechtskonformität',
+    'csae_text7' => 'URSG hält die Gesetze in vollem Umfang ein und kooperiert mit den Strafverfolgungsbehörden bei der Untersuchung von CSAE-Fällen. Wir behalten uns das Recht vor, Inhalte zu entfernen, Benutzer zu sperren und Verstöße den zuständigen Behörden zu melden.',
+    'csae_text8.1' => 'Für weitere Anfragen, kontaktieren Sie uns unter ',
+    'csae_text8.2' => 'contact@ur-sg.com',
+    
 ];

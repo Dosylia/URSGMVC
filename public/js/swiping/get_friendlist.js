@@ -50,8 +50,8 @@ function getFriendList(userId, page = 1) {
 function updateOnlineStatus(friendList) {
     friendList.forEach(friend => {
         const friendElement = document.querySelector(`[data-friend-id="${friend.friend_id}"]`);
-        if (!friendElement) return;
-        if (friendElement) {
+        const chatName = friendElement.querySelector('.chat-name');
+        if (friendElement && chatName) {
             const onlineStatus = friendElement.querySelector('.online-status');
             const lookingForGame = friendElement.querySelector('.looking-game-status');
 

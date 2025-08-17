@@ -229,6 +229,13 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.lol_sUsername && data.lol_sUsername.trim()) { // Ensure it's not empty
             hasBindedAccount = true;
             sUsername.innerText = data.lol_account;
+
+            const ratingContainer = document.getElementById('user-rating-stars');
+            ratingContainer.innerHTML = '';
+
+            if (data.user_rating !== undefined) {
+                ratingContainer.innerHTML = generateStars(data.user_rating);
+            }
         } else {
             sUsername.innerText = "UNKNOWN";
             hasBindedAccount = false;
@@ -765,3 +772,20 @@ const fetchDdragonVersion = async () => {
     const versions = await response.json();
     return versions[0];
 };
+
+function generateStars(rating, maxStars = 5) {
+    let starsHtml = '';
+    const fullStars = Math.floor(rating);
+    const emptyStars = maxStars - fullStars;
+
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<span class="star full-star">&#9733;</span>'; // filled star
+    }
+    // Add empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<span class="star empty-star">&#9733;</span>'; // empty star (grey)
+    }
+
+    return starsHtml;
+}

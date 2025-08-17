@@ -117,6 +117,10 @@ return [
     'swipe_home_text3' => 'Los mensajes en la app hacen fácil formar equipo y lanzarse al juego',
     'swipe_home_text4' => 'Demuestra tu esfuerzo: sincroniza tu cuenta de Riot y deja que brillen tus estadísticas',
 
+    //sign up page
+    'sign_up_title' => 'Registrarse',
+    'sign_up_text' => 'Crea una cuenta para encontrar a tu compañero de juego perfecto.',
+
     // settings.phtml
     'settings' => 'Configuración',
     'chat_filter' => 'Filtro de chat',
@@ -184,6 +188,10 @@ return [
     'swipe_more' => 'Deslizar más',
     'show_online_only' => 'Mostrar solo amigos en línea',
     'search_friends' => 'Buscar amigos...',
+    'rate_friend_title' => 'Evaluar a un amigo',
+    'rate_friend_message' => 'Puedes evaluar a un amigo después de haber jugado con él.',
+    'rate_friend_submit' => 'Evaluar',
+    'rate_friend_score' => 'Puntuación',
 
     //leaderboard page
     'store' => 'Tienda',
@@ -248,4 +256,24 @@ return [
         'Japan' => 'Japón',
         'Korea' => 'Corea',
     ],
+
+    // CSAE
+    'csae_headline' => 'Estándares contra la explotación y el abuso sexual infantil (EASI) - URSG',
+    'csae_text1.1' => 'En ',
+    'csae_text1.2' => 'URSG (Your Soulmate Gamer)',
+    'csae_text1.3' => ', tenemos una ',
+    'csae_text1.4' => 'política de tolerancia cero',
+    'csae_text1.5' => 'frente al abuso y la explotación sexual infantil (ASIE). Nuestro compromiso es garantizar que nuestra plataforma siga siendo segura para todos los usuarios.',
+    'csae_headline2' => 'Contenido prohibido',
+    'csae_text2' => 'Prohibimos estrictamente cualquier contenido relacionado con EASI, incluyendo pero no limitado a:',
+    'csae_text3' => 'Compartir, crear o distribuir contenidos de explotación infantil.',
+    'csae_text4' => 'Participar en interacciones inapropiadas con menores.',
+    'csae_text5' => 'Fomentar o facilitar el EASI de cualquier forma.',
+    'csae_headline3' => 'Notificación de una infracción del EASI',
+    'csae_text6.1' => 'Si encuentra algún contenido que infrinja nuestra política de EASI, notifíquelo inmediatamente a través de nuestro ',
+    'csae_text6.2' =>  'equipo de asistencia',
+    'csae_headline4' => 'Cumplimiento legal',
+    'csae_text7' => 'URSG cumple plenamente las leyes y coopera con las fuerzas de seguridad en la investigación de casos de EASI. Nos reservamos el derecho a eliminar contenidos, vetar usuarios y denunciar infracciones a las autoridades pertinentes.',
+    'csae_text8.1' => 'Para más información, póngase en contacto con nosotros en ',
+    'csae_text8.2' =>'contact@ur-sg.com',
 ];

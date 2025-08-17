@@ -15,6 +15,10 @@ export const chatInput = document.getElementById("message_text");
 export let clearImageVar = false;
 let numberofFail = 0;
 let lastFriendStatus = null;
+const RatingModal = document.getElementById('rating-modal');
+export const closeRatingModalBtn = document.getElementById('close-rating-modal');
+const RatingButton = document.getElementById('rating-button');
+export const submitRating = document.getElementById('submit-rating');
 
 
 // Function to fetch messages
@@ -729,6 +733,8 @@ export function fetchMessages(userId, friendId) {
         let gamemode = '';
     
         if (friend.lol_verified === 1) {
+
+            checkIfUsersPlayedTogether(friend.user_id, userId);
             friendLeagueStatus = await getGameStatusLoL(friend.user_id);
             if (friendLeagueStatus) {
                 friendGameStatus = true;
@@ -866,4 +872,101 @@ export function fetchMessages(userId, friendId) {
         clearImageVar = false;
         console.log("clearImageVar set to false");
     }
+
+    function checkIfUsersPlayedTogether(friendId, userId) {
+        const token = localStorage.getItem('masterTokenWebsite');
+        fetch('/checkIfUsersPlayedTogether', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(parseInt(friendId))}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.playedTogether) {
+                handleRatingPrompt(friendId, data.commonMatches);
+            }
+        })
+        .catch(error => console.error('Fetch error:', error));
+    }
+
+function handleRatingPrompt(friendId, commonMatches) {
+    const ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+    const friendKey = `friendId_${friendId}`;
+    const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    // Don't ask if rated in the last week
+    if (now - friendData.lastRatingTime < oneWeek) return;
+
+    // Find a matchId that hasn't been rated yet
+    const newMatchId = commonMatches.find(id => !friendData.ratedMatches[id]);
+    if (!newMatchId) return;
+
+    showRatingModal(friendId, newMatchId);
+}
+
+function showRatingModal(friendId, matchId) {
+    RatingModal.classList.remove('rating-modal-hidden');
+    document.getElementById("overlay").style.display = "block";
+    submitRating.setAttribute('data-friend-id', friendId);
+    submitRating.setAttribute('data-match-id', matchId);
+}
+
+export function closeRatingModal(type) {
+    RatingModal.classList.add('rating-modal-hidden');
+    const overlay = document.getElementById("overlay");
+    overlay.style.display = "none";
+
+    const friendId = submitRating.getAttribute('data-friend-id');
+    const friendKey = `friendId_${friendId}`;
+    let ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+    const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
+
+    // Only update if not a successful rating
+    if (type !== 'success') {
+        friendData.lastRatingTime = Date.now();
+        ratingData[friendKey] = friendData;
+        localStorage.setItem('ratingData', JSON.stringify(ratingData));
+    }
+}
+
+export function sendRating() {
+    const friendId = submitRating.getAttribute('data-friend-id');
+    const matchId = submitRating.getAttribute('data-match-id');
+    const rating = document.getElementById('rating-score').value;
+    const token = localStorage.getItem('masterTokenWebsite');
+
+    fetch('/rateFriendWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
+            const friendKey = `friendId_${friendId}`;
+            const friendData = ratingData[friendKey] || { ratedMatches: {}, lastRatingTime: 0 };
+
+            friendData.ratedMatches[matchId] = rating;
+            friendData.lastRatingTime = Date.now();
+
+            ratingData[friendKey] = friendData;
+            localStorage.setItem('ratingData', JSON.stringify(ratingData));
+
+            closeRatingModal('success');
+        } else {
+            console.error('Rating failed:', data.error);
+        }
+    })
+    .catch(error => console.error('Fetch error:', error));
+}
+
     

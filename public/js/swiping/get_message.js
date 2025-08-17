@@ -1,4 +1,4 @@
-import { fetchMessages, friendId, chatInterface, messageContainer, replyPreviewContainer, chatInput, clearImageTrue } from './get_message_utils.js';
+import { fetchMessages, friendId, chatInterface, messageContainer, replyPreviewContainer, chatInput, clearImageTrue, closeRatingModalBtn, closeRatingModal, submitRating, sendRating} from './get_message_utils.js';
 let actualFriendId = friendId;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             modalDiscord.style.display = 'none'; // Hide the modal
             actualFriendId = newFriendId; // Update the recipient ID
             replyPreviewContainer.style.display = "none"; // Hide the reply preview
+            closeRatingModal();
             chatInput.dataset.replyTo = ""; // Clear the reply context
             let messageInput = document.getElementById("message_text");
             const username = messageInput.dataset.username;
@@ -53,6 +54,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setVhVariable();
     checkScreenSize();
+
+    closeRatingModalBtn.addEventListener('click', () => {
+        closeRatingModal();
+    });
+
+    submitRating.addEventListener('click', (event) => {
+        sendRating();
+    });
 
     window.addEventListener("resize", () => {
         setVhVariable();

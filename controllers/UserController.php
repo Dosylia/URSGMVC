@@ -12,6 +12,7 @@ use models\MatchingScore;
 use models\Items;
 use models\GoogleUser;
 use models\Report;
+use models\RatingGames;
 use traits\SecurityController;
 use traits\Translatable;
 
@@ -30,6 +31,7 @@ class UserController
     private Items $items;
     private GoogleUser $googleUser;
     private Report $report;
+    private RatingGames $rating;
     private $googleUserId;
     private $userId;
     private $username;
@@ -82,6 +84,7 @@ class UserController
         $this -> items = new Items();
         $this -> googleUser = new GoogleUser();
         $this -> report = new Report();
+        $this -> rating = new RatingGames();
     }
 
     public function getAllUsers()
@@ -250,7 +253,7 @@ class UserController
             });
             
             $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
-
+            $page_css = ['store_leaderboard'];
             $current_url = "https://ur-sg.com/leaderboard";
             $template = "views/swiping/leaderboard";
             $page_title = "URSG - Leaderboard";
@@ -798,6 +801,7 @@ class UserController
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
+            $page_css = ['personalitytest'];
             $current_url = "https://ur-sg.com/personalityTest";
             $template = "views/swiping/personality_test";
             $page_title = "URSG - What kind of League player";
@@ -1874,7 +1878,7 @@ class UserController
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-
+            $page_css = ['swiping'];
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
             $page_title = "URSG - Swiping";
@@ -2190,6 +2194,7 @@ class UserController
                                         'user_isVip' => $userMatched['user_isVip'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
+                                        'user_rating' => $userMatched['user_rating'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],
                                         'lol_main3' => $userMatched['lol_main3'],
@@ -2272,10 +2277,13 @@ class UserController
             require_once 'keys.php';
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
-            $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
+            $userRating = 0;
             if ($user['user_game'] == "League of Legends")
             {
                 $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+                if ($lolUser['lol_verified'] == 1) {
+                    $userRating = $this->rating->getAverageRatingForUser($user['user_id']);
+                }
             }
             else 
             {
@@ -2285,7 +2293,9 @@ class UserController
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-
+            $maxStars = 5;
+            $fullStars = intval($userRating);
+            $emptyStars = $maxStars - $fullStars;
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
@@ -2307,44 +2317,6 @@ class UserController
             }
         }
     }
-
-    // public function pageUserProfileTest(): void
-    // {
-    //     if (
-    //         $this->isConnectGoogle() &&
-    //         $this->isConnectWebsite() &&
-    //         ($this->isConnectLeague() || $this->isConnectValorant()) && 
-    //         $this->isConnectLf() &&
-    //         $this->isAdmin()
-    //     ) {
-    //         require_once 'keys.php';
-    //         $user = $this-> user -> getUserById($_SESSION['userId']);
-    //         $unreadCounts = $this-> chatmessage -> countMessage($_SESSION['userId']);
-    //         if ($user['user_game'] == "League of Legends")
-    //         {
-    //             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-    //         }
-    //         else 
-    //         {
-    //             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-    //         }
-    //         $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
-    //         $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-    //         $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-    //         $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
-    //         $bonusPictures = $this->user->getBonusPictures($this->getUsername());
-
-
-    //         $current_url = "https://ur-sg.com/chatTest";
-    //         $template = "views/swiping/message_test";
-    //         $page_title = "URSG - Chat";
-    //         $picture = "ursg-preview-small";
-    //         require "views/layoutSwiping.phtml";
-    //     } else {
-    //         header("Location: /");
-    //         exit();
-    //     }
-    // }
 
     public function pageAnotherUserProfile()
     {
@@ -2368,12 +2340,16 @@ class UserController
                 $this->initializeLanguage();
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
+                $userRating = 0;
                 if ($anotherUser) 
                 {
                     $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                        if ($lolUser['lol_verified'] == 1) {
+                            $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
+                        }
                     }
                     else 
                     {
@@ -2383,7 +2359,11 @@ class UserController
                     if (isset($user) && $user != null) {
                         $checkIfFriend = $this->friendrequest->checkIfFriend($user['user_id'], $anotherUser['user_id']);
                     }
+                    $maxStars = 5;
+                    $fullStars = intval($userRating);
+                    $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $page_css = ['tools/offline_modal'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -2407,17 +2387,25 @@ class UserController
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
+                $userRating = 0;
                 if ($anotherUser)
                 {
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
+                        if ($lolUser['lol_verified'] == 1) {
+                            $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
+                        }
                     }
                     else 
                     {
                         $valorantUser = $this->valorant->getValorantUserByUserId($anotherUser['user_id']);
                     }
+                    $maxStars = 5;
+                    $fullStars = intval($userRating);
+                    $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $page_css = ['tools/offline_modal'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -3024,6 +3012,83 @@ class UserController
             echo json_encode(['success' => true, 'result' => $matchingPersonalityUser]);
         } else {
             echo json_encode(['success' => true, 'error' => 'Could not get matching personality user', 'result' => false]);
+        }
+    }
+
+    public function rateFriendWebsite()
+    {
+        // Check POST parameters
+        if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'], $_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            return;
+        }
+
+        $friendId = intval($_POST['friendId']);
+        $matchId = trim($_POST['matchId']);
+        $rating = intval($_POST['rating']);
+
+        // Validate rating range (e.g. 1 to 5)
+        if ($rating < 1 || $rating > 5) {
+            echo json_encode(['success' => false, 'error' => 'Invalid rating value']);
+            return;
+        }
+
+        // Get Authorization header
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+        $token = $matches[1];
+
+        // Validate token and get rater's userId
+        $userId = intval($_POST['userId']);
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Prevent rating yourself
+        if ($userId === $friendId) {
+            echo json_encode(['success' => false, 'error' => 'Cannot rate yourself']);
+            return;
+        }
+
+        // Check friend exists
+        $friend = $this->user->getUserById($friendId);
+        if (!$friend) {
+            echo json_encode(['success' => false, 'error' => 'Friend not found']);
+            return;
+        }
+
+        // Check if rating already exists
+        $existingRating = $this->rating->getRatingByUserAndFriend($userId, $friendId, $matchId);
+        $result = false;
+
+        if ($existingRating) {
+            // Update existing rating
+            $result = $this->rating->updateRating($userId, $friendId, $matchId, $rating);
+            if (!$result) {
+                echo json_encode(['success' => false, 'error' => 'Database error']);
+                return;
+            }
+        } else {
+            // Insert new rating
+            $result = $this->rating->insertFirstRating($userId, $friendId, $matchId, $rating);
+            if (!$result) {
+                echo json_encode(['success' => false, 'error' => 'Database error']);
+                return;
+            }
+        }
+
+        if ($result) {
+            // Return updated average rating & count
+            $avgData = $this->rating->getAverageRatingForUser($friendId);
+            echo json_encode([
+                'success' => true,
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Database error']);
         }
     }
     

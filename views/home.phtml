@@ -9,7 +9,7 @@
         </label>      
     <label><?= $this->_('role') ?>
         <select id="filterRole">
-                <option value="">Any</option>
+                <option value=""><?= $this->_('any') ?></option>
                 <?php foreach ($availableRoles['League of Legends'] as $role): ?>
                     <?php if ($role !== 'Any'): ?>
                         <option value="<?= $role ?>" data-game="lol"><?= $role ?></option>
@@ -22,9 +22,9 @@
                 <?php endforeach; ?>
         </select>
         </label>
-        <label>Rank
+        <label><?= $this->_('rank') ?>
         <select id="filterRank">
-                <option value="">Any</option>
+                <option value=""><?= $this->_('any') ?></option>
             <?php foreach ($availableRanks['League of Legends'] as $rank): ?>
                 <?php if ($rank !== 'Any'): ?>
                     <option value="<?= $rank ?>" data-game="lol"><?= $rank ?></option>
@@ -39,9 +39,9 @@
         </label>
         <label><?= $this->_('voice_chat') ?>
         <select id="filterVoiceChat">
-            <option value="">Any</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
+            <option value=""><?= $this->_('any') ?></option>
+            <option value="1"><?= $this->_('form_yes') ?></option>
+            <option value="0"><?= $this->_('form_no') ?></option>
         </select>
         </label>
         <button id="savePreferencesBtn"><?= $this->_('find_matches') ?></button>
@@ -219,9 +219,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<section class="applyAsDev-home">
+  <a href="/hiring">Apply as Developer</a>
+</section>
+
 <section class="swipe-home">
     <h2><?= $this->_('swipe_home_main_title') ?></h2>
-    <hr class="separators-quiz" style="width: 80%;"/>
+    <hr class="separators-hr" style="width: 80%;"/>
     <div class="swipe-home-card">
         <img src="public/images/fire-icon.png" alt="Fire icon" loading="lazy">
         <div class="swipe-home-card-text">

@@ -14,7 +14,25 @@
             <textarea id="lookingfor-message" rows="4" cols="50" placeholder="Type your message here..."></textarea>
             <button id="submit-lookingfor"><?= $this->_('looking_for_submit') ?></button>
         </div>
-    </div>   
+    </div>
+    <div id="rating-modal" class="modal rating-modal-hidden">
+        <div class="modal-content">
+            <span id="close-rating-modal" class="close">&times;</span>
+            <h2><?= $this->_('rate_friend_title') ?></h2>
+            <p><?= $this->_('rate_friend_message') ?></p>
+            <form id="rating-form">
+                <label for="rating-score"><?= $this->_('rate_friend_score') ?></label>
+                <select id="rating-score" name="score">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <button id="submit-rating" type="button"><?= $this->_('rate_friend_submit') ?></button>
+            </form>
+        </div>
+    </div>
     <?php if (isset($_GET['firstFriend'])) : ?>
         <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
     <?php endif; ?>
