@@ -255,14 +255,14 @@ body > div[style*='position: fixed'] {
 
 /* END NEW LANDING PAGE */
 
-/* ApplyAsDev */
+/* hiring */
 /* This CSS is for home.phtml */
-.applyAsDev-home {
+.hiring-home {
     text-align: center;
     margin: 40px 0;
 }
 
-.applyAsDev-home a {
+.hiring-home a {
     background: var(--main--red);
     color: #fff;
     padding: 0.5em 1em;
@@ -275,11 +275,11 @@ body > div[style*='position: fixed'] {
     min-width: fit-content;
 }
 
-.applyAsDev-home a:hover {
+.hiring-home a:hover {
     background: var(--dark--red);
 }
 
-/* END ApplyAsDev */
+/* END hiring */
 
 /* NEW FOOTER */
 
