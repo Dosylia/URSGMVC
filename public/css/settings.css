@@ -1,0 +1,60 @@
+.setting-page h2 {
+    margin-bottom: 20px;
+}
+
+.setting-option {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.setting-option i {
+    font-size: 2em;
+    width: 70px;
+    color: rgb(24, 23, 23);
+}
+
+.setting-option span {
+    font-size: 1.5em;
+    flex-grow: 1;
+    font-weight: 600;
+    color: rgb(24, 23, 23);
+    font-family: 'Libre Franklin', sans-serif;
+}
+
+.dark-mode .setting-option i,
+.dark-mode .setting-option span {
+    color: white;
+}
+
+.dark-mode .setting-option {
+    background-color: var(--dark-ligher-grey);
+}
+
+@media only screen and (max-width: 600px) {
+    .setting-option i {
+        font-size: 1.5em;
+        width: 30px;
+    }
+
+    .setting-option .fa-comment-slash {
+        font-size: 1.5em;
+        width: 30px;
+    }
+
+    .setting-option .fa-moon {
+        font-size: 1.5em;
+        width: 25px;
+        padding-left: 5px;
+    }
+
+    .setting-option span {
+        font-size: 1em;
+    }
+}

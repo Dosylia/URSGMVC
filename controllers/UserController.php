@@ -2296,6 +2296,7 @@ class UserController
             $maxStars = 5;
             $fullStars = intval($userRating);
             $emptyStars = $maxStars - $fullStars;
+            $page_css = ['profile'];
             $current_url = "https://ur-sg.com/userProfile";
             $template = "views/swiping/swiping_profile";
             $page_title = "URSG - Profile";
@@ -2363,7 +2364,7 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-                    $page_css = ['tools/offline_modal'];
+                    $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -2405,7 +2406,7 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-                    $page_css = ['tools/offline_modal'];
+                    $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
                     $page_title = "URSG - Profile " . $username;
@@ -2471,6 +2472,7 @@ class UserController
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $allUsers = $this-> user -> getAllUsers();
+            $page_css = ['settings'];
             $current_url = "https://ur-sg.com/settings";
             $template = "views/swiping/settings";
             $page_title = "URSG - Settings";
