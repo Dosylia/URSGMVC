@@ -387,10 +387,10 @@ class GoogleUserController
         )  {
             // Code block 1: User is connected via Google, Website and has League data and looking for data
             $user = $this-> user -> getUserById($_SESSION['userId']);
-
+            $page_css = ['swiping'];
             $current_url = "https://ur-sg.com/swiping";
             $template = "views/swiping/swiping_main";
-            $title = "Swipe test";
+            $title = "Swipe";
             $page_title = "URSG - Swiping";
             $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";;
@@ -410,6 +410,7 @@ class GoogleUserController
             // Code block 2: User is connected via Google, Website and has Valorant data, need looking for
             $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
             $user = $this-> user -> getUserById($_SESSION['userId']);
+            $page_css = ['swiping'];
             $current_url = "https://ur-sg.com/lookingforuservalorant";
             $template = "views/signup/lookingforvalorant";
             $title = "What are you looking for?";
@@ -430,6 +431,7 @@ class GoogleUserController
         )  {
             // Code block 3: User is connected via Google, Website and has League data, need looking for
             $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
+            $page_css = ['swiping'];
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $current_url = "https://ur-sg.com/lookingforuserlol";
             $template = "views/signup/lookingforlol";
@@ -1789,6 +1791,14 @@ class GoogleUserController
             $skills = $_POST['skills'];
             $link = $_POST['portfolio'];
 
+            $username = 'Unknown';
+            $linkToURSGAccount = 'Unknown';
+
+            if (isset($_POST['ursg_username'])) {
+                $username = $_POST['ursg_username'];
+                $linkToURSGAccount = 'https://ur-sg.com/anotherUser&username='.$username;
+            }
+
             $mail->Body = "
             <html>
             <head>...</head>
@@ -1801,6 +1811,8 @@ class GoogleUserController
                 Role to apply for: $role<br>
                 About the skills: $skills<br>
                 Links: $link<br>
+                UR-SG Username: $username<br>
+                UR-SG Account Link: $linkToURSGAccount<br>
                 <br><br>
             </body>
             </html>";

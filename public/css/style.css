@@ -4630,20 +4630,6 @@ nav i {
     transition: transform 1s;
 }
 
-nav .scale {
-    cursor: pointer;
-    border-radius: 1000px;
-}
-
-nav .scaleNoRound {
-    cursor: pointer;
-}
-
-nav .scale:hover,
-nav .scaleNoRound:hover {
-    transform: scale(1.1);
-}
-
 .main_section .overlay,
 .main_section_small .overlay {
     position: absolute;
@@ -5898,179 +5884,6 @@ dialog .title_generalbox {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-}
-
-#join_piltover,
-#join_zaun {
-    padding: 12px 24px;
-    margin: 10px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-radius: 30px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#join_piltover {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-}
-
-#join_piltover:hover {
-    background: linear-gradient(135deg, #0056b3, #007bff);
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
-    transform: scale(1.05);
-}
-
-#join_zaun {
-    background: linear-gradient(135deg, #09f056, #13683c);
-}
-
-#join_zaun:hover {
-    background: linear-gradient(135deg, #13683c, #09f056);
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
-    transform: scale(1.05);
-}
-#join_piltover,
-#join_zaun {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#ignore_arcane {
-    margin-top: 20px;
-    background-color: var(--main--red);
-    color: white;
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1.1em;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-}
-
-#ignore_arcane:hover {
-    background-color: var(--ligher--grey);
-}
-
-/* PROGRESS BAR CONTAINER */
-#progress-bar-container {
-    width: 100%;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    padding-top: 30px;
-    margin: 0 auto;
-    max-width: 700px;
-    text-align: center;
-    font-family: 'Exo', sans-serif;
-}
-
-/* Title Styling */
-#progress-bar-container h2 {
-    color: #fff;
-    font-size: 36px;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.2), 0 0 30px rgba(0, 0, 255, 0.2);
-    margin-bottom: 20px;
-    text-align: center;
-    background: linear-gradient(45deg, #00c9ff, #13683c);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.dark-mode #progress-bar-container h2 {
-    color: #fff;
-    font-size: 36px;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 0, 255, 0.5);
-    margin-bottom: 20px;
-    text-align: center;
-    background: linear-gradient(45deg, #00c9ff, #13683c);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-/* PROGRESS BAR */
-#progress-bar {
-    width: 100%;
-    height: 30px;
-    border-radius: 25px;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-}
-
-/* Piltover Bar (Blue) */
-#piltover-bar {
-    height: 100%;
-    background: linear-gradient(135deg, #007bff, #158eaa);
-    transition: width 0.5s ease-in-out;
-    box-shadow: inset 0 0 15px rgba(0, 123, 255, 0.8),
-        0 0 20px rgba(0, 123, 255, 0.6);
-}
-
-/* Zaun Bar (Green) */
-#zaun-bar {
-    height: 100%;
-    background: linear-gradient(135deg, #13683c, #0cf16b);
-    transition: width 0.5s ease-in-out;
-    box-shadow: inset 0 0 15px rgba(39, 174, 96, 0.8),
-        0 0 20px rgba(39, 174, 96, 0.6);
-}
-
-#piltover-currency {
-    color: #007bff;
-}
-
-#zaun-currency {
-    color: #09f056;
-}
-
-.currency-sumup {
-    padding-top: 5px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#progress-bar {
-    background: linear-gradient(90deg, #444 0%, #555 50%, #444 100%);
-}
-
-/* Additional styling for smooth animation */
-#piltover-bar,
-#zaun-bar {
-    transition: width 0.5s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.arcane-ign-comment {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    width: 100%;
-    font-size: 1.3em;
-    color: black;
-}
-
-.dark-mode .arcane-ign-comment {
-    color: white;
 }
 
 /* PARTNER SECTION */
@@ -8510,15 +8323,6 @@ dialog .title_generalbox {
         font-size: 20px;
     }
 
-    #join_piltover,
-    #join_zaun {
-        padding: 6px 12px;
-        margin: 10px;
-        font-size: 0.7em;
-        font-weight: bold;
-        border-radius: 30px;
-    }
-
     .about-users-box {
         width: 95%;
         display: flex;
@@ -9311,15 +9115,6 @@ dialog .title_generalbox {
 
     .about-users-containers {
         width: 100%;
-    }
-
-    #join_piltover,
-    #join_zaun {
-        padding: 4px 8px;
-        margin: 10px;
-        font-size: 0.7em;
-        font-weight: bold;
-        border-radius: 30px;
     }
 
     .about-users-box .about-users-selected {

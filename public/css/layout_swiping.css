@@ -18,8 +18,8 @@
 }
 
 .nav_swiping img {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
 }
 
 .nav_swiping a {
@@ -27,7 +27,7 @@
 }
 
 .nav_swiping i {
-    font-size: 70px;
+    font-size: 60px;
     color: white;
 }
 
@@ -57,6 +57,20 @@
 
 .dark-mode .nav_swiping i {
     color: white;
+}
+
+nav .scale {
+    cursor: pointer;
+    border-radius: 1000px;
+}
+
+nav .scaleNoRound {
+    cursor: pointer;
+}
+
+nav .scale:hover,
+nav .scaleNoRound:hover {
+    transform: scale(1.1);
 }
 
 @media only screen and (max-width: 1420px) {
@@ -126,14 +140,14 @@
     }
 
     .nav_swiping i {
-        font-size: 35px;
+        font-size: 30px;
         color: white;
     }
 
     .nav_swiping {
         align-items: center;
         gap: 10px;
-        padding: 10px;
+        padding: 0px;
     }
 
     .badge-container-swiping {
@@ -149,7 +163,7 @@
     }
 
     .nav_swiping i {
-        font-size: 25px;
+        font-size: 20px;
         color: white;
     }
 
