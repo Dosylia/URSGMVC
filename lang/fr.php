@@ -91,12 +91,36 @@ return [
     'footer_madeby' => 'Réalisé par',
     'footer_language' => 'Langue',
     'footer_links' => 'Liens',
+    'join_our_team' => 'Rejoignez notre équipe',
     'footer_copyright' => 'Copyright © URSG. Tous droits réservés.',
     'footer_riot' => 'URSG n’est pas approuvé par Riot Games et ne reflète pas les opinions ou points de vue de Riot Games ni de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.',
     'partners_perks_title' => 'Avantages des partenaires',
     'partners_perks_1' => 'Gagnez en visibilité et en reconnaissance au sein de la communauté (affichage sur la page partenaire, badge partenaire sur le site et rôle partenaire sur le serveur Discord).',
     'partners_perks_2' => 'Œuf de Pâques caché sur le site !',
     'partners_perks_3' => 'Tous les objets de la boutique sont débloqués.',
+
+    //hiring page
+    'join_team' => 'Rejoignez notre équipe',
+    'hiring_text_main' => 'Nous recherchons des personnes passionnées – que vous soyez Développeur, Artiste, Testeur ou Expert en marketing – qui veulent apprendre, évoluer et acquérir de l’expérience.',
+    'apply_now' => 'Postuler maintenant',
+    'application_form' => 'Formulaire de candidature',
+    'username_hiring' => 'Nom d’utilisateur',
+    'hiring_PH_username' => 'Votre nom',
+    'email_hiring' => 'Adresse e-mail',
+    'apply_as' => 'Postuler en tant que',
+    'select_hiring' => '-- Sélectionnez un rôle --',
+    'developer' => 'Développeur',
+    'artist' => 'Artiste',
+    'tester' => 'Testeur',
+    'marketing_expert' => 'Expert en marketing',
+    'security_specialist' => 'Spécialiste en sécurité',
+    'other' => 'Autre',
+    'your_skills' => 'Vos compétences',
+    'tell_your_skills' => 'Parlez-nous de vos compétences et de votre expérience...',
+    'link_hiring' => 'Tout lien que vous souhaitez partager avec nous, comme un GitHub ou un portfolio artistique',
+    'submit_application' => 'Soumettre la candidature',
+    'contact_hiring' => 'Vous pouvez également nous contacter ici :',
+
 
 
 // home.phtml
