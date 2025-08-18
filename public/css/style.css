@@ -5559,7 +5559,7 @@ dialog .title_generalbox {
 
 .admin-dashboard h2 {
     margin-bottom: 10px;
-    color: var(--main--red);
+    color: var(--main--red) !important;
 }
 
 .admin-dashboard p {
