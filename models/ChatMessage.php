@@ -19,6 +19,7 @@ class ChatMessage extends DataBase
                                                 c.chat_senderId,
                                                 u.user_username,
                                                 u.user_picture,
+                                                c.chat_message,
                                                 COUNT(*) AS `unread_count`
                                             FROM
                                                 `chatmessage` AS c
