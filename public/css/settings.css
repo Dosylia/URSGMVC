@@ -37,6 +37,28 @@
     background-color: var(--dark-ligher-grey);
 }
 
+.page-header {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: var(--main--red);
+    color: black;
+    position: relative;
+}
+
+.page-header a {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.page-header .active {
+    border-bottom: 4px solid white;
+}
+
 @media only screen and (max-width: 600px) {
     .setting-option i {
         font-size: 1.5em;
