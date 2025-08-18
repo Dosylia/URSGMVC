@@ -4792,7 +4792,7 @@ dialog .title_generalbox {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 999;
-    display: none;
+    display: none !important;
 }
 
 #arcane_picker {
