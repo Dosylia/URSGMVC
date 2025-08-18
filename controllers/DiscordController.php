@@ -10,6 +10,7 @@ use models\GoogleUser;
 use models\ChatMessage;
 use models\Discord;
 use traits\SecurityController;
+use services\DiscordBotService;
 
 class DiscordController
 {
@@ -854,6 +855,28 @@ class DiscordController
 
         header('Location: /store?message=Role assigned successfully.');
         exit();
+    }
+
+    public function startBotCronJob()
+    {
+        require_once 'keys.php';
+    
+        $tokenAdmin = $_GET['token'] ?? null;
+    
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
+            http_response_code(401); // Return Unauthorized for cron logs
+            echo "❌ Unauthorized.\n";
+            exit();
+        }
+
+        $result = DiscordBotService::start();
+
+        if ($result['success']) {
+            echo "✅ Bot started successfully.\n";
+        } else {
+            echo "❌ Failed to start bot: " . $result['message'] . "\n";
+            echo "Output: " . $result['output'] . "\n";
+        }
     }
 
 
