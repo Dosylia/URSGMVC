@@ -87,6 +87,11 @@ class UserController
         $this -> rating = new RatingGames();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function getAllUsers()
     {
         $response = array('message' => 'Error');
@@ -3112,42 +3117,6 @@ class UserController
           }
           
           $darkMode = ($_SESSION['mode'] === 'dark');        
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenGoogleUserId($token, $googleUserId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenPhoneByGoogleUserId($googleUserId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function validateInputJSON($input) 

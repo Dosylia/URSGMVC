@@ -34,6 +34,11 @@ class BlockController
         $this->chatmessage = new ChatMessage();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function blockPerson(): void
     {
         if (isset($_POST['submit']))
@@ -180,18 +185,6 @@ class BlockController
             header("location:/friendlistPage?message=No form");
             exit();    
         }
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function validateInput(string $input): string

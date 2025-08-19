@@ -35,6 +35,11 @@ class DiscordController
         $this -> userlookingfor = new userLookingFor();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function createChannel() {
 
         // Validate Authorization Header
@@ -877,31 +882,6 @@ class DiscordController
             echo "❌ Failed to start bot: " . $result['message'] . "\n";
             echo "Output: " . $result['output'] . "\n";
         }
-    }
-
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 }
 

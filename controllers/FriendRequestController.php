@@ -35,6 +35,11 @@ class FriendRequestController
         $this->chatmessage = new ChatMessage();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pageFriendlist(): void
     {
         if (
@@ -1503,29 +1508,6 @@ class FriendRequestController
         $input = trim($input);
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
         return $input;
-    }
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function getFrId(): ?int

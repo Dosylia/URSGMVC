@@ -14,36 +14,37 @@ class ChatMessage extends DataBase
 
     public function countMessage($userId)
     {
-        $query = $this -> bdd -> prepare("
-                                            SELECT
-                                                c.chat_senderId,
-                                                u.user_username,
-                                                u.user_picture,
-                                                c.chat_message,
-                                                COUNT(*) AS `unread_count`
-                                            FROM
-                                                `chatmessage` AS c
-                                            INNER JOIN
-                                                `user` AS u
-                                            ON 
-                                                c.chat_senderId = u.user_id
-                                            WHERE
-                                                c.chat_receiverId = ? 
-                                            AND
-                                                c.chat_status = 'unread'
-                                            GROUP BY
-                                                c.chat_senderId
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            c.chat_senderId,
+                                            u.user_username,
+                                            u.user_picture,
+                                            c.chat_message,
+                                            unread_counts.unread_count
+                                        FROM
+                                            (
+                                                SELECT
+                                                    chat_senderId,
+                                                    MAX(chat_id) AS latest_chat_id,
+                                                    COUNT(*) AS unread_count
+                                                FROM
+                                                    chatmessage
+                                                WHERE
+                                                    chat_receiverId = ?
+                                                    AND chat_status = 'unread'
+                                                GROUP BY
+                                                    chat_senderId
+                                            ) AS unread_counts
+                                        JOIN chatmessage c ON c.chat_id = unread_counts.latest_chat_id
+                                        JOIN user u ON c.chat_senderId = u.user_id
         ");
 
-        $query -> execute([$userId]);
-        $unreadTest = $query -> fetchAll();
+        $query->execute([$userId]);
+        $unreadTest = $query->fetchAll();
 
-        if($unreadTest)
-        {
+        if ($unreadTest) {
             return $unreadTest;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }

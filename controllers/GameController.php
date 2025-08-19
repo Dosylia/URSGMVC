@@ -26,6 +26,11 @@ class GameController
         $this -> googleUser = new GoogleUser();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pageGame(): void
     {
         if (
@@ -327,31 +332,6 @@ class GameController
         
         return array_values($result);
     }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
 
     public function validateInput(string $input): string
     {
