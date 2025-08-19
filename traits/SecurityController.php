@@ -4,6 +4,37 @@ namespace traits;
 
 trait SecurityController
 {
+    /**
+     * Require moderator/admin/marketing session, or redirect to given URL and exit.
+     */
+    public function requireModeratorSessionOrRedirect($redirectUrl = '/')
+    {
+        if (!($this->isConnectGoogle()
+            && $this->isConnectWebsite()
+            && ($this->isConnectLeague() || $this->isConnectValorant())
+            && $this->isConnectLf()
+            && ($this->isModerator() || $this->isAdmin() || $this->isMarketing())
+        )) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Require regular user session, or redirect to given URL and exit.
+     */
+    public function requireUserSessionOrRedirect($redirectUrl = '/')
+    {
+        if (!($this->isConnectGoogle()
+            && $this->isConnectWebsite()
+            && ($this->isConnectLeague() || $this->isConnectValorant())
+            && $this->isConnectLf()
+        )) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+    
     public function isConnectGoogle()
     {
         if(isset($_SESSION['google_id']))
@@ -141,5 +172,6 @@ trait SecurityController
     
         return false;
     }
+
 }
 

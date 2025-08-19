@@ -46,60 +46,51 @@ class ChatMessageController
 
     public function pagePersoMessage(): void
     {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $this->initializeLanguage();
-            $user = $this->user->getUserById($_SESSION['userId']);
-            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-            $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
+    $this->requireUserSessionOrRedirect($redirectUrl = '/');
+    $this->initializeLanguage();
+    $user = $this->user->getUserById($_SESSION['userId']);
+    $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+    $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
 
-            if ($getFriendlist) {
-                $firstFriend = reset($getFriendlist);
+        if ($getFriendlist) {
+            $firstFriend = reset($getFriendlist);
 
-                if (isset($_GET['friend_id'])) {
-                    $friendId = $_GET['friend_id'];
+            if (isset($_GET['friend_id'])) {
+                $friendId = $_GET['friend_id'];
 
-                    $isFriend = false;
-                    foreach ($getFriendlist as $friend) {
-                        if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
-                            if ($friendId == $user['user_id']) {
-                                $isFriend = false;
-                                break;
-                            }
-                            $isFriend = true;
+                $isFriend = false;
+                foreach ($getFriendlist as $friend) {
+                    if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
+                        if ($friendId == $user['user_id']) {
+                            $isFriend = false;
                             break;
                         }
-                    }
-
-                    if ($isFriend) {
-                        $friendChat = $this->user->getUserById($friendId);
-                    } else {
-                        header("Location: /persoChat?msg=You are not friends with this user.");
-                        exit();
-                    }
-
-                } else {
-                    if (isset($firstFriend)) {
-                        $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
-                        $friendChat = $this->user->getUserById($friendId);
+                        $isFriend = true;
+                        break;
                     }
                 }
-            }
 
-            $page_css = ['chat'];
-            $current_url = "https://ur-sg.com/persoChat";
-            $template = "views/swiping/swiping_persomessage";
-            $picture = "chat-preview";
-            $page_title = "URSG - Chat";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
+                if ($isFriend) {
+                    $friendChat = $this->user->getUserById($friendId);
+                } else {
+                    header("Location: /persoChat?msg=You are not friends with this user.");
+                    exit();
+                }
+
+            } else {
+                if (isset($firstFriend)) {
+                    $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
+                    $friendChat = $this->user->getUserById($friendId);
+                }
+            }
         }
+
+        $page_css = ['chat'];
+        $current_url = "https://ur-sg.com/persoChat";
+        $template = "views/swiping/swiping_persomessage";
+        $picture = "chat-preview";
+        $page_title = "URSG - Chat";
+        require "views/layoutSwiping.phtml";
     }
 
     public function messageStream(): void

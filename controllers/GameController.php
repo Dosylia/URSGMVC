@@ -30,33 +30,7 @@ class GameController
     {
         return $this->googleUser;
     }
-
-    public function pageGame(): void
-    {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-
-            $current_url = "https://ur-sg.com/game";
-            $template = "views/swiping/test_game";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Game";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
-    }
-
+    
     public function getGameUser() 
     {
         $response = array('message' => 'Error');

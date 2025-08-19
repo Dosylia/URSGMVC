@@ -42,28 +42,19 @@ class FriendRequestController
 
     public function pageFriendlist(): void
     {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this->user->getUserByUsername($_SESSION['username']);
-            $allUsers = $this->user->getAllUsers();
-            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-            $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
-            $page_css = ['friendlist'];
-            $current_url = "https://ur-sg.com/friendlistPage";
-            $template = "views/swiping/swiping_friendlist";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Friendlist";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
-        }
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+        $allUsers = $this->user->getAllUsers();
+        $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+        $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
+        $page_css = ['friendlist'];
+        $current_url = "https://ur-sg.com/friendlistPage";
+        $template = "views/swiping/swiping_friendlist";
+        $picture = "ursg-preview-small";
+        $page_title = "URSG - Friendlist";
+        require "views/layoutSwiping.phtml";
     }
 
     public function addFriendAndChat() 

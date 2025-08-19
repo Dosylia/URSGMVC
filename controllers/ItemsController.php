@@ -34,38 +34,24 @@ class ItemsController
 
     public function pageStore()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $allUsers = $this-> user -> getAllUsers();
+        $items = $this-> items -> getItems();
+        $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-            $items = $this-> items -> getItems();
-            $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
-
-            if (!is_array($ownedItems)) {
-                $ownedItems = [];
-            }
-
-            $page_css = ['store_leaderboard'];
-            $current_url = "https://ur-sg.com/store";
-            $template = "views/swiping/store";
-            $page_title = "URSG - Store";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
+        if (!is_array($ownedItems)) {
+            $ownedItems = [];
         }
+
+        $page_css = ['store_leaderboard'];
+        $current_url = "https://ur-sg.com/store";
+        $template = "views/swiping/store";
+        $page_title = "URSG - Store";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
     public function getItems()
     {

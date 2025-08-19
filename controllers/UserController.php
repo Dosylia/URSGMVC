@@ -224,52 +224,38 @@ class UserController
 
     public function pageLeaderboard()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $userRank = $this->user->getUserRank($_SESSION['userId']);
+        $allUsers = $this-> user -> getTopUsers();
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
+        $usersPerPage = 50;
+        $totalUsers = count($allUsers);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $totalPages = ceil($totalUsers / $usersPerPage);
 
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $userRank = $this->user->getUserRank($_SESSION['userId']);
-            $allUsers = $this-> user -> getTopUsers();
-
-            $usersPerPage = 50;
-            $totalUsers = count($allUsers);
-            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $totalPages = ceil($totalUsers / $usersPerPage);
-
-            if ($page < 1) {
-                $page = 1;
-            } elseif ($page > $totalPages) {
-                $page = $totalPages;
-            }
-            
-
-            $offset = ($page - 1) * $usersPerPage;
-
-            usort($allUsers, function($a, $b) {
-                return $b['user_currency'] - $a['user_currency'];
-            });
-            
-            $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
-            $page_css = ['store_leaderboard'];
-            $current_url = "https://ur-sg.com/leaderboard";
-            $template = "views/swiping/leaderboard";
-            $page_title = "URSG - Leaderboard";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
+        if ($page < 1) {
+            $page = 1;
+        } elseif ($page > $totalPages) {
+            $page = $totalPages;
         }
+        
+
+        $offset = ($page - 1) * $usersPerPage;
+
+        usort($allUsers, function($a, $b) {
+            return $b['user_currency'] - $a['user_currency'];
+        });
+        
+        $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
+        $page_css = ['store_leaderboard'];
+        $current_url = "https://ur-sg.com/leaderboard";
+        $template = "views/swiping/leaderboard";
+        $page_title = "URSG - Leaderboard";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function createAccountSkipPreferences()
@@ -1871,30 +1857,17 @@ class UserController
 
     public function pageswiping()
     {     
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-            $page_css = ['swiping'];
-            $current_url = "https://ur-sg.com/swiping";
-            $template = "views/swiping/swiping_main";
-            $page_title = "URSG - Swiping";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
+        $page_css = ['swiping'];
+        $current_url = "https://ur-sg.com/swiping";
+        $template = "views/swiping/swiping_main";
+        $page_title = "URSG - Swiping";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function updateNotificationPermission(): void
@@ -2432,47 +2405,25 @@ class UserController
 
     public function pageUpdateProfile()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $allUsers = $this-> user -> getAllUsers();
+        $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-
-            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
-            $current_url = "https://ur-sg.com/updateProfile";
-            $template = "views/swiping/update_profile";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
+        $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+        $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
+        $current_url = "https://ur-sg.com/updateProfile";
+        $template = "views/swiping/update_profile";
+        $page_title = "URSG - Profile";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function pageSettings()
     {
-
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
+            $this->requireUserSessionOrRedirect($redirectUrl = '/');
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -2483,12 +2434,6 @@ class UserController
             $page_title = "URSG - Settings";
             $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
     }
 
     public function chatFilterSwitch()
