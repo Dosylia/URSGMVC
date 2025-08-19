@@ -129,15 +129,10 @@ class UserController
         require 'keys.php';
         $response = array('message' => 'Error');
     
-        // Check if the token is provided in the request header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
@@ -178,15 +173,10 @@ class UserController
         require 'keys.php';
         $response = array('message' => 'Error');
     
-        // Check if the token is provided in the request header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
@@ -271,13 +261,11 @@ class UserController
             return;
         }
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'message' => 'Authorization header missing or malformed']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
 
-        $token = $matches[1];
         $authToken = $_COOKIE['auth_token'] ?? null;
 
         if (!$authToken || $token !== $authToken) {
@@ -435,14 +423,10 @@ class UserController
             $short_bio = $this->validateInput($data->shortBio);
             $this->setShortBio($short_bio);
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenGoogleUserId($token, $googleUserId)) {
@@ -683,14 +667,10 @@ class UserController
 
                 $user = $this->user->getUserById($this->getUserId());
 
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
                     return;
                 }
-            
-                $token = $matches[1];
             
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $this->getUserId())) {
@@ -732,15 +712,10 @@ class UserController
             $this->setUsername($username);
             $user = $this->user->getUserByUsername($this->getUsername());
 
-             // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
-         
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
  
              if (!$this->validateToken($token, $user['user_id'])) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -1028,14 +1003,10 @@ class UserController
 
             $user = $this->user->getUserById($this->getUserId());
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1103,14 +1074,10 @@ class UserController
 
             $user = $this->user->getUserById($this->getUserId());
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'message' => 'Invalid request']);
@@ -1215,14 +1182,10 @@ class UserController
     
         if (isset($_POST['userId']) && isset($_POST['token'])) {
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             // Check if the provided token matches the valid token
             if ($token !== $validToken) {
@@ -1262,14 +1225,10 @@ class UserController
             $userId = $this->validateInput($data->userId);
 
             
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -1632,14 +1591,10 @@ class UserController
 
     public function updatePicturePhone() {
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['username'])) {
             echo json_encode(['message' => 'Invalid request']);
@@ -1720,14 +1675,10 @@ class UserController
     }   
 
     public function updateBonusPicturePhone() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['username'])) {
             echo json_encode(['message' => 'Invalid request']);
@@ -1873,36 +1824,31 @@ class UserController
     public function updateNotificationPermission(): void
     {
         if (isset($_POST['userId'])) {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
     
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
-    
-        $token = $matches[1];
-    
-        if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
-            return;
-        }
-    
-        $userId = (int)$_POST['userId'];
-    
-        // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            return;
-        }
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+        
+            $userId = (int)$_POST['userId'];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
-        $updatePermission = $this->user->updatePermission($_POST['userId']);
+            $updatePermission = $this->user->updatePermission($_POST['userId']);
 
-        if ($updatePermission) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
-        }
+            if ($updatePermission) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
+            }
     
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1912,13 +1858,10 @@ class UserController
     // PHP controller method to handle saving the subscription
     public function saveNotificationSubscription() 
     {
-        // Step 1: Check authentication
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-        $token = $matches[1];
     
         // Step 2: Retrieve and validate POST parameters
         $param = $_POST['param'] ?? null;
@@ -1965,14 +1908,10 @@ class UserController
 
     public function fetchNotificationEndpoint()
     {
-        // Step 1: Check authentication
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Step 2: Retrieve and validate userId
         $userId = $_POST['userId'] ?? null;
@@ -2444,15 +2383,10 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
 
             if (!$this->validateToken($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -2481,15 +2415,10 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -2639,15 +2568,11 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
-        
+
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
                 return;
@@ -2703,15 +2628,10 @@ class UserController
             $status = $data->status;
             $content = $data->content;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -2750,15 +2670,10 @@ class UserController
             $status = $data->status;
             $content = $data->content;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -2788,14 +2703,10 @@ class UserController
     }
 
     public function userIsLookingForGameWebsite() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2826,14 +2737,10 @@ class UserController
     }
 
     public function userIsLookingForGamePhone() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2862,14 +2769,10 @@ class UserController
     }
 
     public function getPersonalityTestResult() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2897,14 +2800,10 @@ class UserController
     }
 
     public function savePersonalityTestResult() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -2935,14 +2834,10 @@ class UserController
 
     public function getMatchingPersonalityUser()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId']) || !isset($_POST['personalityType'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2985,13 +2880,10 @@ class UserController
             return;
         }
 
-        // Get Authorization header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-        $token = $matches[1];
 
         // Validate token and get rater's userId
         $userId = intval($_POST['userId']);

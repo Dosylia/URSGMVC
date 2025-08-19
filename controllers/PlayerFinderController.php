@@ -145,14 +145,10 @@ class PlayerFinderController
 
     public function addPlayerFinderPost()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -214,14 +210,10 @@ class PlayerFinderController
 
     public function deletePlayerFinderPost()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -263,14 +255,10 @@ class PlayerFinderController
 
     public function playWithThem() 
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -343,15 +331,10 @@ class PlayerFinderController
     
     public function getInterestedPeople()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+         $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
-
         $userId = $_POST['userId'] ?? null;
     
         if (!isset($userId)) {
@@ -404,14 +387,10 @@ class PlayerFinderController
 
         public function addPlayerFinderPostPhone()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -473,14 +452,10 @@ class PlayerFinderController
 
     public function getPlayerFinderPostsPhone()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
     
         if (!isset($_POST['userId'])) {
@@ -507,14 +482,10 @@ class PlayerFinderController
 
     public function deletePlayerFinderPostPhone()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -553,14 +524,10 @@ class PlayerFinderController
 
     public function playWithThemPhone() 
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -630,14 +597,10 @@ class PlayerFinderController
     
     public function getInterestedPeoplePhone()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
 
         $userId = $_POST['userId'] ?? null;
     
@@ -691,14 +654,10 @@ class PlayerFinderController
 
     public function markInterestAsSeen()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
 
         $userId = $_POST['userId'] ?? null;
         $postId = $_POST['postId'] ?? null;
@@ -729,14 +688,11 @@ class PlayerFinderController
 
     public function editPlayerPost()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
+        
         $userId = $_POST['userId'] ?? null;
     
         if (!isset($userId)) {

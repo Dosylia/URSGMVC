@@ -94,15 +94,10 @@ class BlockController
 
     public function blockPersonPhone(): void
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
-
 
         $response = array('message' => 'Error');
         if (isset($_POST['userData']))

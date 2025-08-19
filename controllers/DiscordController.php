@@ -42,15 +42,10 @@ class DiscordController
 
     public function createChannel() {
 
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -475,14 +470,10 @@ class DiscordController
 
     public function sendMessageDiscord()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
 
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -622,14 +613,10 @@ class DiscordController
 
     public function sendMessageDiscordPhone()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
 
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);

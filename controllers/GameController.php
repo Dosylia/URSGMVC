@@ -41,14 +41,10 @@ class GameController
             $date = date("Y-m-d");
             $userId = $_POST['userId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -143,14 +139,10 @@ class GameController
             $tryCount = $data->tryCount;
             $userId = $data->userId;
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {

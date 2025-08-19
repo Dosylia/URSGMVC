@@ -197,15 +197,10 @@ class ChatMessageController
 
     public function sendMessageDataPhone(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['param'])) {
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
@@ -301,15 +296,10 @@ class ChatMessageController
 
             $replyToChatId = $data->replyToChatId ?? null;
 
-            // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
- 
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
  
              // Validate Token for User
              if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
@@ -442,15 +432,11 @@ class ChatMessageController
 
     public function uploadChatImage(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
+
         $userId = $_SESSION['userId'] ?? null;
     
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
@@ -507,20 +493,13 @@ class ChatMessageController
 
     public function uploadChatImagePhone(): void
     {
-        error_log("Upload request received");
-        error_log("FILES: " . print_r($_FILES, true));
-        error_log("Headers: " . print_r(getallheaders(), true));
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
+
         $userId = $_POST['userId'] ?? null;
-    
+
         if (!$userId || !$this->validateToken($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
@@ -576,14 +555,11 @@ class ChatMessageController
 
     public function deleteChatImage(): void
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
+        
         $userId = $_SESSION['userId'] ?? null;
         
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
@@ -691,15 +667,10 @@ class ChatMessageController
             $chatId = $_POST['chatId'];
             $this->setUserId((int)$userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -741,15 +712,10 @@ class ChatMessageController
             $this->setSenderId($data->senderId);
             $this->setReceiverId($data->receiverId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
@@ -922,15 +888,10 @@ class ChatMessageController
             $this->setUserId($_POST['userId']);
             $this->setFriendId((int) $_POST['friendId']);
    
-             // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
- 
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
 
             //  if (!isset($token)) {
             //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
@@ -1068,15 +1029,10 @@ class ChatMessageController
 
     public function getUnreadMessagePhone(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1118,15 +1074,10 @@ class ChatMessageController
         if (isset($_POST['userId'])) {
             $this->setUserId($_POST['userId']);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getUserId())) {

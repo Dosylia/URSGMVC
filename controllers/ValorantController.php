@@ -276,15 +276,10 @@ class ValorantController
             $data = json_decode($_POST['valorantData']);
             $userId = $this->validateInput($data->userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
