@@ -507,6 +507,11 @@
     z-index: 999;
 }
 
+.playerfinder-modal.hidden,
+.interested-modal.hidden {
+    display: none;
+}
+
 .playerfinder-modal-content,
 .interested-modal-content {
     background: #fff;

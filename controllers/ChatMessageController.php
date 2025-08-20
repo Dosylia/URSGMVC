@@ -39,62 +39,58 @@ class ChatMessageController
         $this-> items = new Items();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pagePersoMessage(): void
     {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $this->initializeLanguage();
-            $user = $this->user->getUserById($_SESSION['userId']);
-            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-            $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
+    $this->requireUserSessionOrRedirect($redirectUrl = '/');
+    $this->initializeLanguage();
+    $user = $this->user->getUserById($_SESSION['userId']);
+    $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+    $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
 
-            if ($getFriendlist) {
-                $firstFriend = reset($getFriendlist);
+        if ($getFriendlist) {
+            $firstFriend = reset($getFriendlist);
 
-                if (isset($_GET['friend_id'])) {
-                    $friendId = $_GET['friend_id'];
+            if (isset($_GET['friend_id'])) {
+                $friendId = $_GET['friend_id'];
 
-                    $isFriend = false;
-                    foreach ($getFriendlist as $friend) {
-                        if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
-                            if ($friendId == $user['user_id']) {
-                                $isFriend = false;
-                                break;
-                            }
-                            $isFriend = true;
+                $isFriend = false;
+                foreach ($getFriendlist as $friend) {
+                    if ($friendId == $friend['sender_id'] || $friendId == $friend['receiver_id']) {
+                        if ($friendId == $user['user_id']) {
+                            $isFriend = false;
                             break;
                         }
-                    }
-
-                    if ($isFriend) {
-                        $friendChat = $this->user->getUserById($friendId);
-                    } else {
-                        header("Location: /persoChat?msg=You are not friends with this user.");
-                        exit();
-                    }
-
-                } else {
-                    if (isset($firstFriend)) {
-                        $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
-                        $friendChat = $this->user->getUserById($friendId);
+                        $isFriend = true;
+                        break;
                     }
                 }
-            }
 
-            $page_css = ['chat'];
-            $current_url = "https://ur-sg.com/persoChat";
-            $template = "views/swiping/swiping_persomessage";
-            $picture = "chat-preview";
-            $page_title = "URSG - Chat";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
+                if ($isFriend) {
+                    $friendChat = $this->user->getUserById($friendId);
+                } else {
+                    header("Location: /persoChat?msg=You are not friends with this user.");
+                    exit();
+                }
+
+            } else {
+                if (isset($firstFriend)) {
+                    $friendId = ($user['user_id'] == $firstFriend['sender_id']) ? $firstFriend['receiver_id'] : $firstFriend['sender_id'];
+                    $friendChat = $this->user->getUserById($friendId);
+                }
+            }
         }
+
+        $page_css = ['chat'];
+        $current_url = "https://ur-sg.com/persoChat";
+        $template = "views/swiping/swiping_persomessage";
+        $picture = "chat-preview";
+        $page_title = "URSG - Chat";
+        require "views/layoutSwiping.phtml";
     }
 
     public function messageStream(): void
@@ -201,15 +197,10 @@ class ChatMessageController
 
     public function sendMessageDataPhone(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['param'])) {
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
@@ -305,15 +296,10 @@ class ChatMessageController
 
             $replyToChatId = $data->replyToChatId ?? null;
 
-            // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
- 
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
  
              // Validate Token for User
              if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
@@ -446,15 +432,11 @@ class ChatMessageController
 
     public function uploadChatImage(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
+
         $userId = $_SESSION['userId'] ?? null;
     
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
@@ -511,20 +493,13 @@ class ChatMessageController
 
     public function uploadChatImagePhone(): void
     {
-        error_log("Upload request received");
-        error_log("FILES: " . print_r($_FILES, true));
-        error_log("Headers: " . print_r(getallheaders(), true));
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
+
         $userId = $_POST['userId'] ?? null;
-    
+
         if (!$userId || !$this->validateToken($token, $userId)) {
             echo json_encode(['success' => false, 'error' => 'Invalid token']);
             return;
@@ -580,14 +555,11 @@ class ChatMessageController
 
     public function deleteChatImage(): void
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
+        
         $userId = $_SESSION['userId'] ?? null;
         
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
@@ -695,15 +667,10 @@ class ChatMessageController
             $chatId = $_POST['chatId'];
             $this->setUserId((int)$userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -745,15 +712,10 @@ class ChatMessageController
             $this->setSenderId($data->senderId);
             $this->setReceiverId($data->receiverId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
@@ -926,15 +888,10 @@ class ChatMessageController
             $this->setUserId($_POST['userId']);
             $this->setFriendId((int) $_POST['friendId']);
    
-             // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
- 
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
 
             //  if (!isset($token)) {
             //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
@@ -1072,15 +1029,10 @@ class ChatMessageController
 
     public function getUnreadMessagePhone(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1122,15 +1074,10 @@ class ChatMessageController
         if (isset($_POST['userId'])) {
             $this->setUserId($_POST['userId']);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
@@ -1248,30 +1195,6 @@ class ChatMessageController
         $accessToken = $creds->fetchAuthToken()['access_token'];
 
         return $accessToken;
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function validateInput(string $input): string

@@ -27,40 +27,31 @@ class ItemsController
 
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pageStore()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $allUsers = $this-> user -> getAllUsers();
+        $items = $this-> items -> getItems();
+        $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-            $items = $this-> items -> getItems();
-            $ownedItems = $this-> items -> getOwnedItems($_SESSION['userId']);
-
-            if (!is_array($ownedItems)) {
-                $ownedItems = [];
-            }
-
-            $page_css = ['store_leaderboard'];
-            $current_url = "https://ur-sg.com/store";
-            $template = "views/swiping/store";
-            $page_title = "URSG - Store";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
+        if (!is_array($ownedItems)) {
+            $ownedItems = [];
         }
+
+        $page_css = ['store_leaderboard'];
+        $current_url = "https://ur-sg.com/store";
+        $template = "views/swiping/store";
+        $page_title = "URSG - Store";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
     public function getItems()
     {
@@ -100,15 +91,11 @@ class ItemsController
         if (isset($_POST['userId'])) 
         {
             $userId = $_POST['userId'];
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -185,15 +172,11 @@ class ItemsController
         if (isset($_POST['userId'])) 
         {
             $userId = $_POST['userId'];
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -277,15 +260,10 @@ class ItemsController
 
     public function buyItemPhone()
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if 'param' is set in POST data
         if (isset($_POST['param'])) {
@@ -355,15 +333,10 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // Validate Authorization Header
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                    return;
-                }
-
-                $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
@@ -475,15 +448,10 @@ class ItemsController
 
     public function buyRolePhone()
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if 'param' is set in POST data
         if (isset($_POST['param'])) {
@@ -554,15 +522,10 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // Validate Authorization Header
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                    return;
-                }
-
-                $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
@@ -629,16 +592,11 @@ class ItemsController
             if (isset($data->itemId) && isset($data->userId)) {
                 $itemId = $data->itemId;
                 $userId = $data->userId;
-
-                // Validate Authorization Header
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
                     return;
                 }
-
-                $token = $matches[1];
 
                 // Validate Token for User
                 if (!$this->validateToken($token, $userId)) {
@@ -686,15 +644,10 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // Validate Authorization Header
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
                     return;
                 }
-
-                $token = $matches[1];
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
@@ -752,15 +705,10 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // Validate Authorization Header
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
                     return;
                 }
-            
-                $token = $matches[1];
 
                 if (!$this->validateToken($token, $userId)) {
                     echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -797,22 +745,11 @@ class ItemsController
                 $itemId = $data->itemId;
                 $userId = $data->userId;
 
-                // // Validate Authorization Header
-                // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-                // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                //     return;
-                // }
-
-                // $token = $matches[1];
-
-                // // Validate Token for User
-                // if (!$this->validateTokenWebsite($token, $userId)) {
-                //     echo json_encode(['success' => false, 'error' => 'Invalid token']);
-                //     return;
-                // }
-
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
+                    return;
+                }
+                
                 $user = $this->user->getUserById($_SESSION['userId']);
                 if (isset($_SESSION)) {
 
@@ -842,29 +779,5 @@ class ItemsController
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid data received']);
         }
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 }

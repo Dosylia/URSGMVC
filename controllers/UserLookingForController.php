@@ -47,6 +47,11 @@ class UserLookingForController
         $this -> googleUser = new GoogleUser();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pageLookingFor()
     {
         if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLf()) {
@@ -125,66 +130,53 @@ class UserLookingForController
 
     public function pageUpdateLookingFor()
     {    
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserByUsername($_SESSION['username']);
+        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
-            if($user['user_game'] === "League of Legends") {
-                $defaultChampions = [
-                    'lf_lolmain1' => 'KaiSa',
-                    'lf_lolmain2' => 'Ezreal',
-                    'lf_lolmain3' => 'Jhin'
-                ];
-        
-                    // Check if the values are empty, and use the fallback if needed
-                    $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
-                    $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
-                    $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
-            } else {
-                $defaultChampions = [
-                    'lf_valmain1' => 'Viper',
-                    'lf_valmain2' => 'Omen',
-                    'lf_valmain3' => 'Sova'
-                ];
-        
-                // Check if the values are empty, and use the fallback if needed
-                $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
-                $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
-                $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
-            }
-
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
-            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
-            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
-            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $filteredServers = [
-                "Europe West", "North America", "Europe Nordic & East", "Brazil", 
-                "Latin America North", "Latin America South", "Oceania", 
-                "Russia", "Turkey", "Japan", "Korea"
+        if($user['user_game'] === "League of Legends") {
+            $defaultChampions = [
+                'lf_lolmain1' => 'KaiSa',
+                'lf_lolmain2' => 'Ezreal',
+                'lf_lolmain3' => 'Jhin'
             ];
-
-            $current_url = "https://ur-sg.com/updateLookingForPage";
-            $template = "views/swiping/update_lookingFor";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
+    
+                // Check if the values are empty, and use the fallback if needed
+                $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
+                $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
+                $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
+        } else {
+            $defaultChampions = [
+                'lf_valmain1' => 'Viper',
+                'lf_valmain2' => 'Omen',
+                'lf_valmain3' => 'Sova'
+            ];
+    
+            // Check if the values are empty, and use the fallback if needed
+            $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
+            $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
+            $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
         }
+
+        $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
+        $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
+        $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
+        $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
+        $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
+        $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+        $filteredServers = [
+            "Europe West", "North America", "Europe Nordic & East", "Brazil", 
+            "Latin America North", "Latin America South", "Oceania", 
+            "Russia", "Turkey", "Japan", "Korea"
+        ];
+
+        $current_url = "https://ur-sg.com/updateLookingForPage";
+        $template = "views/swiping/update_lookingFor";
+        $page_title = "URSG - Profile";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function pageUpdateLookingForGame()
@@ -518,15 +510,10 @@ class UserLookingForController
             $userId = $this->validateInput($data->userId);
             $this->setUserId($userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -620,15 +607,10 @@ class UserLookingForController
 
             $userId = $this->validateInput($data->userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -953,30 +935,6 @@ class UserLookingForController
 
         }
 
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function validateInput($input) 

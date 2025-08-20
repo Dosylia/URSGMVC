@@ -26,32 +26,11 @@ class GameController
         $this -> googleUser = new GoogleUser();
     }
 
-    public function pageGame(): void
+    public function getGoogleUserModel(): GoogleUser
     {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-
-            $current_url = "https://ur-sg.com/game";
-            $template = "views/swiping/test_game";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Game";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
+        return $this->googleUser;
     }
-
+    
     public function getGameUser() 
     {
         $response = array('message' => 'Error');
@@ -62,14 +41,10 @@ class GameController
             $date = date("Y-m-d");
             $userId = $_POST['userId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -164,14 +139,10 @@ class GameController
             $tryCount = $data->tryCount;
             $userId = $data->userId;
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -327,31 +298,6 @@ class GameController
         
         return array_values($result);
     }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
 
     public function validateInput(string $input): string
     {

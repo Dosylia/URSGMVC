@@ -34,6 +34,11 @@ class RiotController
         $this -> userlookingfor = new userLookingFor();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     // Redirect user to Riot's OAuth authorization URL
     public function riotAccount()
     {
@@ -908,17 +913,5 @@ class RiotController
         $matchIds = json_decode($response, true);
 
         return (is_array($matchIds) && !empty($matchIds)) ? $matchIds : false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 }

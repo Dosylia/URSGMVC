@@ -201,7 +201,6 @@ $actionMap = [
     'userIsLookingForGameWebsite' => [UserController::class, 'userIsLookingForGameWebsite'],
     'userIsLookingForGamePhone' => [UserController::class, 'userIsLookingForGamePhone'],
     'getGameUser' => [GameController::class, 'getGameUser'],
-    'pageGame' => [GameController::class, 'pageGame'],
     'submitGuess' => [GameController::class, 'submitGuess'],
     'admin' => [AdminController::class, 'adminLandingPage'],
     'adminUsers' => [AdminController::class, 'adminUsersPage'],

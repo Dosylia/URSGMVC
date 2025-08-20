@@ -87,6 +87,11 @@ class UserController
         $this -> rating = new RatingGames();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function getAllUsers()
     {
         $response = array('message' => 'Error');
@@ -124,15 +129,10 @@ class UserController
         require 'keys.php';
         $response = array('message' => 'Error');
     
-        // Check if the token is provided in the request header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
@@ -173,15 +173,10 @@ class UserController
         require 'keys.php';
         $response = array('message' => 'Error');
     
-        // Check if the token is provided in the request header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
@@ -219,52 +214,38 @@ class UserController
 
     public function pageLeaderboard()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $userRank = $this->user->getUserRank($_SESSION['userId']);
+        $allUsers = $this-> user -> getTopUsers();
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
+        $usersPerPage = 50;
+        $totalUsers = count($allUsers);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $totalPages = ceil($totalUsers / $usersPerPage);
 
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $userRank = $this->user->getUserRank($_SESSION['userId']);
-            $allUsers = $this-> user -> getTopUsers();
-
-            $usersPerPage = 50;
-            $totalUsers = count($allUsers);
-            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $totalPages = ceil($totalUsers / $usersPerPage);
-
-            if ($page < 1) {
-                $page = 1;
-            } elseif ($page > $totalPages) {
-                $page = $totalPages;
-            }
-            
-
-            $offset = ($page - 1) * $usersPerPage;
-
-            usort($allUsers, function($a, $b) {
-                return $b['user_currency'] - $a['user_currency'];
-            });
-            
-            $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
-            $page_css = ['store_leaderboard'];
-            $current_url = "https://ur-sg.com/leaderboard";
-            $template = "views/swiping/leaderboard";
-            $page_title = "URSG - Leaderboard";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
+        if ($page < 1) {
+            $page = 1;
+        } elseif ($page > $totalPages) {
+            $page = $totalPages;
         }
+        
+
+        $offset = ($page - 1) * $usersPerPage;
+
+        usort($allUsers, function($a, $b) {
+            return $b['user_currency'] - $a['user_currency'];
+        });
+        
+        $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
+        $page_css = ['store_leaderboard'];
+        $current_url = "https://ur-sg.com/leaderboard";
+        $template = "views/swiping/leaderboard";
+        $page_title = "URSG - Leaderboard";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function createAccountSkipPreferences()
@@ -280,13 +261,11 @@ class UserController
             return;
         }
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'message' => 'Authorization header missing or malformed']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
 
-        $token = $matches[1];
         $authToken = $_COOKIE['auth_token'] ?? null;
 
         if (!$authToken || $token !== $authToken) {
@@ -444,14 +423,10 @@ class UserController
             $short_bio = $this->validateInput($data->shortBio);
             $this->setShortBio($short_bio);
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenGoogleUserId($token, $googleUserId)) {
@@ -692,14 +667,10 @@ class UserController
 
                 $user = $this->user->getUserById($this->getUserId());
 
-                $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-                if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
                     return;
                 }
-            
-                $token = $matches[1];
             
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $this->getUserId())) {
@@ -741,15 +712,10 @@ class UserController
             $this->setUsername($username);
             $user = $this->user->getUserByUsername($this->getUsername());
 
-             // Validate Authorization Header
-             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        
-             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-                 return;
-             }
-         
-             $token = $matches[1];
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
  
              if (!$this->validateToken($token, $user['user_id'])) {
                  echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -1037,14 +1003,10 @@ class UserController
 
             $user = $this->user->getUserById($this->getUserId());
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1112,14 +1074,10 @@ class UserController
 
             $user = $this->user->getUserById($this->getUserId());
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'message' => 'Invalid request']);
@@ -1224,14 +1182,10 @@ class UserController
     
         if (isset($_POST['userId']) && isset($_POST['token'])) {
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             // Check if the provided token matches the valid token
             if ($token !== $validToken) {
@@ -1271,14 +1225,10 @@ class UserController
             $userId = $this->validateInput($data->userId);
 
             
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -1641,14 +1591,10 @@ class UserController
 
     public function updatePicturePhone() {
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['username'])) {
             echo json_encode(['message' => 'Invalid request']);
@@ -1729,14 +1675,10 @@ class UserController
     }   
 
     public function updateBonusPicturePhone() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['message' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['username'])) {
             echo json_encode(['message' => 'Invalid request']);
@@ -1866,65 +1808,47 @@ class UserController
 
     public function pageswiping()
     {     
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-            $page_css = ['swiping'];
-            $current_url = "https://ur-sg.com/swiping";
-            $template = "views/swiping/swiping_main";
-            $page_title = "URSG - Swiping";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
+        $page_css = ['swiping'];
+        $current_url = "https://ur-sg.com/swiping";
+        $template = "views/swiping/swiping_main";
+        $page_title = "URSG - Swiping";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function updateNotificationPermission(): void
     {
         if (isset($_POST['userId'])) {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
     
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
-    
-        $token = $matches[1];
-    
-        if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
-            return;
-        }
-    
-        $userId = (int)$_POST['userId'];
-    
-        // Validate Token for User
-        if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
-            return;
-        }
+            if (!isset($_POST['userId'])) {
+                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                return;
+            }
+        
+            $userId = (int)$_POST['userId'];
+        
+            // Validate Token for User
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                return;
+            }
 
-        $updatePermission = $this->user->updatePermission($_POST['userId']);
+            $updatePermission = $this->user->updatePermission($_POST['userId']);
 
-        if ($updatePermission) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
-        }
+            if ($updatePermission) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
+            }
     
         } else {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1934,13 +1858,10 @@ class UserController
     // PHP controller method to handle saving the subscription
     public function saveNotificationSubscription() 
     {
-        // Step 1: Check authentication
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-        $token = $matches[1];
     
         // Step 2: Retrieve and validate POST parameters
         $param = $_POST['param'] ?? null;
@@ -1987,14 +1908,10 @@ class UserController
 
     public function fetchNotificationEndpoint()
     {
-        // Step 1: Check authentication
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Step 2: Retrieve and validate userId
         $userId = $_POST['userId'] ?? null;
@@ -2427,47 +2344,25 @@ class UserController
 
     public function pageUpdateProfile()
     {
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $allUsers = $this-> user -> getAllUsers();
+        $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
 
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-            $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
-
-            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-            $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
-            $current_url = "https://ur-sg.com/updateProfile";
-            $template = "views/swiping/update_profile";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
+        $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+        $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
+        $current_url = "https://ur-sg.com/updateProfile";
+        $template = "views/swiping/update_profile";
+        $page_title = "URSG - Profile";
+        $picture = "ursg-preview-small";
+        require "views/layoutSwiping.phtml";
     }
 
     public function pageSettings()
     {
-
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
-
+            $this->requireUserSessionOrRedirect($redirectUrl = '/');
             // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
@@ -2478,12 +2373,6 @@ class UserController
             $page_title = "URSG - Settings";
             $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            header("Location: /");
-            exit();
-        }
     }
 
     public function chatFilterSwitch()
@@ -2494,15 +2383,10 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
 
             if (!$this->validateToken($token, $userId)) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -2531,15 +2415,10 @@ class UserController
             $userId = $data->userId;
             $status = $data->status;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -2689,15 +2568,11 @@ class UserController
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
-        
+
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
                 return;
@@ -2753,15 +2628,10 @@ class UserController
             $status = $data->status;
             $content = $data->content;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -2800,15 +2670,10 @@ class UserController
             $status = $data->status;
             $content = $data->content;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
@@ -2838,14 +2703,10 @@ class UserController
     }
 
     public function userIsLookingForGameWebsite() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2876,14 +2737,10 @@ class UserController
     }
 
     public function userIsLookingForGamePhone() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2912,14 +2769,10 @@ class UserController
     }
 
     public function getPersonalityTestResult() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -2947,14 +2800,10 @@ class UserController
     }
 
     public function savePersonalityTestResult() {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         // Decode raw JSON input
         $input = json_decode(file_get_contents('php://input'), true);
@@ -2985,14 +2834,10 @@ class UserController
 
     public function getMatchingPersonalityUser()
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId']) || !isset($_POST['personalityType'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -3035,13 +2880,10 @@ class UserController
             return;
         }
 
-        // Get Authorization header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-        $token = $matches[1];
 
         // Validate token and get rater's userId
         $userId = intval($_POST['userId']);
@@ -3112,42 +2954,6 @@ class UserController
           }
           
           $darkMode = ($_SESSION['mode'] === 'dark');        
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenGoogleUserId($token, $googleUserId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenPhoneByGoogleUserId($googleUserId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function validateInputJSON($input) 

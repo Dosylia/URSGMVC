@@ -4,6 +4,37 @@ namespace traits;
 
 trait SecurityController
 {
+    /**
+     * Require moderator/admin/marketing session, or redirect to given URL and exit.
+     */
+    public function requireModeratorSessionOrRedirect($redirectUrl = '/')
+    {
+        if (!($this->isConnectGoogle()
+            && $this->isConnectWebsite()
+            && ($this->isConnectLeague() || $this->isConnectValorant())
+            && $this->isConnectLf()
+            && ($this->isModerator() || $this->isAdmin() || $this->isMarketing())
+        )) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
+    /**
+     * Require regular user session, or redirect to given URL and exit.
+     */
+    public function requireUserSessionOrRedirect($redirectUrl = '/')
+    {
+        if (!($this->isConnectGoogle()
+            && $this->isConnectWebsite()
+            && ($this->isConnectLeague() || $this->isConnectValorant())
+            && $this->isConnectLf()
+        )) {
+            header("Location: $redirectUrl");
+            exit();
+        }
+    }
+
     public function isConnectGoogle()
     {
         if(isset($_SESSION['google_id']))
@@ -99,5 +130,58 @@ trait SecurityController
             return false;
         }
     }
+
+    public function getGoogleUserModel()
+    {
+        throw new \Exception('getGoogleUserModel() not implemented');
+    }
+
+    public function validateToken($token, $userId): bool
+    {
+        $googleUser = $this->getGoogleUserModel();
+        $storedTokenData = $googleUser->getMasterTokenByUserId($userId);
+
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+        return false;
+    }
+
+    public function validateTokenGoogleUserId($token, $googleUserId): bool
+    {
+        $googleUser = $this->getGoogleUserModel();
+        $storedTokenData = $googleUser->getMasterTokenPhoneByGoogleUserId($googleUserId);
+
+        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
+            $storedToken = $storedTokenData['google_masterToken'];
+            return hash_equals($storedToken, $token);
+        }
+        return false;
+    }
+
+    public function validateTokenWebsite($token, $userId): bool
+    {
+        $googleUser = $this->getGoogleUserModel();
+        $storedTokenData = $googleUser->getMasterTokenWebsiteByUserId($userId);
+
+        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
+            $storedToken = $storedTokenData['google_masterTokenWebsite'];
+            return hash_equals($storedToken, $token);
+        }
+    
+        return false;
+    }
+
+    public function getBearerTokenOrJsonError()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return null;
+        }
+        return $matches[1];
+    }
+
 }
 

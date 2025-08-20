@@ -1938,7 +1938,7 @@ input:checked + .slider:before {
     margin-right: 2px;
 }
 
-.full-star {
+.user-rating .full-star {
     color: var(--main--red) !important;
 }
 
@@ -3492,19 +3492,19 @@ dialog .title_generalbox,
 }
 
 .dark-mode p {
-    color: white !important;
+    color: white;
 }
 
 .dark-mode span {
-    color: white !important;
+    color: white;
 }
 
 .dark-mode a {
-    color: white !important;
+    color: white;
 }
 
 .dark-mode h2 {
-    color: white !important;
+    color: white;
 }
 
 .dark-mode .messages-container {
@@ -4848,7 +4848,7 @@ dialog .title_generalbox {
 /* GAME */
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 .minigame-window {
@@ -5559,7 +5559,7 @@ dialog .title_generalbox {
 
 .admin-dashboard h2 {
     margin-bottom: 10px;
-    color: var(--main--red);
+    color: var(--main--red) !important;
 }
 
 .admin-dashboard p {

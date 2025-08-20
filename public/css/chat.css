@@ -34,6 +34,11 @@ span.friendlist-name a {
     width: fit-content;
 }
 
+.dark-mode span.chat-name,
+.dark-mode span.friendlist-name a {
+    color: white;
+}
+
 .chat-name {
     display: flex;
     justify-content: center;

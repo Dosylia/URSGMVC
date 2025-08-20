@@ -35,30 +35,26 @@ class FriendRequestController
         $this->chatmessage = new ChatMessage();
     }
 
+    public function getGoogleUserModel(): GoogleUser
+    {
+        return $this->googleUser;
+    }
+
     public function pageFriendlist(): void
     {
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this->user->getUserByUsername($_SESSION['username']);
-            $allUsers = $this->user->getAllUsers();
-            $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-            $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
-            $page_css = ['friendlist'];
-            $current_url = "https://ur-sg.com/friendlistPage";
-            $template = "views/swiping/swiping_friendlist";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Friendlist";
-            require "views/layoutSwiping.phtml";
-        } else {
-            header("Location: /");
-            exit();
-        }
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        // Get important datas
+        $this->initializeLanguage();
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+        $allUsers = $this->user->getAllUsers();
+        $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
+        $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
+        $page_css = ['friendlist'];
+        $current_url = "https://ur-sg.com/friendlistPage";
+        $template = "views/swiping/swiping_friendlist";
+        $picture = "ursg-preview-small";
+        $page_title = "URSG - Friendlist";
+        require "views/layoutSwiping.phtml";
     }
 
     public function addFriendAndChat() 
@@ -68,14 +64,10 @@ class FriendRequestController
             $this->setUserId((int)$userId);
             $friendId = $_POST['friendId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
@@ -117,14 +109,10 @@ class FriendRequestController
             $this->setUserId((int)$userId);
             $friendId = $_POST['friendId'];
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateToken($token, $this->getUserId())) {
@@ -165,15 +153,10 @@ class FriendRequestController
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
-
             // Validate Token for User
             if (!$this->validateToken($token, $this->getUserId())) {
                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
@@ -238,15 +221,10 @@ class FriendRequestController
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -278,7 +256,7 @@ class FriendRequestController
             $this->setUserId((int)$userId);
 
             // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            
 
             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
@@ -313,7 +291,7 @@ class FriendRequestController
             $this->setUserId((int)$userId);
 
             // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+            
 
             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
                 echo json_encode(['success' => false, 'error' => 'Unauthorized']);
@@ -342,15 +320,10 @@ class FriendRequestController
 
     public function getFriendlistWebsite(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -499,15 +472,10 @@ class FriendRequestController
 
     public function getFriendlistPhone(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -581,11 +549,8 @@ class FriendRequestController
             $status = 'pending';
             $amount = 10;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
 
@@ -619,15 +584,11 @@ class FriendRequestController
 
         } elseif (isset($_POST['swipe_no'])) {
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
 
-            $token = $matches[1];
             $senderId = $this->validateInput($_POST["senderId"]);
 
             // Validate Token for User
@@ -669,14 +630,10 @@ class FriendRequestController
         if (isset($_POST['swipe_yes'])) {
             // Check for required fields in POST data
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -743,14 +700,10 @@ class FriendRequestController
                 return;
             }
     
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             if (!isset($_POST['userId'])) {
                 echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -807,15 +760,10 @@ class FriendRequestController
             $status = 'pending';
             $amount = 10;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
@@ -866,15 +814,10 @@ class FriendRequestController
             $status = 'rejected';
             $amount = 10;
 
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
@@ -965,14 +908,10 @@ class FriendRequestController
         $userId = $this -> friendrequest -> getUserIdByFrId($this->getFrId());
         $user = $this->user->getUserById($userId);
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
 
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
@@ -1006,14 +945,10 @@ class FriendRequestController
 
         $userId = $this -> friendrequest -> getUserIdByFrId($this->getFrId());
 
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-
-        $token = $matches[1];
 
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
@@ -1126,15 +1061,10 @@ class FriendRequestController
 
     public function getFriendRequestReact(): void
     {
-        // Validate Authorization Header
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
     
         if (!isset($_POST['userId'])) {
             echo json_encode(['success' => false, 'error' => 'Invalid request']);
@@ -1214,15 +1144,10 @@ class FriendRequestController
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
     
-            // Validate Authorization Header
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-    
-            $token = $matches[1];
     
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
@@ -1392,15 +1317,10 @@ class FriendRequestController
 
     public function unfriendPersonPhone(): void
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
             return;
         }
-    
-        $token = $matches[1];
-
 
         $response = array('message' => 'Error');
         if (isset($_POST['userData']))
@@ -1458,14 +1378,10 @@ class FriendRequestController
 
             $userId = $this->getSenderId();
 
-            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-    
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-        
-            $token = $matches[1];
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $senderId)) {
@@ -1503,29 +1419,6 @@ class FriendRequestController
         $input = trim($input);
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
         return $input;
-    }
-    public function validateToken($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterToken'])) {
-            $storedToken = $storedTokenData['google_masterToken'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
-    }
-
-    public function validateTokenWebsite($token, $userId): bool
-    {
-        $storedTokenData = $this->googleUser->getMasterTokenWebsiteByUserId($userId);
-    
-        if ($storedTokenData && isset($storedTokenData['google_masterTokenWebsite'])) {
-            $storedToken = $storedTokenData['google_masterTokenWebsite'];
-            return hash_equals($storedToken, $token);
-        }
-    
-        return false;
     }
 
     public function getFrId(): ?int

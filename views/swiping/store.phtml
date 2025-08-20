@@ -49,7 +49,7 @@
                         <?php if (($item['items_category'] === 'role') && $user['user_isVip'] === 1) : ?>
                             <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get premium on Discord</button>
                         <?php else : ?>
-                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                             <button class="buy-button-owned" disabled>Owned</button>
                         <?php endif; ?>
                     <?php else : ?>
                         <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
