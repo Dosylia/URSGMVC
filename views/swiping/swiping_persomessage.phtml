@@ -49,6 +49,12 @@
             <div class="chat_box"><br>
 
                     <input type="text" id="friendSearch" placeholder="<?= $this->_('search_friends') ?>" class="search-bar">
+                    
+                    <?php if ($user['user_isLooking'] === 1 && $user['user_requestIsLooking'] && (time() - strtotime($user['user_requestIsLooking']) <= 300)) : ?>
+                        <button id="looking-for-button" style="background: linear-gradient(45deg, #4CAF50, #66bb6a);"><?= $this->_('looking_for_button') ?></button>
+                    <?php else : ?>
+                        <button id="looking-for-button"><?= $this->_('looking_for_button') ?></button>
+                    <?php endif; ?>
 
                     <div class="toggle-wrapper">
                         <span class="toggle-text"><?= $this->_('show_online_only') ?></span>
@@ -57,13 +63,6 @@
                         <span class="slider"></span>
                         </label>
                     </div>
-
-                    <?php if ($user['user_isLooking'] === 1 && $user['user_requestIsLooking'] && (time() - strtotime($user['user_requestIsLooking']) <= 300)) : ?>
-                        <button id="looking-for-button" style="background: linear-gradient(45deg, #4CAF50, #66bb6a);"><?= $this->_('looking_for_button') ?></button>
-                    <?php else : ?>
-                        <button id="looking-for-button"><?= $this->_('looking_for_button') ?></button>
-                    <?php endif; ?>
-
                     <div id="loading-indicator" style="display: none; text-align: center;">
                             <img src="public/images/loading.svg" alt="Loading..." />
                     </div>
