@@ -67,3 +67,16 @@
     display: flex;
     gap: 20px;
 }
+
+.online-status {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 0px;
+    left: 7px;
+}

@@ -1600,11 +1600,11 @@ label[for='account_valorantt'] {
 #friendSearch {
     display: flex;
     justify-content: center;
-    width: 90%;
+    width: 100%;
     padding: 10px;
-    border-radius: 10px;
-    border: 2px solid var(--main--red);
-    margin-bottom: 10px;
+    border-radius: 20px;
+    border: none;
+    box-sizing: border-box;
 }
 
 .dark-mode #friendSearch {
@@ -1656,17 +1656,24 @@ label[for='account_valorantt'] {
     align-items: center;
     width: 100%;
     color: black;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
+    padding: 10px 10px 10px 15px;
+    border-radius: 20px;
+    background-color: #e9dfdf;
+    box-sizing: border-box;
+    margin-bottom: 5px;
 }
 
 .dark-mode .toggle-wrapper {
     color: white;
+    background-color: #2f3136;
 }
 
 /* Toggle Text */
 .toggle-text {
     margin-right: 15px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Toggle Switch */
@@ -3170,7 +3177,6 @@ dialog .title_generalbox,
 
 .friend-list {
     width: 100%;
-    padding: 10px;
 }
 
 .friend {
@@ -3216,14 +3222,8 @@ dialog .title_generalbox,
     align-items: center;
 }
 
-.online-status {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #4caf50, #66bb6a);
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+.friend-avatar {
+    position: relative;
 }
 
 .looking-game-status {
@@ -3238,16 +3238,18 @@ dialog .title_generalbox,
 
 #looking-for-button {
     background: linear-gradient(135deg, #722084, #b026cf);
-    border-radius: 11px;
-    padding: 7px 15px;
+    border-radius: 20px;
+    padding: 10px 10px 10px 15px;
     color: #ffffff;
     display: inline-block;
     font-weight: bold;
     font-family: 'Open Sans', sans-serif;
-    text-align: center;
+    text-align: left;
     border: none;
     cursor: pointer;
-    margin: 10px 0;
+    margin: 10px 0px;
+    width: 100%;
+    font-size: 14px;
 }
 
 .friend-name {

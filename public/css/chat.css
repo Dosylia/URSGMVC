@@ -2,7 +2,6 @@
     padding: 10px 20px;
     background: linear-gradient(135deg, white, #f5f2f2);
     width: 100%;
-    text-align: center;
     max-height: 60vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -25,6 +24,18 @@
     width: 300px;
     height: auto;
     cursor: pointer;
+}
+
+.chat_box .switch {
+    width: 45px;
+    height: 20px;
+}
+
+.chat_box .slider::before {
+    height: 12px;
+    width: 14px;
+    left: 4px;
+    bottom: 4px;
 }
 
 span.chat-name,
@@ -83,11 +94,40 @@ span.chat-name span.friendlist-name {
     min-height: 90vh;
 }
 
+.chat_page .friend {
+    transition: background-color 0.2s;
+}
+
+.chat_page .friend:hover {
+    border-radius: 10px;
+    background-color: #e9dfdf;
+    cursor: pointer;
+}
+
+.dark-mode .chat_page .friend:hover {
+    border-radius: 10px;
+    background-color: #2f3136;
+    cursor: pointer;
+}
+
+.chat_page .friend-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
 .chat_page .friend-avatar img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
+    transition: none;
+}
+
+.chat_page .friend:hover .friend-avatar img {
+    filter: none;
+    opacity: 1;
 }
 
 .chat-link-relative {
@@ -135,6 +175,19 @@ span.chat-name span.friendlist-name {
 
 .username_chat_friend strong {
     font-size: 1.4vh;
+}
+
+.online-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .dark-mode .chat-link-relative {
