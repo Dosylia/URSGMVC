@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 // Variables
 const addFriendButton = document.getElementById('add-friend-button-user')
 const offlineModal = document.getElementById('offlineModal')
@@ -11,26 +14,14 @@ function showOfflineModal() {
 }
 
 function sendFriendRequest(userId, otherUserId) {
-    const token = localStorage.getItem('masterTokenWebsite')
-    fetch('/addAsFriendWebsite', {
+    apiFetch({
+        url: '/addAsFriendWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `senderId=${encodeURIComponent(
             userId
         )}&receiverId=${encodeURIComponent(otherUserId)}`,
     })
-        .then((response) => {
-            if (!response.ok) {
-                return response.text().then((text) => {
-                    console.error('Fetch error:', response.status, text)
-                    throw new Error(`HTTP error! Status: ${response.status}`)
-                })
-            }
-            return response.json()
-        })
         .then((data) => {
             if (data.success) {
                 // Delete the image and keep only modified text
@@ -50,8 +41,9 @@ function sendFriendRequest(userId, otherUserId) {
                 addFriendButton.style.backgroundColor = 'grey'
             }
         })
-        .catch((error) => {
-            console.error('Fetch error:', error)
+        .catch(() => {
+            addFriendButton.textContent = 'Failed to Add'
+            addFriendButton.style.backgroundColor = 'red'
         })
 }
 

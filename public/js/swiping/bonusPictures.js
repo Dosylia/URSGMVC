@@ -1,3 +1,6 @@
+'use strict'
+import apiFetch from "./api_fetch.js";
+
 const buttonAddBonusPicture = document.getElementById('opendialog_bonuspicture');
 const favDialogBonusPicture = document.getElementById('favDialogBonusPicture');
 const cancelButtonPictureBonus = favDialogBonusPicture.querySelector('#closeButton_user_picture_bonus');
@@ -38,22 +41,22 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener("click", function () {
         let fileName = this.getAttribute("data-filename");
 
-        fetch("/deleteBonusPicture", {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Authorization': `Bearer ${token}`,
-          },
+        apiFetch({
+            url: '/deleteBonusPicture',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `fileName=${encodeURIComponent(fileName)}&userId=${userIdHeader}`,
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === "Success") {
-                this.parentElement.remove();
-            } else {
-                console.log("Error deleting picture :", data.message);
-            }
-        });
+            .then((data) => {
+                if (data.message === "Success") {
+                  this.parentElement.remove();
+                } else {
+                    console.log("Error deleting picture :", data.message);
+                }
+            })
+            .catch(() => {
+                // General error happened. Probably not user related and more on the dev side.
+            })
     });
 });
 });
