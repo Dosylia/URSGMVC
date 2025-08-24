@@ -58,6 +58,19 @@
     width: calc(33.333% - 20px);
     margin-bottom: 20px;
     transition: transform 0.3s ease;
+    position: relative;
+}
+
+.discount-badge-corner {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--main--red);
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transform: rotate(15deg);
 }
 
 .item-card:hover {
@@ -93,6 +106,40 @@
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: gray;
+    font-size: 1.2rem;
+}
+
+.new-price {
+    font-weight: bold;
+    color: var(--main--red);
+    font-size: 1.5rem;
+}
+
+.discount-badge {
+    background-color: var(--main--red);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 3px 7px;
+    border-radius: 5px;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0);
+    }
+    70% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .price_display img {
