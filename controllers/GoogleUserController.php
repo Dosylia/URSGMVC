@@ -1923,9 +1923,9 @@ class GoogleUserController
             $requests = false;
         } else {
             if ($requests == 1) {
-                $messageTextRequests = " and <strong>1 pending friend request</strong>";
+                $messageTextRequests = " You have <strong>1 pending friend request</strong>";
             } else {
-                $messageTextRequests = " and <strong>{$requests} pending friend requests</strong>";
+                $messageTextRequests = " You have <strong>{$requests} pending friend requests</strong>";
             }
         }
 
