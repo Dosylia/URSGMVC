@@ -49,6 +49,28 @@ class ChatMessage extends DataBase
         }
     }
 
+    public function getUnreadSummary($userId)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                COUNT(*) AS unread_count,
+                (
+                    SELECT u.user_username
+                    FROM chatmessage cm2
+                    JOIN user u ON u.user_id = cm2.chat_senderId
+                    WHERE cm2.chat_receiverId = :userId
+                    AND cm2.chat_status = 'unread'
+                    ORDER BY cm2.chat_date DESC
+                    LIMIT 1
+                ) AS latest_sender
+            FROM chatmessage cm
+            WHERE cm.chat_receiverId = :userId
+            AND cm.chat_status = 'unread'
+        ");
+        $query->execute(['userId' => $userId]);
+        return $query->fetch();
+    }
+
     public function insertMessage($senderId, $receiverId, $message, $status) 
     {
 
