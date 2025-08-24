@@ -159,27 +159,25 @@ class GoogleUser extends DataBase
     public function getGoogleUsersMailingCronJob()
     {
         $query = $this->bdd->prepare("
-                                            SELECT
-                                                u.`user_id`,
-                                                u.`user_username`,
-                                                g.`google_userId`,
-                                                g.`google_email`,
-                                                g.`last_notified_at`
-
-                                            FROM
-                                                `googleuser` AS g
-                                            INNER JOIN
-                                                `user` AS u ON g.`google_userId` = u.`google_userId`
-                                            WHERE 
+                                        SELECT
+                                            u.user_id,
+                                            u.user_username,
+                                            g.google_userId,
+                                            g.google_email,
+                                            g.last_notified_at
+                                        FROM googleuser AS g
+                                        INNER JOIN user AS u ON g.google_userId = u.google_userId
+                                        WHERE 
+                                            g.google_unsubscribeMails != 1
+                                            AND (
                                                 g.last_notified_at IS NULL 
-                                            OR 
-                                                g.last_notified_at < NOW() - INTERVAL 14 DAY
-                                            OR
-                                                g.google_createdWithRSO = 0
-                                            OR
-                                                g.google_createdWithDiscord = 0
-                                            LIMIT
-                                                10
+                                                OR g.last_notified_at < NOW() - INTERVAL 14 DAY
+                                                OR g.google_createdWithRSO = 0
+                                                OR g.google_createdWithDiscord = 0
+                                                OR u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                                            )
+                                        ORDER BY RAND()
+                                        LIMIT 10;
         ");
 
         $query->execute();
