@@ -39,6 +39,10 @@
 
             // Determine if there is any discount to show
             $hasDiscount = ($vipDiscount + $itemDiscount) > 0;
+            $totalDiscount = 0;
+            if ($basePrice > 0) {
+                $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);
+            }
         ?>
         <div class="item-card" data-category="<?= $item['items_category'] ?>" 
              <?php if ($item['items_id'] == 6) echo 'id="kitty-frame-card"'; ?>>
@@ -75,8 +79,10 @@
                 </div>
             </div>
             <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
-            <?php if ($hasDiscount) : ?>
-                <div class="discount-badge-corner">-<?= $itemDiscount ?>%</div>
+            <?php if ($totalDiscount > 0): ?>
+                <div class="discount-badge-corner">
+                    -<?= $totalDiscount ?>%
+                </div>
             <?php endif; ?>
         </div>
 

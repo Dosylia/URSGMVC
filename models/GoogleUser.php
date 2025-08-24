@@ -169,13 +169,10 @@ class GoogleUser extends DataBase
                                         INNER JOIN user AS u ON g.google_userId = u.google_userId
                                         WHERE 
                                             g.google_unsubscribeMails != 1
-                                            AND (
-                                                g.last_notified_at IS NULL 
-                                                OR g.last_notified_at < NOW() - INTERVAL 14 DAY
-                                                OR g.google_createdWithRSO = 0
-                                                OR g.google_createdWithDiscord = 0
-                                                OR u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                                            )
+                                            AND (g.last_notified_at IS NULL OR g.last_notified_at < NOW() - INTERVAL 14 DAY)
+                                            AND g.google_createdWithRSO = 0
+                                            AND g.google_createdWithDiscord = 0
+                                            AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
                                         ORDER BY RAND()
                                         LIMIT 10;
         ");
