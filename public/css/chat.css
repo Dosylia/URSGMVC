@@ -186,8 +186,8 @@ span.chat-name span.friendlist-name {
     border: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 5px;
+    left: 5px;
 }
 
 .dark-mode .chat-link-relative {

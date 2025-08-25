@@ -264,6 +264,7 @@ $actionMap = [
     'hiring' => [GoogleUserController::class, 'hiringPage'],
     'submitCandidature' => [GoogleUserController::class, 'submitCandidature'],
     'startBotCronJob' => [DiscordController::class, 'startBotCronJob'],
+    'MailingCronJob' => [GoogleUserController::class, 'MailingCronJob'],
 ];
 
 $action = "home";

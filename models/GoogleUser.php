@@ -156,6 +156,37 @@ class GoogleUser extends DataBase
         }
     }
 
+    public function getGoogleUsersMailingCronJob()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            u.user_id,
+                                            u.user_username,
+                                            g.google_userId,
+                                            g.google_email,
+                                            g.last_notified_at
+                                        FROM googleuser AS g
+                                        INNER JOIN user AS u ON g.google_userId = u.google_userId
+                                        WHERE 
+                                            g.google_unsubscribeMails != 1
+                                            AND (g.last_notified_at IS NULL OR g.last_notified_at < NOW() - INTERVAL 14 DAY)
+                                            AND g.google_createdWithRSO = 0
+                                            AND g.google_createdWithDiscord = 0
+                                            AND u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                                        ORDER BY RAND()
+                                        LIMIT 10;
+        ");
+
+        $query->execute();
+        $getGoogleUsers =$query->fetchAll();
+
+        if ($getGoogleUsers) {
+            return $getGoogleUsers;
+        } else {
+            return false;
+        }
+    }
+
     public function getUserByEmail($email) 
     {
         $query = $this -> bdd -> prepare ("
@@ -475,5 +506,25 @@ class GoogleUser extends DataBase
     
         return $masterTokenTest ?: false;
     }
-    
+
+    public function updateLastNotified($userId)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE
+                                            `googleuser`
+                                        SET
+                                            `last_notified_at` = NOW()
+                                        WHERE
+                                            `google_userId` = ?
+        ");
+
+        $updatingLastNotified = $query->execute([$userId]);
+
+        if ($updatingLastNotified) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

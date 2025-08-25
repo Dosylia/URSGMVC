@@ -11,6 +11,8 @@ use models\MatchingScore;
 use models\Partners;
 use models\BannedUsers;
 use models\PlayerFinder;
+use models\ChatMessage;
+use models\FriendRequest;
 use traits\SecurityController;
 use traits\Translatable;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -33,6 +35,8 @@ class GoogleUserController
     private Partners $partners;
     private BannedUsers $bannedusers;
     private PlayerFinder $playerFinder;
+    private ChatMessage $chatmessage;
+    private FriendRequest $friendrequest;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -53,6 +57,8 @@ class GoogleUserController
         $this -> partners = new Partners();
         $this -> bannedusers = new BannedUsers();
         $this -> playerFinder = new PlayerFinder();
+        $this->chatmessage = new ChatMessage();
+        $this->friendrequest = new FriendRequest();
     }
 
     public function homePage() 
@@ -1855,6 +1861,201 @@ class GoogleUserController
             exit();
         }
     }
+
+    public function MailingCronJob() {
+        require_once 'keys.php';
+
+        $tokenAdmin = $_GET['token'] ?? null;
+        if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
+            http_response_code(401);
+            echo "❌ Unauthorized.\n";
+            exit();
+        }
+
+        // Use a batched query rather than all users
+        $users = $this->googleUser->getGoogleUsersMailingCronJob();
+        if (!$users) {
+            echo "No users to notify.\n";
+            exit();
+        }
+
+        foreach ($users as $user) {
+            if (strpos($user['google_email'], '@gmail.com') !== false) {
+                $unread = $this->chatmessage->getUnreadSummary($user['user_id']);
+                $requests = $this->friendrequest->countFriendRequest($user['user_id']);
+                $result = false;
+
+                if ($unread['unread_count'] > 0 || $requests > 0) {
+                    $result = $this->sendNotificationEmail(
+                        $user['google_email'],
+                        $unread['unread_count'],
+                        $unread['latest_sender'],
+                        $requests,
+                        $user['google_userId']
+                    );
+
+                    if ($result) {
+                        $this->googleUser->updateLastNotified($user['google_userId']);
+                        echo "Sent to {$user['google_email']}\n";
+                    } else {
+                        echo "❌ Failed to send to {$user['google_email']}\n";
+                    }
+                }
+            }
+        }
+    }
+
+    public function sendNotificationEmail($to, $unreadCount, $latestSender, $requests, $googleUserId)
+    {   
+        $messageTextMessage = "";
+        $messageTextRequests = "";
+        if ($unreadCount == 0) { 
+            $unreadCount = false;
+        } else {
+            if ($unreadCount == 1) {
+                $messageTextMessage = "You have <strong>1 unread message</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender})'>{$latestSender})</a>)";
+            } else {
+                $messageTextMessage = "You have <strong>{$unreadCount} unread messages</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender})'>{$latestSender})</a>)";
+            }
+        }
+
+        if ($requests == 0) { 
+            $requests = false;
+        } else {
+            if ($requests == 1) {
+                $messageTextRequests = " You have <strong>1 pending friend request</strong>";
+            } else {
+                $messageTextRequests = " You have <strong>{$requests} pending friend requests</strong>";
+            }
+        }
+
+        $subjects = [
+            "We miss you on URSG!",
+            "What you missed on URSG",
+            "Time to check what you missed on URSG",
+            "Someones reaching out to you on URSG",
+        ];
+
+        $headings = [
+            "Dont miss out, check UR-SG today",
+            "Your friends have something for you"
+        ];
+
+        $subject = $subjects[array_rand($subjects)];
+        $heading = $headings[array_rand($headings)];
+
+        require 'keys.php';
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.ionos.de';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'contact@ur-sg.com';
+            $mail->Password = $password_gmail;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
+            $mail->addAddress($to);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+
+            // Build the body here
+            
+
+            $mail->Body = "
+            <html lang='en'>
+                <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>{$heading}</title>
+                <style>
+                    body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                    }
+                    .email-container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    padding: 10px;
+                    border: 1px solid #dddddd;
+                    }
+                    .header {
+                    text-align: center;
+                    padding: 10px 0;
+                    }
+                    .header img {
+                    max-width: 180px;
+                    height: auto;
+                    }
+                    .content {
+                    padding: 20px;
+                    text-align: center;
+                    color: #333333;
+                    }
+                    .content h2 {
+                    color: #e74057;
+                    }
+                    .btn {
+                    background-color: #e74057;
+                    color: #ffffff !important;
+                    padding: 12px 24px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-top: 20px;
+                    }
+                    .footer {
+                    text-align: center;
+                    padding: 10px;
+                    font-size: 12px;
+                    color: #777777;
+                    }
+                </style>
+                </head>
+                <body>
+                <div class='email-container'>
+                    <!-- Header with Logo -->
+                    <div class='header'>
+                    <img src='https://ur-sg.com/public/images/logo_ursg.png' alt='URSG Logo'>
+                    </div>
+
+                    <!-- Email Content -->
+                    <div class='content'>
+                    <h2>Someone’s trying to reach you on UR-SG</h2>
+                    <p>
+                        {$messageTextMessage}{$messageTextRequests}
+                    </p>
+
+                    <a href='https://ur-sg.com/?triggerSignUp=true' class='btn'>Check Your Account</a>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class='footer'>
+                    <p>&copy; 2025 UR-SG. All rights reserved.</p>
+                    <p style='font-size: 11px; color: #999999;'>
+                        You're receiving this email because you have an account at UR-SG.<br>
+                        <a href='https://ur-sg.com/unsubscribeMails?email={$to}&googleUserId={$googleUserId}' style='color: #999999;'>Unsubscribe</a>
+                    </p>
+                    </div>
+                </div>
+                </body>
+            </html>
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mail to {$to} failed: {$mail->ErrorInfo}");
+            return false;
+        }
+    }
+
 
     public function validateInput($input) 
     {

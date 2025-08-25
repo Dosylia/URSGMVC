@@ -232,10 +232,19 @@ class ItemsController
                     }
                 }
 
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
 
                 if ($item && $user) {
                     if ($user['user_currency'] >= $price) {
@@ -297,10 +306,19 @@ class ItemsController
                 // Check if the item and user exist
                 if ($item && $user) {
                     // Check if the user has enough currency
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
@@ -370,10 +388,20 @@ class ItemsController
 
                 if ($item && $user) {
 
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
+
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
@@ -420,10 +448,19 @@ class ItemsController
 
                 if ($item && $user) {
 
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
@@ -485,10 +522,19 @@ class ItemsController
                 // Check if the item and user exist
                 if ($item && $user) {
 
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
 
                     // Check if the user has enough currency
                     if ($user['user_currency'] >= $price) {
@@ -558,10 +604,19 @@ class ItemsController
 
                 if ($item && $user) {
 
-                $price = $item['items_price'];
-                if ($user['user_isVip'] == 1) {
-                    $price = $item['items_price'] * 0.8;
-                }
+                    // Base price
+                    $price = $item['items_price'];
+
+                    // Apply VIP discount if user is VIP
+                    if ($user['user_isVip'] == 1) {
+                        $price = $price * 0.8; // 20% off
+                    }
+
+                    // Apply item discount if it exists
+                    $itemDiscount = $item['items_discount'] ?? 0; // default 0%
+                    if ($itemDiscount > 0) {
+                        $price = $price * (1 - $itemDiscount / 100);
+                    }
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);

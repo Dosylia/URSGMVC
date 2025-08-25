@@ -28,20 +28,42 @@
 
 <div class="item-grid">
     <?php foreach($items as $item) : ?>
+        <?php
+            $basePrice = $item['items_price'];
+            $vipDiscount = $user['user_isVip'] ? 20 : 0; // 20% VIP discount
+            $itemDiscount = $item['items_discount'] ?? 0; // item-specific discount
+
+            // Combine discounts sequentially
+            $priceAfterVip = $basePrice * (1 - $vipDiscount / 100);
+            $finalPrice = $priceAfterVip * (1 - $itemDiscount / 100);
+
+            // Determine if there is any discount to show
+            $hasDiscount = ($vipDiscount + $itemDiscount) > 0;
+            $totalDiscount = 0;
+            if ($basePrice > 0) {
+                $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);
+            }
+        ?>
         <div class="item-card" data-category="<?= $item['items_category'] ?>" 
              <?php if ($item['items_id'] == 6) echo 'id="kitty-frame-card"'; ?>>
             <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
             <div class="item-info">
                 <h3><?= $item['items_name'] ?></h3>
-                <?php if ($user['user_isVip']) : ?>
-                    <p class="price_display">
-                        <span class="old-price"><?= $item['items_price']?></span>
-                        <?= $item['items_price'] * 0.8 ?>
-                        <img src="public/images/soulhard.png" alt="soulhard">
-                    </p>
-                <?php else : ?>
-                    <p class="price_display"><?= $item['items_price'] ?><img src="public/images/soulhard.png" alt="soulhard"></p>
-                <?php endif; ?>  
+                <p class="price_display">
+                    <?php if ($hasDiscount) : ?>
+                        <span class="old-price"><?= number_format($basePrice, 2) ?></span>
+                        <span class="new-price"><?= number_format($finalPrice, 2) ?></span>
+                        <?php if ($vipDiscount > 0) : ?>
+                            <span class="discount-badge">VIP -<?= $vipDiscount ?>%</span>
+                        <?php endif; ?>
+                        <?php if ($itemDiscount > 0) : ?>
+                            <span class="discount-badge">-<?= $itemDiscount ?>%</span>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <span class="new-price"><?= number_format($basePrice, 2) ?></span>
+                    <?php endif; ?>
+                    <img src="public/images/soulhard.png" alt="soulhard">
+                </p>
                 <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
                 <div class="buy-button-container">
                     <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
@@ -57,6 +79,11 @@
                 </div>
             </div>
             <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
+            <?php if ($totalDiscount > 0): ?>
+                <div class="discount-badge-corner">
+                    -<?= $totalDiscount ?>%
+                </div>
+            <?php endif; ?>
         </div>
 
         <?php if ($item['items_id'] == 6) : ?>
