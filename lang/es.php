@@ -200,6 +200,10 @@ return [
     'support_URSG' => 'Apoyar URSG',
     'support_URSG_desc' => 'Apoya el desarrollo de URSG donando en nuestro Kofi',
     'support_URSG_btn' => 'Ir a Kofi',
+    'badges' => 'Insignias',
+    'remove_badge' => 'Eliminar insignia',
+    'use_badge' => 'Usar insignia',
+    'not_owned' => 'No poseído',
 
     //chat page
     'looking_for_title' => '¿Buscas una partida?',

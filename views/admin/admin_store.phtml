@@ -1,0 +1,65 @@
+<div class="page-header">
+  <a href="/admin_store" class="active">Admin Store</a>
+  <a href="/store">Store</a>
+  <a href="/leaderboard">Leaderboard</a>
+</div>
+
+<div class="admin-store-form">
+    <h2>Grant / Remove Items</h2>
+  <!-- Search -->
+  <label for="user-search" class="input_search_user" >Search User:</label>
+  <input type="text" id="user-search" placeholder="Type username..." autocomplete="off">
+  <div id="user-results" class="user-results"></div>
+
+  <!-- Selected user preview -->
+  <div id="selected-user" class="selected-user" style="display:none">
+    <h3>Selected User</h3>
+    <div class="user-preview">
+      <img id="selected-user-picture" src="" alt="User picture"/>
+      <span id="selected-user-name"></span>
+      <button id="clear-selected-user" type="button" class="linklike">Change</button>
+    </div>
+  </div>
+
+  <!-- Give item (POST form, no JS submission needed) -->
+  <form id="grant-item-form" method="POST" action="adminGrantItem" class="card">
+    <input type="hidden" name="user_id" id="grant-user-id" value="">
+    <label for="item-select">Select Item to Give:</label>
+    <select id="item-select" name="item_id" required>
+      <?php foreach ($items as $item): ?>
+        <option value="<?= (int)$item['items_id'] ?>">
+          <?= htmlspecialchars(ucfirst($item['items_name'])) ?> (<?= htmlspecialchars(ucfirst($item['items_category'])) ?>)
+        </option>
+      <?php endforeach; ?>
+    </select>
+    <button id="grant-item-btn" type="submit" disabled>Give Item</button>
+  </form>
+
+  <!-- Remove item (POST form) -->
+  <form id="remove-item-form" method="POST" action="adminRemoveItem" class="card">
+    <?php if (!empty($csrfToken)): ?>
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+    <?php endif; ?>
+    <input type="hidden" name="user_id" id="remove-user-id" value="">
+    <label for="remove-item-select">Select Item to Remove:</label>
+    <select id="remove-item-select" name="item_id" required>
+      <?php foreach ($items as $item): ?>
+        <option value="<?= (int)$item['items_id'] ?>">
+          <?= htmlspecialchars(ucfirst($item['items_name'])) ?> (<?= htmlspecialchars(ucfirst($item['items_category'])) ?>)
+        </option>
+      <?php endforeach; ?>
+    </select>
+    <button id="remove-item-btn" type="submit" disabled>Remove Item</button>
+  </form>
+
+  <?php if (!empty($_GET['message'])): ?>
+    <p class="server-message"><?= htmlspecialchars($_GET['message']) ?></p>
+  <?php endif; ?>
+</div>
+
+<!-- Safely expose users as JSON for client-side search (no PHP inside JS file) -->
+<script id="all-users-json" type="application/json">
+<?= json_encode($allUsers, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>
+</script>
+
+<script src="public/js/admin/admin_store.js?<?= time(); ?>"></script>

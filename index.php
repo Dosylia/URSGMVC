@@ -265,6 +265,11 @@ $actionMap = [
     'submitCandidature' => [GoogleUserController::class, 'submitCandidature'],
     'startBotCronJob' => [DiscordController::class, 'startBotCronJob'],
     'MailingCronJob' => [GoogleUserController::class, 'MailingCronJob'],
+    'adminStore' => [AdminController::class, 'adminStorePage'],
+    'useBadgeWebsite' => [ItemsController::class, 'useBadgeWebsite'],
+    'removeBadgeWebsite' => [ItemsController::class, 'removeBadgeWebsite'],
+    'adminGrantItem' => [AdminController::class, 'adminGrantItem'],
+    'adminRemoveItem' => [AdminController::class, 'adminRemoveItem'],
 ];
 
 $action = "home";

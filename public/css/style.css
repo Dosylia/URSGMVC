@@ -167,6 +167,7 @@ body > div[style*='position: fixed'] {
     min-height: 500px;
     max-height: 100%;
     margin-bottom: 20px;
+    position: relative;
 }
 
 #user-info {
@@ -223,7 +224,8 @@ body > div[style*='position: fixed'] {
 #aboutme-container,
 #pictures-container,
 #socials-container,
-#requests-container {
+#requests-container,
+#badges-container {
     display: none;
 }
 
@@ -7153,13 +7155,18 @@ dialog .title_generalbox {
     }
 
     .aboutme-match .icons.you {
-        top: 100px;
+        top: 70px;
         left: 40px;
     }
 
     .aboutme-match .icons.mate {
-        top: 100px;
+        top: 70px;
         right: 40px;
+    }
+
+    .aboutme-match .icons img {
+        width: 20px;
+        height: 20px;
     }
 
     .aboutme-match .champions img {

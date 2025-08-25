@@ -39,6 +39,85 @@ class Items extends DataBase
         }
     }
 
+    public function getBadges()
+    {
+        $query = $this->bdd->prepare("
+                                    SELECT
+                                        items_id,
+                                        items_name,
+                                        items_price,
+                                        items_desc,
+                                        items_picture,
+                                        items_category,
+                                        items_discount,
+                                        items_isActive,
+                                        items_createdAt
+                                    FROM
+                                        `items`
+                                    WHERE
+                                        items_category = 'badge'
+        ");
+
+        $query->execute([]);
+        $BadgeslistTest = $query->fetchAll();
+
+        if ($BadgeslistTest) {
+            return $BadgeslistTest;
+        } else {
+            return false;
+        }
+    }
+
+    public function addItemToUser($userId, $itemId)
+    {
+        $query = $this->bdd->prepare("
+                                    INSERT INTO
+                                        `user_items`
+                                    (
+                                        userItems_userId,
+                                        userItems_itemId,
+                                        userItems_boughtAt,
+                                        userItems_isUsed,
+                                        userItems_givenAsPartner
+                                    )
+                                    VALUES
+                                    (
+                                        ?,
+                                        ?,
+                                        NOW(),
+                                        0,
+                                        0
+                                    )
+        ");
+    
+        $addItem = $query->execute([$userId, $itemId]);
+
+        if ($addItem) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function removeItemFromUser($userId, $itemId)
+    {
+        $query = $this->bdd->prepare("
+                                    DELETE FROM
+                                        `user_items`
+                                    WHERE
+                                        userItems_userId = ? AND userItems_itemId = ? AND userItems_givenAsPartner = 0
+                                    LIMIT 1
+        ");
+    
+        $removeItem = $query->execute([$userId, $itemId]);
+
+        if ($removeItem) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getItemById($itemId)
     {
         $query = $this->bdd->prepare("
@@ -156,6 +235,26 @@ class Items extends DataBase
 
     return $useItemTest ? true : false;
 
+    }
+
+    public function getBadgeByName($name)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `items`
+                                        WHERE
+                                            `items_name` = ?
+        ");
+
+        $getName = $query->execute([$name]);
+
+        if ($getName) {
+            return $query->fetch();
+        } else {
+            return false;
+        }
     }
 
     public function addItemToUserAsPartner($userId, $itemId)

@@ -198,6 +198,10 @@ return [
     'support_URSG' => 'Support URSG',
     'support_URSG_desc' => 'Support the development of URSG by donating on our Kofi',
     'support_URSG_btn' => 'Go to Kofi',
+    'badges' => 'Badges',
+    'remove_badge' => 'Remove Badge',
+    'use_badge' => 'Use Badge',
+    'not_owned' => 'Not Owned',
 
     //chat page
     'looking_for_title' => 'Looking for a game?',

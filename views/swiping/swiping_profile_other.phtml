@@ -107,6 +107,7 @@
             <button type="button" id="aboutme-btn" class="focused"><?= $this->_('about_others') ?></button>
             <button type="button" id="pictures-btn"><?= $this->_('pictures') ?></button>
             <button type="button" id="socials-btn"><?= $this->_('socials') ?></button>
+            <button type="button" id="badges-btn"><?= $this->_('badges') ?></button>
         </nav>
         <hr id="hr-user-bottom-nav">
         <div id="loading-indicator" style="display: none; text-align: center;">
@@ -454,6 +455,38 @@
                     <?php endif; ?>
                 </div>  
             <?php endforeach; ?>
+        </div>
+          <div id="badges-container">
+            <div id="badges-list">
+                <?php foreach ($badges as $badge): ?>
+                    <?php 
+                        $owned = false;
+                        $active = false;
+                        foreach ($ownedItems as $item) {
+                            if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
+                                $owned = true;
+                                if (!empty($item['userItems_isUsed'])) $active = true;
+                                break;
+                            }
+                        }
+                    ?>
+                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>">
+                        <img 
+                            src="public/images/store/<?= $badge['items_picture'] ?>" 
+                            alt="<?= $badge['items_name'] ?>"
+                            class="<?= !$owned ? 'greyed' : '' ?>" 
+                        />
+                        <span><?= $badge['items_name'] ?></span>
+                        <?php if ($owned): ?>
+                            <?php if ($active): ?>
+                                <button class="remove-badge-btn">Owned</button>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <button class="locked-btn" disabled>Not Owned</button>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
 </section>
 

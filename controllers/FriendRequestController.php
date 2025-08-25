@@ -7,7 +7,9 @@ use models\User;
 use models\Block;
 use models\GoogleUser;
 use models\ChatMessage;
+use models\Items;
 use traits\SecurityController;
+
 use traits\Translatable;
 
 class FriendRequestController
@@ -20,6 +22,7 @@ class FriendRequestController
     private Block $block;
     private GoogleUser $googleUser;
     private ChatMessage $chatmessage;
+    private Items $items;
     private ?int $frId = null;
     private ?int $userId = null;
     private ?int $senderId = null;
@@ -33,6 +36,7 @@ class FriendRequestController
         $this->block = new Block();
         $this -> googleUser = new GoogleUser();
         $this->chatmessage = new ChatMessage();
+        $this->items = new Items();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -182,6 +186,14 @@ class FriendRequestController
                 $rewardAmount = 500;
                 // add 100 to add for each day of streak
                 $streak = $user['user_streak'];
+                // if Streak over 10, gives badge of 10 days streak
+                if ($streak > 10) {
+                    // Fetch badges and see which id for badge named "10 days Streak"
+                    $badge = $this->items->getBadgeByName("10 days Streak");
+                    if ($badge) {
+                        $this->items->addItemToUser($userId, $badge['id']);
+                    }
+                }
                 $rewardAmount += $streak * 100;
                 $this->user->addCurrency($userId, $rewardAmount);
                 $this->user->markUserOnline($userId);
@@ -1182,6 +1194,14 @@ class FriendRequestController
             $rewardAmount = 0;
             $updateLastRewardTime = false;
             $streak = $user['user_streak'];
+
+            if ($streak > 10) {
+                // Fetch badges and see which id for badge named "10 days Streak"
+                $badge = $this->items->getBadgeByName("10 days Streak");
+                if ($badge) {
+                    $this->items->addItemToUser($userId, $badge['id']);
+                }
+            }
 
             if (date('Y-m-d', $lastRequestTimeReward) > date('Y-m-d', $lastRewardTime)) {
                 $rewardAmount = 500;

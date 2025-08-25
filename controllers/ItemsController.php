@@ -791,6 +791,83 @@ class ItemsController
         }
     }
 
+    public function removeBadgeWebsite()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            if (isset($data->badgeId) && isset($data->userId)) {
+                $badgeId = $data->badgeId;
+                $userId = $data->userId;
+
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
+                    return;
+                }
+
+                if (!$this->validateTokenWebsite($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
+
+                if ($badgeId && $userId) {
+                    $removeBadge = $this->items->removeItems($badgeId, $userId);
+
+                    if ($removeBadge) {
+                        echo json_encode(['success' => true, 'message' => 'Badge removed successfully']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Badge not removed']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid badge or user']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+        }
+    }
+
+    public function useBadgeWebsite()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+
+            if (isset($data->badgeId) && isset($data->userId)) {
+                $badgeId = $data->badgeId;
+                $userId = $data->userId;
+
+                $token = $this->getBearerTokenOrJsonError();
+                if (!$token) {
+                    return;
+                }
+
+                if (!$this->validateTokenWebsite($token, $userId)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    return;
+                }
+
+                if ($badgeId && $userId) {
+                    $useBadge = $this->items->useItems($badgeId, $userId);
+
+                    if ($useBadge) {
+                        echo json_encode(['success' => true, 'message' => 'Badge used successfully']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Badge not used']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid badge or user']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+            }
+
+
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data received']);
+        }
+    }        
+
     public function removePictureFrameWebsite()
     {
         if (isset($_POST['param'])) {

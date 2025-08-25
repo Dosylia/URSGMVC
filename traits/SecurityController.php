@@ -97,7 +97,7 @@ trait SecurityController
 
     public function isAdmin()
     {
-        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158)
+        if($_SESSION['userId'] == 157 || $_SESSION['userId'] == 158 || $_SESSION['userId'] == 4)
         {
             return true;
         }

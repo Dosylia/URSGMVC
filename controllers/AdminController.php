@@ -47,7 +47,7 @@ class AdminController
         $this->chatmessage = new ChatMessage();
         $this->admin = new Admin();
         $this->items = new Items();
-        $this -> partners = new Partners();
+        $this->partners = new Partners();
     }
 
     public function adminLandingPage(): void
@@ -1254,6 +1254,24 @@ class AdminController
         return $logos[strtolower($social)] ?? 'path/to/default-logo.png';
     }
 
+    public function adminStorePage()
+    {
+        if ($this->isAdmin() || $this->isModerator()) {
+            $this->initializeLanguage();
+            $page_css = ['store_leaderboard'];
+            $allUsers = $this->user->getAllUsers();
+            $items = $this->items->getItems();
+            $current_url = "https://ur-sg.com/adminStore";
+            $template = "views/admin/admin_store";
+            $picture = "ursg-preview-small";
+            $page_title = "URSG - Admin Store";
+            require "views/layoutAdmin.phtml";
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
     public function adminDiscordBotPage(): void
     {
         if ($this->isAdmin()) {
@@ -1263,6 +1281,60 @@ class AdminController
             $picture = "ursg-preview-small";
             $page_title = "URSG - Admin Discord Bot";
             require "views/layoutAdmin.phtml";
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminGrantItem() 
+    {
+        if ($this->isAdmin() || $this->isModerator()) {
+            if (isset($_POST['user_id']) && isset($_POST['item_id'])) {
+                $userId = $_POST['user_id'];
+                $itemId = $_POST['item_id'];
+
+                $addItem = $this->items->addItemToUser($userId, $itemId);
+
+                if ($addItem) {
+                    $this->admin->logAdminAction($_SESSION['userId'], $userId, "Added Item");
+                    header("Location: /adminStore?message=Item added successfully");
+                    exit();
+                } else {
+                    header("Location: /adminStore?message=Error adding item");
+                    exit();
+                }
+            } else {
+                header("Location: /adminStore?message=Invalid input data");
+                exit();
+            }
+        } else {
+            header("Location: /");
+            exit();
+        }
+    }
+
+    public function adminRemoveItem()
+    {
+        if ($this->isAdmin() || $this->isModerator()) {
+            if (isset($_POST['user_id']) && isset($_POST['item_id'])) {
+                $userId = $_POST['user_id'];
+                $itemId = $_POST['item_id'];
+
+                $removeItem = $this->items->removeItemFromUser($userId, $itemId);
+
+                if ($removeItem) {
+                    $this->admin->logAdminAction($_SESSION['userId'], $userId, "Removed Item");
+                    header("Location: /adminStore?message=Item removed successfully");
+                    exit();
+                } else {
+                    header("Location: /adminStore?message=Error removing item");
+                    exit();
+                }
+            } else {
+                header("Location: /adminStore?message=Invalid input data");
+                exit();
+            }
         } else {
             header("Location: /");
             exit();
