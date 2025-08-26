@@ -462,13 +462,13 @@
                     <?php 
                         $owned = false;
                         $active = false;
-                        foreach ($ownedItems as $item) {
-                            if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
-                                $owned = true;
-                                if (!empty($item['userItems_isUsed'])) $active = true;
-                                break;
-                            }
+                        foreach ((array) $ownedItems as $item) {
+                        if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
+                            $owned = true;
+                            if (!empty($item['userItems_isUsed'])) $active = true;
+                            break;
                         }
+                    }
                     ?>
                     <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>">
                         <img 
