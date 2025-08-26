@@ -202,6 +202,7 @@ return [
     'remove_badge' => 'Remove Badge',
     'use_badge' => 'Use Badge',
     'not_owned' => 'Not Owned',
+    'no_additional_badges' => 'No badges',
 
     //chat page
     'looking_for_title' => 'Looking for a game?',

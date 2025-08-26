@@ -205,6 +205,7 @@ return [
     'remove_badge' => 'Supprimer l’insigne',
     'use_badge' => 'Utiliser l’insigne',
     'not_owned' => 'Non possédé',
+    'no_additional_badges' => 'Aucun insigne',
 
     //chat page
     'looking_for_title' => 'Vous cherchez une partie ?',

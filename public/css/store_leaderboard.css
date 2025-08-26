@@ -303,13 +303,17 @@
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-.card {
+.admin-store-form .card {
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     padding: 14px;
     background: #fff;
     display: grid;
     gap: 10px;
+}
+
+.dark-mode .admin-store-form .card {
+    background: var(--dark-ligher-grey);
 }
 
 #user-search {
@@ -368,38 +372,71 @@
     object-fit: cover;
 }
 
-label {
-    font-weight: 600;
-    font-size: 14px;
+.selected-user h3 {
+    color: black;
+    margin-bottom: 10px;
 }
 
-select,
-button {
+.dark-mode .selected-user h3 {
+    color: white;
+}
+
+.admin-store-form form select,
+.admin-store-form form input,
+#user-search {
+    background-color: white;
+}
+
+.dark-mode .admin-store-form form select,
+.dark-mode .admin-store-form form input,
+#user-search {
+    background-color: #5c585e;
+    color: white;
+}
+
+.admin-store-form label {
+    font-weight: 600;
+    font-size: 14px;
+    color: black;
+}
+
+.dark-mode .admin-store-form label {
+    color: white;
+}
+
+.admin-store-form select,
+.admin-store-form button {
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid #d1d5db;
 }
 
-button {
+#grant-item-btn,
+#remove-item-btn {
+    background: var(--main--red);
+    color: white;
+}
+
+.admin-store-form button {
     background: #111827;
     color: #fff;
     border: none;
     cursor: pointer;
 }
-button[disabled] {
+.admin-store-form button[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
 }
-button.linklike {
+.admin-store-form button.linklike {
     background: transparent;
-    color: #2563eb;
+    color: var(--main--red);
     border: none;
     padding: 4px 8px;
 }
 
 .server-message {
     font-weight: 600;
-    color: #0b7a0b;
+    color: var(--main--red);
 }
 
 .modal.store button:hover {

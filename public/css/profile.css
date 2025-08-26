@@ -232,6 +232,7 @@
     position: absolute;
     bottom: 20px;
     right: 20px;
+    color: white;
 }
 
 .dark-mode #additional-badges-container {
@@ -343,6 +344,10 @@
 }
 
 @media only screen and (max-width: 500px) {
+    #additional-badges-container {
+        padding: 2px;
+    }
+
     .social-container-column {
         padding: 5px 20px;
         height: unset;

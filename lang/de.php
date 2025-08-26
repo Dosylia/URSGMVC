@@ -203,6 +203,7 @@ return [
     'remove_badge' => 'Abzeichen entfernen',
     'use_badge' => 'Abzeichen verwenden',
     'not_owned' => 'Nicht im Besitz',
+    'no_additional_badges' => 'Keine Abzeichen',
 
     //chat page
     'looking_for_title' => 'Auf der Suche nach einem Spiel?',

@@ -204,6 +204,7 @@ return [
     'remove_badge' => 'Eliminar insignia',
     'use_badge' => 'Usar insignia',
     'not_owned' => 'No poseído',
+    'no_additional_badges' => 'No insignias',
 
     //chat page
     'looking_for_title' => '¿Buscas una partida?',

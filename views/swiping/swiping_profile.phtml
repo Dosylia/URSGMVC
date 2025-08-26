@@ -122,7 +122,7 @@
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p>No additional badges</p>
+                    <p><?= $this->_('no_additional_badges') ?></p>
                 <?php endif; ?>
             </span>
             <div id="profile-picture-container">
@@ -601,7 +601,7 @@
                             }
                         }
                     ?>
-                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>">
+                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>" data-badge-name="<?= htmlspecialchars($badge['items_name']) ?>" data-badge-picture="<?= $badge['items_picture'] ?>">>
                         <img 
                             src="public/images/store/<?= $badge['items_picture'] ?>" 
                             alt="<?= $badge['items_name'] ?>"
