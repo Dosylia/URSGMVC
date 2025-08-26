@@ -462,11 +462,13 @@
                     <?php 
                         $owned = false;
                         $active = false;
-                        foreach ((array) $ownedItems as $item) {
-                        if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
-                            $owned = true;
-                            if (!empty($item['userItems_isUsed'])) $active = true;
-                            break;
+                        if (is_array($ownedItems)) {
+                        foreach ($ownedItems as $item) {
+                            if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
+                                $owned = true;
+                                if (!empty($item['userItems_isUsed'])) $active = true;
+                                break;
+                            }
                         }
                     }
                     ?>
