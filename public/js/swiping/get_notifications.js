@@ -3,7 +3,6 @@ let userIdElementHeader = document.getElementById('userId')
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null
 let originalTitle = document.title
 let originalTitleNoChange = document.title
-const token = localStorage.getItem('masterTokenWebsite')
 let globalUnreadCounts = {}
 let lastNotifCount = 0
 let lastNotifContent = []
@@ -18,6 +17,7 @@ let numberOfFailsPending = 0
 let numberOfFailsInterested = 0
 
 function fetchFriendRequest(userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     if (numberOfFailsPending >= 5) {
         console.error(
             'Too many failed attempts to fetch accepted friend requests. Stopping further attempts.'
@@ -161,6 +161,7 @@ function fetchFriendRequest(userId) {
 }
 
 function fetchInterestedUsers(userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     if (numberOfFailsInterested >= 5) {
         console.error(
             'Too many failed attempts to fetch interested users. Stopping further attempts.'
@@ -207,6 +208,7 @@ function fetchInterestedUsers(userId) {
 }
 
 function fetchAcceptedFriendRequest(userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     if (numberOfFailsAccepted >= 5) {
         console.error(
             'Too many failed attempts to fetch accepted friend requests. Stopping further attempts.'
@@ -435,6 +437,7 @@ function clearAllNotifications() {
 }
 
 async function updateNotificationPlayerFinder(frId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     try {
         const response = await fetch('/markInterestAsSeen', {
             method: 'POST',
@@ -529,6 +532,7 @@ async function updateNotificationFriendRequestAccepted(frId, userId) {
 }
 
 function updateNotificationFriendRequestPending(frId, userId, type) {
+    const token = localStorage.getItem('masterTokenWebsite')
     fetch('/updateNotificationFriendRequestPendingWebsite', {
         method: 'POST',
         headers: {
@@ -603,6 +607,7 @@ function addNewNotification(newNotification) {
 }
 
 function fetchUnreadMessage(userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     if (numberOfFailsUnred >= 5) {
         console.error(
             'Too many failed attempts to fetch unread messages. Stopping further attempts.'
@@ -792,6 +797,7 @@ function updateUnreadMessagesForFriends(unreadCounts) {
 }
 
 function addNotificationPermission(userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     console.log('Adding notification permission...')
     if ('Notification' in window && navigator.serviceWorker) {
         Notification.requestPermission().then((permission) => {
@@ -1055,6 +1061,7 @@ window.addEventListener('load', async function () {
     }
 
     try {
+        const token = localStorage.getItem('masterTokenWebsite')
         const res = await fetch('/fetchNotificationEndpoint', {
             method: 'POST',
             headers: {

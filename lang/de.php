@@ -199,7 +199,12 @@ return [
     'support_URSG' => 'URSG unterstützen',
     'support_URSG_desc' => 'Unterstütze die Entwicklung von URSG mit einer Spende auf Kofi',
     'support_URSG_btn' => 'Zu Kofi gehen',
-    
+    'badges' => 'Abzeichen',
+    'remove_badge' => 'Abzeichen entfernen',
+    'use_badge' => 'Abzeichen verwenden',
+    'not_owned' => 'Nicht im Besitz',
+    'no_additional_badges' => 'Keine Abzeichen',
+
     //chat page
     'looking_for_title' => 'Auf der Suche nach einem Spiel?',
     'looking_for_account' => 'Gib uns deinen LoL-/Valorant-Account.',

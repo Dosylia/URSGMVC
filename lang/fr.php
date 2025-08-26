@@ -201,7 +201,12 @@ return [
     'support_URSG' => 'Soutenir URSG',
     'support_URSG_desc' => 'Soutenez le développement d’URSG en faisant un don sur notre Kofi',
     'support_URSG_btn' => 'Aller sur Kofi',
-    
+    'badges' => 'Insignes',
+    'remove_badge' => 'Supprimer l’insigne',
+    'use_badge' => 'Utiliser l’insigne',
+    'not_owned' => 'Non possédé',
+    'no_additional_badges' => 'Aucun insigne',
+
     //chat page
     'looking_for_title' => 'Vous cherchez une partie ?',
     'looking_for_account' => 'Indiquez-nous votre compte LoL/Valorant.',

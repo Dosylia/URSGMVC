@@ -2195,6 +2195,7 @@ class UserController
             $this->initializeLanguage();
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $userRating = 0;
+            $badges = $this->items->getBadges();
             if ($user['user_game'] == "League of Legends")
             {
                 $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
@@ -2207,6 +2208,10 @@ class UserController
                 $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
             }
             $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+            $additionalBadges = array_filter($ownedItems, function($item) {
+                return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+            });
+            $additionalBadges = array_slice($additionalBadges, 0, 3);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
@@ -2259,6 +2264,7 @@ class UserController
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $userRating = 0;
+                $badges = $this->items->getBadges();
                 if ($anotherUser) 
                 {
                     $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
@@ -2281,6 +2287,10 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $additionalBadges = array_filter($ownedItems, function($item) {
+                        return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+                    });
+                    $additionalBadges = array_slice($additionalBadges, 0, 3);
                     $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
@@ -2306,6 +2316,7 @@ class UserController
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 $userRating = 0;
+                $badges = $this->items->getBadges();
                 if ($anotherUser)
                 {
                     if ($anotherUser['user_game'] == "League of Legends")
@@ -2323,6 +2334,10 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
+                    $additionalBadges = array_filter($ownedItems, function($item) {
+                        return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+                    });
+                    $additionalBadges = array_slice($additionalBadges, 0, 3);
                     $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";

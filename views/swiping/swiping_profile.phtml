@@ -76,6 +76,7 @@
         </div>
     </div>
     <div id="user-top-container"> <!--Flex column -->
+        <!-- Additional badges -->
         <div class="support_ursg">
             <h3><?= $this->_('support_URSG') ?></h3>
             <hr class="separators-hr" style="width: 80%; margin: 0px;"/>
@@ -111,6 +112,19 @@
             </div>
         </div>
         <div id="user-top-content"> <!--Flex column -->
+            <span id="additional-badges-container">
+                <?php if(!empty($additionalBadges)) : ?>
+                    <?php foreach($additionalBadges as $badge): ?>
+                        <div class="additional-badge">
+                            <img src="public/images/store/<?= $badge['items_picture'] ?>" 
+                                alt="<?= htmlspecialchars($badge['items_name']) ?>" 
+                                title="<?= htmlspecialchars($badge['items_name']) ?>">
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p><?= $this->_('no_additional_badges') ?></p>
+                <?php endif; ?>
+            </span>
             <div id="profile-picture-container">
                 <button class="btn_updateProfilePicture" id="opendialog_update_picture"><i class="fa-solid fa-image"></i></button>
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
@@ -159,6 +173,7 @@
             <button type="button" id="pictures-btn"><?= $this->_('pictures') ?></button>
             <button type="button" id="socials-btn"><?= $this->_('socials') ?></button>
             <button type="button" id="requests-btn"><?= $this->_('requests') ?></button>
+            <button type="button" id="badges-btn"><?= $this->_('badges') ?></button>
         </nav>
         <hr id="hr-user-bottom-nav">
         <div id="loading-indicator" style="display: none; text-align: center;">
@@ -572,7 +587,40 @@
                 <p style="text-align: center; width: 100%;"><?= $this->_('no_friend_request') ?></p>
             <?php endif; ?>
         </div>
-    </div>
+        <div id="badges-container">
+            <div id="badges-list">
+                <?php foreach ($badges as $badge): ?>
+                    <?php 
+                        $owned = false;
+                        $active = false;
+                        foreach ($ownedItems as $item) {
+                            if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
+                                $owned = true;
+                                if (!empty($item['userItems_isUsed'])) $active = true;
+                                break;
+                            }
+                        }
+                    ?>
+                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>" data-badge-name="<?= htmlspecialchars($badge['items_name']) ?>" data-badge-picture="<?= $badge['items_picture'] ?>">>
+                        <img 
+                            src="public/images/store/<?= $badge['items_picture'] ?>" 
+                            alt="<?= $badge['items_name'] ?>"
+                            class="<?= !$owned ? 'greyed' : '' ?>" 
+                        />
+                        <span><?= $badge['items_name'] ?></span>
+                        <?php if ($owned): ?>
+                            <?php if ($active): ?>
+                                <button class="remove-badge-btn"><?= $this->_('remove_badge') ?></button>
+                            <?php else: ?>
+                                <button class="use-badge-btn"><?= $this->_('use_badge') ?></button>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <button class="locked-btn" disabled><?= $this->_('not_owned') ?></button>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
 </section>
 
 <script src="public/js/swiping/profile_nav.js?<?= time(); ?>"></script>
@@ -583,3 +631,4 @@
 <script src="public/js/swiping/gender-icon.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/copy_username.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/profile_updateRiotPic.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/badges_profile.js?<?= time(); ?>"></script>

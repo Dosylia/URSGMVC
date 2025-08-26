@@ -28,6 +28,7 @@
 
 <div class="item-grid">
     <?php foreach($items as $item) : ?>
+        <?php if ($item['items_category'] === 'badge') continue; ?>
         <?php
             $basePrice = $item['items_price'];
             $vipDiscount = $user['user_isVip'] ? 20 : 0; // 20% VIP discount
