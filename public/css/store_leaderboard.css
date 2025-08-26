@@ -389,7 +389,7 @@
 
 .dark-mode .admin-store-form form select,
 .dark-mode .admin-store-form form input,
-#user-search {
+.dark-mode #user-search {
     background-color: #5c585e;
     color: white;
 }
