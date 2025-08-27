@@ -202,10 +202,12 @@ class FriendRequestController
                     $givenDailyReward = true;
                      // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
                     $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $today = date('Y-m-d');
                     $yesterday = date('Y-m-d', strtotime('-1 day'));
-                    if ($lastRewardDate == $yesterday) {
+                    if ($lastRewardDate === $yesterday) {
                         $this->user->incrementStreak($userId);
-                    } else {
+                    } elseif ($lastRewardDate !== $today) {
+                        // Missed yesterday, reset
                         $this->user->resetStreak($userId);
                     }
                 }
@@ -1213,11 +1215,12 @@ class FriendRequestController
                     $givenDailyReward = true;
                     $givenRequestReward = true;
                     $lastRewardDate = date('Y-m-d', $lastRewardTime);
+                    $today = date('Y-m-d');
                     $yesterday = date('Y-m-d', strtotime('-1 day'));
-                    // Check actual streak of user, add +1 if user_lastreward was yesterday, otherwise put back streak to 0
-                    if ($lastRewardDate == $yesterday) {
+                    if ($lastRewardDate === $yesterday) {
                         $this->user->incrementStreak($userId);
-                    } else {
+                    } elseif ($lastRewardDate !== $today) {
+                        // Missed yesterday, reset
                         $this->user->resetStreak($userId);
                     }
                 }
