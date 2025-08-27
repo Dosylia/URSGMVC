@@ -61,6 +61,19 @@
                 </div>
             </div>
         <div id="user-top-content"> <!--Flex column -->
+            <span id="additional-badges-container">
+                <?php if(!empty($additionalBadges)) : ?>
+                    <?php foreach($additionalBadges as $badge): ?>
+                        <div class="additional-badge">
+                            <img src="public/images/store/<?= $badge['items_picture'] ?>" 
+                                alt="<?= htmlspecialchars($badge['items_name']) ?>" 
+                                title="<?= htmlspecialchars($badge['items_name']) ?>">
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p><?= $this->_('no_additional_badges') ?></p>
+                <?php endif; ?>
+            </span>
             <div id="profile-picture-container">
                 <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
                     <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  

@@ -191,7 +191,7 @@ class FriendRequestController
                     // Fetch badges and see which id for badge named "10 days Streak"
                     $badge = $this->items->getBadgeByName("10 days Streak");
                     if ($badge) {
-                        $this->items->addItemToUser($userId, $badge['id']);
+                        $this->items->addItemToUser($userId, $badge['items_id']);
                     }
                 }
                 $rewardAmount += $streak * 100;
@@ -1199,7 +1199,7 @@ class FriendRequestController
                 // Fetch badges and see which id for badge named "10 days Streak"
                 $badge = $this->items->getBadgeByName("10 days Streak");
                 if ($badge) {
-                    $this->items->addItemToUser($userId, $badge['id']);
+                    $this->items->addItemToUser($userId, $badge['items_id']);
                 }
             }
 
