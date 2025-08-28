@@ -299,15 +299,10 @@ class FriendRequestController
             $frId = $_POST['frId'];
             $this->setUserId((int)$userId);
 
-            // Validate Authorization Header
-            
-
-            if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
                 return;
             }
-
-            $token = $matches[1];
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {

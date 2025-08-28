@@ -81,7 +81,7 @@ function fetchFriendRequest(userId) {
                     (request) => request.type !== 'pending'
                 )
                 const pendingWithType = data.pendingRequests
-                    .filter((notif) => notif.fr_notifReadPending === 0)
+                    .filter((notif) => notif.fr_notifReadPending === "0")
                     .map((notif) => ({ ...notif, type: 'pending' }))
                 AllNotifications.push(...pendingWithType)
                 lastNotifCountPending = data.pendingRequests.length
