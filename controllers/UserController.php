@@ -2208,8 +2208,9 @@ class UserController
                 $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
             }
             $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
-            $additionalBadges = array_filter($ownedItems, function($item) {
-                return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+            $additionalBadges = array_filter(is_array($ownedItems) ? $ownedItems : [], 
+                    function($item) {
+                        return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
             });
             $additionalBadges = array_slice($additionalBadges, 0, 3);
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
@@ -2287,9 +2288,12 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-                    $additionalBadges = array_filter($ownedItems, function($item) {
-                        return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
-                    });
+                    $additionalBadges = array_filter(
+                        is_array($ownedItems) ? $ownedItems : [],
+                        function($item) {
+                            return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+                        }
+                    );
                     $additionalBadges = array_slice($additionalBadges, 0, 3);
                     $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";

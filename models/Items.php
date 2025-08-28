@@ -248,10 +248,11 @@ class Items extends DataBase
                                             `items_name` = ?
         ");
 
-        $getName = $query->execute([$name]);
+        $query->execute([$name]);
+        $getName = $query->fetch();
 
         if ($getName) {
-            return $query->fetch();
+            return $getName;
         } else {
             return false;
         }
