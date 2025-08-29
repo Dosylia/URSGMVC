@@ -480,6 +480,7 @@ async function updateNotificationPlayerFinder(frId, userId) {
 }
 
 async function updateNotificationFriendRequestAccepted(frId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     try {
         const response = await fetch(
             '/updateNotificationFriendRequestAcceptedWebsite',

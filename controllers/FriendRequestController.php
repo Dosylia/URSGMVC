@@ -1409,6 +1409,7 @@ class FriendRequestController
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
                     echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                    return;
                 }
             }
 
