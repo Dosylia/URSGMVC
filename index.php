@@ -270,6 +270,8 @@ $actionMap = [
     'removeBadgeWebsite' => [ItemsController::class, 'removeBadgeWebsite'],
     'adminGrantItem' => [AdminController::class, 'adminGrantItem'],
     'adminRemoveItem' => [AdminController::class, 'adminRemoveItem'],
+    'connectRiotMobile' => [RiotController::class, 'connectRiotMobile'],
+    'testMobileDeepLink' => [RiotController::class, 'testMobileDeepLink']
 ];
 
 $action = "home";

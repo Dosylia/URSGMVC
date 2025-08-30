@@ -433,22 +433,94 @@ class GoogleUser extends DataBase
     public function getUserByPuuid($puuid) 
     {
         $query = $this->bdd->prepare("
-                                        SELECT
-                                            *
-                                        FROM
-                                            `googleuser` as g
-                                        LEFT JOIN
-                                            `user` as u ON g.google_userId = u.google_userId
-                                        LEFT JOIN
-                                            `leagueoflegends` as lol ON u.user_id = lol.user_id
-                                        WHERE
-                                            g.`google_id` = ? 
-                                            OR lol.`lol_sPuuid` = ? 
+            SELECT
+                g.google_userId,
+                g.google_id,
+                g.google_fullName,
+                g.google_firstName,
+                g.google_lastName,
+                g.google_email,
+                g.google_confirmEmail,
+                g.google_masterToken,
+                g.google_masterTokenWebsite,
+                g.google_createdWithRSO,
+                g.google_createdWithDiscord,
+                g.google_unsubscribeMails,
+                g.last_notified_at,
+                
+                u.user_id,
+                u.user_username,
+                u.user_gender,
+                u.user_age,
+                u.user_kindOfGamer,
+                u.user_shortBio,
+                u.user_picture,
+                u.user_bonusPicture,
+                u.user_discord,
+                u.user_instagram,
+                u.user_twitter,
+                u.user_twitch,
+                u.user_bluesky,
+                u.user_game,
+                u.user_token,
+                u.user_deletionToken,
+                u.user_deletionTokenExpiry,
+                u.user_currency,
+                u.user_isVip,
+                u.user_isPartner,
+                u.user_isCertified,
+                u.user_hasChatFilter,
+                u.user_lastRequestTime,
+                u.user_lastReward,
+                u.user_streak,
+                u.user_isOnline,
+                u.user_lastSeen,
+                u.user_arcane,
+                u.user_ignore,
+                u.arcane_snapshot,
+                u.user_isLooking,
+                u.user_requestIsLooking,
+                u.user_lastCompletedGame,
+                u.user_totalCompletedGame,
+                u.user_friendsInvited,
+                u.user_notificationPermission,
+                u.user_notificationEndPoint,
+                u.user_notificationP256dh,
+                u.user_notificationAuth,
+                u.user_personalityTestResult,
+                
+                lol.lol_id,
+                lol.user_id AS lol_user_id,
+                lol.lol_noChamp,
+                lol.lol_main1,
+                lol.lol_main2,
+                lol.lol_main3,
+                lol.lol_rank,
+                lol.lol_role,
+                lol.lol_server,
+                lol.lol_account,
+                lol.lol_verificationCode,
+                lol.lol_verified,
+                lol.lol_sUsername,
+                lol.lol_sUsernameId,
+                lol.lol_sPuuid,
+                lol.lol_sLevel,
+                lol.lol_sRank,
+                lol.lol_sProfileIcon
+            FROM
+                `googleuser` as g
+            LEFT JOIN
+                `user` as u ON g.google_userId = u.google_userId
+            LEFT JOIN
+                `leagueoflegends` as lol ON u.user_id = lol.user_id
+            WHERE
+                g.`google_id` = ? 
+                OR lol.`lol_sPuuid` = ? 
         ");
-    
+
         $query->execute([$puuid, $puuid]);
         $puuidTest = $query->fetch();
-    
+
         return $puuidTest ?: false;
     }
 
