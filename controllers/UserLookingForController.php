@@ -633,15 +633,12 @@ class UserLookingForController
             $this->setValorantMain3($valorantMain3);
             $valorantRank = $this->validateInput($data->rank);
             $this->setValorantRank($valorantRank);
-            $valotantRole = $this->validateInput($data->role);
-            $this->setValorantRole($valotantRole);
-            $statusChampion = 0;
-            if (isset($_POST["skipSelection"])) {
-                $statusChampion = $this->validateInput($_POST["skipSelection"]);
-            }
+            $valorantRole = $this->validateInput($data->role);
+            $this->setValorantRole($valorantRole);
+            $statusChampion = $this->validateInput($data->skipSelection);
 
             if ($statusChampion == 1) {
-                if (empty($valorantRank) || empty($valotantRole))
+                if (empty($valorantRank) || empty($valorantRole))
                 {
                     $response = array('message' => 'Fill all fields');
                     header('Content-Type: application/json');
@@ -649,7 +646,7 @@ class UserLookingForController
                     exit();  
                 }
             } else {
-                if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole))
+                if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
                 {
                     $response = array('message' => 'Fill all fields');
                     header('Content-Type: application/json');

@@ -492,13 +492,6 @@
                             class="<?= !$owned ? 'greyed' : '' ?>" 
                         />
                         <span><?= $badge['items_name'] ?></span>
-                        <?php if ($owned): ?>
-                            <?php if ($active): ?>
-                                <button class="remove-badge-btn">Owned</button>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <button class="locked-btn" disabled>Not Owned</button>
-                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
