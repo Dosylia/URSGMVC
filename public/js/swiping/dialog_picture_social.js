@@ -4,15 +4,15 @@
 // if (favDialogSocialLinks !== null && favDialogSocialLinks !== undefined) {
 //   cancelButtonSocialLinks = favDialogSocialLinks.querySelector('#closeButton_social_links');
 // }
-const fileInputProfile = document.getElementById('fileProfile');
-const fileNameProfile = document.getElementById('file-nameProfile');
-const placeholderMessage = document.getElementById('placeholder-message');
+const fileInputProfile = document.getElementById('fileProfile')
+const fileNameProfile = document.getElementById('file-nameProfile')
+const placeholderMessage = document.getElementById('placeholder-message')
 
 // if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
 //   showButtonSocialLinks.addEventListener('click', () => {
 //     openDialogSocialLinks();
 //   });
-  
+
 //   cancelButtonSocialLinks.addEventListener('click', () => {
 //     closeDialogSocialLinks();
 //   });
@@ -28,155 +28,196 @@ const placeholderMessage = document.getElementById('placeholder-message');
 //   favDialogSocialLinks.close();
 // }
 
-const showRiotModalbtn = document.getElementById('openRiotAccount-btn');
-const riotModal = document.getElementById('riot-modal');
-const closeRiotModal = document.getElementById('close-modal-riot');
+const showRiotModalbtn = document.getElementById('openRiotAccount-btn')
+const riotModal = document.getElementById('riot-modal')
+const closeRiotModal = document.getElementById('close-modal-riot')
 
-showRiotModalbtn?.addEventListener('click', function() {
-    riotModal.classList.remove('riot-modal-hidden');
-    const overlay = document.getElementById("overlay");
-    overlay.style.display = "block";
-});
+showRiotModalbtn?.addEventListener('click', function () {
+    riotModal.classList.remove('riot-modal-hidden')
+    const overlay = document.getElementById('overlay')
+    overlay.style.display = 'block'
+})
 
-closeRiotModal?.addEventListener('click', function() {
-    riotModal.classList.add('riot-modal-hidden');
-    const overlay = document.getElementById("overlay");
-    overlay.style.display = "none";
-});
+closeRiotModal?.addEventListener('click', function () {
+    riotModal.classList.add('riot-modal-hidden')
+    const overlay = document.getElementById('overlay')
+    overlay.style.display = 'none'
+})
 
-
-const showButtonPicture = document.getElementById('opendialog_update_picture');
-const favDialogPicture = document.getElementById('favDialogPicture');
-const cancelButtonPicture = favDialogPicture.querySelector('#closeButton_user_picture');
+const showButtonPicture = document.getElementById('opendialog_update_picture')
+const favDialogPicture = document.getElementById('favDialogPicture')
+const cancelButtonPicture = favDialogPicture.querySelector(
+    '#closeButton_user_picture'
+)
 
 showButtonPicture.addEventListener('click', () => {
-    const overlay = document.getElementById("overlay");
-  overlay.style.display = "block";
-  favDialogPicture.style.display = 'block';
-});
+    const overlay = document.getElementById('overlay')
+    overlay.style.display = 'block'
+    favDialogPicture.style.display = 'block'
+})
 
 cancelButtonPicture.addEventListener('click', () => {
-    const overlay = document.getElementById("overlay");
-  overlay.style.display = "none";
-  favDialogPicture.style.display = 'none';
-});
+    const overlay = document.getElementById('overlay')
+    overlay.style.display = 'none'
+    favDialogPicture.style.display = 'none'
+})
 
-
-const hiddenP = document.getElementById('hidden_p');
-const imgDiscord = document.getElementById('discord_picture');
+const hiddenP = document.getElementById('hidden_p')
+const imgDiscord = document.getElementById('discord_picture')
 
 if (imgDiscord !== null && imgDiscord !== undefined) {
-  imgDiscord.addEventListener('click', () => {
-    if (hiddenP.style.display === "none" || hiddenP.style.display === "") {
-      hiddenP.style.display = "block";
-    } else {
-      hiddenP.style.display = "none";
-    }
-  });
+    imgDiscord.addEventListener('click', () => {
+        if (hiddenP.style.display === 'none' || hiddenP.style.display === '') {
+            hiddenP.style.display = 'block'
+        } else {
+            hiddenP.style.display = 'none'
+        }
+    })
 }
 
-
 fileInputProfile.addEventListener('change', (event) => {
-  const input = event.target;
-  if (input.files.length > 0) {
-    fileNameProfile.textContent = input.files[0].name;
-  } else {
-    fileNameProfile.textContent = 'No file selected';
-  }
-});
+    const input = event.target
+    if (input.files.length > 0) {
+        fileNameProfile.textContent = input.files[0].name
+    } else {
+        fileNameProfile.textContent = 'No file selected'
+    }
+})
 
 function usePictureFrame(itemId, userId) {
-  console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`);
+    console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`)
 
-  const dataToSend = {
-      itemId,
-      userId,
-  };
+    const dataToSend = {
+        itemId,
+        userId,
+    }
 
-  const jsonData = JSON.stringify(dataToSend);
-  
-  fetch('index.php?action=usePictureFrameWebsite', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-      },
-      body: "param=" + encodeURIComponent(jsonData)
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-  })
-  .then(data => {
-      placeholderMessage.innerHTML = '';
-      console.log('Success:', data);
-      if (data.success) {
-        location.reload();
-      } else {
-          placeholderMessage.innerHTML = data.message;
-      }
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
+    const jsonData = JSON.stringify(dataToSend)
+
+    fetch('index.php?action=usePictureFrameWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
+        body: 'param=' + encodeURIComponent(jsonData),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+            return response.json()
+        })
+        .then((data) => {
+            placeholderMessage.innerHTML = ''
+            console.log('Success:', data)
+            if (data.success) {
+                location.reload()
+            } else {
+                placeholderMessage.innerHTML = data.message
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
 }
 
 function RemovePictureFrame(itemId, userId) {
-  console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`);
+    console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`)
 
-  const dataToSend = {
-      itemId,
-      userId,
-  };
+    const dataToSend = {
+        itemId,
+        userId,
+    }
 
-  const jsonData = JSON.stringify(dataToSend);
-  
-  fetch('index.php?action=removePictureFrameWebsite', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`,
-      },
-      body: "param=" + encodeURIComponent(jsonData)
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-  })
-  .then(data => {
-      placeholderMessage.innerHTML = '';
-      console.log('Success:', data);
-      if (data.success) {
-        location.reload();
-      } else {
-          placeholderMessage.innerHTML = data.message;
-      }
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
+    const jsonData = JSON.stringify(dataToSend)
+
+    fetch('index.php?action=removePictureFrameWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
+        body: 'param=' + encodeURIComponent(jsonData),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+            return response.json()
+        })
+        .then((data) => {
+            placeholderMessage.innerHTML = ''
+            console.log('Success:', data)
+            if (data.success) {
+                location.reload()
+            } else {
+                placeholderMessage.innerHTML = data.message
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function showPreview(event) {
+    const preview = document.getElementById('preview')
+    const fileName = document.getElementById('file-nameProfile')
+    const file = event.target.files[0]
+    if (file) {
+        preview.src = URL.createObjectURL(file)
+        fileName.textContent = file.name
+    }
+}
 
-  const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame');
-  const pictureFrameButtonsRemove = document.querySelectorAll('.btn_picture_frame_remove');
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex'
+}
 
-  pictureFrameButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const itemId = this.getAttribute('data-item-id');
-      usePictureFrame(itemId, userIdHeader);
-    });
-  });
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('fileProfile')
+    const preview = document.getElementById('preview')
+    const fileName = document.getElementById('file-nameProfile')
+    const uploadForm = document.querySelector('.form-picture')
+    const loadingOverlay = document.getElementById('loadingOverlay')
 
-  pictureFrameButtonsRemove.forEach(button => {
-    button.addEventListener('click', function() {
-      const itemId = this.getAttribute('data-item-id');
-      RemovePictureFrame(itemId, userIdHeader);
-    });
-  });
-});
+    // ✅ Preview selected file
+    if (fileInput) {
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0]
+            if (file) {
+                preview.src = URL.createObjectURL(file)
+                fileName.textContent = file.name
+            }
+        })
+    }
+
+    // ✅ Show loading overlay on form submit
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function () {
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex'
+            }
+        })
+    }
+
+    // ✅ Frame buttons
+    const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame')
+    const pictureFrameButtonsRemove = document.querySelectorAll(
+        '.btn_picture_frame_remove'
+    )
+
+    pictureFrameButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            usePictureFrame(itemId, userIdHeader)
+        })
+    })
+
+    pictureFrameButtonsRemove.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            RemovePictureFrame(itemId, userIdHeader)
+        })
+    })
+})
