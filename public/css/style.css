@@ -4311,7 +4311,7 @@ dialog .title_generalbox {
 
 .notif-badge-profile {
     position: absolute;
-    top: 10px;
+    top: -15px;
     background: var(--main--red);
     color: white;
     font-size: 12px;
