@@ -2,7 +2,7 @@
     <dialog id="favDialogPicture" class="dialog-profile">
 
         <!-- Profile Upload Section -->
-        <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" 
+        <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?> id="formProfilePicture"" 
             method="post" 
             enctype="multipart/form-data" 
             class="profile-card">
@@ -507,10 +507,10 @@
                                 foreach ($pictures as $picture): 
                                     $picturePath = "public/upload/" . htmlspecialchars($picture);
                         ?>
-                                    <div class="bonusPicture_wrapper">
-                                        <img src="<?= $picturePath ?>" class="user_bonuspicture" alt="User Picture">
-                                        <button class="bonusPicture_delete" data-filename="<?= htmlspecialchars($picture) ?>">&times;</button>
-                                    </div>
+                                <div class="bonusPicture_wrapper">
+                                    <img src="<?= $picturePath ?>" class="user_bonuspicture" alt="User Picture">
+                                    <button class="bonusPicture_delete" data-filename="<?= htmlspecialchars($picture) ?>">&times;</button>
+                                </div>
                         <?php 
                                 endforeach; 
                             endif;
@@ -523,18 +523,45 @@
                         <button class="btn_updateProfile" id="opendialog_bonuspicture"><?= $this->_('add_picture') ?></button>
                 </div>
             <?php endif; ?>
-            <dialog id="favDialogBonusPicture">
-                <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" method="post" enctype="multipart/form-data" class="form-picture">
-                    <p class="title_generalbox"><?= $this->_('add_picture_desc') ?></p>
-                    <p><?= $this->_('add_picture_format') ?></p>
-                    <div class="file-input-container">
-                        <input type="file" id="file" name="file" class="file-input">
-                        <label for="file" class="file-label"><?= $this->_('add_picture_chose') ?></label>
-                        <span id="file-name" class="file-name"><?= $this->_('add_picture_nofile') ?></span>
+            <dialog id="favDialogBonusPicture" class="dialog-profile">
+                <button id="closeButton_user_picture_bonus" class="btn-close" aria-label="Close">&times;</button>
+                
+                <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" 
+                    method="post" 
+                    enctype="multipart/form-data" 
+                    class="form-picture" id="formBonusPicture">
+
+                    <!-- Title & description -->
+                    <div class="profile-card">
+                        <p class="section-title"><?= $this->_('add_picture_desc') ?></p>
+                        <p class="section-subtitle"><?= $this->_('add_picture_format') ?></p>
+
+                        
+                        <!-- Upload box -->
+                        <div class="upload-box">
+                            <img id="preview" class="preview-img" src="public/images/defaultprofilepicture.jpg" alt="Preview">
+
+                            <div class="file-input-container">
+                                <input type="file" id="file" name="file" class="file-input" accept="image/*">
+                                <label for="file" class="file-label"><?= $this->_('add_picture_chose') ?></label>
+                                <span id="file-name" class="file-name"><?= $this->_('add_picture_nofile') ?></span>
+                            </div>
+                        </div>
                     </div>
-                    <input type="submit" name="submit" value="<?= $this->_('add_picture_upload') ?>" id="send-button">
+
+                    <!-- Submit -->
+                    <div class="form-actions">
+                        <button type="submit" name="submit" id="send-button" class="btn-primary">
+                            <?= $this->_('add_picture_upload') ?>
+                        </button>
+                    </div>
                 </form>
-                <button id="closeButton_user_picture_bonus">X</button>
+
+                <!-- Loading Overlay -->
+                <div id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <p><?= $this->_('uploading') ?>...</p>
+                </div>
             </dialog>
         </div>
         <div id="socials-container">

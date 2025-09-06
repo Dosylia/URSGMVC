@@ -1334,21 +1334,12 @@ span.form-error {
 
 #send-button,
 #skip-preferences-btn {
-    background: rgb(43, 121, 199); /* default for send */
-    color: white;
-    font-size: 1.1rem;
-    font-family: 'Geologica', sans-serif;
-    padding: 12px 24px;
+    padding: 8px 14px;
+    border-radius: 8px;
     border: none;
-    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    margin-top: 15px;
-    width: auto; /* not full width anymore */
-    min-width: 180px; /* consistent button size */
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    margin-top: 8px;
 }
 
 /* Primary button (send) */
@@ -3631,11 +3622,6 @@ dialog .title_generalbox,
     color: rgb(194, 181, 181);
 }
 
-.dark-mode #send-button,
-.dark-mode #skip-preferences-btn {
-    border: 1px solid rgb(207, 192, 192);
-}
-
 .dark-mode .no_display_phone {
     color: rgb(218, 207, 207);
 }
@@ -3963,6 +3949,7 @@ dialog {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    width: 100%;
 }
 
 dialog .title_generalbox {

@@ -175,49 +175,81 @@ function showLoading() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const fileInput = document.getElementById('fileProfile')
-    const preview = document.getElementById('preview')
-    const fileName = document.getElementById('file-nameProfile')
-    const uploadForm = document.querySelector('.form-picture')
-    const loadingOverlay = document.getElementById('loadingOverlay')
+    /**
+     * Generic function to handle file previews for a given dialog
+     * @param {HTMLElement} dialog
+     */
+    function setupFilePreview(dialog) {
+        const fileInput = dialog.querySelector('.file-input')
+        const preview = dialog.querySelector('.preview-img')
+        const fileName = dialog.querySelector('.file-name')
 
-    // ✅ Preview selected file
-    if (fileInput) {
-        fileInput.addEventListener('change', function (event) {
-            const file = event.target.files[0]
-            if (file) {
-                preview.src = URL.createObjectURL(file)
-                fileName.textContent = file.name
-            }
-        })
+        if (fileInput) {
+            fileInput.addEventListener('change', function (event) {
+                const file = event.target.files[0]
+                if (file) {
+                    preview.src = URL.createObjectURL(file)
+                    fileName.textContent = file.name
+                }
+            })
+        }
     }
 
-    // ✅ Show loading overlay on form submit
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', function () {
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'flex'
-            }
-        })
+    /**
+     * Generic function to handle form submission loading overlay
+     * @param {HTMLElement} dialog
+     */
+    function setupFormLoading(dialog) {
+        const form = dialog.querySelector('form')
+        const loadingOverlay = dialog.querySelector('#loadingOverlay')
+
+        if (form) {
+            form.addEventListener('submit', function () {
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex'
+                }
+            })
+        }
     }
 
-    // ✅ Frame buttons
-    const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame')
-    const pictureFrameButtonsRemove = document.querySelectorAll(
-        '.btn_picture_frame_remove'
-    )
-
-    pictureFrameButtons.forEach((button) => {
+    /**
+     * Close buttons for dialogs
+     */
+    const closeButtons = document.querySelectorAll('.btn-close')
+    closeButtons.forEach((button) => {
         button.addEventListener('click', function () {
-            const itemId = this.getAttribute('data-item-id')
-            usePictureFrame(itemId, userIdHeader)
+            const dialog = this.closest('dialog')
+            if (dialog) dialog.close()
         })
     })
 
+    /**
+     * Frame buttons
+     */
+    const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame')
+    pictureFrameButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            usePictureFrame(itemId, userIdHeader) // userIdHeader must exist in your scope
+        })
+    })
+
+    const pictureFrameButtonsRemove = document.querySelectorAll(
+        '.btn_picture_frame_remove'
+    )
     pictureFrameButtonsRemove.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
             RemovePictureFrame(itemId, userIdHeader)
         })
+    })
+
+    /**
+     * Initialize dialogs
+     */
+    const dialogs = document.querySelectorAll('dialog')
+    dialogs.forEach((dialog) => {
+        setupFilePreview(dialog)
+        setupFormLoading(dialog)
     })
 })
