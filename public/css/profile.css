@@ -275,6 +275,7 @@
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
+    margin-top: 20px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -530,6 +531,10 @@
 }
 
 @media only screen and (max-width: 600px) {
+    .btn-close {
+        font-size: 0.8em;
+    }
+
     .support_ursg {
         gap: 10px;
         top: 15px;

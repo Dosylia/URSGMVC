@@ -86,6 +86,7 @@ fileInputProfile.addEventListener('change', (event) => {
 
 function usePictureFrame(itemId, userId) {
     console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`)
+    const token = localStorage.getItem('masterTokenWebsite')
 
     const dataToSend = {
         itemId,
@@ -123,6 +124,7 @@ function usePictureFrame(itemId, userId) {
 }
 
 function RemovePictureFrame(itemId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
     console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`)
 
     const dataToSend = {
@@ -224,32 +226,30 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     /**
-     * Frame buttons
-     */
-    const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame')
-    pictureFrameButtons.forEach((button) => {
-        button.addEventListener('click', function () {
-            const itemId = this.getAttribute('data-item-id')
-            usePictureFrame(itemId, userIdHeader) // userIdHeader must exist in your scope
-        })
-    })
-
-    const pictureFrameButtonsRemove = document.querySelectorAll(
-        '.btn_picture_frame_remove'
-    )
-    pictureFrameButtonsRemove.forEach((button) => {
-        button.addEventListener('click', function () {
-            const itemId = this.getAttribute('data-item-id')
-            RemovePictureFrame(itemId, userIdHeader)
-        })
-    })
-
-    /**
      * Initialize dialogs
      */
     const dialogs = document.querySelectorAll('dialog')
     dialogs.forEach((dialog) => {
         setupFilePreview(dialog)
         setupFormLoading(dialog)
+    })
+
+    const pictureFrameButtons = document.querySelectorAll('.btn_picture_frame')
+    const pictureFrameButtonsRemove = document.querySelectorAll(
+        '.btn_picture_frame_remove'
+    )
+
+    pictureFrameButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            usePictureFrame(itemId, userIdHeader)
+        })
+    })
+
+    pictureFrameButtonsRemove.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            RemovePictureFrame(itemId, userIdHeader)
+        })
     })
 })

@@ -1,10 +1,10 @@
 <section id="user-container"> <!--Flex column -->
-    <dialog id="favDialogPicture" class="dialog-profile">
+    <dialog id="favDialogPicture" class="dialog-profile" style="max-height: 90%;overflow: scroll; box-sizing: border-box;">
 
         <!-- Profile Upload Section -->
-        <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?> id="formProfilePicture"" 
-            method="post" 
-            enctype="multipart/form-data" 
+        <form action="/updatePicture&username=<?= urlencode($user['user_username']) ?>" id="formProfilePicture"
+            method="post"
+            enctype="multipart/form-data"
             class="profile-card">
 
             <h2 class="section-title"><?= $this->_('add_picture_desc') ?></h2>
@@ -40,6 +40,8 @@
                 });
                 ?>
 
+                <span id="placeholder-message"></span>
+
                 <?php if (count($profilePictures) > 0) : ?>
                     <div class="frame-grid">
                         <?php foreach ($profilePictures as $item) : ?>
@@ -47,9 +49,9 @@
                                 <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
                                 <p><?= $item['items_name'] ?></p>
                                 <?php if ($item['userItems_isUsed'] === 1) : ?>
-                                    <button class="btn-danger" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
+                                    <button class="btn-danger btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
                                 <?php else : ?>
-                                    <button class="btn-primary" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
+                                    <button class="btn-primary btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
                                 <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
@@ -523,7 +525,7 @@
                         <button class="btn_updateProfile" id="opendialog_bonuspicture"><?= $this->_('add_picture') ?></button>
                 </div>
             <?php endif; ?>
-            <dialog id="favDialogBonusPicture" class="dialog-profile">
+            <dialog id="favDialogBonusPicture" class="dialog-profile" style="max-height: 90%;overflow: scroll; box-sizing: border-box;">
                 <button id="closeButton_user_picture_bonus" class="btn-close" aria-label="Close">&times;</button>
                 
                 <form action="/addBonusPicture&username=<?= urlencode($user['user_username']) ?>" 

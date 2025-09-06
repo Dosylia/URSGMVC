@@ -2378,9 +2378,9 @@ input:checked + .slider:before {
 #closeButton_user_picture_bonus {
     position: absolute;
     top: 5px;
-    right: 5px;
+    right: 10px;
     color: #fff;
-    background-color: red;
+    background-color: var(--main--red);
     border: none;
     border-radius: 50%;
     padding: 5px 9px;
