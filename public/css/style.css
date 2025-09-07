@@ -7037,6 +7037,11 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    #champion-picker #skipSelection-btn {
+        padding: 10px 20px;
+        font-size: 1.5rem;
+    }
+
     .swipe-home-card {
         max-height: 175px;
     }

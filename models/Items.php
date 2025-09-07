@@ -360,4 +360,26 @@ class Items extends DataBase
         }
 
     }
+
+    public function userOwnsItem($userId, $itemId) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `user_items`
+                                        WHERE
+                                            userItems_userId = ? AND userItems_itemId = ?
+        ");
+    
+        $query->execute([$userId, $itemId]);
+        $item = $query->fetch();
+    
+        if ($item) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
