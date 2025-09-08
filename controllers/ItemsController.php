@@ -58,7 +58,7 @@ class ItemsController
         $response = array('message' => 'Error');
         if (isset($_POST['items'])) 
         {
-            $items = $this-> items -> getItems();
+            $items = $this-> items -> getItemsExceptBadges();
 
             if ($items)
             {

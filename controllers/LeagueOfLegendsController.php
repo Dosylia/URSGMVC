@@ -176,6 +176,8 @@ class LeagueOfLegendsController
                 "Europe West" => "euw1",
                 "North America" => "na1",
                 "Europe Nordic" => "eun1",
+                "Europe Nordic & East" => "eun1",
+                "Europe Nordic &amp;" => "eun1",
                 "Brazil" => "br1",
                 "Latin America North" => "la1",
                 "Latin America South" => "la2",
@@ -255,6 +257,8 @@ class LeagueOfLegendsController
                 "Europe West" => "euw1",
                 "North America" => "na1",
                 "Europe Nordic" => "eun1",
+                "Europe Nordic & East" => "eun1",
+                "Europe Nordic &amp;" => "eun1",
                 "Brazil" => "br1",
                 "Latin America North" => "la1",
                 "Latin America South" => "la2",
@@ -426,6 +430,8 @@ class LeagueOfLegendsController
                 "Europe West" => "euw1",
                 "North America" => "na1",
                 "Europe Nordic" => "eun1",
+                "Europe Nordic & East" => "eun1",
+                "Europe Nordic &amp;" => "eun1",
                 "Brazil" => "br1",
                 "Latin America North" => "la1",
                 "Latin America South" => "la2",
@@ -610,6 +616,8 @@ class LeagueOfLegendsController
                     "Europe West" => "euw1",
                     "North America" => "na1",
                     "Europe Nordic" => "eun1",
+                    "Europe Nordic & East" => "eun1",
+                    "Europe Nordic &amp;" => "eun1",
                     "Brazil" => "br1",
                     "Latin America North" => "la1",
                     "Latin America South" => "la2",
@@ -819,6 +827,8 @@ class LeagueOfLegendsController
                             "Europe West" => "euw1",
                             "North America" => "na1",
                             "Europe Nordic" => "eun1",
+                            "Europe Nordic & East" => "eun1",
+                            "Europe Nordic &amp;" => "eun1",
                             "Brazil" => "br1",
                             "Latin America North" => "la1",
                             "Latin America South" => "la2",
@@ -931,11 +941,7 @@ class LeagueOfLegendsController
             $this->setLoLRole($loLRole);
             $loLServer = $this->validateInput($data->server);
             $this->setLoLServer($loLServer);
-            $statusChampion = 0;
-            if (isset($_POST["skipSelection"])) {
-                $statusChampion = $this->validateInput($_POST["skipSelection"]);
-            }
-
+            $statusChampion = $this->validateInput($data->skipSelection);
 
             if ($statusChampion == 1) {
                 if ($this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
@@ -954,15 +960,6 @@ class LeagueOfLegendsController
                     exit;  
                 }
             }
-
-            if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
-                header("location:/signup?message=Each champion must be unique");
-                $response = array('message' => 'Each champ must be unique');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
-            }
-
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
@@ -1035,7 +1032,7 @@ class LeagueOfLegendsController
             $this->setLoLRank($loLRank);
             $loLRole = $this->validateInput($_POST["role_lol"]);
             $this->setLoLRole($loLRole);
-            $loLServer = $this->validateInput($_POST["server"]);
+            $loLServer = $_POST["server"];
             $this->setLoLServer($loLServer);
             $statusChampion = 0;
             if (isset($_POST["skipSelection"])) {

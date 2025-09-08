@@ -1334,21 +1334,12 @@ span.form-error {
 
 #send-button,
 #skip-preferences-btn {
-    background: rgb(43, 121, 199); /* default for send */
-    color: white;
-    font-size: 1.1rem;
-    font-family: 'Geologica', sans-serif;
-    padding: 12px 24px;
+    padding: 8px 14px;
+    border-radius: 8px;
     border: none;
-    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    margin-top: 15px;
-    width: auto; /* not full width anymore */
-    min-width: 180px; /* consistent button size */
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    margin-top: 8px;
 }
 
 /* Primary button (send) */
@@ -2387,9 +2378,9 @@ input:checked + .slider:before {
 #closeButton_user_picture_bonus {
     position: absolute;
     top: 5px;
-    right: 5px;
+    right: 10px;
     color: #fff;
-    background-color: red;
+    background-color: var(--main--red);
     border: none;
     border-radius: 50%;
     padding: 5px 9px;
@@ -3631,11 +3622,6 @@ dialog .title_generalbox,
     color: rgb(194, 181, 181);
 }
 
-.dark-mode #send-button,
-.dark-mode #skip-preferences-btn {
-    border: 1px solid rgb(207, 192, 192);
-}
-
 .dark-mode .no_display_phone {
     color: rgb(218, 207, 207);
 }
@@ -3963,6 +3949,7 @@ dialog {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    width: 100%;
 }
 
 dialog .title_generalbox {
@@ -4324,7 +4311,7 @@ dialog .title_generalbox {
 
 .notif-badge-profile {
     position: absolute;
-    top: 10px;
+    top: -15px;
     background: var(--main--red);
     color: white;
     font-size: 12px;
@@ -7050,6 +7037,11 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    #champion-picker #skipSelection-btn {
+        padding: 10px 20px;
+        font-size: 1.5rem;
+    }
+
     .swipe-home-card {
         max-height: 175px;
     }

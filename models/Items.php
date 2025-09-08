@@ -39,6 +39,36 @@ class Items extends DataBase
         }
     }
 
+    
+    public function getItemsExceptBadges()
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            items_id,
+                                            items_name,
+                                            items_price,
+                                            items_desc,
+                                            items_picture,
+                                            items_category,
+                                            items_discount,
+                                            items_isActive,
+                                            items_createdAt
+                                        FROM
+                                            `items`
+                                        WHERE
+                                            items_category != 'badge'
+        ");
+    
+        $query->execute([]);
+        $ItemslistTest = $query->fetchAll();
+    
+        if ($ItemslistTest) {
+            return $ItemslistTest;
+        } else {
+            return false;
+        }
+    }
+
     public function getBadges()
     {
         $query = $this->bdd->prepare("
@@ -324,6 +354,28 @@ class Items extends DataBase
         $ItemslistTest = $query->fetchAll();
     
         if ($ItemslistTest) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public function userOwnsItem($userId, $itemId) 
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            *
+                                        FROM
+                                            `user_items`
+                                        WHERE
+                                            userItems_userId = ? AND userItems_itemId = ?
+        ");
+    
+        $query->execute([$userId, $itemId]);
+        $item = $query->fetch();
+    
+        if ($item) {
             return true;
         } else {
             return false;

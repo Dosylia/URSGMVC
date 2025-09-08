@@ -19,6 +19,7 @@
         <option value="all">All Categories</option>
         <?php
         $categories = array_unique(array_column($items, 'items_category'));
+        $categories = array_filter($categories, fn($c) => $c !== "badge");
         foreach($categories as $category) : ?>
             <option value="<?= $category ?>"><?= ucfirst($category) ?></option>
         <?php endforeach; ?>

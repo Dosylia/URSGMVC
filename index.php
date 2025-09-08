@@ -172,7 +172,7 @@ $actionMap = [
     'updateNotificationFriendRequestAcceptedWebsite' => [FriendRequestController::class, 'updateNotificationFriendRequestAcceptedWebsite'],
     'updateNotificationFriendRequestPendingWebsite' => [FriendRequestController::class, 'updateNotificationFriendRequestPendingWebsite'],
     'getFriendRequest' => [FriendRequestController::class, 'getFriendRequest'],
-    'getFriendRequestPhone' => [FriendRequestController::class, 'getFriendRequestPhone'], // Add security on that one for app
+    'getFriendRequestPhone' => [FriendRequestController::class, 'getFriendRequestPhone'],
     'getFriendRequestReact' => [FriendRequestController::class, 'getFriendRequestReact'],
     'getFriendRequestWebsite' => [FriendRequestController::class, 'getFriendRequestWebsite'],
     'registerToken' => [UserController::class, 'registerToken'],
@@ -270,6 +270,8 @@ $actionMap = [
     'removeBadgeWebsite' => [ItemsController::class, 'removeBadgeWebsite'],
     'adminGrantItem' => [AdminController::class, 'adminGrantItem'],
     'adminRemoveItem' => [AdminController::class, 'adminRemoveItem'],
+    'connectRiotMobile' => [RiotController::class, 'connectRiotMobile'],
+    'connectDiscordMobile' => [DiscordController::class, 'connectDiscordMobile']
 ];
 
 $action = "home";
