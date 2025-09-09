@@ -1,19 +1,18 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 let userId = document.getElementById('userId').value;
 
 function isLookingFor(userId, account, message) {
-    const token = localStorage.getItem('masterTokenWebsite');
 
-    fetch('/userIsLookingForGameWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(parseInt(userId))}`
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+    apiFetch({
+    url: '/userIsLookingForGameWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(parseInt(userId))}`
+})
+    .then((data) => {
+        if (data.success) {
                 displayNotification("Looking for a game for the next 5 min!");
                 const lookingForButton = document.getElementById('looking-for-button');
                 lookingForButton.style.background = "linear-gradient(45deg, #4CAF50, #66bb6a)";
@@ -22,8 +21,13 @@ function isLookingFor(userId, account, message) {
             } else {
                 console.error('Error setting status:', data.error);
             }
-        })
-        .catch(error => console.error('Fetch error:', error));
+    })
+    .catch((error) => {
+        // General error happened. Probably not user related and more on the dev side.
+	console.error('Fetch error:', error)
+    })
+
+    
 }
 
 function sendMessageDiscord(userId, account, message, oldTime) {

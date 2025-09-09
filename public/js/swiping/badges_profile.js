@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 const badgesList = document.getElementById('badges-list')
 const additionalContainer = document.getElementById(
     'additional-badges-container'
@@ -24,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Listen for clicks on badge list
 badgesList.addEventListener('click', function (e) {
-    const token = localStorage.getItem('masterTokenWebsite')
     const btn = e.target
     const badgeItem = btn.closest('.badge-item')
     if (!badgeItem) return
@@ -36,17 +38,15 @@ badgesList.addEventListener('click', function (e) {
     // Use badge
     if (btn.classList.contains('use-badge-btn')) {
         if (activeBadges.length >= 3) return
-
+        console.log("test")
         const jsonData = JSON.stringify({ badgeId, userId })
-        fetch('/useBadgeWebsite', {
+
+        apiFetch({
+            url: '/useBadgeWebsite',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'param=' + encodeURIComponent(jsonData),
         })
-            .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
                     badgeItem.classList.add('active-badge')
@@ -64,20 +64,22 @@ badgesList.addEventListener('click', function (e) {
                     updateBadgeButtons()
                 }
             })
+            .catch((error) => {
+                // General error happened. Probably not user related and more on the dev side.
+                console.log("Error when adding badge: ", error)
+            })
     }
 
     // Remove badge
     if (btn.classList.contains('remove-badge-btn')) {
         const jsonData = JSON.stringify({ badgeId, userId })
-        fetch('/removeBadgeWebsite', {
+
+        apiFetch({
+            url: '/removeBadgeWebsite',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', },
             body: 'param=' + encodeURIComponent(jsonData),
         })
-            .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
                     badgeItem.classList.remove('active-badge')
@@ -91,6 +93,10 @@ badgesList.addEventListener('click', function (e) {
                     refreshAdditionalBadges()
                     updateBadgeButtons()
                 }
+            })
+            .catch((error) => {
+                // General error happened. Probably not user related and more on the dev side.
+                console.log("Error when removing badge: ", error)
             })
     }
 })

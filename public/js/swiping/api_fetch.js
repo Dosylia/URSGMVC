@@ -64,6 +64,7 @@ export default apiFetch
 //             // Things went bad so somewhere but we got data. User Error potantially
 //         }
 //     })
-//     .catch(() => {
+//     .catch((error) => {
 //         // General error happened. Probably not user related and more on the dev side.
+//         console.log(error)
 //     })

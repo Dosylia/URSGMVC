@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 const buttonAddBonusPicture = document.getElementById('opendialog_bonuspicture')
 const favDialogBonusPicture = document.getElementById('favDialogBonusPicture')
 const cancelButtonPictureBonus = favDialogBonusPicture.querySelector(
@@ -36,26 +39,25 @@ function closeDialogBonusPicture() {
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.bonusPicture_delete').forEach((button) => {
         button.addEventListener('click', function () {
-            const token = localStorage.getItem('masterTokenWebsite')
             let fileName = this.getAttribute('data-filename')
-
-            fetch('/deleteBonusPicture', {
+            apiFetch({
+                url: '/deleteBonusPicture',
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', },
                 body: `fileName=${encodeURIComponent(
                     fileName
                 )}&userId=${userIdHeader}`,
             })
-                .then((response) => response.json())
                 .then((data) => {
                     if (data.message === 'Success') {
                         this.parentElement.remove()
                     } else {
                         console.log('Error deleting picture :', data.message)
                     }
+                })
+                .catch((error) => {
+                    // General error happened. Probably not user related and more on the dev side.
+                     console.log('Error deleting picture: ', error)
                 })
         })
     })

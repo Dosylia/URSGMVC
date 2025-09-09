@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 // const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 // const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
 // let cancelButtonSocialLinks;
@@ -86,7 +89,6 @@ fileInputProfile.addEventListener('change', (event) => {
 
 function usePictureFrame(itemId, userId) {
     console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`)
-    const token = localStorage.getItem('masterTokenWebsite')
 
     const dataToSend = {
         itemId,
@@ -95,32 +97,25 @@ function usePictureFrame(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=usePictureFrameWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: 'param=' + encodeURIComponent(jsonData),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok')
-            }
-            return response.json()
-        })
-        .then((data) => {
-            placeholderMessage.innerHTML = ''
+    apiFetch({
+    url: 'index.php?action=usePictureFrameWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', },
+    body: 'param=' + encodeURIComponent(jsonData),
+})
+    .then((data) => {
+         placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
                 location.reload()
             } else {
                 placeholderMessage.innerHTML = data.message
             }
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
+    })
+    .catch((error) => {
+        console.error('Error:', error)
+    })
+
 }
 
 function RemovePictureFrame(itemId, userId) {
@@ -134,32 +129,24 @@ function RemovePictureFrame(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=removePictureFrameWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: 'param=' + encodeURIComponent(jsonData),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok')
-            }
-            return response.json()
-        })
-        .then((data) => {
-            placeholderMessage.innerHTML = ''
+    apiFetch({
+    url: 'index.php?action=removePictureFrameWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'param=' + encodeURIComponent(jsonData),
+})
+    .then((data) => {
+         placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
                 location.reload()
             } else {
                 placeholderMessage.innerHTML = data.message
             }
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        })
+    })
+    .catch((error) => {
+        console.error('Error:', error)
+    })
 }
 
 function showPreview(event) {

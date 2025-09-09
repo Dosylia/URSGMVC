@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 let userIdElementHeaderCurrency = document.getElementById('userId');
 let userIdHeaderCurrency = userIdElementHeaderCurrency ? userIdElementHeaderCurrency.value : null;
 let numberofFailCurrency = 0;
@@ -7,27 +10,24 @@ function getCurrency(userId) {
         console.error('Too many failed attempts to fetch accepted friend requests. Stopping further attempts.');
         return;
     }
-    const token = localStorage.getItem('masterTokenWebsite');
-    fetch('index.php?action=getCurrencyWebsite', {
+
+    apiFetch({
+        url: 'index.php?action=getCurrencyWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `userId=${encodeURIComponent(userId)}`
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message == "Success") {
+        .then((data) => {
+            if (data.message == "Success") {
             numberofFailCurrency = 0;
             console.log('Currency fetched successfully');
             fillCurrency(data.currency);
         }
-    })
-    .catch(error => {
-        numberofFailCurrency++;
-        console.error('Fetch error:', error);
-    });
+        })
+        .catch((error) => {
+            numberofFailCurrency++;
+            console.error('Fetch error:', error);
+        })
 }
 
 function formatCurrency(value) {

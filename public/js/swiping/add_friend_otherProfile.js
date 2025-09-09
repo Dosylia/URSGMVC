@@ -41,9 +41,10 @@ function sendFriendRequest(userId, otherUserId) {
                 addFriendButton.style.backgroundColor = 'grey'
             }
         })
-        .catch(() => {
+        .catch((error) => {
             addFriendButton.textContent = 'Failed to Add'
             addFriendButton.style.backgroundColor = 'red'
+            console.log("Error: ", error)
         })
 }
 

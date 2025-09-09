@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 let isChannelCreationInProgress = false; // Flag to prevent duplicate execution
 
 function createChannel() {
@@ -5,22 +8,18 @@ function createChannel() {
 
     isChannelCreationInProgress = true; // Set flag to indicate the process is in progress
 
-    const token = localStorage.getItem('masterTokenWebsite');
     const senderId = document.getElementById('senderId').value; // Fetch the sender's ID
     const receiverId = document.getElementById('receiverId').value; // Fetch the receiver's ID
 
-    fetch('/createChannel', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(senderId)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        isChannelCreationInProgress = false; // Reset flag after process completes
 
+    apiFetch({
+        url: '/createChannel',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `userId=${encodeURIComponent(senderId)}`,
+    })
+    .then((data) => {
+        isChannelCreationInProgress = false; // Reset flag after process completes
         if (data.success) {
             const link = data.link; // Link to the newly created channel
 
@@ -37,10 +36,10 @@ function createChannel() {
             console.error('Error creating temporary channel:', data.error);
         }
     })
-    .catch(error => {
+    .catch((error) => {
         isChannelCreationInProgress = false; // Reset flag on error
         console.error('Fetch error:', error);
-    });
+    })
 }
 
 document.addEventListener("DOMContentLoaded", function () {

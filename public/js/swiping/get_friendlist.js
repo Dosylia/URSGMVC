@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 let userId = document.getElementById('userId').value
 let currentPage = 1
 const itemsPerPage = 10
@@ -7,46 +10,43 @@ let refreshMode = false
 
 // Fetch and render friend list
 function getFriendList(userId, page = 1) {
-    const token = localStorage.getItem('masterTokenWebsite')
-
+    
     if (page !== currentPage || showOnlineOnly) {
         refreshMode = false
         currentPage = page
     }
 
-    fetch('/getFriendlistWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(parseInt(userId))}`,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                if (refreshMode) {
-                    updateOnlineStatus(data.friendlist)
-                } else {
-                    refreshMode = true
-                    totalFriends = data.friendlist.length
-                    let filteredFriends = data.friendlist
-
-                    if (showOnlineOnly) {
-                        filteredFriends.sort(
-                            (a, b) => b.friend_online - a.friend_online
-                        )
-                    }
-
-                    renderFriendList(filteredFriends, page)
-                }
+    apiFetch({
+    url: '/getFriendlistWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(parseInt(userId))}`,
+})
+    .then((data) => {
+        if (data.success) {
+            if (refreshMode) {
+                updateOnlineStatus(data.friendlist)
             } else {
-                console.error('Error fetching friends:', data.error)
+                refreshMode = true
+                totalFriends = data.friendlist.length
+                let filteredFriends = data.friendlist
+
+                if (showOnlineOnly) {
+                    filteredFriends.sort(
+                        (a, b) => b.friend_online - a.friend_online
+                    )
+                }
+
+                renderFriendList(filteredFriends, page)
             }
-        })
-        .catch((error) => {
-            console.error('Fetch error:', error)
-        })
+        } else {
+            console.error('Error fetching friends:', data.error)
+        }
+    })
+    .catch((error) => {
+        // General error happened. Probably not user related and more on the dev side.
+	    console.error('Fetch error:', error)
+    })
 }
 
 function updateOnlineStatus(friendList) {

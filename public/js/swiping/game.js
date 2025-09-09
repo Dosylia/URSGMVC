@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 let selectedUser = null
 
 function shakeMinigameWindow() {
@@ -9,79 +12,71 @@ function shakeMinigameWindow() {
 }
 
 function getGameUser(userId, game, tryCount) {
-    const token = localStorage.getItem('masterTokenWebsite')
-
-    fetch('/getGameUser', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(userId)}&game=${encodeURIComponent(
+    apiFetch({
+    url: '/getGameUser',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(userId)}&game=${encodeURIComponent(
             game
         )}&tryCount=${encodeURIComponent(tryCount)}`,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            const elements = getElements() // Assuming this retrieves UI element references
-            const ignore = localStorage.getItem('ignoreGame')
-            const ignorePermanently = localStorage.getItem(
-                'ignoreGamePermanently'
-            )
-
-            if (ignore === '1' || ignorePermanently === '1') {
-                elements.minigameWindow.style.display = 'none'
-                return
-            } else {
-                const overlay = document.getElementById('overlay')
-                overlay.style.display = 'block'
-                elements.minigameWindow.classList.remove('hidden')
+})
+    .then((data) => {
+        const elements = getElements() // Assuming this retrieves UI element references
+        const ignore = localStorage.getItem('ignoreGame')
+        const ignorePermanently = localStorage.getItem(
+            'ignoreGamePermanently'
+        )
+        if (ignore === '1' || ignorePermanently === '1') {
+            elements.minigameWindow.style.display = 'none'
+            return
+        } else {
+            const overlay = document.getElementById('overlay')
+            overlay.style.display = 'block'
+            elements.minigameWindow.classList.remove('hidden')
+        }
+        if (data.message === 'Success') {
+            elements.minigameWindow.style.display = 'flex'
+            switch (tryCount) {
+                case 1:
+                    setCharacterImage(data.hints.game_main)
+                    elements.affiliationHint.textContent =
+                        data.hints.hint_affiliation
+                    break
+                case 2:
+                    setCharacterImage(data.hints.game_main)
+                    elements.affiliationHint.textContent =
+                        data.hints.hint_affiliation
+                    elements.genderHint.textContent = data.hints.hint_gender
+                    break
+                case 3:
+                    setCharacterImage(data.hints.game_main)
+                    elements.affiliationHint.textContent =
+                        data.hints.hint_affiliation
+                    elements.genderHint.textContent = data.hints.hint_gender
+                    elements.guessHint.textContent = data.hints.hint_guess
+                    break
+                default:
+                    setCharacterImage(data.hints.game_main)
+                    break
             }
-
-            if (data.message === 'Success') {
-                elements.minigameWindow.style.display = 'flex'
-
-                switch (tryCount) {
-                    case 1:
-                        setCharacterImage(data.hints.game_main)
-                        elements.affiliationHint.textContent =
-                            data.hints.hint_affiliation
-                        break
-                    case 2:
-                        setCharacterImage(data.hints.game_main)
-                        elements.affiliationHint.textContent =
-                            data.hints.hint_affiliation
-                        elements.genderHint.textContent = data.hints.hint_gender
-                        break
-                    case 3:
-                        setCharacterImage(data.hints.game_main)
-                        elements.affiliationHint.textContent =
-                            data.hints.hint_affiliation
-                        elements.genderHint.textContent = data.hints.hint_gender
-                        elements.guessHint.textContent = data.hints.hint_guess
-                        break
-                    default:
-                        setCharacterImage(data.hints.game_main)
-                        break
-                }
-            } else if (data.message === 'Already played') {
-                const overlay = document.getElementById('overlay')
-                overlay.style.display = 'none'
-                elements.minigameWindow.style.display = 'none'
-                console.log(data.message)
-            } else {
-                const overlay = document.getElementById('overlay')
-                overlay.style.display = 'none'
-                elements.minigameWindow.style.display = 'none'
-                console.log(data.message)
-            }
-        })
-        .catch((error) => {
+        } else if (data.message === 'Already played') {
             const overlay = document.getElementById('overlay')
             overlay.style.display = 'none'
             elements.minigameWindow.style.display = 'none'
-            console.error('Fetch error:', error)
-        })
+            console.log(data.message)
+        } else {
+            const overlay = document.getElementById('overlay')
+            overlay.style.display = 'none'
+            elements.minigameWindow.style.display = 'none'
+            console.log(data.message)
+        }
+    })
+    .catch((error) => {
+        const overlay = document.getElementById('overlay')
+        overlay.style.display = 'none'
+        elements.minigameWindow.style.display = 'none'
+        console.error('Fetch error:', error)
+    })
 }
 
 function getHintsToShow(hints, tryCount) {

@@ -1,3 +1,7 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
+
 let friendRequests = []; // Array to hold all friend requests
 const usersPerPage = 7; // Number of friend requests to display per page
 let currentPage = 1; // Start with the first page
@@ -11,51 +15,44 @@ function updateFriend(frId, userId, status) {
 
     const jsonData = JSON.stringify(dataToSend);
 
-    fetch('index.php?action=updateFriendWebsite', {
+    apiFetch({
+        url: 'index.php?action=updateFriendWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: "param=" + encodeURIComponent(jsonData)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: "param=" + encodeURIComponent(jsonData),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Re-select the span after DOM updates
-            const friendRequestSpan = document.getElementById('friendrequest-backend');
-            friendRequestSpan.style.display = 'block';
-            friendRequestSpan.innerText = '';
-            if (data.success) {
-                friendRequestSpan.innerText = data.message;
-                // Test that function exist before calling it
-                if (typeof sendMatchCreated === 'function') {
-                    sendMatchCreated();
-                }     
-                // Update requests-badge removing -1 to total or removing it fully if 0
-                const requestsBadge = document.getElementById('requests-badge');
-                if (requestsBadge) {
-                    const currentCount = parseInt(requestsBadge.textContent, 10);
-                    if (currentCount > 1) {
-                        requestsBadge.textContent = currentCount - 1;
-                    } else {
-                        requestsBadge.remove();
-                    }
+    .then((data) => {
+        // Re-select the span after DOM updates
+        const friendRequestSpan = document.getElementById('friendrequest-backend');
+        friendRequestSpan.style.display = 'block';
+        friendRequestSpan.innerText = '';
+        if (data.success) {
+            friendRequestSpan.innerText = data.message;
+           // Test that function exist before calling it
+           if (typeof sendMatchCreated === 'function') {
+               sendMatchCreated();
+            }     
+            // Update requests-badge removing -1 to total or removing it fully if 0
+            const requestsBadge = document.getElementById('requests-badge');
+            if (requestsBadge) {
+                const currentCount = parseInt(requestsBadge.textContent, 10);
+                if (currentCount > 1) {
+                    requestsBadge.textContent = currentCount - 1;
+                } else {
+                    requestsBadge.remove();
                 }
-                // Update the friendRequests array and re-render     
-                frId = Number(frId); 
-                friendRequests = friendRequests.filter(request => request.fr_id !== frId);
-                renderFriendRequests();
-            } else {
-                friendRequestSpan.innerText = data.message;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            // Update the friendRequests array and re-render     
+            frId = Number(frId); 
+            friendRequests = friendRequests.filter(request => request.fr_id !== frId);
+            renderFriendRequests();
+        } else {
+            friendRequestSpan.innerText = data.message;
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
 }
 
 // Render friend requests for the current page
