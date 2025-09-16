@@ -191,7 +191,6 @@ class FriendRequestController
             $data = array_merge([
                 'message' => 'Success',
                 'friendRequest' => $friendRequest,
-                'givenDailyReward' => $givenDailyReward,
             ], $rewardData);
 
             echo json_encode($data);
@@ -199,7 +198,6 @@ class FriendRequestController
             echo json_encode(array_merge([
                 'success' => false, 
                 'message' => 'No friend requests found', 
-                'givenDailyReward' => $givenDailyReward,
             ], $rewardData));
         }
     }

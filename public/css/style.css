@@ -336,15 +336,39 @@ body > div[style*='position: fixed'] {
 
 #aboutme-container {
     display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-global {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 10px;
     border-radius: 10px;
+    margin: 0 auto 20px auto;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.side-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd2d2;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
     width: 100%;
     margin: auto;
-    flex-direction: column;
     box-sizing: border-box;
+}
+
+.dark-mode .side-column {
+    background-color: #222222;
 }
 
 .aboutme-match {
@@ -352,13 +376,9 @@ body > div[style*='position: fixed'] {
     align-items: center;
     gap: 10px;
     width: 80%;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
     margin-top: 20px;
-}
-
-.aboutme-match.champions-row {
-    width: 90%;
 }
 
 .aboutme-match .profile {
@@ -392,19 +412,9 @@ body > div[style*='position: fixed'] {
 
 .aboutme-match .icons {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 5px;
-    position: absolute;
-}
-
-.aboutme-match .icons.you {
-    top: 0;
-    left: 110px;
-}
-
-.aboutme-match .icons.mate {
-    top: 0;
-    right: 110px;
 }
 
 .aboutme-match .icons img {
@@ -477,8 +487,9 @@ body > div[style*='position: fixed'] {
 .aboutme-match .champions .lol-account {
     color: white;
     position: absolute;
-    top: 0px;
-    left: 10px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .aboutme-match .champions .user-rating {
@@ -490,7 +501,8 @@ body > div[style*='position: fixed'] {
 
 .other-data-profile {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
@@ -2333,19 +2345,29 @@ input:checked + .slider:before {
     width: 300px;
 }
 .about-users-box-bio {
-    background-color: #e0e0e0;
+    background-color: #ddd2d2;
     height: fit-content;
     padding: 10px 10px;
     border-radius: 20px;
     border: none;
 }
 
+.about-users-bio-mobile .about-users-box-bio {
+    width: 100%;
+}
+
 .about-users-low-opacity {
     opacity: 0.3;
 }
 
-.about-users-bio {
+.about-users-bio-desktop {
     margin-top: 10px;
+    display: block;
+}
+
+.about-users-bio-mobile {
+    margin-top: 10px;
+    display: none;
 }
 
 .dark-mode .about-users-box,
@@ -7116,6 +7138,17 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    .side-global {
+        flex-direction: column;
+    }
+    .about-users-bio-mobile {
+        display: flex;
+    }
+
+    .about-users-bio-desktop {
+        display: none;
+    }
+
     #add-friend-container-profile-other {
         margin: unset;
         position: absolute;
@@ -7165,10 +7198,6 @@ dialog .title_generalbox {
     .aboutme-match .champions img {
         width: 40px;
         height: 40px;
-    }
-
-    .aboutme-match .champions {
-        flex-direction: column;
     }
 
     .aboutme-match .icons {

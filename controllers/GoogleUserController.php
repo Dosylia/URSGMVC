@@ -731,6 +731,7 @@ class GoogleUserController
                         $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
                     }
 
+                    $adminToken = '';
                     $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                     $_SESSION['full_name'] = $this->getGoogleFullName();
                     $_SESSION['google_id'] = $this->getGoogleId();
@@ -751,7 +752,6 @@ class GoogleUserController
                         $user = $this->user->getUserByUsername($googleUser['user_username']);
                         if ($user)
                         {
-                            $adminToken = '';
                             if ($user['user_id'] === 157 || $user['user_id'] === 158) {
                                 require 'keys.php';
                                 $adminToken = $adminTokenSecret;

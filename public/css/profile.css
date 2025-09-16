@@ -125,6 +125,7 @@
     width: 250px;
     padding: 20px;
     box-sizing: border-box;
+    z-index: 500;
 }
 
 .support_ursg h3 {
@@ -429,6 +430,8 @@
     width: 100%;
     border-radius: 8px;
     margin-bottom: 5px;
+    height: 100px;
+    object-fit: contain;
 }
 
 /* Loading overlay */
