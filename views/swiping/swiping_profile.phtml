@@ -252,18 +252,6 @@
                                 <?php if ((int)$lolUser['lol_verified'] === 1): ?>
                                     <div class="lol-account">
                                         <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                        <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0): ?>
-                                            <div class="user-rating">
-                                                <p>
-                                                    <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                                        <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                                    <?php endfor; ?>
-                                                    <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                                        <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                                    <?php endfor; ?>
-                                                </p>
-                                            </div>
-                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                                 <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main1'])) ?>.png" alt="Champion">
@@ -290,6 +278,18 @@
                                     <?php endif; ?>                        
                                 </div>
                             <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_noChamp'] === 0): ?>
+                        <div class="user-rating">
+                            <p>
+                                <?php for ($i = 0; $i < $fullStars; $i++): ?>
+                                    <span class="star full-star">&#9733;</span> <!-- filled star -->
+                                <?php endfor; ?>
+                                <?php for ($i = 0; $i < $emptyStars; $i++): ?>
+                                    <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
+                                <?php endfor; ?>
+                            </p>
                         </div>
                     <?php endif; ?>
                     <?php else : ?> <!-- Valorant -->
