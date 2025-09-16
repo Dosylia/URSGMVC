@@ -114,6 +114,20 @@
                 <?php endif; ?>  
             </span>
         <?php endif; ?>
+            <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_verified'] === 1): ?>
+                    <div class="user-rating-outside">
+                        <p>
+                            <?php for ($i = 0; $i < $fullStars; $i++): ?>
+                                <span class="star full-star">&#9733;</span> <!-- filled star -->
+                            <?php endfor; ?>
+                            <?php for ($i = 0; $i < $emptyStars; $i++): ?>
+                                <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
+                            <?php endfor; ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
+        <?php endif; ?>
     </div>
     <div id="user-bottom-container"> <!--Flex column -->
     <nav id="user-bottom-nav"> <!--Flex row with JS -->
@@ -131,18 +145,6 @@
                 <div class="side-column">
                     <div class="aboutme-match">
                     <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
-                        <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_noChamp'] === 0): ?>
-                            <div class="user-rating-outside">
-                                <p>
-                                    <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                        <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                    <?php endfor; ?>
-                                    <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                        <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                    <?php endfor; ?>
-                                </p>
-                            </div>
-                        <?php endif; ?>
                         <div class="profile">
                             <?php if ($lolUser['lol_verified'] === 1): ?>
                                 <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
@@ -190,19 +192,7 @@
                         <div class="aboutme-match champions-row">
                             <?php if ((int)$lolUser['lol_verified'] === 1): ?>
                                 <div class="lol-account" style="margin : 10px 0 0 0;">
-                                    <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                    <?php if (isset($fullStars) && isset($emptyStars)): ?>
-                                        <div class="user-rating">
-                                            <p>
-                                                <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                                    <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                                <?php endfor; ?>
-                                                <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                                    <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                                <?php endfor; ?>
-                                            </p>
-                                        </div>
-                                    <?php endif; ?>                        
+                                    <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>                   
                                 </div>
                             <?php endif; ?>
                         </div>
