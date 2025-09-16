@@ -2255,13 +2255,13 @@ class UserController
             // Get important datas
             if (isset($_GET['username'])) 
             {
+                $this->initializeLanguage();
                 $username = $_GET['username'];
                 if ($_GET['username'] === $_SESSION['username'])
                 {
                     header("Location: /userProfile");
                     exit();
                 }
-                $this->initializeLanguage();
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $userRating = 0;
@@ -2316,6 +2316,7 @@ class UserController
         {
             if (isset($_GET['username']))
             {
+                $this->initializeLanguage();
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
