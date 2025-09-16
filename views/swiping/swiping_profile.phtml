@@ -198,6 +198,20 @@
                 <?php endif; ?>  
             </span>
         <?php endif; ?>
+        <?php if ($user['user_game'] == 'League of Legends'): ?> 
+            <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_noChamp'] === 0 && (int)$lolUser['lol_verified'] === 1): ?>
+                <div class="user-rating-outside">
+                    <p>
+                        <?php for ($i = 0; $i < $fullStars; $i++): ?>
+                            <span class="star full-star">&#9733;</span> <!-- filled star -->
+                        <?php endfor; ?>
+                        <?php for ($i = 0; $i < $emptyStars; $i++): ?>
+                            <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
+                        <?php endfor; ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
     <div id="user-bottom-container"> <!--Flex column -->
         <nav id="user-bottom-nav"> <!--Flex row with JS -->
@@ -278,18 +292,6 @@
                                     <?php endif; ?>                        
                                 </div>
                             <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                    <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_noChamp'] === 0): ?>
-                        <div class="user-rating">
-                            <p>
-                                <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                    <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                <?php endfor; ?>
-                                <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                    <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                <?php endfor; ?>
-                            </p>
                         </div>
                     <?php endif; ?>
                     <?php else : ?> <!-- Valorant -->

@@ -174,6 +174,7 @@ body > div[style*='position: fixed'] {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
+    position: relative;
 }
 
 #user-info h2 {
@@ -351,6 +352,7 @@ body > div[style*='position: fixed'] {
     margin: 0 auto 20px auto;
     gap: 20px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .side-column {
@@ -495,8 +497,23 @@ body > div[style*='position: fixed'] {
 .aboutme-match .champions .user-rating {
     position: absolute;
     bottom: 15px;
-    left: 15%;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.user-rating-outside {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ddd2d2;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 7px;
+}
+
+.dark-mode .user-rating-outside {
+    background-color: var(--dark-ligher-grey);
 }
 
 .other-data-profile {
@@ -1942,7 +1959,8 @@ input:checked + .slider:before {
     color: white;
 }
 
-.user-rating {
+.user-rating,
+.user-rating-outside {
     font-size: 1em;
 }
 
@@ -1951,7 +1969,8 @@ input:checked + .slider:before {
     margin-right: 2px;
 }
 
-.user-rating .full-star {
+.user-rating .full-star,
+.user-rating-outside .full-star {
     color: var(--main--red) !important;
 }
 
