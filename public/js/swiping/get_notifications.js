@@ -47,7 +47,7 @@ function fetchFriendRequest(userId) {
                         )
                         if (displayMoneyWon) {
                             displayMoneyWon.innerHTML = `
-                                ${data.amountGivenDailyReward}
+                                ${data.rewardAmount}
                                 <div style="font-size:14px;margin-top:5px;">Streak: ${data.streak}</div>
                             `
                             displayMoneyWon.style.display = 'block'
