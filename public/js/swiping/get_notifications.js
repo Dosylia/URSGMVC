@@ -115,13 +115,15 @@ function fetchFriendRequest(userId) {
                 if (data.givenDailyReward || data.givenRequestReward) {
                     if (data.givenDailyReward) {
                         displayNotification(
-                            `You just won 500 credits for connecting today!`,
+                            `You just won ${data.rewardAmount} credits for connecting today!`,
                             userId
                         )
                         if (displayMoneyWon) {
-                            displayMoneyWon.textContent = `500`
+                            displayMoneyWon.innerHTML = `
+                                ${data.rewardAmount}
+                                <div style="font-size:14px;margin-top:5px;">Streak: ${data.streak}</div>
+                            `
                             displayMoneyWon.style.display = 'block'
-
                             displayMoneyWon.style.animation = 'none'
                             displayMoneyWon.offsetHeight
                             displayMoneyWon.style.animation =

@@ -1135,9 +1135,6 @@ class FriendRequestController
 
         // --- Handle streak + daily reward ---
         if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
-            $rewardAmount = 500 + ($streak * 100);
-            $this->user->addCurrency($userId, $rewardAmount);
-
             if ($this->user->updateLastRewardTime($userId)) {
                 $givenDailyReward = true;
 
@@ -1152,6 +1149,8 @@ class FriendRequestController
                     $this->user->resetStreak($userId);
                     $streak = 0;
                 }
+                $rewardAmount = 500 + ($streak * 100);
+                $this->user->addCurrency($userId, $rewardAmount);
             }
         }
 

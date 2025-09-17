@@ -7078,9 +7078,18 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    .star {
+        font-size: 1em;
+    }
+
+    .user-rating-outside {
+        bottom: 5px;
+        padding: 1px 3px;
+    }
+
     #champion-picker #skipSelection-btn {
-        padding: 10px 20px;
-        font-size: 1.5rem;
+        padding: 10px 15px;
+        font-size: 1rem;
     }
 
     .swipe-home-card {

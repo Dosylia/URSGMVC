@@ -433,6 +433,8 @@ class DiscordController
                 exit();
             }
 
+            $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+
             $fullName = $discordUsername;
             $firstName = $discordUsername;
             $googleFamilyName = $discordUsername;
