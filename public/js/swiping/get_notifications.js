@@ -42,7 +42,7 @@ function fetchFriendRequest(userId) {
                 if (data.givenDailyReward || data.givenRequestReward) {
                     if (data.givenDailyReward) {
                         displayNotification(
-                            `You just won ${data.amountGivenDailyReward} credits for connecting today!`,
+                            `You just won ${data.rewardAmount} credits for connecting today!`,
                             userId
                         )
                         if (displayMoneyWon) {
@@ -81,7 +81,11 @@ function fetchFriendRequest(userId) {
                     (request) => request.type !== 'pending'
                 )
                 const pendingWithType = data.pendingRequests
-                    .filter((notif) => notif.fr_notifReadPending === 0 || notif.fr_notifReadPending === "0")
+                    .filter(
+                        (notif) =>
+                            notif.fr_notifReadPending === 0 ||
+                            notif.fr_notifReadPending === '0'
+                    )
                     .map((notif) => ({ ...notif, type: 'pending' }))
                 AllNotifications.push(...pendingWithType)
                 lastNotifCountPending = data.pendingRequests.length
@@ -754,7 +758,6 @@ function fillUnread(unreadCounts) {
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami
 function updateUnreadMessagesForFriends(unreadCounts) {
-    console.log('unread counts:', unreadCounts)
     const newGlobalUnreadCounts = {}
 
     // Update with new unread counts
