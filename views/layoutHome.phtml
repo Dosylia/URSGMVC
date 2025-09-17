@@ -207,6 +207,17 @@
             }
         });
      </script>
+
+     <!-- Clear Master token in local Storage if get has clearToken -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('clearToken')) {
+                localStorage.removeItem('masterTokenWebsite');
+            }
+        });
+    </script>
+
 </body>
 
 </html>

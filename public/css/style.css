@@ -1393,6 +1393,10 @@ span.form-error {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
+.dark-mode #skip-preferences-btn {
+    color: white;
+}
+
 #selected-roles-valorant,
 #selected-ranks-valorant,
 #selected-ranks-lol,
@@ -3212,6 +3216,7 @@ dialog .title_generalbox,
 
 .friend-list {
     width: 100%;
+    position: relative;
 }
 
 .friend {

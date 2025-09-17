@@ -1370,7 +1370,7 @@ class GoogleUserController
             session_unset();
             session_destroy();
     
-            header("location:/?message=You are now offline");
+            header("location:/?message=You are now offline&clearToken=true");
             exit();
         } else {
             if (isset($_COOKIE['googleId'])) {
@@ -1382,7 +1382,7 @@ class GoogleUserController
                 setcookie('auth_token', "", time() - 42000, "/");
                 unset($_COOKIE['auth_token']);
             }
-            header("location:/?message=You are now offline");
+            header("location:/?message=You are now offline&clearToken=true");
             exit();
         }
     }

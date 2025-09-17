@@ -356,6 +356,8 @@ class DiscordController
                     $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                     $_SESSION['game'] = $user['user_game'];
 
+                    $this->discord->saveDiscordData($user['user_id'], $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+
                     if ($user['user_game'] == 'League of Legends') {
                         $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
 
@@ -432,8 +434,6 @@ class DiscordController
                 header('Location: /?message=An URSG account already exist with that email.');
                 exit();
             }
-
-            $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
 
             $fullName = $discordUsername;
             $firstName = $discordUsername;

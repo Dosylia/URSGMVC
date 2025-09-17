@@ -214,6 +214,35 @@ span.chat-name span.friendlist-name {
     color: white;
 }
 
+.drop-zone-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 3px dashed #4caf50;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.drop-zone-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.drop-zone-text {
+    color: white;
+    font-size: 24px;
+    text-align: center;
+}
+
 @media only screen and (max-width: 1420px) {
     .chat-interface {
         width: 35%;
