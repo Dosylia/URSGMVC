@@ -1769,68 +1769,6 @@ input:checked + .slider:before {
     position: relative;
 }
 
-.buttonSwipe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 7rem;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeInOut 1s ease-in-out;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
-    color: white;
-}
-
-.buttonSwipe.fa-heart {
-    color: green;
-}
-
-.buttonSwipe.fa-xmark {
-    color: red;
-}
-
-@keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: scale(0.5) translate(-50%, -50%);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.2) translate(-50%, -50%);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(1.5) translate(-50%, -50%);
-    }
-}
-
-#swipe_yes,
-#swipe_no {
-    cursor: pointer;
-    border: 1px solid rgb(192, 181, 181);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    background: linear-gradient(135deg, white, #e0e0e0);
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-}
-
-#swipe_yes:hover,
-#swipe_no:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 5px rgba(0, 0, 0, 0.1);
-}
-
-#swipe_no i {
-    color: red;
-    font-size: 5rem;
-}
-
-#swipe_yes i {
-    color: green;
-    font-size: 3.7rem;
-}
-
 .profile-picture-container {
     position: relative;
     display: inline-block;
@@ -3349,17 +3287,6 @@ dialog .title_generalbox,
     color: #888888;
 }
 
-.row_buttons_swipe {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-    text-align: center;
-}
-
-.row_buttons_swipe img {
-    height: 75%;
-}
-
 .accept_friend_button {
     background: #93c47d;
     border-radius: 11px;
@@ -3592,20 +3519,6 @@ dialog .title_generalbox,
 
 .dark-mode .faq_row_box h3 {
     color: white;
-}
-
-.dark-mode #swipe_yes,
-.dark-mode #swipe_no {
-    border: 1px solid rgb(54, 52, 52);
-    background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
-    box-shadow: 0 2px 3px rgba(255, 255, 255, 0.1),
-        0 0.5px 1.5px rgba(255, 255, 255, 0.08);
-}
-
-.dark-mode #swipe_yes:hover,
-.dark-mode #swipe_no:hover {
-    box-shadow: 0 3px 4px rgba(255, 255, 255, 0.15),
-        0 1.5px 2.5px rgba(255, 255, 255, 0.1);
 }
 
 .dark-mode .section_form_signup {
@@ -6764,20 +6677,6 @@ dialog .title_generalbox {
         font-size: 1rem;
     }
 
-    #swipe_yes,
-    #swipe_no {
-        width: 75px;
-        height: 75px;
-    }
-
-    #swipe_no i {
-        font-size: 3.5rem;
-    }
-
-    #swipe_yes i {
-        font-size: 3.5rem;
-    }
-
     #dialogCookie {
         width: unset;
     }
@@ -7446,21 +7345,6 @@ dialog .title_generalbox {
 
     .axisLabel {
         font-size: 14px;
-    }
-
-    #swipe_yes,
-    #swipe_no {
-        width: 50px;
-        height: 50px;
-    }
-
-    #swipe_no i,
-    #swipe_yes i {
-        font-size: 2rem;
-    }
-
-    .row_buttons_swipe {
-        gap: 30px;
     }
 
     .about-users-containers {

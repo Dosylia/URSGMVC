@@ -901,7 +901,8 @@ class UserController
 
     }
 
-    public function addBonusPicture() {
+    public function addBonusPicture() 
+    {
         $targetDir = "public/upload/";
         $originalFileName = basename($_FILES["file"]["name"]);
         $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
