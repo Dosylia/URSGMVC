@@ -11,6 +11,7 @@
     font-family: 'Geologica', sans-serif;
     color: black;
     position: relative;
+    padding-bottom: 50px;
 }
 
 .dark-mode .swiping-ctn {
