@@ -180,8 +180,8 @@ class RiotController
 
 
                                 $badge = $this->items->getBadgeByName("Riot account");
-                                if ($badge && !$this->items->userOwnsItem($userId, $badge['items_id'])) {
-                                    $this->items->addItemToUser($userId, $badge['items_id']);
+                                if ($badge && !$this->items->userOwnsItem($user['user_id'], $badge['items_id'])) {
+                                    $this->items->addItemToUser($user['user_id'], $badge['items_id']);
                                 }
                             }
                         }
