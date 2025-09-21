@@ -7,6 +7,7 @@ use models\Valorant;
 use models\User;
 use models\GoogleUser;
 use models\UserLookingFor;
+use models\Items;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
@@ -21,6 +22,7 @@ class RiotController
     private Valorant $valorant;
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
+        private Items $items;
     private $tokenEndpoint = 'https://auth.riotgames.com/token';
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 
@@ -32,6 +34,7 @@ class RiotController
         $this->valorant = new Valorant();
         $this -> googleUser = new GoogleUser();
         $this -> userlookingfor = new userLookingFor();
+        $this->items = new Items();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -173,6 +176,12 @@ class RiotController
                                 if (!$updateSummoner) {
                                     header('Location: /userProfile?message=Couldnt bind account');
                                     exit();
+                                }
+
+
+                                $badge = $this->items->getBadgeByName("Riot account");
+                                if ($badge && !$this->items->userOwnsItem($userId, $badge['items_id'])) {
+                                    $this->items->addItemToUser($userId, $badge['items_id']);
                                 }
                             }
                         }
