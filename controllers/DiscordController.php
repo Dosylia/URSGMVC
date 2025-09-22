@@ -605,18 +605,17 @@ class DiscordController
         $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
         if ($hasDiscordAccount) {
             $avatarUrl = "https://cdn.discordapp.com/avatars/{$hasDiscordAccount['discord_id']}/{$hasDiscordAccount['discord_avatar']}.png";
+            $embedFields[] = [
+                "name" => "🔗 Discord Account",
+                "value" => "<@{$hasDiscordAccount['discord_id']}>",
+                "inline" => true
+            ];
             $embed = [
                 "title" => "{$hasDiscordAccount['discord_username']} is looking for players!",
                 "color" => hexdec("F47FFF"),
                 "fields" => $embedFields,
                 "timestamp" => date("c"),
                 "thumbnail" => ["url" => $avatarUrl]
-            ];
-
-            $embedFields[] = [
-                "name" => "🔗 Discord Account",
-                "value" => "<@{$hasDiscordAccount['discord_id']}>",
-                "inline" => true
             ];
         } else {
             $embed = [
