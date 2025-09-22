@@ -995,14 +995,14 @@ class DiscordController
             // Update social links
             $updateDiscord = $this->user->updateDiscord($userId, $discordUsername);
             if ($updateDiscord) {
-                header('Location: /profile?message=Discord account linked successfully.');
+                header('Location: /userProfile?message=Discord account linked successfully.');
                 exit();
             } else {
-                header('Location: /profile?error=Failed to update Discord username.');
+                header('Location: /userProfile?error=Failed to update Discord username.');
                 exit();
             }
         } else {
-            header('Location: /profile?error=Failed to link Discord account. It might be already linked to another user.');
+            header('Location: /userProfile?error=Failed to link Discord account. It might be already linked to another user.');
             exit();
         }
     }
