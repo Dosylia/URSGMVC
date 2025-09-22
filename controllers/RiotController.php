@@ -22,7 +22,7 @@ class RiotController
     private Valorant $valorant;
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
-        private Items $items;
+    private Items $items;
     private $tokenEndpoint = 'https://auth.riotgames.com/token';
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 

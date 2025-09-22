@@ -9,6 +9,7 @@ use models\UserLookingFor;
 use models\GoogleUser;
 use models\ChatMessage;
 use models\Discord;
+use models\Items;
 use traits\SecurityController;
 use services\DiscordBotService;
 
@@ -21,6 +22,7 @@ class DiscordController
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
     private Discord $discord;
+    private Items $items;
     private $botToken;
     private $guildId;
     private $redirectUri;
@@ -33,6 +35,7 @@ class DiscordController
         $this -> googleUser = new GoogleUser();
         $this -> discord = new Discord();
         $this -> userlookingfor = new userLookingFor();
+        $this->items = new Items();
     }
 
     public function getGoogleUserModel(): GoogleUser
