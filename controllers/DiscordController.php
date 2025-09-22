@@ -999,9 +999,9 @@ class DiscordController
             if ($updateDiscord) {
                 $bindDiscord = true;
             }
+        } else {
+            $bindDiscord = $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
         }
-
-        $bindDiscord = $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
 
         if ($bindDiscord) {
             // Update social links
