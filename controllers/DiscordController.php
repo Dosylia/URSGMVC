@@ -606,11 +606,17 @@ class DiscordController
         if ($hasDiscordAccount) {
             $avatarUrl = "https://cdn.discordapp.com/avatars/{$hasDiscordAccount['discord_id']}/{$hasDiscordAccount['discord_avatar']}.png";
             $embed = [
-                "title" => "<@{$hasDiscordAccount['discord_id']}> is looking for players!",
+                "title" => "{$hasDiscordAccount['discord_username']} is looking for players!",
                 "color" => hexdec("F47FFF"),
                 "fields" => $embedFields,
                 "timestamp" => date("c"),
                 "thumbnail" => ["url" => $avatarUrl]
+            ];
+
+            $embedFields[] = [
+                "name" => "🔗 Discord Account",
+                "value" => "<@{$hasDiscordAccount['discord_id']}>",
+                "inline" => true
             ];
         } else {
             $embed = [
