@@ -46,6 +46,32 @@ class Discord extends DataBase
         }
     }  
 
+    public function updateDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken) 
+    {
+        $query = $this->bdd->prepare("
+                            UPDATE `discord`
+                            SET 
+                                `discord_id` = ?,
+                                `discord_username` = ?,
+                                `discord_email` = ?,
+                                `discord_avatar` = ?,
+                                `access_token` = ?,
+                                `refresh_token` = ?
+                            WHERE `user_id` = ?
+        ");
+
+        $updateDiscordData = $query->execute([$discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken, $userId]);
+    
+        if($updateDiscordData)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;  
+        }
+    }
+
     public function getDiscordUsername($userId)
     {
         $query = $this->bdd->prepare("

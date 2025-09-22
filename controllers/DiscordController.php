@@ -604,11 +604,13 @@ class DiscordController
 
         $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
         if ($hasDiscordAccount) {
+            $avatarUrl = "https://cdn.discordapp.com/avatars/{$hasDiscordAccount['discord_id']}/{$hasDiscordAccount['discord_avatar']}.png";
             $embed = [
                 "title" => "<@{$hasDiscordAccount['discord_id']}> is looking for players!",
-                "color" => hexdec("F47FFF"), // A pinkish embed color
+                "color" => hexdec("F47FFF"),
                 "fields" => $embedFields,
-                "timestamp" => date("c")
+                "timestamp" => date("c"),
+                "thumbnail" => ["url" => $avatarUrl]
             ];
         } else {
             $embed = [
@@ -989,6 +991,15 @@ class DiscordController
         $refreshToken = $tokenInfo['refresh_token'] ?? null;
         $expiresIn = $tokenInfo['expires_in'] ?? null;
         $userId = $_SESSION['userId'];
+
+        $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
+        $bindDiscord = false;
+        if ($hasDiscordAccount) {
+            $updateDiscord = $this->discord->updateDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+            if ($updateDiscord) {
+                $bindDiscord = true;
+            }
+        }
 
         $bindDiscord = $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
 
