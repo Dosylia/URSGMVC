@@ -1012,6 +1012,11 @@ class DiscordController
             // Update social links
             $updateDiscord = $this->user->updateDiscord($userId, $discordUsername);
             if ($updateDiscord) {
+                // Give discord badge 
+                $badge = $this->items->getBadgeByName("Discord account");
+                if ($badge && !$this->items->userOwnsItem($userId, $badge['items_id'])) {
+                    $this->items->addItemToUser($userId, $badge['items_id']);
+                }
                 header('Location: /userProfile?message=Discord account linked successfully.');
                 exit();
             } else {
