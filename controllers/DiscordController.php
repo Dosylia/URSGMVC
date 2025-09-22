@@ -584,16 +584,6 @@ class DiscordController
             ]
         ];
 
-        // check if user has a discord account binded
-        $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
-        if ($hasDiscordAccount) {
-            $embedFields[] = [
-                "name" => "🔗 Discord Account",
-                "value" => "<@{$hasDiscordAccount['discord_id']}>",
-                "inline" => true
-            ];
-        }
-
         if ($playerFinder) {
             $embedFields[] = [
                 "name" => "🎧 Voice Chat",
@@ -612,12 +602,23 @@ class DiscordController
             ];
         }
 
-        $embed = [
-            "title" => "{$user['user_username']} is looking for players!",
-            "color" => hexdec("F47FFF"), // A pinkish embed color
-            "fields" => $embedFields,
-            "timestamp" => date("c")
-        ];
+        $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
+        if ($hasDiscordAccount) {
+            $embed = [
+                "title" => "<@{$hasDiscordAccount['discord_id']}> is looking for players!",
+                "color" => hexdec("F47FFF"), // A pinkish embed color
+                "fields" => $embedFields,
+                "timestamp" => date("c")
+            ];
+        } else {
+            $embed = [
+                "title" => "{$user['user_username']} is looking for players!",
+                "color" => hexdec("F47FFF"), // A pinkish embed color
+                "fields" => $embedFields,
+                "timestamp" => date("c")
+            ];
+        }
+
 
         if (!empty($extraMessage)) {
             $embed["description"] = "📣 *$extraMessage*";
