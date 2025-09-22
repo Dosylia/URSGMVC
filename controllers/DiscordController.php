@@ -584,6 +584,16 @@ class DiscordController
             ]
         ];
 
+        // check if user has a discord account binded
+        $hasDiscordAccount = $this->discord->getDiscordAccount($userId);
+        if ($hasDiscordAccount) {
+            $embedFields[] = [
+                "name" => "🔗 Discord Account",
+                "value" => "<@{$hasDiscordAccount['discord_id']}>",
+                "inline" => true
+            ];
+        }
+
         if ($playerFinder) {
             $embedFields[] = [
                 "name" => "🎧 Voice Chat",
@@ -908,6 +918,93 @@ class DiscordController
 
         header("Location: $discordAuthUrl");
         exit();
+    }
+
+    public function discordBind()
+    {
+        // Use data received from discord to bind account
+        require_once 'keys.php';
+        $clientId = $discordClientId;
+        $clientSecret = $discordClientSecret;
+        $redirectUri = "https://ur-sg.com/discordBind";
+
+        $code = $_GET['code'] ?? null;
+
+        if (!$code) {
+            die("Authorization code missing.");
+        }
+        
+        $tokenUrl = "https://discord.com/api/oauth2/token";
+        $data = [
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret,
+            "grant_type" => "authorization_code",
+            "code" => $code,
+            "redirect_uri" => $redirectUri,
+        ];
+
+                $options = [
+            "http" => [
+                "header" => "Content-Type: application/x-www-form-urlencoded",
+                "method" => "POST",
+                "content" => http_build_query($data),
+            ],
+        ];
+    
+        $context = stream_context_create($options);
+        $response = file_get_contents($tokenUrl, false, $context);
+        $tokenInfo = json_decode($response, true);
+    
+        if (!isset($tokenInfo['access_token'])) {
+            die("Failed to get access token.");
+        }
+    
+        // Use the access token to get user info
+        $userInfoUrl = "https://discord.com/api/users/@me";
+        $options = [
+            "http" => [
+                "header" => "Authorization: Bearer " . $tokenInfo['access_token'],
+                "method" => "GET",
+            ],
+        ];
+    
+        $context = stream_context_create($options);
+        $response = file_get_contents($userInfoUrl, false, $context);
+        $userInfo = json_decode($response, true);
+    
+        if (!isset($userInfo['id'])) {
+            die("Failed to fetch Discord user data.");
+        }
+
+        if (!isset($_SESSION['userId'])) {
+            die("You must be logged in to bind your Discord account.");
+        }
+
+        $discordId = $userInfo['id'];
+        $discordUsername = $userInfo['username'];
+        $discordEmail = $userInfo['email']; 
+        $discordAvatar = $userInfo['avatar'] ?? null;
+        $accessToken = $tokenInfo['access_token'];
+        $refreshToken = $tokenInfo['refresh_token'] ?? null;
+        $expiresIn = $tokenInfo['expires_in'] ?? null;
+        $userId = $_SESSION['userId'];
+
+        $bindDiscord = $this->discord->saveDiscordData($userId, $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+
+        if ($bindDiscord) {
+            // Update social links
+            $updateDiscord = $this->user->updateDiscord($userId, $discordUsername);
+            if ($updateDiscord) {
+                header('Location: /profile?message=Discord account linked successfully.');
+                exit();
+            } else {
+                header('Location: /profile?error=Failed to update Discord username.');
+                exit();
+            }
+        } else {
+            header('Location: /profile?error=Failed to link Discord account. It might be already linked to another user.');
+            exit();
+        }
     }
 
     public function handleMobileFlow($discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken, $expiresIn)

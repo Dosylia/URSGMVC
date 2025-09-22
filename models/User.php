@@ -701,6 +701,26 @@ class User extends DataBase
         }
     }
 
+    public function updateDiscord($userId, $discordUsername)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user` 
+                                        SET
+                                            `user_discord` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $updateDiscordTest = $query->execute([$discordUsername, $userId]);
+
+        if ($updateDiscordTest) {
+            return true;
+        } else {
+            return false;  
+        }
+    }
+
     public function uploadPicture($username, $fileName) 
     {
         $query = $this->bdd->prepare("

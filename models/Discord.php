@@ -143,4 +143,17 @@ class Discord extends DataBase
         $expiredChannels = $query->fetchAll();
         return $expiredChannels;
     }
+
+    public function getDiscordAccount($userId)
+    {
+        $query = $this->bdd->prepare("
+                            SELECT *
+                            FROM `discord`
+                            WHERE `user_id` = ?
+        ");
+
+        $query->execute([$userId]);
+        $discordAccount = $query->fetch();
+        return $discordAccount;
+    }
 }

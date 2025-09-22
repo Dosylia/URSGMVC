@@ -271,7 +271,8 @@ $actionMap = [
     'adminGrantItem' => [AdminController::class, 'adminGrantItem'],
     'adminRemoveItem' => [AdminController::class, 'adminRemoveItem'],
     'connectRiotMobile' => [RiotController::class, 'connectRiotMobile'],
-    'connectDiscordMobile' => [DiscordController::class, 'connectDiscordMobile']
+    'connectDiscordMobile' => [DiscordController::class, 'connectDiscordMobile'],
+    'discordBind' => [DiscordController::class, 'discordBind'],
 ];
 
 $action = "home";
