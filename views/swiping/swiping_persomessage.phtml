@@ -3,6 +3,7 @@
         <div class="modal-content">
             <span id="close-modal" class="close">&times;</span>
             <h2><?= $this->_('looking_for_title') ?></h2>
+            <button id="bind-discord-looking"><?= $this->_('bind_discord_looking') ?></button>
             <?php if (
                 ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
                 $user['user_game'] === "Valorant"

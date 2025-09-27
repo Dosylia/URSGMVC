@@ -219,6 +219,7 @@ return [
     'rate_friend_message' => 'You can rate a friend after playing with them.',
     'rate_friend_submit' => 'Rate',
     'rate_friend_score' => 'Points',
+    'bind_discord_looking' => 'Bind your discord account for your @ to appear on our server message',
 
     //leaderboard page
     'store' => 'Store',

@@ -243,6 +243,18 @@ span.chat-name span.friendlist-name {
     text-align: center;
 }
 
+#bind-discord-looking {
+    background-color: #5865f2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 1420px) {
     .chat-interface {
         width: 35%;

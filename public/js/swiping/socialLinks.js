@@ -47,9 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const platform = container.dataset.platform // Assuming each platform has a data-platform attribute
 
             if (platform === 'discord') {
-                window.location.href =
-                    'https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordBind&scope=identify+guilds+email+connections'
-                return
+                window.open(
+                    'https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordBind&scope=identify+guilds+email+connections',
+                    '_blank'
+                )
             }
 
             // Create input field and replace the username with the input

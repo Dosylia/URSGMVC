@@ -220,6 +220,7 @@ return [
     'rate_friend_message' => 'Du kannst einen Freund bewerten, nachdem du mit ihm gespielt hast.',
     'rate_friend_submit' => 'Bewerten',
     'rate_friend_score' => 'Punkte',
+    'bind_discord_looking' => 'Verknüpfe dein Discord-Konto, damit dein @ in unserer Server-Nachricht erscheint',
 
     //leaderboard page
     'store' => 'Shop',

@@ -221,6 +221,7 @@ return [
     'rate_friend_message' => 'Puedes evaluar a un amigo después de haber jugado con él.',
     'rate_friend_submit' => 'Evaluar',
     'rate_friend_score' => 'Puntuación',
+    'bind_discord_looking' => 'Vincula tu cuenta de Discord para que tu @ aparezca en el mensaje de nuestro servidor',
 
     //leaderboard page
     'store' => 'Tienda',

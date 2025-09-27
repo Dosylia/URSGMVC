@@ -222,6 +222,7 @@ return [
     'rate_friend_message' => 'Vous pouvez évaluer un ami après avoir joué avec lui',
     'rate_friend_submit' => 'Évaluer',
     'rate_friend_score' => 'Points',
+    'bind_discord_looking' => 'Liez votre compte Discord pour que votre @ apparaisse sur le message de notre serveur',
 
 
     //leaderboard page
