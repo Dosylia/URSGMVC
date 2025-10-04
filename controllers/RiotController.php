@@ -8,6 +8,7 @@ use models\User;
 use models\GoogleUser;
 use models\UserLookingFor;
 use models\Items;
+use models\RatingGames;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
@@ -23,6 +24,7 @@ class RiotController
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
     private Items $items;
+    private RatingGames $rating;
     private $tokenEndpoint = 'https://auth.riotgames.com/token';
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 
@@ -35,6 +37,7 @@ class RiotController
         $this -> googleUser = new GoogleUser();
         $this -> userlookingfor = new userLookingFor();
         $this->items = new Items();
+        $this -> rating = new RatingGames();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -901,7 +904,7 @@ class RiotController
 
             // Check if match already been rated
             if ($lastMatchId) {
-                $existingRating = $this->ratings->getRatingByMatchId($lastMatchId);
+                $existingRating = $this->rating->getRatingByMatchId($lastMatchId);
                 $playedTogether = !$existingRating; // true if not rated, false if rated
             } else {
                 $playedTogether = false;
