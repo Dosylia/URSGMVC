@@ -895,21 +895,16 @@ class RiotController
 
             // Check intersection
             $commonMatches = array_intersect($userMatches, $friendMatches);
-            $playedTogether = count($commonMatches) > 0;
+            $orderedCommonMatches = array_values(array_intersect($userMatches, $friendMatches));
+            $lastMatchId = $orderedCommonMatches[0] ?? null;
+            $playedTogether = false;
 
             // Check if match already been rated
-            if ($playedTogether) {
-                // Get the most recent match played together
-                // If $userMatches is ordered from newest to oldest, preserve that order
-                $orderedCommonMatches = array_values(array_intersect($userMatches, $friendMatches));
-                $lastMatchId = $orderedCommonMatches[0] ?? null;
-
-                if ($lastMatchId) {
-                    $existingRating = $this->ratings->getRatingByMatchId($lastMatchId);
-                    if ($existingRating) {
-                        $playedTogether = false; // Already rated
-                    }
-                }
+            if ($lastMatchId) {
+                $existingRating = $this->ratings->getRatingByMatchId($lastMatchId);
+                $playedTogether = !$existingRating; // true if not rated, false if rated
+            } else {
+                $playedTogether = false;
             }
 
             echo json_encode([
