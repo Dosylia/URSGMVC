@@ -91,4 +91,18 @@ class RatingGames extends DataBase
         return $updateRating;
     }
 
+    public function getRatingByMatchId($matchId)
+    {
+        $query = $this->bdd->prepare("
+                                    SELECT rater_id, rated_user_id, rating
+                                    FROM user_ratings
+                                    WHERE match_id = ?
+        ");
+        
+        $query->execute([$matchId]);
+        $getRatingByMatchId = $query->fetchAll();
+
+        return $getRatingByMatchId;
+    }
+
 }
