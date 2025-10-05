@@ -80,6 +80,23 @@ class User extends DataBase
         }
     }
 
+    public function creditUserCurrency($userId, $coins)
+    {
+        $query = $this->bdd->prepare("
+                                    UPDATE `user`
+                                    SET user_currency = user_currency + ?
+                                    WHERE user_id = ?
+        ");
+
+        $creditCurrencyTest = $query->execute([$coins, $userId]);
+        
+        if ($creditCurrencyTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }   
+
     public function addCurrencySnapshot($userId, $currency)
     {
         $query = $this -> bdd -> prepare("
@@ -847,6 +864,20 @@ class User extends DataBase
                                         `user`
                                     SET
                                         user_isVip = 1
+                                    WHERE
+                                        user_id = ?
+        ");
+    
+        $query->execute([$userId]);
+    }
+
+    public function grantBoostRole($userId)
+    {
+        $query = $this->bdd->prepare("
+                                    UPDATE
+                                        `user`
+                                    SET
+                                        user_isBoost = 1
                                     WHERE
                                         user_id = ?
         ");
