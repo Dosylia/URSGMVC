@@ -30,8 +30,8 @@ class PaymentController
         $this->payment = new Payment();
         $this->user = new User();
         $this->googleUser = new GoogleUser();
-        $this-> items = new Items();
-        Stripe::setApiKey($_ENV['striple_secret_key']);
+        $this->items = new Items();
+        Stripe::setApiKey($_ENV['stripe_secret_key']);
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -72,7 +72,7 @@ class PaymentController
     public function buyCurrencyWebsite(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
             return;
         }
 
@@ -80,12 +80,12 @@ class PaymentController
         $data = json_decode($_POST['param']);
 
         if (!$token) {
-            echo json_encode(['success' => false, 'error' => 'Missing or invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
             return;
         }
 
         if (!isset($data->userId, $data->itemId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing userId or itemId']);
+            echo json_encode(['success' => false, 'message' => 'Missing userId or itemId']);
             return;
         }
 
@@ -93,19 +93,19 @@ class PaymentController
         $itemId = $this->validateInput($data->itemId);
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Token validation failed']);
+            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
             return;
         }
 
         $user = $this->user->getUserById($_SESSION['userId']);
         if (!$user || $user['user_id'] !== (int)$userId) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return;
         }
 
         $itemData = $this->items->getItemById($itemId);
         if (!$itemData) {
-            echo json_encode(['success' => false, 'error' => 'Item not found']);
+            echo json_encode(['success' => false, 'message' => 'Item not found']);
             return;
         }
 
@@ -115,7 +115,7 @@ class PaymentController
         try {
             $this->createStripeCheckout($userId, $itemData['name'], $amountUSD, $reward, 'currency');
         } catch (\Exception $e) {
-            echo json_encode(['success' => false, 'error' => 'Payment creation failed: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()]);
             return;
         }
     }
@@ -125,7 +125,7 @@ class PaymentController
     public function buyPremiumBoostWebsite(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
             return;
         }
 
@@ -133,19 +133,19 @@ class PaymentController
         $data = json_decode($_POST['param']);
 
         if (!$token) {
-            echo json_encode(['success' => false, 'error' => 'Missing or invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
             return;
         }
 
         if (!isset($data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing userId']);
+            echo json_encode(['success' => false, 'message' => 'Missing userId']);
             return;
         }
 
         $userId = $this->validateInput($data->userId);
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Token validation failed']);
+            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
             return;
         }
 
@@ -161,7 +161,7 @@ class PaymentController
         try {
             $this->createStripeCheckout($userId, 'URSG Premium Boost', $amountUSD, $reward, 'vip');
         } catch (\Exception $e) {
-            echo json_encode(['success' => false, 'error' => 'Payment creation failed: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()]);
             return;
         }
     }
@@ -177,7 +177,7 @@ class PaymentController
             $user = $this->user->getUserById($_SESSION['userId']);
 
             if ($user['user_id'] !== (int) $userId) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
                 return;
             }
 
@@ -185,14 +185,14 @@ class PaymentController
             echo json_encode(['success' => true, 'message' => "Payment successful! You have received $currency SoulHard."]);
             return;
         } else {
-            echo json_encode(['success' => false, 'error' => "Missing parameters"]);
+            echo json_encode(['success' => false, 'message' => "Missing parameters"]);
             return;
         }
     }
 
     public function paymentCancel(): void
     {
-        echo json_encode(['success' => false, 'error' => "Payment cancelled"]);
+        echo json_encode(['success' => false, 'message' => "Payment cancelled"]);
         return;
     }
 
