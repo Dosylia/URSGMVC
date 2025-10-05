@@ -191,10 +191,10 @@ class PaymentController
             if ($transaction['type'] === 'currency') {
                 $currency = $transaction['soulhard_amount'];
 
-                echo json_encode(['success' => true, 'message' => "Payment successful! You have received $currency SoulHard."]);
+                header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received ' . $currency . ' SoulHard');
                 return;
             } elseif ($transaction['type'] === 'boost') {
-                echo json_encode(['success' => true, 'message' => "Payment successful! You have received the URSG Premium Boost."]);
+                header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received the URSG Premium Boost');
                 return;
             }
         } else {
