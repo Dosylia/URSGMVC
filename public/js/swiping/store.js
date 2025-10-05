@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {
                 buySoulHard(itemId, userIdHeader)
-            } else if (itemCategory === 'Boost') {
+            } else if (itemCategory === 'boost') {
                 buyPremiumBoost(itemId, userIdHeader)
             } else {
                 buyItem(itemId, userIdHeader)

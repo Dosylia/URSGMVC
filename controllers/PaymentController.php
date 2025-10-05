@@ -111,7 +111,7 @@ class PaymentController
             return;
         }
 
-        $amountUSD = (float)$itemData['items_price'];
+        $amountUSD = 5;
         $reward = 50000; // e.g., 50,000 SoulHard
 
         try {
@@ -179,6 +179,11 @@ class PaymentController
                 return;
             }
 
+            if ($transaction['status'] === 'paid') {
+                echo json_encode(['success' => false, 'message' => 'Transaction already processed']);
+                return;
+            }
+
             $user = $this->user->getUserById($_SESSION['userId']);
             if ($user['user_id'] !== (int)$transaction['user_id']) {
                 echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -190,10 +195,13 @@ class PaymentController
 
             if ($transaction['type'] === 'currency') {
                 $currency = $transaction['soulhard_amount'];
-
+                $this->user->addCurrency($transaction['user_id'], $transaction['soulhard_amount']);
+                $this->payment->updateTransactionStatus($sessionId, 'paid');
                 header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received ' . $currency . ' SoulHard');
                 return;
             } elseif ($transaction['type'] === 'boost') {
+                $this->user->grantBoostRole($transaction['user_id']);
+                $this->payment->updateTransactionStatus($sessionId, 'paid');
                 header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received the URSG Premium Boost');
                 return;
             }
@@ -225,6 +233,7 @@ class PaymentController
         if ($event->type === 'checkout.session.completed') {
             $session = $event->data->object;
             $sessionId = $session->id;
+            error_log("Webhook received for session: $sessionId");
 
             $transaction = $this->payment->getTransactionBySessionId($sessionId);
 
@@ -232,8 +241,10 @@ class PaymentController
                 $this->payment->updateTransactionStatus($sessionId, 'paid');
 
                 if ($transaction['type'] === 'currency') {
+                    error_log("Adding currency to user ID: " . $transaction['user_id']);
                     $this->user->addCurrency($transaction['user_id'], $transaction['soulhard_amount']);
                 } elseif ($transaction['type'] === 'boost') {
+                    error_log("Granting boost role to user ID: " . $transaction['user_id']);
                     $this->user->grantBoostRole($transaction['user_id']);
                 }
             }
