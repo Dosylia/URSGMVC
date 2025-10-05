@@ -30,7 +30,7 @@ class Payment extends DataBase
     public function getTransactionBySessionId($sessionId)
     {
         $query = $this->bdd->prepare("
-            SELECT user_id, soulhard_amount, type
+            SELECT user_id, soulhard_amount, type, amount, status
             FROM payment_transactions
             WHERE stripe_session_id = ?
         ");

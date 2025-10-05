@@ -170,22 +170,33 @@ class PaymentController
 
     public function paymentSuccess(): void
     {
-        if (isset($_GET['session_id'], $_GET['userId'], $_GET['amount'], $_GET['currency'])) {
+        if (isset($_GET['session_id'])) {
             $sessionId = $this->validateInput($_GET['session_id']);
-            $userId = $this->validateInput($_GET['userId']);
-            $amount = $this->validateInput($_GET['amount']);
-            $currency = $this->validateInput($_GET['currency']);
+            $transaction = $this->payment->getTransactionBySessionId($sessionId);
+
+            if (!$transaction) {
+                echo json_encode(['success' => false, 'message' => 'Transaction not found']);
+                return;
+            }
 
             $user = $this->user->getUserById($_SESSION['userId']);
-
-            if ($user['user_id'] !== (int) $userId) {
+            if ($user['user_id'] !== (int)$transaction['user_id']) {
                 echo json_encode(['success' => false, 'message' => 'Unauthorized']);
                 return;
             }
 
-            // Redirect to store with success message
-            echo json_encode(['success' => true, 'message' => "Payment successful! You have received $currency SoulHard."]);
-            return;
+            // Use transaction data for amount/currency
+            $amount = $transaction['amount'];
+
+            if ($transaction['type'] === 'currency') {
+                $currency = $transaction['soulhard_amount'];
+
+                echo json_encode(['success' => true, 'message' => "Payment successful! You have received $currency SoulHard."]);
+                return;
+            } elseif ($transaction['type'] === 'boost') {
+                echo json_encode(['success' => true, 'message' => "Payment successful! You have received the URSG Premium Boost."]);
+                return;
+            }
         } else {
             echo json_encode(['success' => false, 'message' => "Missing parameters"]);
             return;
@@ -194,8 +205,8 @@ class PaymentController
 
     public function paymentCancel(): void
     {
-        echo json_encode(['success' => false, 'message' => "Payment cancelled"]);
-        return;
+        header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment cancelled');
+        exit;
     }
 
     public function handleWebhook()
