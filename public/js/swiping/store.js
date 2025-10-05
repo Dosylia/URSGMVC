@@ -77,8 +77,8 @@ function buySoulHard(itemId, userId) {
             )
             placeholderMessage.innerHTML = ''
             console.log('Success:', data)
-            if (data.success) {
-                placeholderMessage.innerHTML = data.message
+            if (data.success && data.stripeUrl) {
+                window.location.href = data.stripeUrl // Redirect to Stripe Checkout
             } else {
                 placeholderMessage.innerHTML = data.message
             }
@@ -119,8 +119,8 @@ function buyPremiumBoost(itemId, userId) {
             )
             placeholderMessage.innerHTML = ''
             console.log('Success:', data)
-            if (data.success) {
-                placeholderMessage.innerHTML = data.message
+            if (data.success && data.stripeUrl) {
+                window.location.href = data.stripeUrl // Redirect to Stripe Checkout
             } else {
                 placeholderMessage.innerHTML = data.message
             }

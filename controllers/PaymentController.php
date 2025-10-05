@@ -63,8 +63,10 @@ class PaymentController
         // Record pending transaction
         $this->payment->createTransaction($userId, $session->id, $amountUSD, $reward, $type);
 
-        // Redirect to Stripe Checkout
-        header("Location: " . $session->url);
+        echo json_encode([
+            'success' => true,
+            'stripeUrl' => $session->url
+        ]);
         exit;
     }
 
