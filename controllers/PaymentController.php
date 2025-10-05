@@ -109,11 +109,11 @@ class PaymentController
             return;
         }
 
-        $amountUSD = (float)$itemData['item_price'];
+        $amountUSD = (float)$itemData['items_price'];
         $reward = 50000; // e.g., 50,000 SoulHard
 
         try {
-            $this->createStripeCheckout($userId, $itemData['name'], $amountUSD, $reward, 'currency');
+            $this->createStripeCheckout($userId, $itemData['items_name'], $amountUSD, $reward, 'currency');
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()]);
             return;
