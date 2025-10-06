@@ -39,7 +39,7 @@ class PaymentController
         return $this->googleUser;
     }
 
-    public function createStripeCheckout($userId, $productName, $amountUSD, $reward, $type)
+    public function createStripeCheckout($userId, $productName, $amountEUR, $reward, $type)
     {
         $baseUrl = rtrim($_ENV['base_url'], '/') . '/';
 
@@ -47,11 +47,11 @@ class PaymentController
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
-                    'currency' => 'usd',
+                    'currency' => 'eur',
                     'product_data' => [
                         'name' => $productName,
                     ],
-                    'unit_amount' => $amountUSD * 100,
+                    'unit_amount' => $amountEUR * 100,
                 ],
                 'quantity' => 1,
             ]],
@@ -61,7 +61,7 @@ class PaymentController
         ]);
 
         // Record pending transaction
-        $this->payment->createTransaction($userId, $session->id, $amountUSD, $reward, $type);
+        $this->payment->createTransaction($userId, $session->id, $amountEUR, $reward, $type);
 
         echo json_encode([
             'success' => true,
