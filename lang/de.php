@@ -185,6 +185,8 @@ return [
     'add_profile_frame_remove' => 'Entfernen',
     'add_profile_frame_use' => 'Verwenden',
     'no_profile_frame' => 'Du hast noch keinen Profilrahmen',
+    'add_profile_banner' => "Profilbanner ändern",
+    'no_profile_banner' => "Du besitzt noch keine Profilbanner",
     'go_to_store' => 'Zum Shop',
     'no_items' => 'Du hast noch keine Gegenstände',
     'server' => 'Server',

@@ -186,6 +186,8 @@ return [
     'add_profile_frame_remove' => 'Eliminar',
     'add_profile_frame_use' => 'Usar',
     'no_profile_frame' => 'Aún no tienes marcos de perfil',
+    'add_profile_banner' => "Cambiar el banner del perfil",
+    'no_profile_banner' => "Aún no tienes ningún banner de perfil",
     'go_to_store' => 'Ir a la tienda',
     'no_items' => 'Aún no tienes objetos',
     'server' => 'Servidor',
