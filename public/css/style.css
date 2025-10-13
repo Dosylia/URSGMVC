@@ -168,12 +168,16 @@ body > div[style*='position: fixed'] {
     max-height: 100%;
     margin-bottom: 20px;
     position: relative;
+    /* background-size: cover;
+    background-position: center;
+    background-image: url("/public/images/store/AuroraBorealis.png"); */
 }
 
 #user-info {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
+    position: relative;
 }
 
 #user-info h2 {
@@ -200,6 +204,7 @@ body > div[style*='position: fixed'] {
 #profile-picture-container {
     position: relative;
     display: inline-block;
+    z-index: 500;
 }
 
 #user-bottom-nav {
@@ -336,15 +341,40 @@ body > div[style*='position: fixed'] {
 
 #aboutme-container {
     display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-global {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 10px;
     border-radius: 10px;
+    margin: 0 auto 20px auto;
+    gap: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.side-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd2d2;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
     width: 100%;
     margin: auto;
-    flex-direction: column;
     box-sizing: border-box;
+}
+
+.dark-mode .side-column {
+    background-color: #222222;
 }
 
 .aboutme-match {
@@ -352,13 +382,9 @@ body > div[style*='position: fixed'] {
     align-items: center;
     gap: 10px;
     width: 80%;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
     margin-top: 20px;
-}
-
-.aboutme-match.champions-row {
-    width: 90%;
 }
 
 .aboutme-match .profile {
@@ -392,19 +418,9 @@ body > div[style*='position: fixed'] {
 
 .aboutme-match .icons {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 5px;
-    position: absolute;
-}
-
-.aboutme-match .icons.you {
-    top: 0;
-    left: 110px;
-}
-
-.aboutme-match .icons.mate {
-    top: 0;
-    right: 110px;
 }
 
 .aboutme-match .icons img {
@@ -477,20 +493,37 @@ body > div[style*='position: fixed'] {
 .aboutme-match .champions .lol-account {
     color: white;
     position: absolute;
-    top: 0px;
-    left: 10px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .aboutme-match .champions .user-rating {
     position: absolute;
     bottom: 15px;
-    left: 15%;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.user-rating-outside {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ddd2d2;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 7px;
+}
+
+.dark-mode .user-rating-outside {
+    background-color: var(--dark-ligher-grey);
 }
 
 .other-data-profile {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
@@ -1364,6 +1397,10 @@ span.form-error {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
+.dark-mode #skip-preferences-btn {
+    color: white;
+}
+
 #selected-roles-valorant,
 #selected-ranks-valorant,
 #selected-ranks-lol,
@@ -1736,68 +1773,6 @@ input:checked + .slider:before {
     position: relative;
 }
 
-.buttonSwipe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 7rem;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeInOut 1s ease-in-out;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
-    color: white;
-}
-
-.buttonSwipe.fa-heart {
-    color: green;
-}
-
-.buttonSwipe.fa-xmark {
-    color: red;
-}
-
-@keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: scale(0.5) translate(-50%, -50%);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.2) translate(-50%, -50%);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(1.5) translate(-50%, -50%);
-    }
-}
-
-#swipe_yes,
-#swipe_no {
-    cursor: pointer;
-    border: 1px solid rgb(192, 181, 181);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    background: linear-gradient(135deg, white, #e0e0e0);
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-}
-
-#swipe_yes:hover,
-#swipe_no:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 5px rgba(0, 0, 0, 0.1);
-}
-
-#swipe_no i {
-    color: red;
-    font-size: 5rem;
-}
-
-#swipe_yes i {
-    color: green;
-    font-size: 3.7rem;
-}
-
 .profile-picture-container {
     position: relative;
     display: inline-block;
@@ -1930,7 +1905,8 @@ input:checked + .slider:before {
     color: white;
 }
 
-.user-rating {
+.user-rating,
+.user-rating-outside {
     font-size: 1em;
 }
 
@@ -1939,7 +1915,8 @@ input:checked + .slider:before {
     margin-right: 2px;
 }
 
-.user-rating .full-star {
+.user-rating .full-star,
+.user-rating-outside .full-star {
     color: var(--main--red) !important;
 }
 
@@ -2333,19 +2310,29 @@ input:checked + .slider:before {
     width: 300px;
 }
 .about-users-box-bio {
-    background-color: #e0e0e0;
+    background-color: #ddd2d2;
     height: fit-content;
     padding: 10px 10px;
     border-radius: 20px;
     border: none;
 }
 
+.about-users-bio-mobile .about-users-box-bio {
+    width: 100%;
+}
+
 .about-users-low-opacity {
     opacity: 0.3;
 }
 
-.about-users-bio {
+.about-users-bio-desktop {
     margin-top: 10px;
+    display: block;
+}
+
+.about-users-bio-mobile {
+    margin-top: 10px;
+    display: none;
 }
 
 .dark-mode .about-users-box,
@@ -3171,6 +3158,7 @@ dialog .title_generalbox,
 
 .friend-list {
     width: 100%;
+    position: relative;
 }
 
 .friend {
@@ -3301,17 +3289,6 @@ dialog .title_generalbox,
 
 .preview-last-message {
     color: #888888;
-}
-
-.row_buttons_swipe {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-    text-align: center;
-}
-
-.row_buttons_swipe img {
-    height: 75%;
 }
 
 .accept_friend_button {
@@ -3546,20 +3523,6 @@ dialog .title_generalbox,
 
 .dark-mode .faq_row_box h3 {
     color: white;
-}
-
-.dark-mode #swipe_yes,
-.dark-mode #swipe_no {
-    border: 1px solid rgb(54, 52, 52);
-    background: linear-gradient(135deg, var(--dark-ligher-grey), #171616);
-    box-shadow: 0 2px 3px rgba(255, 255, 255, 0.1),
-        0 0.5px 1.5px rgba(255, 255, 255, 0.08);
-}
-
-.dark-mode #swipe_yes:hover,
-.dark-mode #swipe_no:hover {
-    box-shadow: 0 3px 4px rgba(255, 255, 255, 0.15),
-        0 1.5px 2.5px rgba(255, 255, 255, 0.1);
 }
 
 .dark-mode .section_form_signup {
@@ -6293,6 +6256,33 @@ dialog .title_generalbox {
     background-color: var(--main--red);
 }
 
+
+/* Container from banner */
+.profile-banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    gap: 15px;
+    top: 85px;
+    z-index: 490;
+    border-radius: 20px;
+    border: none;
+    width: 100%;
+    height: 260px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.profile-banner{
+    width: 105%;       
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+
 @media only screen and (max-width: 1420px) {
     .badge-container {
         width: 30%;
@@ -6718,20 +6708,6 @@ dialog .title_generalbox {
         font-size: 1rem;
     }
 
-    #swipe_yes,
-    #swipe_no {
-        width: 75px;
-        height: 75px;
-    }
-
-    #swipe_no i {
-        font-size: 3.5rem;
-    }
-
-    #swipe_yes i {
-        font-size: 3.5rem;
-    }
-
     #dialogCookie {
         width: unset;
     }
@@ -7037,9 +7013,18 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    .star {
+        font-size: 1em;
+    }
+
+    .user-rating-outside {
+        bottom: 5px;
+        padding: 1px 3px;
+    }
+
     #champion-picker #skipSelection-btn {
-        padding: 10px 20px;
-        font-size: 1.5rem;
+        padding: 10px 15px;
+        font-size: 1rem;
     }
 
     .swipe-home-card {
@@ -7116,6 +7101,17 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 600px) {
+    .side-global {
+        flex-direction: column;
+    }
+    .about-users-bio-mobile {
+        display: flex;
+    }
+
+    .about-users-bio-desktop {
+        display: none;
+    }
+
     #add-friend-container-profile-other {
         margin: unset;
         position: absolute;
@@ -7165,10 +7161,6 @@ dialog .title_generalbox {
     .aboutme-match .champions img {
         width: 40px;
         height: 40px;
-    }
-
-    .aboutme-match .champions {
-        flex-direction: column;
     }
 
     .aboutme-match .icons {
@@ -7371,6 +7363,17 @@ dialog .title_generalbox {
         font-size: 8px;
         padding: 2px 3px;
     }
+
+    .profile-banner-container {
+        height: 124px;
+        top: 53px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 106%;
+    }
 }
 
 @media only screen and (max-width: 500px) {
@@ -7386,21 +7389,6 @@ dialog .title_generalbox {
         font-size: 14px;
     }
 
-    #swipe_yes,
-    #swipe_no {
-        width: 50px;
-        height: 50px;
-    }
-
-    #swipe_no i,
-    #swipe_yes i {
-        font-size: 2rem;
-    }
-
-    .row_buttons_swipe {
-        gap: 30px;
-    }
-
     .about-users-containers {
         width: 100%;
     }
@@ -7411,6 +7399,17 @@ dialog .title_generalbox {
 
     .btn_updateProfile {
         top: 50px;
+    }
+
+    .profile-banner-container {
+        height: 124px;
+        top: 53px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 106%;
     }
 }
 
@@ -7482,4 +7481,38 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 55px;
     }
+
+     .profile-banner-container {
+        height: 100px;
+        top: 65px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 108%;
+    }
+    
 }
+
+/* Banner addition */
+/* .profile-banner {
+  position: absolute;
+  width: 100%;
+  height: 45%;
+  top: 20%;
+  background-image: url("/public/images/store/AuroraBorealis.png");
+  background-size: cover;
+  background-position: center;
+} */
+/* 
+.profile-banner {
+  position: absolute;
+  width: 100%;
+  height: 45%;
+  top: 50%;
+  background-image: url("/public/images/store/AuroraBorealis.png");
+  background-size: cover;
+  background-position: center;
+} */
+

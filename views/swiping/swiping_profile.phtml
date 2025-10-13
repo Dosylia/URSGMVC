@@ -66,6 +66,46 @@
             <?php endif; ?>
         </div>
 
+                <!-- Divider -->
+        <hr class="divider">
+
+        <!-- Profile Banner Section -->
+        <div class="profile-card">
+            <h2 class="section-title"><?= $this->_('add_profile_banner') ?></h2>
+
+            <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+                <?php
+                $profileBanners = array_filter($ownedItems, function($item) {
+                    return $item['items_category'] === 'Banner';
+                });
+                ?>
+
+                <span id="placeholder-message"></span>
+
+                <?php if (count($profileBanners) > 0) : ?>
+                    <div class="frame-grid">
+                        <?php foreach ($profileBanners as $item) : ?>
+                            <div class="frame-card <?= $item['userItems_isUsed'] === 1 ? 'active' : '' ?>">
+                                <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
+                                <p><?= $item['items_name'] ?></p>
+                                <?php if ($item['userItems_isUsed'] == 1) : ?>
+                                    <button class="btn-danger btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
+                                <?php else : ?>
+                                    <button class="btn-primary btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <p><?= $this->_('no_profile_banner') ?></p>
+                    <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
+                <?php endif; ?>
+            <?php else : ?>
+                <p><?= $this->_('no_items') ?></p>
+                <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
+            <?php endif; ?>
+        </div>
+
         <!-- Loading Overlay -->
         <div id="loadingOverlay">
             <div id="loading-indicator" style="display: none; text-align: center;">
@@ -108,6 +148,19 @@
         </div>
     </div>
     <div id="user-top-container"> <!--Flex column -->
+           
+        <div class="profile-banner-container">
+            <?php if(!empty($activeBanner)) : ?>
+                <?php foreach ($activeBanner as $item) : ?>
+                    <div id="profile-banner" 
+                        class="profile-banner" 
+                        style="background-image: url('public/images/store/<?= $item['items_picture'] ?>');"
+                        title="<?= htmlspecialchars($item['items_name']) ?>">
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+      
         <!-- Additional badges -->
         <div class="support_ursg">
             <h3><?= $this->_('support_URSG') ?></h3>
@@ -143,7 +196,11 @@
                 </a> 
             </div>
         </div>
+        
         <div id="user-top-content"> <!--Flex column -->
+
+            
+
             <span id="additional-badges-container">
                 <?php if(!empty($additionalBadges)) : ?>
                     <?php foreach($additionalBadges as $badge): ?>
@@ -198,6 +255,20 @@
                 <?php endif; ?>  
             </span>
         <?php endif; ?>
+        <?php if ($user['user_game'] == 'League of Legends'): ?> 
+            <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_verified'] === 1): ?>
+                <div class="user-rating-outside">
+                    <p>
+                        <?php for ($i = 0; $i < $fullStars; $i++): ?>
+                            <span class="star full-star">&#9733;</span> <!-- filled star -->
+                        <?php endfor; ?>
+                        <?php for ($i = 0; $i < $emptyStars; $i++): ?>
+                            <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
+                        <?php endfor; ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
     <div id="user-bottom-container"> <!--Flex column -->
         <nav id="user-bottom-nav"> <!--Flex row with JS -->
@@ -212,286 +283,287 @@
             <img src="public/images/loading.svg" alt="Loading..." />
         </div>
         <div id="aboutme-container"> <!--Flex row with -->
-            <div class="aboutme-match">
-            <?php if ($user['user_game'] == 'League of Legends'): ?> 
-                <div class="profile">
-                    <?php if ($lolUser['lol_verified'] === 1): ?>
-                        <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
-                    <?php else : ?>
-                        <img src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
-                    <?php endif; ?>
-                    <?php if ($lolUser['lol_verified'] === 1): ?>
-                        <p class="profile-level"><?= $lolUser['lol_sLevel']?></p>
-                    <?php endif; ?>
-                </div>
-
-                <div class="icons you">
-                    <?php if ($lolUser['lol_verified'] === 1): ?>
-                        <div class="rank-image" style="position: relative;">
-                            <img src="public/images/ranks/<?= ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0])) ?>.png" alt="Rank">
-                            <i class="fa-solid fa-check" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: green;"></i>
+            <div class="side-global">
+                <div class="side-column">
+                    <div class="aboutme-match">
+                    <?php if ($user['user_game'] == 'League of Legends'): ?> 
+                        <div class="profile">
+                            <?php if ($lolUser['lol_verified'] === 1): ?>
+                                <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
+                            <?php else : ?>
+                                <img src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
+                            <?php endif; ?>
+                            <?php if ($lolUser['lol_verified'] === 1): ?>
+                                <p class="profile-level"><?= $lolUser['lol_sLevel']?></p>
+                            <?php endif; ?>
                         </div>
-                    <?php else : ?>
-                        <div class="rank-image" style="position: relative;">
-                            <img src="public/images/ranks/<?= str_replace(' ', '', $lolUser['lol_rank']) ?>.png" alt="Rank">
-                            <i class="fa-solid fa-xmark" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: red;"></i>
+
+                        <div class="icons you">
+                            <?php if ($lolUser['lol_verified'] === 1): ?>
+                                <div class="rank-image" style="position: relative;">
+                                    <img src="public/images/ranks/<?= ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0])) ?>.png" alt="Rank">
+                                    <i class="fa-solid fa-check" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: green;"></i>
+                                </div>
+                            <?php else : ?>
+                                <div class="rank-image" style="position: relative;">
+                                    <img src="public/images/ranks/<?= str_replace(' ', '', $lolUser['lol_rank']) ?>.png" alt="Rank">
+                                    <i class="fa-solid fa-xmark" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: red;"></i>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <!-- Role image (not affected by verification) -->
+                            <img src="public/images/roles/<?= str_replace(' ', '', $lolUser['lol_role']) ?>.png" alt="Role">
                         </div>
-                    <?php endif; ?>
-                    
-                    <!-- Role image (not affected by verification) -->
-                    <img src="public/images/roles/<?= str_replace(' ', '', $lolUser['lol_role']) ?>.png" alt="Role">
-                </div>
-
-
-                <!-- Dotted Line -->
-                <div class="match-divider"></div>
-
-                <!-- Right Player -->
-                <div class="icons mate">
-                <img src="public/images/ranks/<?= str_replace(' ', '', $lfUser['lf_lolrank']) ?>.png" alt="Rank">
-                <img src="public/images/roles/<?= str_replace(' ', '', $lfUser['lf_lolrole']) ?>.png" alt="Role">
-                </div>
-                    <div class="profile profile-mate">
-                        ?
                     </div>
-            </div>
 
-            <!-- Champions Row -->
-            <?php if($lolUser['lol_noChamp'] === 0 || $lfUser['lf_lolNoChamp'] === 0) : ?>
-                <div class="aboutme-match champions-row">
-                    <div class="champions you" style="<?= $lolUser['lol_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                        <?php if ($lolUser['lol_verified'] === 1): ?>
-                            <div class="lol-account">
-                                <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                                <?php if (isset($fullStars) && isset($emptyStars)): ?>
-                                    <div class="user-rating">
-                                        <p>
-                                            <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                                <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                            <?php endfor; ?>
-                                            <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                                <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                            <?php endfor; ?>
-                                        </p>
+                    <!-- Champions Row -->
+                    <?php if((int)$lolUser['lol_noChamp'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
+                        <div class="aboutme-match champions-row">
+                            <div class="champions you" style="<?= (int)$lolUser['lol_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                <?php if ((int)$lolUser['lol_verified'] === 1): ?>
+                                    <div class="lol-account">
+                                        <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                     </div>
                                 <?php endif; ?>
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main1'])) ?>.png" alt="Champion">
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main2'])) ?>.png" alt="Champion">
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main3'])) ?>.png" alt="Champion">
+                            </div>
+                        </div>
+                    <?php else : ?>
+                        <div class="aboutme-match champions-row">
+                            <?php if ((int)$lolUser['lol_verified'] === 1): ?>
+                                <div class="lol-account" style="margin : 10px 0 0 0;">
+                                    <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>                  
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php else : ?> <!-- Valorant -->
+                        <div class="profile">
+                            <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
+                                <img src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                            <?php else :?>
+                                <img src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                            <?php endif; ?>
+                            </div>
+                            <div class="icons you">
+                            <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $valorantUser['valorant_rank']) ?>.png" alt="Rank">
+                            <img src="public/images/valorant_roles/<?= str_replace(' ', '', $valorantUser['valorant_role']) ?>.webp" alt="Role">
+                            </div>
+                        </div>
+
+                        <!-- Champions Row -->
+                        <?php if((int)$valorantUser['valorant_noChamp'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
+                            <div class="aboutme-match champions-row">
+                                <div class="champions you" style="<?= (int)$valorantUser['valorant_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main1']?>_icon.webp" alt="Champion">
+                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main2']?>_icon.webp" alt="Champion">
+                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main3']?>_icon.webp" alt="Champion">
+                                </div>
                             </div>
                         <?php endif; ?>
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main1'])) ?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main2'])) ?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main3'])) ?>.png" alt="Champion">
-                    </div>
-
-                    <div class="champions mate" style="<?= $lfUser['lf_lolNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain1'])) ?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain2'])) ?>.png" alt="Champion">
-                        <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain3'])) ?>.png" alt="Champion">
-
-                    </div>
-                </div>
-            <?php else : ?>
-                <div class="aboutme-match champions-row">
-                    <?php if ($lolUser['lol_verified'] === 1): ?>
-                        <div class="lol-account" style="margin : 10px 0 0 0;">
-                            <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
-                             <?php if (isset($fullStars) && isset($emptyStars)): ?>
-                                <div class="user-rating">
-                                    <p>
-                                        <?php for ($i = 0; $i < $fullStars; $i++): ?>
-                                            <span class="star full-star">&#9733;</span> <!-- filled star -->
-                                        <?php endfor; ?>
-                                        <?php for ($i = 0; $i < $emptyStars; $i++): ?>
-                                            <span class="star empty-star">&#9733;</span> <!-- empty star (grey) -->
-                                        <?php endfor; ?>
+                    <?php endif; ?>
+                        <!-- Left Player -->
+                    <div class="other-data-profile">
+                        <div class="about_you_users"><br>
+                            <div class="top-part-about" style="flex-direction: column;">
+                            <div class="gender about-users-containers">
+                                <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
+                                <?php if ($user['user_gender'] == "Female") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
                                     </p>
+                                <?php elseif ($user['user_gender'] == "Male") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-selected" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                <?php elseif ($user['user_gender'] == "Non Binary" || $user['user_gender'] == "Non binary") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                    <?php elseif ($user['user_gender'] == "Trans Man" || $user['user_gender'] == "Trans Man") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/trans-man.jpg" alt="Trans Man" class="about-users-selected" />
+                                    </p>
+                                    <?php elseif ($user['user_gender'] == "Trans Woman" || $user['user_gender'] == "Trans Woman") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/trans-woman.jpg" alt="Trans Woman" class="about-users-selected" />
+                                    </p>
+                                    <?php elseif ($user['user_gender'] == "Trans") : ?>
+                                        <p class="about-users-box">
+                                            <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                            <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                            <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                            <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
+                                        </p>
+                                <?php endif; ?>
+                            </div>
+                                <div class="queues about-users-containers">
+                                <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
+                                    <?php if($user['user_kindOfGamer'] == "Chill") :?>
+                                        <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
+                                    <?php elseif($user['user_kindOfGamer'] == "Competition") :?>
+                                        <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
+                                    <?php else  :?>
+                                        <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>                        
+                                <div class="servers about-users-containers">
+                                <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
+                                <?php if ($user['user_game'] == 'League of Legends'): ?> 
+                                    <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                <?php else : ?>
+                                    <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
+                                <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-            <?php else : ?> <!-- Valorant -->
-                <div class="profile">
-                    <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                        <img src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
-                    <?php else :?>
-                        <img src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
-                    <?php endif; ?>
                     </div>
-                    <div class="icons you">
-                    <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $valorantUser['valorant_rank']) ?>.png" alt="Rank">
-                    <img src="public/images/valorant_roles/<?= str_replace(' ', '', $valorantUser['valorant_role']) ?>.webp" alt="Role">
-                    </div>
-
-                    <!-- Dotted Line -->
-                    <div class="match-divider"></div>
-
-                    <!-- Right Player -->
-                    <div class="icons mate">
-                    <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $lfUser['lf_valrank']) ?>.png" alt="Rank">
-                    <img src="public/images/valorant_roles/<?= str_replace(' ', '', $lfUser['lf_valrole']) ?>.webp" alt="Role">
-                    </div>
-                    <div class="profile profile-mate">
-                        ?
+                    <div class="about-users-bio-mobile" style="width: 95%;">
+                        <p class="about-users-box-bio">
+                            <?= htmlspecialchars(htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES), ENT_QUOTES, 'UTF-8') ?>
+                        </p>
                     </div>
                 </div>
-
-                <!-- Champions Row -->
-                <?php if($valorantUser['valorant_noChamp'] === 0 || $lfUser['lf_valNoChamp'] === 0) : ?>
-                    <div class="aboutme-match champions-row">
-                        <div class="champions you" style="<?= $valorantUser['valorant_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                            <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main1']?>_icon.webp" alt="Champion">
-                            <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main2']?>_icon.webp" alt="Champion">
-                            <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main3']?>_icon.webp" alt="Champion">
+                <div class="side-column">
+                    <?php if ($user['user_game'] == 'League of Legends'): ?> 
+                        <div class="aboutme-match">
+                        <!-- Right Player -->
+                            <div class="icons mate">
+                                <img src="public/images/ranks/<?= str_replace(' ', '', $lfUser['lf_lolrank']) ?>.png" alt="Rank">
+                                <img src="public/images/roles/<?= str_replace(' ', '', $lfUser['lf_lolrole']) ?>.png" alt="Role">
+                            </div>
+                            <div class="profile profile-mate">
+                                    ?
+                            </div>
                         </div>
 
-                        <div class="champions mate" style="<?= $lfUser['lf_valNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                            <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain1']?>_icon.webp" alt="Champion">
-                            <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain2']?>_icon.webp" alt="Champion">
-                            <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain3']?>_icon.webp" alt="Champion">
+                        <?php if((int)$lolUser['lol_noChamp'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
+                            <div class="aboutme-match champions-row">
+                                <div class="champions mate" style="<?= (int)$lfUser['lf_lolNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                    <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain1'])) ?>.png" alt="Champion">
+                                    <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain2'])) ?>.png" alt="Champion">
+                                    <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain3'])) ?>.png" alt="Champion">
+
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php else : ?> <!-- Valorant -->
+                        <div class="aboutme-match"><!-- Right Player -->
+                            <div class="icons mate">
+                                <img src="public/images/ranks/<?= str_replace(' ', '', $lfUser['lf_lolrank']) ?>.png" alt="Rank">
+                                <img src="public/images/roles/<?= str_replace(' ', '', $lfUser['lf_lolrole']) ?>.png" alt="Role">
+                            </div>
+                            <div class="profile profile-mate">
+                                    ?
+                            </div>
                         </div>
-                    </div>
-                <?php endif; ?>
-            <?php endif; ?>
-                <!-- Left Player -->
-            <div class="other-data-profile">
-                <div class="about_you_users"><br>
-                    <div class=""top-part-about style="flex-direction: column;">
-                    <div class="gender about-users-containers">
-                        <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
-                        <?php if ($user['user_gender'] == "Female") : ?>
-                            <p class="about-users-box">
+                        <?php if((int)$valorantUser['valorant_noChamp'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
+                            <div class="aboutme-match champions-row">
+                                <div class="champions mate" style="<?= (int)$lfUser['lf_valNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                        <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain1']?>_icon.webp" alt="Champion">
+                                        <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain2']?>_icon.webp" alt="Champion">
+                                        <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain3']?>_icon.webp" alt="Champion">
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <div class="other-data-profile">
+                        <div class="about_you_users"><br>
+                            <div class="top-part-about" style="flex-direction: column;">
+                                <div class="gender about-users-containers">
+                                    <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
+                                    <?php if ($lfUser['lf_gender'] == "Female") : ?>
+                                        <p class="about-users-box">
                                 <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
                                 <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
                                 <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
                                 <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php elseif ($user['user_gender'] == "Male") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-selected" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php elseif ($user['user_gender'] == "Non Binary" || $user['user_gender'] == "Non binary") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                            <?php elseif ($user['user_gender'] == "Trans Man" || $user['user_gender'] == "Trans Man") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/trans-man.jpg" alt="Trans Man" class="about-users-selected" />
-                            </p>
-                            <?php elseif ($user['user_gender'] == "Trans Woman" || $user['user_gender'] == "Trans Woman") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/trans-woman.jpg" alt="Trans Woman" class="about-users-selected" />
-                            </p>
-                            <?php elseif ($user['user_gender'] == "Trans") : ?>
-                                <p class="about-users-box">
-                                    <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                    <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                    <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                    <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
                                 </p>
-                        <?php endif; ?>
-                    </div>
-                        <div class="queues about-users-containers">
-                        <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
-                            <?php if($user['user_kindOfGamer'] == "Chill") :?>
-                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
-                            <?php elseif($user['user_kindOfGamer'] == "Competition") :?>
-                                <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
-                            <?php else  :?>
-                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="servers about-users-containers">
-                        <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
-                        <?php if ($user['user_game'] == 'League of Legends'): ?> 
-                            <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
-                        <?php else : ?>
-                            <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
-                        <?php endif; ?>
+                                <?php elseif ($lfUser['lf_gender'] == "Male") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-selected" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                <?php elseif ($lfUser['lf_gender'] == "Non Binary" || $lfUser['lf_gender'] == "Non binary") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                <?php elseif ($lfUser['lf_gender'] == "Trans") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
+                                    </p>
+                                <?php elseif ($lfUser['lf_gender'] == "Male and Female") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-selected" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                <?php elseif ($lfUser['lf_gender'] == "All") : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-selected" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
+                                    </p>
+                                <?php else : ?>
+                                    <p class="about-users-box">
+                                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
+                                        <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
+                                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
+                                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
+                                    </p>
+                                <?php endif; ?>
+                                </div>
+                                <div class="queues about-users-containers">
+                                <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
+                                    <?php if($lfUser['lf_kindofgamer'] == "Chill") :?>
+                                        <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
+                                    <?php elseif($lfUser['lf_kindofgamer'] == "Competition") :?>
+                                        <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span>      <span class="about-users-selected"><?= $this->_('competition') ?></span></p>
+                                    <?php else  :?>
+                                        <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?>      </span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
+                                    <?php endif; ?>
+                                </div>
+                                    <div class="servers about-users-containers">
+                                    <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
+                                    <?php if ($user['user_game'] == 'League of Legends'): ?> 
+                                        <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                    <?php else : ?>
+                                        <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="about_you_users"><br>
-                    <div class="top-part-about" style="flex-direction: column;">
-                        <div class="gender about-users-containers">
-                            <p class="about-users-title"><strong><?= $this->_('gender') ?></strong></p>
-                            <?php if ($lfUser['lf_gender'] == "Female") : ?>
-                                <p class="about-users-box">
-                        <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                        <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
-                        <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                        <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                    </p>
-                        <?php elseif ($lfUser['lf_gender'] == "Male") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-selected" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php elseif ($lfUser['lf_gender'] == "Non Binary" || $lfUser['lf_gender'] == "Non binary") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php elseif ($lfUser['lf_gender'] == "Trans") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
-                            </p>
-                        <?php elseif ($lfUser['lf_gender'] == "Male and Female") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-selected" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php elseif ($lfUser['lf_gender'] == "All") : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-selected" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-selected" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-selected" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-selected" />
-                            </p>
-                        <?php else : ?>
-                            <p class="about-users-box">
-                                <img src="public/images/male.png" alt="Male" class="about-users-low-opacity" />
-                                <img src="public/images/femenine.png" alt="femenine" class="about-users-low-opacity" />
-                                <img src="public/images/non-binary.png" alt="Non-Binary" class="about-users-low-opacity" />
-                                <img src="public/images/transexual.png" alt="Trans" class="about-users-low-opacity" />
-                            </p>
-                        <?php endif; ?>
-                        </div>
-                        <div class="queues about-users-containers">
-                        <p class="about-users-title"><strong><?= $this->_('queues') ?></strong></p>
-                            <?php if($lfUser['lf_kindofgamer'] == "Chill") :?>
-                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?></span><span class="about-users-low-opacity"><?= $this->_('competition') ?></span></p>
-                            <?php elseif($lfUser['lf_kindofgamer'] == "Competition") :?>
-                                <p class="about-users-box"><span class="about-users-low-opacity"><?= $this->_('chill') ?></span>      <span class="about-users-selected"><?= $this->_('competition') ?></span></p>
-                            <?php else  :?>
-                                <p class="about-users-box"><span class="about-users-selected"><?= $this->_('chill') ?>      </span><span class="about-users-selected"><?= $this->_('competition') ?></span></p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div> <!-- YOU OR MATE  -->
             </div>
-            <div class="about-users-bio" style="width: 95%;">
+            <div class="about-users-bio-desktop" style="width: 95%;">
                 <p class="about-users-box-bio">
                     <?= htmlspecialchars(htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES), ENT_QUOTES, 'UTF-8') ?>
                 </p>
@@ -689,6 +761,7 @@
 <script type="module" src="public/js/swiping/friendrequest.js?<?= time(); ?>"></script>
 <script type="module" src="public/js/swiping/bonusPictures.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/socialLinks.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/show_banner.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/gender-icon.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/copy_username.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/profile_updateRiotPic.js?<?= time(); ?>"></script>

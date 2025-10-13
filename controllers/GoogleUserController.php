@@ -731,6 +731,7 @@ class GoogleUserController
                         $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
                     }
 
+                    $adminToken = '';
                     $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
                     $_SESSION['full_name'] = $this->getGoogleFullName();
                     $_SESSION['google_id'] = $this->getGoogleId();
@@ -751,7 +752,6 @@ class GoogleUserController
                         $user = $this->user->getUserByUsername($googleUser['user_username']);
                         if ($user)
                         {
-                            $adminToken = '';
                             if ($user['user_id'] === 157 || $user['user_id'] === 158) {
                                 require 'keys.php';
                                 $adminToken = $adminTokenSecret;
@@ -1370,7 +1370,7 @@ class GoogleUserController
             session_unset();
             session_destroy();
     
-            header("location:/?message=You are now offline");
+            header("location:/?message=You are now offline&clearToken=true");
             exit();
         } else {
             if (isset($_COOKIE['googleId'])) {
@@ -1382,7 +1382,7 @@ class GoogleUserController
                 setcookie('auth_token', "", time() - 42000, "/");
                 unset($_COOKIE['auth_token']);
             }
-            header("location:/?message=You are now offline");
+            header("location:/?message=You are now offline&clearToken=true");
             exit();
         }
     }
@@ -1913,9 +1913,9 @@ class GoogleUserController
             $unreadCount = false;
         } else {
             if ($unreadCount == 1) {
-                $messageTextMessage = "You have <strong>1 unread message</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender})'>{$latestSender})</a>)";
+                $messageTextMessage = "You have <strong>1 unread message</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender}'>{$latestSender}</a>)";
             } else {
-                $messageTextMessage = "You have <strong>{$unreadCount} unread messages</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender})'>{$latestSender})</a>)";
+                $messageTextMessage = "You have <strong>{$unreadCount} unread messages</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender}'>{$latestSender}</a>)";
             }
         }
 

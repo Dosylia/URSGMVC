@@ -53,6 +53,7 @@ use controllers\AdminController;
 use controllers\WebSocketController;
 use controllers\DiscordController;
 use controllers\PlayerFinderController;
+use controllers\PaymentController;
 
 function loadClass($class)
 {
@@ -271,7 +272,13 @@ $actionMap = [
     'adminGrantItem' => [AdminController::class, 'adminGrantItem'],
     'adminRemoveItem' => [AdminController::class, 'adminRemoveItem'],
     'connectRiotMobile' => [RiotController::class, 'connectRiotMobile'],
-    'connectDiscordMobile' => [DiscordController::class, 'connectDiscordMobile']
+    'connectDiscordMobile' => [DiscordController::class, 'connectDiscordMobile'],
+    'discordBind' => [DiscordController::class, 'discordBind'],
+    'buyCurrencyWebsite' => [PaymentController::class, 'buyCurrencyWebsite'],
+    'paymentSuccess' => [PaymentController::class, 'paymentSuccess'],
+    'paymentCancel' => [PaymentController::class, 'paymentCancel'],
+    'handleWebhook' => [PaymentController::class, 'handleWebhook'],
+    'buyPremiumBoostWebsite' => [PaymentController::class, 'buyPremiumBoostWebsite'],
 ];
 
 $action = "home";

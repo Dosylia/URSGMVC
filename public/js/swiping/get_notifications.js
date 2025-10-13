@@ -42,12 +42,12 @@ function fetchFriendRequest(userId) {
                 if (data.givenDailyReward || data.givenRequestReward) {
                     if (data.givenDailyReward) {
                         displayNotification(
-                            `You just won ${data.amountGivenDailyReward} credits for connecting today!`,
+                            `You just won ${data.rewardAmount} credits for connecting today!`,
                             userId
                         )
                         if (displayMoneyWon) {
                             displayMoneyWon.innerHTML = `
-                                ${data.amountGivenDailyReward}
+                                ${data.rewardAmount}
                                 <div style="font-size:14px;margin-top:5px;">Streak: ${data.streak}</div>
                             `
                             displayMoneyWon.style.display = 'block'
@@ -81,7 +81,11 @@ function fetchFriendRequest(userId) {
                     (request) => request.type !== 'pending'
                 )
                 const pendingWithType = data.pendingRequests
-                    .filter((notif) => notif.fr_notifReadPending === 0 || notif.fr_notifReadPending === "0")
+                    .filter(
+                        (notif) =>
+                            notif.fr_notifReadPending === 0 ||
+                            notif.fr_notifReadPending === '0'
+                    )
                     .map((notif) => ({ ...notif, type: 'pending' }))
                 AllNotifications.push(...pendingWithType)
                 lastNotifCountPending = data.pendingRequests.length
@@ -111,13 +115,15 @@ function fetchFriendRequest(userId) {
                 if (data.givenDailyReward || data.givenRequestReward) {
                     if (data.givenDailyReward) {
                         displayNotification(
-                            `You just won 500 credits for connecting today!`,
+                            `You just won ${data.rewardAmount} credits for connecting today!`,
                             userId
                         )
                         if (displayMoneyWon) {
-                            displayMoneyWon.textContent = `500`
+                            displayMoneyWon.innerHTML = `
+                                ${data.rewardAmount}
+                                <div style="font-size:14px;margin-top:5px;">Streak: ${data.streak}</div>
+                            `
                             displayMoneyWon.style.display = 'block'
-
                             displayMoneyWon.style.animation = 'none'
                             displayMoneyWon.offsetHeight
                             displayMoneyWon.style.animation =
@@ -754,7 +760,6 @@ function fillUnread(unreadCounts) {
 
 // Fonction pour mettre à jour les notifications non lues pour chaque ami
 function updateUnreadMessagesForFriends(unreadCounts) {
-    console.log('unread counts:', unreadCounts)
     const newGlobalUnreadCounts = {}
 
     // Update with new unread counts

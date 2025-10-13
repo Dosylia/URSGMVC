@@ -191,7 +191,6 @@ class FriendRequestController
             $data = array_merge([
                 'message' => 'Success',
                 'friendRequest' => $friendRequest,
-                'givenDailyReward' => $givenDailyReward,
             ], $rewardData);
 
             echo json_encode($data);
@@ -199,7 +198,6 @@ class FriendRequestController
             echo json_encode(array_merge([
                 'success' => false, 
                 'message' => 'No friend requests found', 
-                'givenDailyReward' => $givenDailyReward,
             ], $rewardData));
         }
     }
@@ -1137,9 +1135,6 @@ class FriendRequestController
 
         // --- Handle streak + daily reward ---
         if (date('Y-m-d', $lastRequestTime) > date('Y-m-d', $lastRewardTime)) {
-            $rewardAmount = 500 + ($streak * 100);
-            $this->user->addCurrency($userId, $rewardAmount);
-
             if ($this->user->updateLastRewardTime($userId)) {
                 $givenDailyReward = true;
 
@@ -1154,6 +1149,8 @@ class FriendRequestController
                     $this->user->resetStreak($userId);
                     $streak = 0;
                 }
+                $rewardAmount = 500 + ($streak * 100);
+                $this->user->addCurrency($userId, $rewardAmount);
             }
         }
 

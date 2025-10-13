@@ -15,23 +15,30 @@ class Items extends DataBase
     public function getItems()
     {
         $query = $this->bdd->prepare("
-                                    SELECT
-                                        items_id,
-                                        items_name,
-                                        items_price,
-                                        items_desc,
-                                        items_picture,
-                                        items_category,
-                                        items_discount,
-                                        items_isActive,
-                                        items_createdAt
-                                    FROM
-                                        `items`
+            SELECT
+                items_id,
+                items_name,
+                items_price,
+                items_desc,
+                items_picture,
+                items_category,
+                items_discount,
+                items_isActive,
+                items_createdAt
+            FROM
+                `items`
+            ORDER BY
+                CASE items_category
+                    WHEN 'currency' THEN 1
+                    WHEN 'boost' THEN 2
+                    ELSE 3
+                END,
+                items_id ASC
         ");
-    
+
         $query->execute([]);
         $ItemslistTest = $query->fetchAll();
-    
+
         if ($ItemslistTest) {
             return $ItemslistTest;
         } else {

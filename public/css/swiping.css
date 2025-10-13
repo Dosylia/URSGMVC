@@ -10,6 +10,8 @@
     gap: 30px;
     font-family: 'Geologica', sans-serif;
     color: black;
+    position: relative;
+    padding-bottom: 50px;
 }
 
 .dark-mode .swiping-ctn {
@@ -22,6 +24,108 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
+}
+
+.button_swiping {
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.row_buttons_swipe {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    background: linear-gradient(225deg, #eae5e5, #ded8d8);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.dark-mode .row_buttons_swipe {
+    background: linear-gradient(225deg, #222020, #444040);
+}
+
+.row_buttons_swipe img {
+    height: 75%;
+}
+
+.buttonSwipe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 7rem;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeInOut 1s ease-in-out;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translate(-50%, -50%);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) translate(-50%, -50%);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5) translate(-50%, -50%);
+    }
+}
+
+#swipe_yes,
+#swipe_no {
+    cursor: pointer;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin: 10px 0;
+}
+
+#swipe_yes:hover,
+#swipe_no:hover {
+    transform: scale(1.05) translateY(-3px);
+}
+
+#swipe_yes:hover {
+    box-shadow: 0 20px 60px rgba(0, 255, 135, 0.6),
+        0 10px 30px rgba(0, 255, 135, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+#swipe_no:hover {
+    box-shadow: 0 16px 48px rgba(255, 8, 68, 0.6),
+        0 8px 24px rgba(255, 8, 68, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+#swipe_no {
+    background: linear-gradient(135deg, #ff0844 0%, #ff1744 50%, #ffb199 100%);
+}
+
+#swipe_yes {
+    background: linear-gradient(135deg, #00ff87 0%, #00e676 50%, #60efff 100%);
+}
+
+#swipe_yes i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+#swipe_no i {
+    color: white;
+    font-size: 2rem;
 }
 
 .swiping-user-info {
@@ -90,7 +194,8 @@
 #user-rating-stars {
     position: absolute;
     font-size: 0.6em !important;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: -20px;
 }
 
@@ -367,6 +472,19 @@
     }
 }
 
+@media only screen and (max-width: 900px) {
+    #swipe_yes,
+    #swipe_no {
+        width: 45px;
+        height: 45px;
+    }
+
+    #swipe_no i,
+    #swipe_yes i {
+        font-size: 1.4rem;
+    }
+}
+
 @media only screen and (max-width: 768px) {
     .swiping_champions img {
         width: 90px;
@@ -441,5 +559,22 @@
     .swiping-top {
         flex-direction: column;
         gap: 10px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .row_buttons_swipe {
+        gap: 30px;
+    }
+
+    #swipe_yes,
+    #swipe_no {
+        width: 40px;
+        height: 40px;
+    }
+
+    #swipe_no i,
+    #swipe_yes i {
+        font-size: 1.3rem;
     }
 }

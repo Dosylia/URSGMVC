@@ -185,6 +185,8 @@ return [
     'add_profile_frame_remove' => 'Entfernen',
     'add_profile_frame_use' => 'Verwenden',
     'no_profile_frame' => 'Du hast noch keinen Profilrahmen',
+    'add_profile_banner' => "Profilbanner ändern",
+    'no_profile_banner' => "Du besitzt noch keine Profilbanner",
     'go_to_store' => 'Zum Shop',
     'no_items' => 'Du hast noch keine Gegenstände',
     'server' => 'Server',
@@ -220,6 +222,7 @@ return [
     'rate_friend_message' => 'Du kannst einen Freund bewerten, nachdem du mit ihm gespielt hast.',
     'rate_friend_submit' => 'Bewerten',
     'rate_friend_score' => 'Punkte',
+    'bind_discord_looking' => 'Verknüpfe dein Discord-Konto, damit dein @ in unserer Server-Nachricht erscheint',
 
     //leaderboard page
     'store' => 'Shop',

@@ -7,6 +7,8 @@ use models\Valorant;
 use models\User;
 use models\GoogleUser;
 use models\UserLookingFor;
+use models\Items;
+use models\RatingGames;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
@@ -21,6 +23,8 @@ class RiotController
     private Valorant $valorant;
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
+    private Items $items;
+    private RatingGames $rating;
     private $tokenEndpoint = 'https://auth.riotgames.com/token';
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 
@@ -32,6 +36,8 @@ class RiotController
         $this->valorant = new Valorant();
         $this -> googleUser = new GoogleUser();
         $this -> userlookingfor = new userLookingFor();
+        $this->items = new Items();
+        $this -> rating = new RatingGames();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -173,6 +179,12 @@ class RiotController
                                 if (!$updateSummoner) {
                                     header('Location: /userProfile?message=Couldnt bind account');
                                     exit();
+                                }
+
+
+                                $badge = $this->items->getBadgeByName("Riot account");
+                                if ($badge && !$this->items->userOwnsItem($user['user_id'], $badge['items_id'])) {
+                                    $this->items->addItemToUser($user['user_id'], $badge['items_id']);
                                 }
                             }
                         }
@@ -886,7 +898,17 @@ class RiotController
 
             // Check intersection
             $commonMatches = array_intersect($userMatches, $friendMatches);
-            $playedTogether = count($commonMatches) > 0;
+            $orderedCommonMatches = array_values(array_intersect($userMatches, $friendMatches));
+            $lastMatchId = $orderedCommonMatches[0] ?? null;
+            $playedTogether = false;
+
+            // Check if match already been rated
+            if ($lastMatchId) {
+                $existingRating = $this->rating->getRatingByMatchId($lastMatchId);
+                $playedTogether = !$existingRating; // true if not rated, false if rated
+            } else {
+                $playedTogether = false;
+            }
 
             echo json_encode([
                 'success' => true,

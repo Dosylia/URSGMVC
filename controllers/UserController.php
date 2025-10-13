@@ -901,7 +901,8 @@ class UserController
 
     }
 
-    public function addBonusPicture() {
+    public function addBonusPicture() 
+    {
         $targetDir = "public/upload/";
         $originalFileName = basename($_FILES["file"]["name"]);
         $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
@@ -2213,6 +2214,11 @@ class UserController
                         return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
             });
             $additionalBadges = array_slice($additionalBadges, 0, 3);
+
+            $activeBanner = array_filter(is_array($ownedItems) ? $ownedItems : [], 
+                    function($item) {
+                        return $item['items_category'] === 'Banner' && $item['userItems_isUsed'] == 1;
+            });
             $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
@@ -2255,13 +2261,13 @@ class UserController
             // Get important datas
             if (isset($_GET['username'])) 
             {
+                $this->initializeLanguage();
                 $username = $_GET['username'];
                 if ($_GET['username'] === $_SESSION['username'])
                 {
                     header("Location: /userProfile");
                     exit();
                 }
-                $this->initializeLanguage();
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $userRating = 0;
@@ -2295,6 +2301,10 @@ class UserController
                         }
                     );
                     $additionalBadges = array_slice($additionalBadges, 0, 3);
+                    $activeBanner = array_filter(is_array($ownedItems) ? $ownedItems : [], 
+                    function($item) {
+                        return $item['items_category'] === 'Banner' && $item['userItems_isUsed'] == 1;
+                    });
                     $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
@@ -2316,6 +2326,7 @@ class UserController
         {
             if (isset($_GET['username']))
             {
+                $this->initializeLanguage();
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);

@@ -3,6 +3,7 @@
         <div class="modal-content">
             <span id="close-modal" class="close">&times;</span>
             <h2><?= $this->_('looking_for_title') ?></h2>
+            <button id="bind-discord-looking"><?= $this->_('bind_discord_looking') ?></button>
             <?php if (
                 ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
                 $user['user_game'] === "Valorant"
@@ -133,6 +134,9 @@
                     </div>
 
                     <div class="reply-box">
+                        <div class="drop-zone-overlay" id="dropZoneOverlay">
+                            <div class="drop-zone-text">Drop image to send</div>
+                        </div>
                         <div id="confirmationModalDiscord" class="modal" style="display: none;">
                             <div class="modal-content">
                                 <h4>Confirm Channel Creation</h4>
@@ -147,35 +151,35 @@
                             <div class="emote-picker">
                                 <button type="button" id="toggleEmotePicker"><i class="fa-solid fa-cat"></i></button>
                                 <div id="emoteContainer" class="emote-container" style="display: none;">
-                                    <img src="public/images/emotes/surprised-cat.png" alt=":surprised-cat:" class="emote">
-                                    <img src="public/images/emotes/cat-smile.png" alt=":cat-smile:" class="emote">
-                                    <img src="public/images/emotes/cat-cute.png" alt=":cat-cute:" class="emote">
-                                    <img src="public/images/emotes/goofy-ah-cat.png" alt=":goofy-ah-cat:" class="emote">
-                                    <img src="public/images/emotes/cat-surprised.png" alt=":cat-surprised:" class="emote">
-                                    <img src="public/images/emotes/cat-liked.png" alt=":cat-liked:" class="emote">
-                                    <img src="public/images/emotes/cat-sus.png" alt=":cat-sus:" class="emote">
-                                    <img src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
-                                    <img src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
-                                    <img src="public/images/emotes/cat-laugh.png" alt=":cat-laugh:" class="emote">
-                                    <img src="public/images/emotes/cat-crying.png" alt=":cat-crying:" class="emote">
-                                    <img src="public/images/emotes/cat-love.png" alt=":cat-love:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/surprised-cat.png" alt=":surprised-cat:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-smile.png" alt=":cat-smile:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-cute.png" alt=":cat-cute:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/goofy-ah-cat.png" alt=":goofy-ah-cat:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-surprised.png" alt=":cat-surprised:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-liked.png" alt=":cat-liked:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-sus.png" alt=":cat-sus:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-bruh.png" alt=":cat-bruh:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-licking.png" alt=":cat-licking:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-laugh.png" alt=":cat-laugh:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-crying.png" alt=":cat-crying:" class="emote">
+                                    <img loading="lazy" src="public/images/emotes/cat-love.png" alt=":cat-love:" class="emote">
                                     <?php if ($ownVIPEmotes) : ?>
-                                            <img src="public/images/emotes/urpe-stonks.png" alt=":urpe-stonks:" class="emote">
-                                            <img src="public/images/emotes/urpe-cry.png" alt=":urpe-cry:" class="emote">
-                                            <img src="public/images/emotes/urpe-jesus.png" alt=":urpe-jesus:" class="emote">
-                                            <img src="public/images/emotes/urpe-hype.png" alt=":urpe-hype:" class="emote">
-                                            <img src="public/images/emotes/urpe-heart.png" alt=":urpe-heart:" class="emote">
-                                            <img src="public/images/emotes/urpe-hide.png" alt=":urpe-hide:" class="emote">
-                                            <img src="public/images/emotes/urpe-cool.png" alt=":urpe-cool:" class="emote">
-                                            <img src="public/images/emotes/urpe-blush.png" alt=":urpe-blush:" class="emote">
-                                            <img src="public/images/emotes/urpe-dead.png" alt=":urpe-dead:" class="emote">
-                                            <img src="public/images/emotes/urpe-eat.png" alt=":urpe-eat:" class="emote">
-                                            <img src="public/images/emotes/urpe-blanket.png" alt=":urpe-blanket:" class="emote">
-                                            <img src="public/images/emotes/urpe-notstonks.png" alt=":urpe-notstonks:" class="emote">
-                                            <img src="public/images/emotes/urpe-madaf.png" alt=":urpe-madaf:" class="emote">
-                                            <img src="public/images/emotes/urpe-sip.png" alt=":urpe-sip:" class="emote">
-                                            <img src="public/images/emotes/urpe-sad.png" alt=":urpe-sad:" class="emote">
-                                            <img src="public/images/emotes/urpe-run.png" alt=":urpe-run:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-stonks.png" alt=":urpe-stonks:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-cry.png" alt=":urpe-cry:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-jesus.png" alt=":urpe-jesus:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-hype.png" alt=":urpe-hype:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-heart.png" alt=":urpe-heart:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-hide.png" alt=":urpe-hide:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-cool.png" alt=":urpe-cool:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-blush.png" alt=":urpe-blush:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-dead.png" alt=":urpe-dead:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-eat.png" alt=":urpe-eat:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-blanket.png" alt=":urpe-blanket:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-notstonks.png" alt=":urpe-notstonks:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-madaf.png" alt=":urpe-madaf:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-sip.png" alt=":urpe-sip:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-sad.png" alt=":urpe-sad:" class="emote">
+                                            <img loading="lazy" src="public/images/emotes/urpe-run.png" alt=":urpe-run:" class="emote">
                                     <?php endif; ?>
                                 </div>
                             </div>

@@ -52,19 +52,25 @@
             <div class="item-info">
                 <h3><?= $item['items_name'] ?></h3>
                 <p class="price_display">
-                    <?php if ($hasDiscount) : ?>
+                    <?php if ($hasDiscount && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')) : ?>
                         <span class="old-price"><?= number_format($basePrice, 2) ?></span>
                         <span class="new-price"><?= number_format($finalPrice, 2) ?></span>
-                        <?php if ($vipDiscount > 0) : ?>
+                        <?php if ($vipDiscount > 0 && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')) : ?>
                             <span class="discount-badge">VIP -<?= $vipDiscount ?>%</span>
                         <?php endif; ?>
                         <?php if ($itemDiscount > 0) : ?>
                             <span class="discount-badge">-<?= $itemDiscount ?>%</span>
                         <?php endif; ?>
                     <?php else: ?>
-                        <span class="new-price"><?= number_format($basePrice, 2) ?></span>
+                        <?php if ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost') : ?>
+                            <span class="new-price"><?= number_format($basePrice, 2) ?></span>
+                        <?php else : ?>
+                            <span class="new-price"><?= number_format($basePrice, 2) ?> €</span>
+                        <?php endif; ?>
                     <?php endif; ?>
-                    <img src="public/images/soulhard.png" alt="soulhard">
+                    <?php if ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost') : ?> 
+                        <img src="public/images/soulhard.png" alt="soulhard">
+                    <?php endif; ?>
                 </p>
                 <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
                 <div class="buy-button-container">
@@ -81,7 +87,7 @@
                 </div>
             </div>
             <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
-            <?php if ($totalDiscount > 0): ?>
+            <?php if ($totalDiscount > 0 && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')): ?>
                 <div class="discount-badge-corner">
                     -<?= $totalDiscount ?>%
                 </div>
