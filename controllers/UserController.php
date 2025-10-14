@@ -2965,6 +2965,38 @@ class UserController
             echo json_encode(['success' => false, 'error' => 'Database error']);
         }
     }
+
+    public function switchPersonalColorWebsite()
+    {
+        if (!isset($_POST['color']) || !isset($_POST['userId'])) {
+            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            return;
+        }
+
+        $userId = $this->validateInput($_POST['userId']);
+        $color = $this->validateInput($_POST['color']);
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        $updateColor = $this->user->updatePersonalColor($color, $userId);
+
+        if ($updateColor) {
+            echo json_encode(['success' => true, 'message' => 'Color updated successfully']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Could not update color']);
+            exit;
+        }
+    }
     
 
     public function saveDarkMode()

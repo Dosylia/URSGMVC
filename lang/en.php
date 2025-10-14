@@ -205,6 +205,9 @@ return [
     'use_badge' => 'Use Badge',
     'not_owned' => 'Not Owned',
     'no_additional_badges' => 'No badges',
+    'add_profile_color' => 'Add a personal color',
+    'add_profile_color_desc' => 'Add a personal color to your profile page',
+    'save_color' => 'Save color',
 
     //chat page
     'looking_for_title' => 'Looking for a game?',

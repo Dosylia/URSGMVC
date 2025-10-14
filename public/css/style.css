@@ -6256,7 +6256,6 @@ dialog .title_generalbox {
     background-color: var(--main--red);
 }
 
-
 /* Container from banner */
 .profile-banner-container {
     display: flex;
@@ -6275,13 +6274,12 @@ dialog .title_generalbox {
     box-sizing: border-box;
 }
 
-.profile-banner{
-    width: 105%;       
+.profile-banner {
+    width: 105%;
     height: 100%;
     background-size: cover;
     background-position: center;
 }
-
 
 @media only screen and (max-width: 1420px) {
     .badge-container {
@@ -7442,10 +7440,6 @@ dialog .title_generalbox {
         margin-left: 0px;
     }
 
-    .support_ursg {
-        display: none;
-    }
-
     .badge span {
         display: none;
     }
@@ -7473,7 +7467,7 @@ dialog .title_generalbox {
         top: 55px;
     }
 
-     .profile-banner-container {
+    .profile-banner-container {
         height: 100px;
         top: 65px;
         padding: 12px;
@@ -7483,7 +7477,6 @@ dialog .title_generalbox {
     .profile-banner {
         width: 108%;
     }
-    
 }
 
 /* Banner addition */
@@ -7506,4 +7499,3 @@ dialog .title_generalbox {
   background-size: cover;
   background-position: center;
 } */
-

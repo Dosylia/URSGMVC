@@ -8,6 +8,49 @@ const fileInputProfile = document.getElementById('fileProfile')
 const fileNameProfile = document.getElementById('file-nameProfile')
 const placeholderMessage = document.getElementById('placeholder-message')
 
+function switchPersonalColorWebsite(selectedColor, userId) {
+    if (!selectedColor) {
+        alert('Please select a color first!')
+        return
+    }
+
+    const token = localStorage.getItem('masterTokenWebsite')
+
+    fetch('/switchPersonalColorWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
+        body: `color=${encodeURIComponent(
+            selectedColor
+        )}&userId=${encodeURIComponent(userId)}`,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Update color visually
+                const profileColor = document.querySelector(
+                    '.profile-personal-color'
+                )
+                if (profileColor)
+                    profileColor.style.backgroundColor = selectedColor
+
+                const userImage = document.getElementById('image_users')
+                if (userImage) userImage.style.borderColor = selectedColor
+
+                const overlay = document.getElementById('overlay')
+                overlay.style.display = 'none'
+                favDialogPicture.style.display = 'none'
+            } else {
+                console.error('Error:', data.error)
+            }
+        })
+        .catch((error) => {
+            console.error('Fetch error:', error)
+        })
+}
+
 // if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
 //   showButtonSocialLinks.addEventListener('click', () => {
 //     openDialogSocialLinks();
@@ -251,5 +294,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemId = this.getAttribute('data-item-id')
             RemovePictureFrame(itemId, userIdHeader)
         })
+    })
+
+    const colorCircles = document.querySelectorAll('.color-circle')
+    const saveColorBtn = document.getElementById('save-color-btn')
+    let selectedColor = null
+
+    // Highlight selected color
+    colorCircles.forEach((circle) => {
+        circle.addEventListener('click', () => {
+            colorCircles.forEach((c) => c.classList.remove('selected'))
+            circle.classList.add('selected')
+            selectedColor = circle.dataset.color
+        })
+    })
+
+    saveColorBtn.addEventListener('click', function () {
+        switchPersonalColorWebsite(selectedColor, userId)
     })
 })

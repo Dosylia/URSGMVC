@@ -106,6 +106,25 @@
             <?php endif; ?>
         </div>
 
+        <?php if ($user['user_isBoost']) : ?>
+        <!-- Switch Profile color -->
+        <div class="profile-card">
+            <h2 class="section-title"><?= $this->_('add_profile_color') ?></h2>
+            <p class="section-subtitle"><?= $this->_('add_profile_color_desc') ?></p>
+            <div class="color-options">
+                <?php
+                $colors = ['#4A90E2', '#50E3C2', '#9013FE', '#F5A623', '#7ED321', '#D0021B', '#F8E71C'];
+                foreach ($colors as $color) : ?>
+                    <div class="color-circle" 
+                        style="background-color: <?= $color ?>; border: <?= $user['user_personalColor'] === $color ? '3px solid #e84056' : '1px solid #ccc' ?>;" 
+                        data-color="<?= $color ?>">
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button id="save-color-btn" class="btn-primary"><?= $this->_('save_color') ?></button>
+        </div>
+        <?php endif; ?>
+
         <!-- Loading Overlay -->
         <div id="loadingOverlay">
             <div id="loading-indicator" style="display: none; text-align: center;">
@@ -148,7 +167,6 @@
         </div>
     </div>
     <div id="user-top-container"> <!--Flex column -->
-           
         <div class="profile-banner-container">
             <?php if(!empty($activeBanner)) : ?>
                 <?php foreach ($activeBanner as $item) : ?>
@@ -171,6 +189,13 @@
                 <?= $this->_('support_URSG_btn') ?>
             </a>
         </div>
+
+        <span class="profile-personal-color" 
+        <?php if ($user['user_personalColor']) : ?>
+            style="background-color: <?= htmlspecialchars($user['user_personalColor']) ?>;"
+        <?php endif; ?> 
+        >
+        </span>
         <div id="edit-profile-container">
             <div id="menu-links">
                 <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile">
@@ -217,9 +242,17 @@
             <div id="profile-picture-container">
                 <button class="btn_updateProfilePicture" id="opendialog_update_picture"><i class="fa-solid fa-image"></i></button>
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                    <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                    <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" 
+                        <?php if ($user['user_personalColor']) : ?>
+                            style="background-color: <?= htmlspecialchars($user['user_personalColor']) ?>;"
+                        <?php endif; ?> 
+                    />  
                 <?php else :?>
-                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
+                        <?php if ($user['user_personalColor']) : ?>
+                            style="border: 10px solid <?= htmlspecialchars($user['user_personalColor']) ?>;"
+                        <?php endif; ?> 
+                    />
                 <?php endif; ?>
                 
                 <?php if ($ownedItems && count($ownedItems) > 0) : ?>

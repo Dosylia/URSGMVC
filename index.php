@@ -279,6 +279,7 @@ $actionMap = [
     'paymentCancel' => [PaymentController::class, 'paymentCancel'],
     'handleWebhook' => [PaymentController::class, 'handleWebhook'],
     'buyPremiumBoostWebsite' => [PaymentController::class, 'buyPremiumBoostWebsite'],
+    'switchPersonalColorWebsite' => [UserController::class, 'switchPersonalColorWebsite'],
 ];
 
 $action = "home";
