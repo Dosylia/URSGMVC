@@ -7081,15 +7081,6 @@ dialog .title_generalbox {
         display: none;
     }
 
-    #add-friend-container-profile-other {
-        margin: unset;
-        position: absolute;
-        top: 20px;
-        left: 40px;
-        flex-direction: column;
-        gap: 10px;
-    }
-
     .hat-message {
         margin-left: 50px;
     }
