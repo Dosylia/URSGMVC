@@ -297,10 +297,11 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     const colorCircles = document.querySelectorAll('.color-circle')
+    const colorPicker = document.getElementById('custom-color-input')
     const saveColorBtn = document.getElementById('save-color-btn')
     let selectedColor = null
 
-    // Highlight selected color
+    // Handle preset color selection
     colorCircles.forEach((circle) => {
         circle.addEventListener('click', () => {
             colorCircles.forEach((c) => c.classList.remove('selected'))
@@ -309,7 +310,19 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    // Handle custom color selection
+    colorPicker.addEventListener('input', (e) => {
+        colorCircles.forEach((c) => c.classList.remove('selected'))
+        selectedColor = e.target.value
+    })
+
+    // Save color
     saveColorBtn.addEventListener('click', function () {
+        if (!selectedColor) {
+            alert('Please select or pick a color first!')
+            return
+        }
+
         switchPersonalColorWebsite(selectedColor, userId)
     })
 })

@@ -208,6 +208,7 @@ return [
     'add_profile_color' => 'Add a personal color',
     'add_profile_color_desc' => 'Add a personal color to your profile page',
     'save_color' => 'Save color',
+    'custom_color_desc' => 'Pick a custom color.',
 
     //chat page
     'looking_for_title' => 'Looking for a game?',
