@@ -168,6 +168,9 @@ body > div[style*='position: fixed'] {
     max-height: 100%;
     margin-bottom: 20px;
     position: relative;
+    /* background-size: cover;
+    background-position: center;
+    background-image: url("/public/images/store/AuroraBorealis.png"); */
 }
 
 #user-info {
@@ -201,6 +204,7 @@ body > div[style*='position: fixed'] {
 #profile-picture-container {
     position: relative;
     display: inline-block;
+    z-index: 500;
 }
 
 #user-bottom-nav {
@@ -6252,6 +6256,33 @@ dialog .title_generalbox {
     background-color: var(--main--red);
 }
 
+
+/* Container from banner */
+.profile-banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    gap: 15px;
+    top: 85px;
+    z-index: 490;
+    border-radius: 20px;
+    border: none;
+    width: 100%;
+    height: 260px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.profile-banner{
+    width: 105%;       
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+
 @media only screen and (max-width: 1420px) {
     .badge-container {
         width: 30%;
@@ -7323,6 +7354,17 @@ dialog .title_generalbox {
         font-size: 8px;
         padding: 2px 3px;
     }
+
+    .profile-banner-container {
+        height: 124px;
+        top: 53px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 106%;
+    }
 }
 
 @media only screen and (max-width: 500px) {
@@ -7348,6 +7390,17 @@ dialog .title_generalbox {
 
     .btn_updateProfile {
         top: 50px;
+    }
+
+    .profile-banner-container {
+        height: 124px;
+        top: 53px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 106%;
     }
 }
 
@@ -7419,4 +7472,38 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 55px;
     }
+
+     .profile-banner-container {
+        height: 100px;
+        top: 65px;
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .profile-banner {
+        width: 108%;
+    }
+    
 }
+
+/* Banner addition */
+/* .profile-banner {
+  position: absolute;
+  width: 100%;
+  height: 45%;
+  top: 20%;
+  background-image: url("/public/images/store/AuroraBorealis.png");
+  background-size: cover;
+  background-position: center;
+} */
+/* 
+.profile-banner {
+  position: absolute;
+  width: 100%;
+  height: 45%;
+  top: 50%;
+  background-image: url("/public/images/store/AuroraBorealis.png");
+  background-size: cover;
+  background-position: center;
+} */
+

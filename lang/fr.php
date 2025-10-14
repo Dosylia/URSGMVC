@@ -187,6 +187,8 @@ return [
     'add_profile_frame_remove' => 'Retirer',
     'add_profile_frame_use' => 'Utiliser',
     'no_profile_frame' => 'Vous n’avez pas encore de cadre de profil',
+    'add_profile_banner' => "Changer la bannière du profil",
+    'no_profile_banner' => "Vous ne possédez pas encore de bannière de profil",
     'go_to_store' => 'Aller à la boutique',
     'no_items' => 'Vous n’avez pas encore d’objets',
     'server' => 'Serveur',

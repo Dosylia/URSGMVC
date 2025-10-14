@@ -61,6 +61,20 @@
                 </div>
             </div>
         <div id="user-top-content"> <!--Flex column -->
+
+
+            <div class="profile-banner-container">
+                <?php if(!empty($activeBanner)) : ?>
+                    <?php foreach ($activeBanner as $item) : ?>
+                        <div id="profile-banner" 
+                            class="profile-banner" 
+                            style="background-image: url('public/images/store/<?= $item['items_picture'] ?>');"
+                            title="<?= htmlspecialchars($item['items_name']) ?>">
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
             <span id="additional-badges-container">
                 <?php if(!empty($additionalBadges)) : ?>
                     <?php foreach($additionalBadges as $badge): ?>
@@ -73,10 +87,10 @@
                 <?php else: ?>
                     <p><?= $this->_('no_additional_badges') ?></p>
                 <?php endif; ?>
-            </span>
+            </span>           
             <div id="profile-picture-container">
                 <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
-                    <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
+                    <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />
                 <?php else :?>
                     <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                 <?php endif; ?>
@@ -516,6 +530,7 @@
 <script src="public/js/swiping/profile_nav.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/gender-icon.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/copy_username.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/show_banner.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/profile_updateRiotPic.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/report.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/add_friend_otherProfile.js?<?= time(); ?>"></script>
