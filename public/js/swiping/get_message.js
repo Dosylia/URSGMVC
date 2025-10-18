@@ -41,15 +41,15 @@ document.addEventListener("DOMContentLoaded", function () {
             previewContainer.innerHTML = ''; // Clear the preview container
             messageInput.value = '';
             messageInput.placeholder = 'Talk to @' + username;
-            fetchMessages(userId, actualFriendId); // Load new messages
+            fetchMessages(actualFriendId); // Load new messages
             clearImageTrue();
         }
     });
     
 
     if (typeof userId !== "undefined" && userId !== null) {
-        fetchMessages(userId, actualFriendId); // Chargement initial
-        setInterval(() => fetchMessages(userId, actualFriendId), 5000);
+        fetchMessages(actualFriendId); // Chargement initial
+        setInterval(() => fetchMessages(actualFriendId), 5000);
     }
 
     setVhVariable();

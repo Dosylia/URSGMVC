@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
 // Variables
 let userIdElementHeader = document.getElementById('userId')
 let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null
@@ -24,17 +27,15 @@ function fetchFriendRequest(userId) {
         )
         return
     }
-    fetch('index.php?action=getFriendRequestWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(userId)}`,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success && data.pendingRequests) {
+
+    apiFetch({
+    url: '/index.php?action=getFriendRequestWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(userId)}`,
+})
+    .then((data) => {
+        if (data.success && data.pendingRequests) {
                 const displayMoneyWon =
                     document.getElementById('displayMoneyWon')
                 numberOfFailsPending = 0
@@ -159,11 +160,12 @@ function fetchFriendRequest(userId) {
                 lastNotifContentPending = []
             }
             fillNotificationCenter() // Re-render all notifications
-        })
-        .catch((error) => {
-            numberOfFailsPending++
-            console.error('Fetch error:', error)
-        })
+    })
+    .catch((error) => {
+        numberOfFailsPending++
+        console.error('Fetch error:', error)
+    })
+
 }
 
 function fetchInterestedUsers(userId) {

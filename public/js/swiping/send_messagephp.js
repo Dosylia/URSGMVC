@@ -65,7 +65,7 @@ window.sendMessageToPhp = function (senderId, message, replyToChatId) {
             replyPreviewContainer.innerHTML = ''
             replyPreviewContainer.style.display = 'none'
             messageInput.removeAttribute('data-reply-to')
-            fetchMessages(userId, receiverId)
+            fetchMessages(receiverId)
         })
         .catch((error) => {
             console.error('Error:', error)

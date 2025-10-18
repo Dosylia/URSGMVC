@@ -9,7 +9,7 @@ let showOnlineOnly = localStorage.getItem('showOnlineFriends') === 'true'
 let refreshMode = false
 
 // Fetch and render friend list
-function getFriendList(userId, page = 1) {
+function getFriendList(page = 1) {
     
     if (page !== currentPage || showOnlineOnly) {
         refreshMode = false
@@ -209,7 +209,7 @@ async function renderFriendList(friendList, page) {
 
 // Periodic updates for online status
 setInterval(() => {
-    getFriendList(userId, currentPage)
+    getFriendList(currentPage)
 }, 30000) // Update every 30 seconds
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -223,9 +223,9 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem('showOnlineFriends', showOnlineOnly)
             currentPage = 1
             refreshMode = false
-            getFriendList(userId, currentPage)
+            getFriendList(currentPage)
         })
     }
 
-    getFriendList(userId, currentPage)
+    getFriendList(currentPage)
 })
