@@ -208,7 +208,8 @@ return [
     'use_badge' => 'Utiliser l’insigne',
     'not_owned' => 'Non possédé',
     'no_additional_badges' => 'Aucun insigne',
-        'add_profile_color_desc' => 'Ajoutez une couleur personnelle à votre page de profil',
+    'add_profile_color' => 'Ajouter une couleur de profil',
+    'add_profile_color_desc' => 'Ajoutez une couleur personnelle à votre page de profil',
     'save_color' => 'Enregistrer la couleur',
     'custom_color_desc' => 'Choisissez une couleur personnalisée.',
 
