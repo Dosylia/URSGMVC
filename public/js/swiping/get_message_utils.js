@@ -1,3 +1,7 @@
+"use strict";
+import apiFetch from "./api_fetch.js";
+
+
 let userIdElement = document.getElementById("senderId");
 let friendIdElement = document.getElementById("receiverId");
 export const userId = userIdElement ? userIdElement.value : null;
@@ -22,14 +26,13 @@ export const submitRating = document.getElementById('submit-rating');
 
 
 // Function to fetch messages
-export function fetchMessages(userId, friendId) {
+export function fetchMessages(friendId) {
 
     if (numberofFail >= 5) {
         console.error('Too many failed attempts. Stopping fetch loop.');
         return;
     }
 
-    const token = localStorage.getItem('masterTokenWebsite');
     const firstFriendInput = document.getElementById('firstFriend');
     let firstFriend = firstFriendInput ? firstFriendInput.value : null;
 
@@ -48,29 +51,13 @@ export function fetchMessages(userId, friendId) {
         isFirstFetch = false; // Reset the flag after the first fetch
     }
 
-    fetch('/getMessageDataWebsite', {
+    apiFetch({
+        url: '/getMessageDataWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`,
     })
-    .then(async response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-    
-        let data;
-        try {
-            data = await response.json();
-        } catch (jsonError) {
-            throw new Error('Invalid JSON response from server');
-        }
-    
-        return data;
-    })
-    .then(data => {
+    .then((data) => {
         if (data.success) {
             numberofFail = 0; // Reset the fail counter on success
             if (data.messages !== null && data.messages !== undefined) {
@@ -103,20 +90,90 @@ export function fetchMessages(userId, friendId) {
             }
     
             // Optional: retry for other types of logical errors
-            setTimeout(() => fetchMessages(userId, friendId), 5000);
+            setTimeout(() => fetchMessages(friendId), 5000);
         }
     })
-    .catch(error => {
+    .catch((error) => {
         numberofFail++;
         console.error('Fetch or JSON parse error:', error);
     
         // Retry only for temporary issues (not "Friend not found", etc.)
         if (!error.message.includes('Friend not found') && !error.message.includes('User not found')) {
-            setTimeout(() => fetchMessages(userId, friendId), 5000);
+            setTimeout(() => fetchMessages(friendId), 5000);
         } else {
             console.warn('Not retrying due to invalid user/friend.');
         }
-    });        
+    })
+
+    // fetch('/getMessageDataWebsite', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    //         'Authorization': `Bearer ${token}`,
+    //     },
+    //     body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
+    // })
+    // .then(async response => {
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error ${response.status}`);
+    //     }
+    
+    //     let data;
+    //     try {
+    //         data = await response.json();
+    //     } catch (jsonError) {
+    //         throw new Error('Invalid JSON response from server');
+    //     }
+    
+    //     return data;
+    // })
+    // .then(data => {
+    //     if (data.success) {
+    //         numberofFail = 0; // Reset the fail counter on success
+    //         if (data.messages !== null && data.messages !== undefined) {
+    //             if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
+    //                 currentMessages = data.messages;
+    //                 showFriendInfo(data.friend).then(() => {
+    //                     updateMessageContainer(data.messages, data.friend, data.user);
+    //                 });
+    //             } else {
+    //                 showFriendInfo(data.friend);
+    //             }
+    //         } else {
+    //             // Handle empty messages case
+    //             currentMessages = [];
+    //             showFriendInfo(data.friend).then(() => {
+    //                 updateMessageContainer([], data.friend, data.user); // Pass empty array
+    //             });
+    //             console.log('No messages found.');
+    //         }
+    //     } else {
+    //         numberofFail++;
+    //         console.error('Error fetching messages:', data.error);
+    
+    //         if (
+    //             data.error.includes('Friend not found') ||
+    //             data.error.includes('User not found')
+    //         ) {
+    //             console.warn('Stopping message fetch loop due to missing friend/user.');
+    //             return;
+    //         }
+    
+    //         // Optional: retry for other types of logical errors
+    //         setTimeout(() => fetchMessages(friendId), 5000);
+    //     }
+    // })
+    // .catch(error => {
+    //     numberofFail++;
+    //     console.error('Fetch or JSON parse error:', error);
+    
+    //     // Retry only for temporary issues (not "Friend not found", etc.)
+    //     if (!error.message.includes('Friend not found') && !error.message.includes('User not found')) {
+    //         setTimeout(() => fetchMessages(friendId), 5000);
+    //     } else {
+    //         console.warn('Not retrying due to invalid user/friend.');
+    //     }
+    // });        
 }
 
     // Show loading indicator
@@ -126,15 +183,13 @@ export function fetchMessages(userId, friendId) {
     }
 
     function getGameStatusLoL(friendId) {
-        return fetch('/getGameStatusLoL', {
+        return apiFetch({
+            url: '/getGameStatusLoL',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `friendId=${encodeURIComponent(friendId)}`
         })
-        .then(response => response.json())
-        .then(data => {
+        .then((data) => {
             if (data.success) {
                 return data; // ✅ Return the actual game data here
             } else {
@@ -142,9 +197,11 @@ export function fetchMessages(userId, friendId) {
                 return null;
             }
         })
-        .catch(error => {
+        .catch((error) => {
+            // General error happened. Probably not user related and more on the dev side.
+            console.log(error)
             return null;
-        });
+        })
     }
     
 
@@ -674,26 +731,25 @@ export function fetchMessages(userId, friendId) {
     }
 
     function deleteMessage(chatId, userId) {
-        const token = localStorage.getItem('masterTokenWebsite');
-        fetch('/deleteMessageWebsite', {
+
+        apiFetch({
+            url: '/deleteMessageWebsite',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `userId=${encodeURIComponent(userId)}&chatId=${encodeURIComponent(chatId)}`
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                fetchMessages(userId, friendId); // Reload messages after deletion
-            } else {
-                console.error('Error deleting message:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error (accepted requests):', error);
-        });
+            .then((data) => {
+                if (data.success) {
+                    fetchMessages(friendId); // Reload messages after deletion
+                } else {
+                    console.error('Error deleting message:', data.error);
+                }
+            })
+            .catch((error) => {
+                // General error happened. Probably not user related and more on the dev side.
+                console.error('Fetch error (accepted requests):', error);
+            })
+
     }
 
     async function showFriendInfo(friend) {
@@ -734,7 +790,7 @@ export function fetchMessages(userId, friendId) {
     
         if (friend.lol_verified === 1) {
 
-            checkIfUsersPlayedTogether(friend.user_id, userId);
+            checkIfUsersPlayedTogether(friend.user_id);
             friendLeagueStatus = await getGameStatusLoL(friend.user_id);
             if (friendLeagueStatus) {
                 friendGameStatus = true;
@@ -873,23 +929,23 @@ export function fetchMessages(userId, friendId) {
         console.log("clearImageVar set to false");
     }
 
-    function checkIfUsersPlayedTogether(friendId, userId) {
-        const token = localStorage.getItem('masterTokenWebsite');
-        fetch('/checkIfUsersPlayedTogether', {
+    function checkIfUsersPlayedTogether(friendId) {
+
+        apiFetch({
+            url: '/checkIfUsersPlayedTogether',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(parseInt(friendId))}`
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.playedTogether) {
-                handleRatingPrompt(friendId, data.commonMatches);
-            }
-        })
-        .catch(error => console.error('Fetch error:', error));
+            .then((data) => {
+                if (data.success && data.playedTogether) {
+                    handleRatingPrompt(friendId, data.commonMatches);
+                }
+            })
+            .catch((error) => {
+                // General error happened. Probably not user related and more on the dev side.
+                console.error('Fetch error:', error)
+            });
     }
 
 function handleRatingPrompt(friendId, commonMatches) {
@@ -938,18 +994,15 @@ export function sendRating() {
     const friendId = submitRating.getAttribute('data-friend-id');
     const matchId = submitRating.getAttribute('data-match-id');
     const rating = document.getElementById('rating-score').value;
-    const token = localStorage.getItem('masterTokenWebsite');
 
-    fetch('/rateFriendWebsite', {
+
+    apiFetch({
+        url: '/rateFriendWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+       body: `friendId=${encodeURIComponent(friendId)}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(rating)}&userId=${encodeURIComponent(userId)}`
     })
-    .then(response => response.json())
-    .then(data => {
+    .then((data) => {
         if (data.success) {
             let ratingData = JSON.parse(localStorage.getItem('ratingData') || '{}');
             const friendKey = `friendId_${friendId}`;
@@ -966,7 +1019,10 @@ export function sendRating() {
             console.error('Rating failed:', data.error);
         }
     })
-    .catch(error => console.error('Fetch error:', error));
+    .catch((error) => {
+        // General error happened. Probably not user related and more on the dev side.
+        console.log(error)
+    })
 }
 
     

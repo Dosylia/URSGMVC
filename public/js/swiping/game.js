@@ -2,6 +2,7 @@
 import apiFetch from "./api_fetch.js";
 
 let selectedUser = null
+const userId = document.getElementById('userId').value; // Can just define userID globally
 
 function shakeMinigameWindow() {
     const minigameWindow = document.querySelector('.minigame-inner')
@@ -11,7 +12,7 @@ function shakeMinigameWindow() {
     }, 500)
 }
 
-function getGameUser(userId, game, tryCount) {
+function getGameUser(game, tryCount) {
     apiFetch({
     url: '/getGameUser',
     method: 'POST',
@@ -159,7 +160,6 @@ function toggleSubmitButton(elements) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const elements = getElements()
-    let userId = document.getElementById('userId').value
     let tryCount = parseInt(localStorage.getItem('tryCount'), 10) || 0
     const oldDate = localStorage.getItem('gameDate')
     const overlay = document.getElementById('overlay')
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         overlay.style.display = 'none'
         localStorage.setItem('ignoreGame', 0)
         localStorage.setItem('ignoreGamePermanently', 0)
-        getGameUser(userId, 'League of Legends', tryCount)
+        getGameUser('League of Legends', tryCount)
         restoreGame.style.display = 'none'
     })
 
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     })
 
-    getGameUser(userId, 'League of Legends', tryCount)
+    getGameUser('League of Legends', tryCount)
 
     elements.nameInput.addEventListener('input', () =>
         toggleSubmitButton(elements)
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tryCount++
         localStorage.setItem('tryCount', tryCount)
         const dataToSend = {
-            userId: document.getElementById('userId').value,
+            userId: userId,
             game: 'League of Legends',
             guess: userGuess,
             tryCount: tryCount,
@@ -255,17 +255,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const jsonData = JSON.stringify(dataToSend)
 
-        fetch('/submitGuess', {
+        apiFetch({
+            url: '/submitGuess',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'param=' + encodeURIComponent(jsonData),
         })
-            .then((response) => response.json())
             .then((data) => {
-                if (data.message === 'Correct') {
+                                if (data.message === 'Correct') {
                     displayNotification(
                         `Congratulations! You guessed the user correctly: ${data.gameUser.game_username}!`,
                         userId
@@ -312,7 +309,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             })
             .catch((error) => {
-                console.error('Error submitting guess:', error)
+                // General error happened. Probably not user related and more on the dev side.
+                console.log(error)
             })
     }
 

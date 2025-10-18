@@ -1,9 +1,9 @@
 "use strict";
 import apiFetch from "./api_fetch.js";
 
-let userId = document.getElementById('userId').value;
+const userId = document.getElementById('userId').value;
 
-function isLookingFor(userId, account, message) {
+function isLookingFor(account, message) {
 
     apiFetch({
     url: '/userIsLookingForGameWebsite',
@@ -17,7 +17,7 @@ function isLookingFor(userId, account, message) {
                 const lookingForButton = document.getElementById('looking-for-button');
                 lookingForButton.style.background = "linear-gradient(45deg, #4CAF50, #66bb6a)";
                 const oldTime = data.oldTime;
-                sendMessageDiscord(userId, account, message, oldTime);
+                sendMessageDiscord(account, message, oldTime);
             } else {
                 console.error('Error setting status:', data.error);
             }
@@ -26,13 +26,9 @@ function isLookingFor(userId, account, message) {
         // General error happened. Probably not user related and more on the dev side.
 	console.error('Fetch error:', error)
     })
-
-    
 }
 
-function sendMessageDiscord(userId, account, message, oldTime) {
-    const token = localStorage.getItem('masterTokenWebsite');
-
+function sendMessageDiscord(account, message, oldTime) {
     const formData = new URLSearchParams();
     formData.append('userId', parseInt(userId));
     if (account) formData.append('account', account);
@@ -41,29 +37,29 @@ function sendMessageDiscord(userId, account, message, oldTime) {
     const overlay = document.getElementById("overlay");
     overlay.style.display = "none";
 
-    fetch('/sendMessageDiscord', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: formData.toString()
+    apiFetch({
+    url: '/sendMessageDiscord',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formData.toString(),
+})
+    .then((data) => {
+        if (data.success) {
+            console.log('Message sent to Discord successfully!');
+            const message = document.getElementById('lookingfor-message');
+            message.value = "";
+            message.placeholder = "Type your message here...";
+        } else {
+            console.error('Message error:', data.error);
+            const message = document.getElementById('lookingfor-message');
+            message.value = "";
+            message.placeholder = "Type your message here...";
+        }
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Message sent to Discord successfully!');
-                const message = document.getElementById('lookingfor-message');
-                message.value = "";
-                message.placeholder = "Type your message here...";
-            } else {
-                console.error('Message error:', data.error);
-                const message = document.getElementById('lookingfor-message');
-                message.value = "";
-                message.placeholder = "Type your message here...";
-            }
-        })
-        .catch(error => console.error('Fetch error:', error));
+    .catch((error) => {
+        // General error happened. Probably not user related and more on the dev side.
+        console.log(error)
+    })
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -71,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeModalBtn = document.getElementById('close-modal');
     const lookingForButton = document.getElementById('looking-for-button');
     const submitLookingFor = document.getElementById('submit-lookingfor');
-
-    const userId = document.getElementById('userId').value;
 
     lookingForButton.addEventListener('click', () => {
         lookingForModal.classList.remove('lookingfor-modal-hidden');
@@ -90,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message = document.getElementById('lookingfor-message').value.trim();
         const account = document.getElementById('lookingfor-account')?.value.trim(); // May not exist if verified
 
-        isLookingFor(userId, account, message);
+        isLookingFor(account, message);
         lookingForModal.classList.add('lookingfor-modal-hidden'); // Close modal
     });
 });

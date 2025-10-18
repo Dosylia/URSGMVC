@@ -4,9 +4,10 @@ import apiFetch from "./api_fetch.js";
 
 let friendRequests = []; // Array to hold all friend requests
 const usersPerPage = 7; // Number of friend requests to display per page
+const userId = document.getElementById('userId').value; // Can just define userID globally
 let currentPage = 1; // Start with the first page
 
-function updateFriend(frId, userId, status) {
+function updateFriend(frId, status) {
     const dataToSend = {
         frId: frId,
         userId: userId,
@@ -133,9 +134,8 @@ function addActionListeners() {
         button.addEventListener('click', function (event) {
             event.preventDefault();         
             const frId = button.getAttribute('data-fr-id');
-            let userId = document.getElementById('userId').value;
             const status = button.getAttribute('data-status');
-            updateFriend(frId, userId, status);
+            updateFriend(frId, status);
         });
     });
 
@@ -143,9 +143,8 @@ function addActionListeners() {
         button.addEventListener('click', function (event) {
             event.preventDefault();
             const frId = button.getAttribute('data-fr-id');
-            let userId = document.getElementById('userId').value;
             const status = button.getAttribute('data-status');
-            updateFriend(frId, userId, status);
+            updateFriend(frId, status);
         });
     });
 }

@@ -4,8 +4,9 @@ import apiFetch from "./api_fetch.js";
 let userIdElementHeaderCurrency = document.getElementById('userId');
 let userIdHeaderCurrency = userIdElementHeaderCurrency ? userIdElementHeaderCurrency.value : null;
 let numberofFailCurrency = 0;
+const userId = userIdHeaderCurrency;
 
-function getCurrency(userId) {
+function getCurrency() {
     if (numberofFailCurrency >= 5) {
         console.error('Too many failed attempts to fetch accepted friend requests. Stopping further attempts.');
         return;
@@ -45,11 +46,11 @@ function fillCurrency(currency) {
     }
 }
 
-const userId = userIdHeaderCurrency;
+
 
 document.addEventListener("DOMContentLoaded", function() {
-    getCurrency(userId); 
+    getCurrency(); 
     setInterval(function() {
-        getCurrency(userId);
+        getCurrency();
     }, 20000);
 });
