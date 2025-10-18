@@ -1262,4 +1262,24 @@ class User extends DataBase
             return false;
         }
     }
+
+    public function updatePersonalColor($color, $userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_personalColor` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updateColorTest = $query -> execute([$color, $userId]);
+
+        if ($updateColorTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

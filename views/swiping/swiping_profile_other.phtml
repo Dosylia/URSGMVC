@@ -36,6 +36,12 @@
     </div>
 
     <div id="user-top-container"> <!--Flex column -->
+        <span class="profile-personal-color" 
+        <?php if (!empty($personalColor)) : ?>
+            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+        <?php endif; ?> 
+        >
+        </span>
         <input id="receiverId" type="hidden" name="receiver_id" value="<?= $anotherUser['user_id'] ?>">
             <!-- Modal Structure -->
             <div id="report-modal" class="modal report-modal-hidden">
@@ -45,9 +51,17 @@
                     <p class="report-modal-p"><?= $this->_('report_description') ?></p>
                     <div class="user-info">
                     <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
-                            <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
+                            <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" 
+                            <?php if (!empty($personalColor)) : ?>
+                                style="background-color: <?= $personalColor ?>;"
+                            <?php endif; ?> 
+                            />  
                         <?php else :?>
-                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
+                            <?php if (!empty($personalColor)) : ?>
+                                style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+                            <?php endif; ?> 
+                            />
                         <?php endif; ?>
                         <span id="report-username"><?= $anotherUser['user_username'] ?></span>
                     </div>

@@ -106,6 +106,32 @@
             <?php endif; ?>
         </div>
 
+        <?php if ($user['user_isBoost']) : ?>
+        <!-- Switch Profile color -->
+        <div class="profile-card">
+            <h2 class="section-title"><?= $this->_('add_profile_color') ?></h2>
+            <p class="section-subtitle"><?= $this->_('add_profile_color_desc') ?></p>
+            <span class="section-alert"></span>
+            <div class="color-options">
+                <?php
+                foreach ($colors as $color) : ?>
+                    <div class="color-circle" 
+                        style="background-color: <?= $color ?>;" 
+                        data-color="<?= $color ?>">
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="color-picker-wrapper">
+                <h3><?= $this->_('custom_color_desc') ?></h3>
+                <label class="custom-color-label">
+                    <input type="color" id="custom-color-input" />
+                    <span class="color-preview"></span>
+                </label>
+            </div>
+            <button id="save-color-btn" class="btn-primary"><?= $this->_('save_color') ?></button>
+        </div>
+        <?php endif; ?>
+
         <!-- Loading Overlay -->
         <div id="loadingOverlay">
             <div id="loading-indicator" style="display: none; text-align: center;">
@@ -148,7 +174,6 @@
         </div>
     </div>
     <div id="user-top-container"> <!--Flex column -->
-           
         <div class="profile-banner-container">
             <?php if(!empty($activeBanner)) : ?>
                 <?php foreach ($activeBanner as $item) : ?>
@@ -162,7 +187,7 @@
         </div>
       
         <!-- Additional badges -->
-        <div class="support_ursg">
+        <!-- <div class="support_ursg">
             <h3><?= $this->_('support_URSG') ?></h3>
             <hr class="separators-hr" style="width: 80%; margin: 0px;"/>
             <p><?= $this->_('support_URSG_desc') ?></p>
@@ -170,28 +195,35 @@
             <a href="https://ko-fi.com/yoursoulmategamer" target="_blank" class="btn_support_ursg">
                 <?= $this->_('support_URSG_btn') ?>
             </a>
-        </div>
+        </div> -->
+
+        <span class="profile-personal-color" 
+        <?php if (!empty($personalColor)) : ?>
+            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+        <?php endif; ?> 
+        >
+        </span>
         <div id="edit-profile-container">
             <div id="menu-links">
-                <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile">
+                <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile" <?= $personalButtonDesign ?>>
                     <i class="fa-solid fa-pen"></i> <span class="menu-text"><?= $this->_('update_profile') ?></span>
                 </a> 
                 <?php if ($user['user_game'] !== 'Valorant'): ?> 
-                    <a href="/updateLeaguePage" class="btn_user_updates_profile" data-text="Update League">
+                    <a href="/updateLeaguePage" class="btn_user_updates_profile" data-text="Update League" <?= $personalButtonDesign ?>>
                         <i class="fa-solid fa-gamepad"></i> <span class="menu-text"><?= $this->_('update_league') ?></span>
                     </a>
                 <?php else : ?>
-                    <a href="/updateValorantPage" class="btn_user_updates_profile" data-text="Update Valorant">
+                    <a href="/updateValorantPage" class="btn_user_updates_profile" data-text="Update Valorant" <?= $personalButtonDesign ?>>
                         <i class="fa-solid fa-gamepad"></i> <span class="menu-text"><?= $this->_('update_valorant') ?></span>
                     </a> 
                 <?php endif; ?>
-                <a href="/updateLookingForPage" class="btn_user_updates_profile" data-text="Update Interests">
+                <a href="/updateLookingForPage" class="btn_user_updates_profile" data-text="Update Interests" <?= $personalButtonDesign ?>>
                     <i class="fa-solid fa-heart"></i> <span class="menu-text"><?= $this->_('update_interests') ?></span>
                 </a>
                 <?php if ($user['user_game'] === "League of Legends") : ?>
-                    <button class="btn_user_updates_profile" id="openRiotAccount-btn" data-text="Riot account"><i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('riot_account') ?></span></button>
+                    <button class="btn_user_updates_profile" id="openRiotAccount-btn" data-text="Riot account" <?= $personalButtonDesign ?>><i class="fa-solid fa-hand-fist"></i> <span class="menu-text"><?= $this->_('riot_account') ?></span></button>
                 <?php endif; ?>
-                <a href="/personalityTest" class="btn_user_updates_profile" data-text="Do our personality test">
+                <a href="/personalityTest" class="btn_user_updates_profile" data-text="Do our personality test" <?= $personalButtonDesign ?>>
                     <i class="fa-solid fa-question"></i> <span class="menu-text">Quiz LoL</span>
                 </a> 
             </div>
@@ -215,11 +247,19 @@
                 <?php endif; ?>
             </span>
             <div id="profile-picture-container">
-                <button class="btn_updateProfilePicture" id="opendialog_update_picture"><i class="fa-solid fa-image"></i></button>
+                <button class="btn_updateProfilePicture" id="opendialog_update_picture"><i class="fa-solid fa-image" <?= $personalAddPicture ?>></i></button>
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
-                    <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" />  
+                    <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" 
+                        <?php if (!empty($personalColor)) : ?>
+                            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+                        <?php endif; ?> 
+                    />  
                 <?php else :?>
-                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
+                        <?php if (!empty($personalColor)) : ?>
+                            style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
+                        <?php endif; ?> 
+                    />
                 <?php endif; ?>
                 
                 <?php if ($ownedItems && count($ownedItems) > 0) : ?>

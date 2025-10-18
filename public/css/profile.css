@@ -15,6 +15,7 @@
     height: 1000px;
     margin: 20px auto;
     height: 100%;
+    position: relative;
 }
 
 .social-container-column {
@@ -105,9 +106,128 @@
     right: -50px;
     color: var(--main--red);
     cursor: pointer;
-    font-size: 40px;
-    background: none;
+    font-size: 30px;
+    padding: 7px 15px;
+    background-color: white;
+    border-radius: 20px;
+    border: 2px solid white;
+}
+
+.dark-mode .btn_updateProfilePicture {
+    background-color: var(--ligher--grey);
+    border: 2px solid var(--ligher--grey);
+}
+
+.btn_updateProfilePicture:hover {
+    background-color: var(--main--red);
+    color: white;
+    border: 2px solid var(--main--red);
+}
+
+/* Personal Color on profile CSS */
+.profile-personal-color {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 0;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    pointer-events: none;
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.color-circle,
+.color-picker-wrapper input[type='color'] {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: transform 0.2s ease, border 0.2s ease;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+}
+
+.color-circle:hover,
+.color-picker-wrapper input[type='color']:hover {
+    transform: scale(1.1);
+}
+
+.color-circle.selected {
+    border: 3px solid #e84056;
+}
+
+.profile-card .section-alert {
+    color: var(--main--red);
+    font-size: 0.9em;
+    font-family: 'Geologica', sans-serif;
+}
+
+.color-picker-wrapper h3 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.color-picker-wrapper input[type='color']::-webkit-color-swatch {
+    border-radius: 50%;
     border: none;
+}
+
+.color-picker-wrapper input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker-wrapper {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.custom-color-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.color-picker-wrapper input[type='color'] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.color-preview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.color-preview.active {
+    border: 3px solid #e84056;
+    box-shadow: 0 0 8px rgba(232, 64, 86, 0.5);
 }
 
 .support_ursg {
@@ -121,7 +241,7 @@
     left: 30px;
     border-radius: 20px;
     border: none;
-    background-color: rgba(232, 64, 86, 0.08);
+    background-color: rgba(232, 64, 86, 0.4);
     width: 250px;
     padding: 20px;
     box-sizing: border-box;
@@ -612,5 +732,15 @@
 
     .support_ursg a {
         padding: 2px 5px;
+    }
+
+    .support_ursg {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .support_ursg {
+        display: none;
     }
 }
