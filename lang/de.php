@@ -206,6 +206,9 @@ return [
     'use_badge' => 'Abzeichen verwenden',
     'not_owned' => 'Nicht im Besitz',
     'no_additional_badges' => 'Keine Abzeichen',
+    'add_profile_color_desc' => 'Füge eine persönliche Farbe zu deiner Profilseite hinzu',
+    'save_color' => 'Farbe speichern',
+    'custom_color_desc' => 'Wähle eine benutzerdefinierte Farbe.',
 
     //chat page
     'looking_for_title' => 'Auf der Suche nach einem Spiel?',

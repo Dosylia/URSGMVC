@@ -207,6 +207,9 @@ return [
     'use_badge' => 'Usar insignia',
     'not_owned' => 'No poseído',
     'no_additional_badges' => 'No insignias',
+    'add_profile_color_desc' => 'Añade un color personal a tu página de perfil',
+    'save_color' => 'Guardar color',
+    'custom_color_desc' => 'Elige un color personalizado.',
 
     //chat page
     'looking_for_title' => '¿Buscas una partida?',
