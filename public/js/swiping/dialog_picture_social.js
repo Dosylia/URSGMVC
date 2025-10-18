@@ -1,5 +1,5 @@
-"use strict";
-import apiFetch from "./api_fetch.js";
+'use strict'
+import apiFetch from './api_fetch.js'
 
 // const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 // const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
@@ -160,24 +160,23 @@ function usePictureFrame(itemId, userId) {
     const jsonData = JSON.stringify(dataToSend)
 
     apiFetch({
-    url: 'index.php?action=usePictureFrameWebsite',
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', },
-    body: 'param=' + encodeURIComponent(jsonData),
-})
-    .then((data) => {
-         placeholderMessage.innerHTML = ''
+        url: 'index.php?action=usePictureFrameWebsite',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'param=' + encodeURIComponent(jsonData),
+    })
+        .then((data) => {
+            placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
                 location.reload()
             } else {
                 placeholderMessage.innerHTML = data.message
             }
-    })
-    .catch((error) => {
-        console.error('Error:', error)
-    })
-
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
 }
 
 function RemovePictureFrame(itemId, userId) {
@@ -192,23 +191,23 @@ function RemovePictureFrame(itemId, userId) {
     const jsonData = JSON.stringify(dataToSend)
 
     apiFetch({
-    url: 'index.php?action=removePictureFrameWebsite',
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'param=' + encodeURIComponent(jsonData),
-})
-    .then((data) => {
-         placeholderMessage.innerHTML = ''
+        url: 'index.php?action=removePictureFrameWebsite',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'param=' + encodeURIComponent(jsonData),
+    })
+        .then((data) => {
+            placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
                 location.reload()
             } else {
                 placeholderMessage.innerHTML = data.message
             }
-    })
-    .catch((error) => {
-        console.error('Error:', error)
-    })
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
 }
 
 function showPreview(event) {
@@ -291,14 +290,14 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureFrameButtons.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            usePictureFrame(itemId, userIdHeader)
+            usePictureFrame(itemId, userId)
         })
     })
 
     pictureFrameButtonsRemove.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            RemovePictureFrame(itemId, userIdHeader)
+            RemovePictureFrame(itemId, userId)
         })
     })
 

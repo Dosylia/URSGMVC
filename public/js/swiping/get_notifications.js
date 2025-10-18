@@ -1,9 +1,7 @@
-"use strict";
-import apiFetch from "./api_fetch.js";
+'use strict'
+import apiFetch from './api_fetch.js'
 
 // Variables
-let userIdElementHeader = document.getElementById('userId')
-let userIdHeader = userIdElementHeader ? userIdElementHeader.value : null
 let originalTitle = document.title
 let originalTitleNoChange = document.title
 let globalUnreadCounts = {}
@@ -29,13 +27,13 @@ function fetchFriendRequest(userId) {
     }
 
     apiFetch({
-    url: '/index.php?action=getFriendRequestWebsite',
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `userId=${encodeURIComponent(userId)}`,
-})
-    .then((data) => {
-        if (data.success && data.pendingRequests) {
+        url: '/index.php?action=getFriendRequestWebsite',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `userId=${encodeURIComponent(userId)}`,
+    })
+        .then((data) => {
+            if (data.success && data.pendingRequests) {
                 const displayMoneyWon =
                     document.getElementById('displayMoneyWon')
                 numberOfFailsPending = 0
@@ -160,12 +158,11 @@ function fetchFriendRequest(userId) {
                 lastNotifContentPending = []
             }
             fillNotificationCenter() // Re-render all notifications
-    })
-    .catch((error) => {
-        numberOfFailsPending++
-        console.error('Fetch error:', error)
-    })
-
+        })
+        .catch((error) => {
+            numberOfFailsPending++
+            console.error('Fetch error:', error)
+        })
 }
 
 function fetchInterestedUsers(userId) {
@@ -315,7 +312,7 @@ function fillNotificationCenter() {
         const closeButton = document.createElement('i')
         closeButton.className = 'fa-solid fa-times close-btn'
         closeButton.dataset.frId = notification.fr_id
-        closeButton.dataset.userId = userIdHeader
+        closeButton.dataset.userId = userId
         closeButton.dataset.type = notification.type
 
         notifItem.appendChild(notifTextElement)
@@ -433,7 +430,7 @@ function clearAllNotifications() {
     const notificationsToClear = [...AllNotifications]
     notificationsToClear.forEach((notification) => {
         const { fr_id, type } = notification
-        const userId = userIdHeader
+        const userId = userId
         if (type === 'pending') {
             updateNotificationFriendRequestPending(fr_id, userId, type)
         } else if (type === 'accepted') {
@@ -956,10 +953,10 @@ function fillPendingFriendRequest(pendingCount) {
 
 // Fonction pour récupérer les mises à jour périodiques
 function fetchUpdates() {
-    fetchAcceptedFriendRequest(userIdHeader)
-    fetchFriendRequest(userIdHeader)
-    fetchUnreadMessage(userIdHeader)
-    fetchInterestedUsers(userIdHeader)
+    fetchAcceptedFriendRequest(userId)
+    fetchFriendRequest(userId)
+    fetchUnreadMessage(userId)
+    fetchInterestedUsers(userId)
 }
 
 document.addEventListener('DOMContentLoaded', function () {
