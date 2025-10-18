@@ -106,9 +106,22 @@
     right: -50px;
     color: var(--main--red);
     cursor: pointer;
-    font-size: 40px;
-    background: none;
-    border: none;
+    font-size: 30px;
+    padding: 7px 15px;
+    background-color: white;
+    border-radius: 20px;
+    border: 2px solid white;
+}
+
+.dark-mode .btn_updateProfilePicture {
+    background-color: var(--ligher--grey);
+    border: 2px solid var(--ligher--grey);
+}
+
+.btn_updateProfilePicture:hover {
+    background-color: var(--main--red);
+    color: white;
+    border: 2px solid var(--main--red);
 }
 
 /* Personal Color on profile CSS */
@@ -155,6 +168,12 @@
     border: 3px solid #e84056;
 }
 
+.profile-card .section-alert {
+    color: var(--main--red);
+    font-size: 0.9em;
+    font-family: 'Geologica', sans-serif;
+}
+
 .color-picker-wrapper h3 {
     text-align: center;
     margin-bottom: 8px;
@@ -169,6 +188,48 @@
 .color-picker-wrapper input[type='color']::-webkit-color-swatch-wrapper {
     padding: 0;
 }
+
+.color-picker-wrapper {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.custom-color-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.color-picker-wrapper input[type='color'] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.color-preview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.color-preview.active {
+    border: 3px solid #e84056;
+    box-shadow: 0 0 8px rgba(232, 64, 86, 0.5);
+}
+
 .support_ursg {
     display: flex;
     flex-direction: column;

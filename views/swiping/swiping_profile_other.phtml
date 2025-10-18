@@ -37,8 +37,8 @@
 
     <div id="user-top-container"> <!--Flex column -->
         <span class="profile-personal-color" 
-        <?php if ($anotherUser['user_personalColor']) : ?>
-            style="background-color: <?= htmlspecialchars($anotherUser['user_personalColor']) ?>;"
+        <?php if (!empty($personalColor)) : ?>
+            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
         <?php endif; ?> 
         >
         </span>
@@ -52,14 +52,14 @@
                     <div class="user-info">
                     <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
                             <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" 
-                            <?php if ($user['user_personalColor']) : ?>
-                                style="background-color: <?= htmlspecialchars($anotherUser['user_personalColor']) ?>;"
+                            <?php if (!empty($personalColor)) : ?>
+                                style="background-color: <?= $personalColor ?>;"
                             <?php endif; ?> 
                             />  
                         <?php else :?>
                             <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
-                            <?php if ($user['user_personalColor']) : ?>
-                                style="background-color: <?= htmlspecialchars($anotherUser['user_personalColor']) ?>;"
+                            <?php if (!empty($personalColor)) : ?>
+                                style="background-color: <?= htmlspecialchars($personalColor) ?>;"
                             <?php endif; ?> 
                             />
                         <?php endif; ?>

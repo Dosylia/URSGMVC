@@ -39,6 +39,25 @@ function switchPersonalColorWebsite(selectedColor, userId) {
                 const userImage = document.getElementById('image_users')
                 if (userImage) userImage.style.borderColor = selectedColor
 
+                // Update all menu-links btn_user_updates_profile design
+                const menuButtons = document.querySelectorAll(
+                    '.btn_user_updates_profile'
+                )
+
+                //Update fa-solid fa-image icon color
+                const updatePictureButton = document.querySelector(
+                    '.btn_updateProfilePicture i'
+                )
+
+                if (updatePictureButton) {
+                    updatePictureButton.style.color = selectedColor
+                }
+
+                menuButtons.forEach((button) => {
+                    button.style.backgroundColor = selectedColor
+                    button.style.borderColor = selectedColor
+                })
+
                 const overlay = document.getElementById('overlay')
                 overlay.style.display = 'none'
                 favDialogPicture.style.display = 'none'
@@ -298,6 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const colorCircles = document.querySelectorAll('.color-circle')
     const colorPicker = document.getElementById('custom-color-input')
+    const colorPreview = document.querySelector('.color-preview')
     const saveColorBtn = document.getElementById('save-color-btn')
     let selectedColor = null
 
@@ -306,6 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
         circle.addEventListener('click', () => {
             colorCircles.forEach((c) => c.classList.remove('selected'))
             circle.classList.add('selected')
+            colorPreview.classList.remove('active')
             selectedColor = circle.dataset.color
         })
     })
@@ -313,13 +334,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle custom color selection
     colorPicker.addEventListener('input', (e) => {
         colorCircles.forEach((c) => c.classList.remove('selected'))
+        colorPreview.style.backgroundColor = e.target.value
+        colorPreview.classList.add('active')
         selectedColor = e.target.value
     })
 
     // Save color
     saveColorBtn.addEventListener('click', function () {
         if (!selectedColor) {
-            alert('Please select or pick a color first!')
+            document.querySelector('.section-alert').textContent =
+                'Please select or pick a color first!'
             return
         }
 

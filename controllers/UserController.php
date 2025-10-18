@@ -2197,6 +2197,17 @@ class UserController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $userRating = 0;
             $badges = $this->items->getBadges();
+            $personalColor = '';
+            $personalButtonDesign = "";
+            $personalAddPicture = "";
+            if ($user['user_personalColor']) {
+                $personalColor = $user['user_personalColor'];
+                $personalButtonDesign = "style='background-color: " . htmlspecialchars($personalColor) . "; border-color: " . htmlspecialchars($personalColor) . ";'";
+                $personalAddPicture = "style='color: " . htmlspecialchars($personalColor) . ";'";
+            }
+            if ($user['user_isBoost']) {
+                $colors = ['#4A90E2', '#50E3C2', '#9013FE', '#F5A623', '#7ED321', '#D0021B', '#F8E71C'];
+            }
             if ($user['user_game'] == "League of Legends")
             {
                 $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
@@ -2272,8 +2283,12 @@ class UserController
                 $anotherUser = $this-> user -> getUserByUsername($username);
                 $userRating = 0;
                 $badges = $this->items->getBadges();
+                $personalColor = '';
                 if ($anotherUser) 
                 {
+                    if ($anotherUser['user_personalColor']) {
+                        $personalColor = $anotherUser['user_personalColor'];
+                    }
                     $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
@@ -2332,8 +2347,12 @@ class UserController
                 $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 $userRating = 0;
                 $badges = $this->items->getBadges();
+                $personalColor = '';
                 if ($anotherUser)
                 {
+                    if ($anotherUser['user_personalColor']) {
+                        $personalColor = $anotherUser['user_personalColor'];
+                    }
                     if ($anotherUser['user_game'] == "League of Legends")
                     {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($anotherUser['user_id']);
