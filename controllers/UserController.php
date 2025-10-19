@@ -810,7 +810,7 @@ class UserController
                 exit();
             }
 
-            if (isset($_POST['username']) && $user['user_isBoosted'] == 1)
+            if (isset($_POST['username']) && $user['user_isBoost'] == 1)
             {
                 $username = $this->validateInput($_POST["username"]);
                 $this->setUsername($username);
@@ -844,7 +844,7 @@ class UserController
 
             if ($updateUser)
             {
-                if (isset($_POST['username']) && $user['user_isBoosted'] == 1)
+                if (isset($_POST['username']) && $user['user_isBoost'] == 1)
                 {
                     $currentMonth = date('Y-m');
                     if ($user['user_usernameChangeMonth'] !== $currentMonth) {
