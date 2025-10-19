@@ -1654,7 +1654,15 @@ class UserController
     
                     // Resize the image to 200x200
                     $resizedFilePath = $targetDir . 'resized_' . $fileName;
-                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    $resized = false;
+                    if ($fileExtension === 'gif') {
+                        $resized = true;
+                    } else {
+                        if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                            $resized = true;
+                        }
+                    }
+                    if ($resized) {
                         // Retrieve userId from POST data
                         $username = isset($_POST["username"]) ? $this->validateInput($_POST["username"]) : null;
     
