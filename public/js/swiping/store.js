@@ -15,7 +15,7 @@ function buyItem(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=buyItemWebsite', {
+    fetch('/buyItemWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,7 +57,7 @@ function buySoulHard(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=buyCurrencyWebsite', {
+    fetch('/buyCurrencyWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -99,7 +99,7 @@ function buyPremiumBoost(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=buyPremiumBoostWebsite', {
+    fetch('/buyPremiumBoostWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -141,7 +141,7 @@ function buyRole(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('index.php?action=buyRoleWebsite', {
+    fetch('/buyRoleWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -162,11 +162,16 @@ function buyRole(itemId, userId) {
             placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
+                const roleType = data.roleType || 'premium' // backend can send this if you want
                 placeholderMessage.innerHTML = `
-                ${data.message}<br/>
-                <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
-                <button onclick="claimDiscordRole()" class="claimPremium">Claim Premium Role on Discord</button>
-            `
+                    ${data.message}<br/>
+                    <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
+                    <button onclick="claimDiscordRole('${roleType}')" class="claimPremium">
+                        Claim ${
+                            roleType.charAt(0).toUpperCase() + roleType.slice(1)
+                        } Role on Discord
+                    </button>
+                `
             } else {
                 placeholderMessage.innerHTML = data.message
             }
@@ -181,16 +186,41 @@ function getDiscordRole(itemId) {
     const placeholderMessage = document.getElementById(
         `placeholder-message-${itemId}`
     )
+
+    const button = document.querySelector(
+        `.buy-button-owned.getRoleDiscord[data-item-id='${itemId}']`
+    )
+
+    if (!button) {
+        console.error(`Button not found for item ID: ${itemId}`)
+        return
+    }
+
+    const itemCard = button.closest('.item-card')
+    if (!itemCard) {
+        console.error('Item card not found')
+        return
+    }
+
+    const itemName = itemCard.getAttribute('data-name').toLowerCase()
+
     placeholderMessage.innerHTML = `
-                Already got role but not on discord?<br/>
-                <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
-                <button onclick="claimDiscordRole()" class="claimPremium">Claim Premium Role on Discord</button>
-            `
+        Already got role but not on discord?<br/>
+        <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
+        <button onclick="claimDiscordRole('${itemName}')" class="claimPremium">Claim ${
+        itemName.charAt(0).toUpperCase() + itemName.slice(1)
+    } Role on Discord</button>
+    `
 }
 
-function claimDiscordRole() {
+function claimDiscordRole(roleType) {
+    let redirectUri = encodeURIComponent(
+        'https://ur-sg.com/discordClaim?role=' + roleType
+    )
+    const clientId = '1354386306746159235'
+
     window.open(
-        'https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordClaim&scope=identify',
+        `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=identify`,
         '_blank'
     )
 }
@@ -199,7 +229,6 @@ function claimDiscordRole() {
 document.addEventListener('DOMContentLoaded', function () {
     let kittyClicks = 0
     const kittyCard = document.getElementById('kitty-frame-card')
-    const discordRoleButton = document.getElementById('getRoleDiscord')
 
     if (kittyCard) {
         kittyCard.addEventListener('click', () => {
@@ -212,9 +241,11 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    discordRoleButton?.addEventListener('click', function () {
-        const itemId = this.getAttribute('data-item-id')
-        getDiscordRole(itemId)
+    document.querySelectorAll('.getRoleDiscord').forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            getDiscordRole(itemId)
+        })
     })
 
     buyButtons.forEach((button) => {
@@ -222,13 +253,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemId = this.getAttribute('data-item-id')
             const itemCategory =
                 this.closest('.item-card').getAttribute('data-category')
+            const itemName = this.closest('.item-card')
+                .getAttribute('data-name')
+                .toLowerCase()
 
-            if (itemCategory === 'role') {
+            if (itemCategory === 'role' && itemName.includes('boost')) {
+                buyPremiumBoost(itemId, userIdHeader)
+            } else if (itemCategory === 'role') {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {
                 buySoulHard(itemId, userIdHeader)
-            } else if (itemCategory === 'boost') {
-                buyPremiumBoost(itemId, userIdHeader)
             } else {
                 buyItem(itemId, userIdHeader)
             }

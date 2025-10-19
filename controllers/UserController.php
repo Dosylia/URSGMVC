@@ -1566,8 +1566,8 @@ class UserController
                 exit;
             }
     
-            // Check for animated GIFs
-            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+            // Check for animated GIFs, only allow if user_isBoost === 1 
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isBoost'] !== 1) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated GIFs are not allowed");
                 exit;
@@ -1575,10 +1575,21 @@ class UserController
     
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
-                unlink($targetFilePath); // Clean up original if resize fails
-                header("location:/userProfile?message=Error resizing image");
-                exit;
+
+            if ($fileExtension === 'gif' || $user['user_isBoost'] === 1) {
+                // Keep GIF as is
+                if (!copy($targetFilePath, $resizedFilePath)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error copying GIF");
+                    exit;
+                }
+            } else {
+                // Resize other images
+                if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error resizing image");
+                    exit;
+                }
             }
     
             // Update database with resized image
@@ -1654,7 +1665,15 @@ class UserController
     
                     // Resize the image to 200x200
                     $resizedFilePath = $targetDir . 'resized_' . $fileName;
-                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    $resized = false;
+                    if ($fileExtension === 'gif') {
+                        $resized = true;
+                    } else {
+                        if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                            $resized = true;
+                        }
+                    }
+                    if ($resized) {
                         // Retrieve userId from POST data
                         $username = isset($_POST["username"]) ? $this->validateInput($_POST["username"]) : null;
     

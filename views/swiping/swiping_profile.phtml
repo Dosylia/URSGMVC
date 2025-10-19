@@ -106,15 +106,14 @@
             <?php endif; ?>
         </div>
 
+    <div class="profile-card">
         <?php if ($user['user_isBoost']) : ?>
-        <!-- Switch Profile color -->
-        <div class="profile-card">
+            <!-- Full Profile Color Options for Boost Users -->
             <h2 class="section-title"><?= $this->_('add_profile_color') ?></h2>
             <p class="section-subtitle"><?= $this->_('add_profile_color_desc') ?></p>
             <span class="section-alert"></span>
             <div class="color-options">
-                <?php
-                foreach ($colors as $color) : ?>
+                <?php foreach ($colors as $color) : ?>
                     <div class="color-circle" 
                         style="background-color: <?= $color ?>;" 
                         data-color="<?= $color ?>">
@@ -129,8 +128,16 @@
                 </label>
             </div>
             <button id="save-color-btn" class="btn-primary"><?= $this->_('save_color') ?></button>
-        </div>
+        <?php else : ?>
+            <!-- Teaser for Non-Boost Users -->
+            <h2 class="section-title"><?= $this->_('profile_color_boost_teaser') ?></h2>
+            <p class="section-subtitle"><?= $this->_('profile_color_boost_teaser_desc') ?></p>
+            <div class="teaser-box">
+                <p><?= $this->_('upgrade_to_boost_to_customize_colors') ?></p>
+                <a href="/store" class="btn-secondary"><?= $this->_('get_boost') ?></a>
+            </div>
         <?php endif; ?>
+    </div>
 
         <!-- Loading Overlay -->
         <div id="loadingOverlay">

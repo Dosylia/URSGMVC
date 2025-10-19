@@ -30,7 +30,7 @@ class Items extends DataBase
             ORDER BY
                 CASE items_category
                     WHEN 'currency' THEN 1
-                    WHEN 'boost' THEN 2
+                    WHEN 'role' THEN 2
                     ELSE 3
                 END,
                 items_id ASC

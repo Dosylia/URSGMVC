@@ -177,7 +177,7 @@ return [
     'competition' => 'Competitivo',
     'add_picture' => 'Añadir foto',
     'add_picture_desc' => 'Agrega o actualiza tu foto de perfil',
-    'add_picture_format' => 'Formato aceptado: JPG, JPEG y PNG',
+    'add_picture_format' => 'Formato aceptado: JPG, JPEG y PNG <span style="color: #e84056;">(GIFs solo para usuarios Boost)</span>',
     'add_picture_chose' => 'Elegir archivo',
     'add_picture_nofile' => 'Ningún archivo seleccionado',
     'add_picture_upload' => 'Subir',
@@ -211,6 +211,10 @@ return [
     'add_profile_color_desc' => 'Añade un color personal a tu página de perfil',
     'save_color' => 'Guardar color',
     'custom_color_desc' => 'Elige un color personalizado.',
+    'profile_color_boost_teaser' => 'Desbloquear colores de perfil',
+    'profile_color_boost_teaser_desc' => 'Personaliza tu perfil con colores únicos y muestra tu estilo.',
+    'upgrade_to_boost_to_customize_colors' => '¡Actualiza a Boost para desbloquear la personalización completa de colores!',
+    'get_boost' => 'Obtener Boost',
 
     //chat page
     'looking_for_title' => '¿Buscas una partida?',

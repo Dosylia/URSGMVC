@@ -799,7 +799,15 @@ class DiscordController
         $clientId = $discordClientId;
         $clientSecret = $discordClientSecret;
         $redirectUri = "https://ur-sg.com/discordClaim";
-        $premiumRoleId = 1375359507063902219;
+
+        $roleType = $_GET['role'] ?? 'premium';
+
+        $roleIds = [
+            'premium' => 1375359507063902219,
+            'boost'   => 1429461787534950563,
+        ];
+
+        $roleId = $roleIds[$roleType] ?? $roleIds['premium'];
 
         $code = $_GET['code'] ?? null;
         if (!$code) {
@@ -850,7 +858,7 @@ class DiscordController
         }
 
         // Step 4: Add role with PUT request (instead of makeDiscordRequest)
-        $url = "https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}/roles/{$premiumRoleId}";
+        $url = "https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}/roles/{$roleId}";
         $putContext = stream_context_create([
             'http' => [
                 'method' => 'PUT',
@@ -867,7 +875,7 @@ class DiscordController
             die("There was a problem assigning your premium role. Please contact support.");
         }
 
-        // Step 5: Re-check if role was added (optional)
+        // Step 5: Re-check if role was added (optional but recommended)
         $checkRoles = file_get_contents("https://discord.com/api/guilds/{$discordServerId}/members/{$discordId}", false, stream_context_create([
             "http" => [
                 "method" => "GET",
@@ -876,14 +884,14 @@ class DiscordController
             ]
         ]));
         $rolesInfo = json_decode($checkRoles, true);
-        $hasRole = in_array($premiumRoleId, $rolesInfo['roles'] ?? []);
+        $hasRole = in_array($roleId, $rolesInfo['roles'] ?? []);
 
         if (!$hasRole) {
-            file_put_contents("discord_log.txt", "[Failed to confirm role] ID: {$discordId}\n", FILE_APPEND);
-            die("There was a problem assigning your premium role. Please contact support.");
+            file_put_contents('discord_log.txt', "[Role Assignment Failed] Role: {$roleType}\nResponse:\n" . print_r($http_response_header, true), FILE_APPEND);
+            die("There was a problem assigning your {$roleType} role. Please contact support.");
         }
 
-        header('Location: /store?message=Role assigned successfully.');
+        header("Location: /store?message=" . ucfirst($roleType) . " role assigned successfully.");
         exit();
     }
 
