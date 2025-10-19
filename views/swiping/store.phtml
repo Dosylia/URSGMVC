@@ -70,7 +70,7 @@
                             <span class="discount-badge">-<?= $itemDiscount ?>%</span>
                         <?php endif; ?>
                     <?php else: ?>
-                        <?php if ($isExcluded) : ?>
+                        <?php if (!$isExcluded) : ?>
                             <span class="new-price"><?= number_format($basePrice, 2) ?></span>
                         <?php else : ?>
                             <span class="new-price"><?= number_format($basePrice, 2) ?> €</span>
