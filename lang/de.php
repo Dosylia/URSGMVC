@@ -176,7 +176,7 @@ return [
     'competition' => 'Wettkampf',
     'add_picture' => 'Bild hinzufügen',
     'add_picture_desc' => 'Profilbild hinzufügen oder aktualisieren',
-    'add_picture_format' => 'Akzeptierte Formate: JPG, JPEG und PNG',
+    'add_picture_format' => 'Akzeptierte Formate: JPG, JPEG und PNG <span style="color: #e84056;">(GIFs nur für Boost-Nutzer)</span>',
     'add_picture_chose' => 'Datei auswählen',
     'add_picture_nofile' => 'Keine Datei ausgewählt',
     'add_picture_upload' => 'Hochladen',
@@ -210,6 +210,10 @@ return [
     'add_profile_color_desc' => 'Füge eine persönliche Farbe zu deiner Profilseite hinzu',
     'save_color' => 'Farbe speichern',
     'custom_color_desc' => 'Wähle eine benutzerdefinierte Farbe.',
+    'profile_color_boost_teaser' => 'Profilfarben freischalten',
+    'profile_color_boost_teaser_desc' => 'Passe dein Profil mit einzigartigen Farben an und zeige deinen Stil.',
+    'upgrade_to_boost_to_customize_colors' => 'Upgrade auf Boost, um die volle Farbgestaltung freizuschalten!',
+    'get_boost' => 'Hol dir Boost',
 
     //chat page
     'looking_for_title' => 'Auf der Suche nach einem Spiel?',

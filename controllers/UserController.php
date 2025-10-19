@@ -1575,10 +1575,21 @@ class UserController
     
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200) || ($fileExtension === 'gif' && $user['user_isBoost'] !== 1)) {
-                unlink($targetFilePath); // Clean up original if resize fails
-                header("location:/userProfile?message=Error resizing image");
-                exit;
+
+            if ($fileExtension === 'gif' || $user['user_isBoost'] === 1) {
+                // Keep GIF as is
+                if (!copy($targetFilePath, $resizedFilePath)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error copying GIF");
+                    exit;
+                }
+            } else {
+                // Resize other images
+                if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error resizing image");
+                    exit;
+                }
             }
     
             // Update database with resized image
