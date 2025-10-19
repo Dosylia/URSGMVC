@@ -1783,7 +1783,6 @@ input:checked + .slider:before {
 #image_users {
     height: 200px;
     width: 200px;
-    border: none;
     border-radius: 50%;
     word-wrap: break-word;
     display: block;

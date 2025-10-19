@@ -585,11 +585,16 @@ class User extends DataBase
 
     }
 
-    public function updateUser($gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
+    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
     {
         $sql = "UPDATE `user` SET ";
         $params = [];
         $updates = [];
+
+        if (!empty($username)) {
+            $updates[] = "`user_username` = ?";
+            $params[] = $username;
+        }
     
         if (!empty($gender)) {
             $updates[] = "`user_gender` = ?";
@@ -628,6 +633,46 @@ class User extends DataBase
         } else {
             return false;
         }
+    }
+
+    public function setUsernameChangeMonth($userId, $currentMonth)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_usernameChangeMonth` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $updateUsernameChangeMonth = $query->execute([$currentMonth, $userId]);
+
+        if ($updateUsernameChangeMonth) {
+            return true;
+        } else {
+            return false;  
+        }  
+    }
+
+    public function setUsernameChanges($userId, $nbChanges)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_numberChangedUsername` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $updateUsernameChanges = $query->execute([$nbChanges, $userId]);
+
+        if ($updateUsernameChanges) {
+            return true;
+        } else {
+            return false;  
+        }        
     }
 
     public function registerToken($userId, $token)

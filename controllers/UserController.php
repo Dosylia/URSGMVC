@@ -810,6 +810,14 @@ class UserController
                 exit();
             }
 
+            if (isset($_POST['username']) && $user['user_isBoosted'] == 1)
+            {
+                $username = $this->validateInput($_POST["username"]);
+                $this->setUsername($username);
+            } else {
+                $this->setUsername($user['user_username']);
+            }
+
             if ($this->emptyInputSignupUpdate($this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
                 exit();
@@ -831,11 +839,22 @@ class UserController
                 $user = $this->user->getUserById($this->getUserId());
             }
 
-            $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame(), $this->getUserId());
+            $updateUser = $this->user->updateUser($this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame(), $this->getUserId());
 
 
             if ($updateUser)
             {
+                if (isset($_POST['username']) && $user['user_isBoosted'] == 1)
+                {
+                    $currentMonth = date('Y-m');
+                    if ($user['user_usernameChangeMonth'] !== $currentMonth) {
+                        $this->user->setUsernameChanges($this->getUserId(), 1);
+                        $this->user->setUsernameChangeMonth($this->getUserId(), $currentMonth);
+                    } else {
+                        $newNumber = $user['user_numberChangedUsername'] + 1;
+                        $this->user->setUsernameChanges($this->getUserId(), $newNumber);
+                    }
+                }
 
                 if ($user['user_game'] !== $this->getGame())
                 {
@@ -1317,6 +1336,7 @@ class UserController
             $createLoLUser = false;
 
             $updateUser = $this->user->updateUser(
+                $this->getUsername(),
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),
@@ -1448,6 +1468,7 @@ class UserController
 
 
             $updateUser = $this->user->updateUser(
+                $this->getUsername(),
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),

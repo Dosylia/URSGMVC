@@ -6,6 +6,22 @@
         <p class="errorsForm"><?= $_GET['error'] ?></p>
         <?php endif; ?>
 
+        <?php
+        $currentMonth = date('Y-m');
+        if (
+            $user['user_isBoost'] &&
+            (
+                $user['user_usernameChangeMonth'] !== $currentMonth ||
+                $user['user_numberChangedUsername'] < 2
+            )
+        ) :
+        ?>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"
+                value="<?= htmlspecialchars_decode($user['user_username'], ENT_QUOTES) ?>"
+                maxlength="20" required>
+        <?php endif; ?>
+
         <label for="gender">Gender</label>
         <select id="gender" name="gender" required>
             <option value="<?= $user['user_gender'] ?>" ><?= $user['user_gender'] ?></option>

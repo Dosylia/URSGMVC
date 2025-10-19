@@ -251,7 +251,7 @@
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
                     <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" 
                         <?php if (!empty($personalColor)) : ?>
-                            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+                            style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
                         <?php endif; ?> 
                     />  
                 <?php else :?>
