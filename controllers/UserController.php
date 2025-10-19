@@ -1566,8 +1566,8 @@ class UserController
                 exit;
             }
     
-            // Check for animated GIFs
-            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+            // Check for animated GIFs, only allow if user_isBoost === 1 
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isBoost'] !== 1) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated GIFs are not allowed");
                 exit;

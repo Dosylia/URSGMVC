@@ -187,12 +187,22 @@ function getDiscordRole(itemId) {
         `placeholder-message-${itemId}`
     )
 
-    // Grab the item name from the card to determine role type
-    const itemCard = document.querySelector(
-        `.item-card[data-category="role"][data-name]`
+    const button = document.querySelector(
+        `.buy-button-owned.getRoleDiscord[data-item-id='${itemId}']`
     )
-    const itemName =
-        itemCard?.getAttribute('data-name').toLowerCase() || 'premium'
+
+    if (!button) {
+        console.error(`Button not found for item ID: ${itemId}`)
+        return
+    }
+
+    const itemCard = button.closest('.item-card')
+    if (!itemCard) {
+        console.error('Item card not found')
+        return
+    }
+
+    const itemName = itemCard.getAttribute('data-name').toLowerCase()
 
     placeholderMessage.innerHTML = `
         Already got role but not on discord?<br/>
