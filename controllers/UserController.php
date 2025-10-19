@@ -1575,7 +1575,7 @@ class UserController
     
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200) || ($fileExtension === 'gif' && $user['user_isBoost'] !== 1)) {
                 unlink($targetFilePath); // Clean up original if resize fails
                 header("location:/userProfile?message=Error resizing image");
                 exit;
