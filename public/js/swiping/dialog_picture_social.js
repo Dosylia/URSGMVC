@@ -8,8 +8,8 @@ const fileInputProfile = document.getElementById('fileProfile')
 const fileNameProfile = document.getElementById('file-nameProfile')
 const placeholderMessage = document.getElementById('placeholder-message')
 
-function switchPersonalColorWebsite(selectedColor, userId) {
-    if (!selectedColor) {
+function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
+    if (!selectedColor && !removeColor) {
         alert('Please select a color first!')
         return
     }
@@ -319,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const colorPicker = document.getElementById('custom-color-input')
     const colorPreview = document.querySelector('.color-preview')
     const saveColorBtn = document.getElementById('save-color-btn')
+    const removeColorBtn = document.getElementById('remove-color-btn')
     let selectedColor = null
 
     // Handle preset color selection
@@ -347,6 +348,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return
         }
 
-        switchPersonalColorWebsite(selectedColor, userId)
+        switchPersonalColorWebsite(selectedColor, userId, false)
+    })
+
+    removeColorBtn.addEventListener('click', function () {
+        selectedColor = null
+        switchPersonalColorWebsite('', userId, true)
     })
 })

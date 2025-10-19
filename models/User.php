@@ -334,6 +334,7 @@ class User extends DataBase
                                             `user_isVip`,
                                             `user_isPartner`,
                                             `user_isCertified`,
+                                            `user_isBoost`,
                                             `user_currency`
                                         FROM
                                             `user`

@@ -2152,6 +2152,7 @@ class UserController
                                         'user_isVip' => $userMatched['user_isVip'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
+                                        'user_isBoost' => $userMatched['user_isBoost'],
                                         'user_rating' => $userMatched['user_rating'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],

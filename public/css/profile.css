@@ -523,7 +523,8 @@
 
 /* Buttons */
 .btn-primary,
-.btn-danger {
+.btn-danger,
+.btn-secondary {
     padding: 8px 14px;
     border-radius: 8px;
     border: none;
@@ -539,6 +540,15 @@
 
 .btn-primary:hover {
     background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
 }
 
 .btn-danger {

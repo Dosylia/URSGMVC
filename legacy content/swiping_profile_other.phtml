@@ -57,11 +57,14 @@
                                         <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
                                 <?php endif; ?>
                                 <?php if ($anotherUser['user_isPartner']) : ?>
-                                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Partner"></span>
                                 <?php endif; ?>  
                                 <?php if ($anotherUser['user_isCertified']) : ?>
-                                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Certified"></span>
                                 <?php endif; ?>  
+                                <?php if ($anotherUser['user_isBoost']) : ?>
+                                        <span class="vip-badge" title="Boost badge"><img src="/public/images/boost-badge.png" alt="Boost"></span>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     <span id="user_page_username"><?= ucfirst($anotherUser['user_username']) ?></span>, <span id="age_user"><?= ucfirst($anotherUser['user_age']) ?></span>

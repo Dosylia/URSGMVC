@@ -153,7 +153,10 @@
                 <?php endif; ?>  
                 <?php if ($anotherUser['user_isCertified']) : ?>
                         <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
-                <?php endif; ?>  
+                <?php endif; ?> 
+                <?php if ($anotherUser['user_isBoost']) : ?>
+                    <span class="vip-badge" title="Boost badge"><img src="/public/images/boost-badge.png" alt="Boost"></span>
+                <?php endif; ?> 
             </span>
         <?php endif; ?>
             <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 

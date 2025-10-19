@@ -96,7 +96,7 @@
                 </div>
             </div>
             <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
-            <?php if ($totalDiscount > 0 && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')): ?>
+            <?php if ($totalDiscount > 0 && !$isExcluded): ?>
                 <div class="discount-badge-corner">
                     -<?= $totalDiscount ?>%
                 </div>

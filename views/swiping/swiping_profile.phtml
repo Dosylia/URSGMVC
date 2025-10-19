@@ -127,7 +127,10 @@
                     <span class="color-preview"></span>
                 </label>
             </div>
-            <button id="save-color-btn" class="btn-primary"><?= $this->_('save_color') ?></button>
+            <div class="buttons-row">
+                <button id="save-color-btn" class="btn-primary"><?= $this->_('save_color') ?></button>
+                <button id="remove-color-btn" class="btn-secondary"><?= $this->_('remove_color') ?></button>
+            </div>
         <?php else : ?>
             <!-- Teaser for Non-Boost Users -->
             <h2 class="section-title"><?= $this->_('profile_color_boost_teaser') ?></h2>
@@ -299,6 +302,9 @@
                 <?php endif; ?>  
                 <?php if ($user['user_isCertified']) : ?>
                         <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                <?php endif; ?>
+                <?php if ($user['user_isBoost']) : ?>
+                                        <span class="vip-badge" title="Boost badge"><img src="/public/images/boost-badge.png" alt="Boost"></span>
                 <?php endif; ?>  
             </span>
         <?php endif; ?>

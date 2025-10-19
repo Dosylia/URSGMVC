@@ -251,6 +251,13 @@ body > div[style*='position: fixed'] {
     margin: 0 20px;
 }
 
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
 .add-friend-button-profile-other {
     display: flex;
     align-items: center;
@@ -6255,8 +6262,6 @@ dialog .title_generalbox {
     background-color: var(--main--red);
 }
 
-
-
 @media only screen and (max-width: 1420px) {
     .badge-container {
         width: 30%;
@@ -6422,6 +6427,10 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 900px) {
+    .hide-mobile {
+        display: none;
+    }
+
     .notif-modal {
         position: absolute;
         left: -200px;
@@ -7379,6 +7388,10 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 400px) {
+    .hide-small-mobile {
+        display: none;
+    }
+
     #currency {
         font-size: 15px;
     }
