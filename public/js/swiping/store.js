@@ -186,11 +186,21 @@ function getDiscordRole(itemId) {
     const placeholderMessage = document.getElementById(
         `placeholder-message-${itemId}`
     )
+
+    // Grab the item name from the card to determine role type
+    const itemCard = document.querySelector(
+        `.item-card[data-category="role"][data-name]`
+    )
+    const itemName =
+        itemCard?.getAttribute('data-name').toLowerCase() || 'premium'
+
     placeholderMessage.innerHTML = `
-                Already got role but not on discord?<br/>
-                <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
-                <button onclick="claimDiscordRole()" class="claimPremium">Claim Premium Role on Discord</button>
-            `
+        Already got role but not on discord?<br/>
+        <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
+        <button onclick="claimDiscordRole('${itemName}')" class="claimPremium">Claim ${
+        itemName.charAt(0).toUpperCase() + itemName.slice(1)
+    } Role on Discord</button>
+    `
 }
 
 function claimDiscordRole(roleType) {
@@ -209,7 +219,6 @@ function claimDiscordRole(roleType) {
 document.addEventListener('DOMContentLoaded', function () {
     let kittyClicks = 0
     const kittyCard = document.getElementById('kitty-frame-card')
-    const discordRoleButton = document.getElementById('getRoleDiscord')
 
     if (kittyCard) {
         kittyCard.addEventListener('click', () => {
@@ -222,9 +231,11 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    discordRoleButton?.addEventListener('click', function () {
-        const itemId = this.getAttribute('data-item-id')
-        getDiscordRole(itemId)
+    document.querySelectorAll('.getRoleDiscord').forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            getDiscordRole(itemId)
+        })
     })
 
     buyButtons.forEach((button) => {

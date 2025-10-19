@@ -84,7 +84,9 @@
                 <div class="buy-button-container">
                     <?php if ($ownsRole || in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
                         <?php if ($item['items_category'] === 'role' && $ownsRole) : ?>
-                            <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get <?= strtolower($item['items_name']) ?> on Discord</button>
+                            <button class="buy-button-owned getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">
+                                Get <?= strtolower($item['items_name']) ?> on Discord
+                            </button>
                         <?php else : ?>
                              <button class="buy-button-owned" disabled>Owned</button>
                         <?php endif; ?>
