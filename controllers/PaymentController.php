@@ -161,7 +161,7 @@ class PaymentController
         $reward = 'boost'; // type marker
 
         try {
-            $this->createStripeCheckout($userId, 'URSG Premium Boost', $amountUSD, $reward, 'vip');
+            $this->createStripeCheckout($userId, 'URSG Premium Boost', $amountUSD, $reward, 'boost');
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()]);
             return;

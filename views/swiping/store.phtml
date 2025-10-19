@@ -46,7 +46,7 @@
                 $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);
             }
         ?>
-        <div class="item-card" data-category="<?= $item['items_category'] ?>" 
+        <div class="item-card" data-category="<?= $item['items_category'] ?>" data-name="<?= htmlspecialchars($item['items_name']) ?>" 
              <?php if ($item['items_id'] == 6) echo 'id="kitty-frame-card"'; ?>>
             <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
             <div class="item-info">
@@ -77,7 +77,7 @@
                     <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
                               in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
                         <?php if (($item['items_category'] === 'role') && $user['user_isVip'] === 1) : ?>
-                            <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get premium on Discord</button>
+                            <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get <?= strtolower($item['items_name']) ?> on Discord</button>
                         <?php else : ?>
                              <button class="buy-button-owned" disabled>Owned</button>
                         <?php endif; ?>
