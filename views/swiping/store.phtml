@@ -82,8 +82,7 @@
                 </p>
                 <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
                 <div class="buy-button-container">
-                    <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
-                              in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
+                    <?php if ($ownsRole || in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
                         <?php if ($item['items_category'] === 'role' && $ownsRole) : ?>
                             <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get <?= strtolower($item['items_name']) ?> on Discord</button>
                         <?php else : ?>
