@@ -359,7 +359,11 @@ class DiscordController
                     $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                     $_SESSION['game'] = $user['user_game'];
 
-                    $this->discord->saveDiscordData($user['user_id'], $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+                    $discordUser = $this->discord->getDiscordAccount($user['user_id']);
+
+                    if (!$discordUser) {
+                        $this->discord->saveDiscordData($user['user_id'], $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+                    }
 
                     if ($user['user_game'] == 'League of Legends') {
                         $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
