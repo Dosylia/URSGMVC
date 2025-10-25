@@ -3560,4 +3560,139 @@ class UserController
     {
         $this->valorantRoleLf = $valorantRoleLf;
     }
+
+
+    // Function for uploading GIFs for banners
+    public function uploadBanner() {
+        $targetDir = "public/upload/";
+        $originalFileName = basename($_FILES["bannerFile"]["name"]);
+        $bannerPreviewData = $_POST["bannerPreviewData"];
+        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+        
+        // Generate a unique file name
+        $uniqueFileName_base = uniqid('img_', true) . '.';
+        $uniqueFileName = $uniqueFileName_base . $fileExtension;
+        $fileNamePreview = $uniqueFileName_base . 'png';
+
+        $this->setFileName($uniqueFileName);
+        $targetFilePath = $targetDir . $uniqueFileName;
+    
+        if (empty($_FILES["bannerFile"]["name"])) {
+            header("location:/userProfile?message=Nothing to upload");
+            exit;
+        }
+    
+        // Retrieve current user info
+        $user = $this->user->getUserById($_SESSION['userId']);
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+    
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized:");
+            exit;
+        }
+
+        // Check for animated GIFs, only allow if user_isBoost === 1 
+        if ($user['user_isBoost'] != 1) {
+            unlink($targetFilePath); // Delete the uploaded GIF immediately
+            header("location:/userProfile?message=You do not own the package to upload animated banners ");
+            exit;
+        }
+
+        if (empty($bannerPreviewData)) {
+            unlink($targetFilePath); // Delete the uploaded GIF immediately
+            header("location:/userProfile?message=There has been an error with the preview data");
+            exit;
+        }
+
+        $allowTypes = array('gif');
+    
+        if (!in_array($fileExtension, $allowTypes)) {
+            header("location:/userProfile?message=Only gif allowed");
+            exit;
+        }
+    
+        try {
+            // Move uploaded file
+            if (!move_uploaded_file($_FILES["bannerFile"]["tmp_name"], $targetFilePath)) {
+                header("location:/userProfile?message=Error uploading file");
+                exit;
+            }
+    
+            // Save image from data
+            if (!empty($bannerPreviewData)) {
+                $data = $bannerPreviewData;
+                list(, $data) = explode(',', $data);
+                file_put_contents($targetDir . $fileNamePreview, base64_decode($data));
+            }
+            
+    
+            // Update database with image
+            if (!$this->user->uploadBanner($this->getUsername(),  $uniqueFileName_base)) {
+                header("location:/userProfile?message=Couldn't update profile banner");
+                exit;
+            }
+    
+            // ✅ **Now delete old images only after everything succeeds**
+            if (!empty($user['user_banner'])) {
+                $oldGif = $targetDir . $user['user_banner'].'gif';
+                $oldPng = $targetDir . $user['user_banner'].'png';
+    
+                if (file_exists($oldGif)) {
+                    unlink($oldGif);
+                }
+
+                if (file_exists($oldPng)) {
+                    unlink($oldPng);
+                }
+
+            }
+    
+    
+            header("location:/userProfile?message=Updated profile banner successfully");
+        } catch (Exception $e) {
+            header("location:/userProfile?message=" . urlencode($e->getMessage()));
+        }
+        exit;
+    }
+
+    public function removeUploadedBanner() {
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+
+        // Retrieve current user info
+        $user = $this->user->getUserById($_SESSION['userId']);
+
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized:");
+            exit;
+        }
+
+        $targetDir = "public/upload/";
+
+        // Delete banner files
+        if (!empty($user['user_banner'])) {
+            $oldGif = $targetDir . $user['user_banner'].'gif';
+            $oldPng = $targetDir . $user['user_banner'].'png';
+
+            if (file_exists($oldGif)) {
+                unlink($oldGif);
+            }
+
+            if (file_exists($oldPng)) {
+                unlink($oldPng);
+            }
+        }
+
+        // Update database to remove banner reference
+        if (!$this->user->removeBanner($this->getUsername())) {
+            header("location:/userProfile?message=Couldn't remove profile banner from database");
+            exit;
+        }
+
+        header("location:/userProfile?message=Removed profile banner successfully");
+        exit;
+
+    }
+
 }

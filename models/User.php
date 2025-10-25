@@ -808,6 +808,55 @@ class User extends DataBase
         }
     }
 
+    public function uploadBanner($username, $fileName) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_banner` = ?
+                                        WHERE
+                                            `user_username` = ?
+
+                                        ");
+
+        $uploadPictureTest = $query->execute([$fileName,$username]);
+
+        if($uploadPictureTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function removeBanner($username) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_banner` = NULL
+                                        WHERE
+                                            `user_username` = ?
+
+                                        ");
+
+        $removeBannerTest = $query->execute([$username]);
+
+        if($removeBannerTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     public function updateBonusPictures($username, $picturesArray)
     {
         $updatedPicturesJson = json_encode($picturesArray);
