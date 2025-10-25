@@ -56,7 +56,7 @@
                             src="public/upload/<?= htmlspecialchars($anotherUser['user_picture']) ?>"
                             alt="Picture of <?= htmlspecialchars($anotherUser['user_username']) ?>"
                             <?php if (!empty($personalColor)) : ?>
-                                style="border: 2px solid <?= htmlspecialchars($personalColor) ?>;"
+                                style="border-color: <?= htmlspecialchars($personalColor) ?>;"
                             <?php endif; ?>
                         >
                     <?php else: ?>
@@ -65,7 +65,7 @@
                             src="public/images/defaultprofilepicture.jpg"
                             alt="Default profile picture"
                             <?php if (!empty($personalColor)) : ?>
-                                style="border: 2px solid <?= htmlspecialchars($personalColor) ?>;"
+                                style="border-color:<?= htmlspecialchars($personalColor) ?>;"
                             <?php endif; ?>
                         >
                     <?php endif; ?>

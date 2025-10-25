@@ -315,13 +315,13 @@
                 <?php if (isset($user['user_picture']) && $user['user_picture'] !== null): ?>
                     <img id="image_users" src="public/upload/<?= $user['user_picture'] ?>" alt="Picture of <?= $user['user_username'] ?>" 
                         <?php if (!empty($personalColor)) : ?>
-                            style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
+                            style="border-color: <?= htmlspecialchars($personalColor) ?>;"
                         <?php endif; ?> 
                     />  
                 <?php else :?>
                     <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
                         <?php if (!empty($personalColor)) : ?>
-                            style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
+                            style="border-color: <?= htmlspecialchars($personalColor) ?>;"
                         <?php endif; ?> 
                     />
                 <?php endif; ?>
