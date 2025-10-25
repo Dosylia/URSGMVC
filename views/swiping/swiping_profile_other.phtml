@@ -143,19 +143,19 @@
                 <h2><?= ucfirst($anotherUser['user_username']) ?></h2>
                 <p>,<?= ucfirst($anotherUser['user_age']) ?></p>
             </div>
-            <?php if  (($anotherUser['user_isVip']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
+            <?php if  (($anotherUser['user_isGold']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
             <span id="badge-container">
-                <?php if ($anotherUser['user_isVip']) : ?>
-                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                <?php if ($anotherUser['user_isGold']) : ?>
+                        <span class="vip-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold"></span>
                 <?php endif; ?>
                 <?php if ($anotherUser['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold"></span>
                 <?php endif; ?>  
                 <?php if ($anotherUser['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
                 <?php endif; ?> 
-                <?php if ($anotherUser['user_isBoost']) : ?>
-                    <span class="vip-badge" title="Boost badge"><img src="/public/images/boost-badge.png" alt="Boost"></span>
+                <?php if ($anotherUser['user_isAscend']) : ?>
+                    <span class="vip-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
                 <?php endif; ?> 
             </span>
         <?php endif; ?>

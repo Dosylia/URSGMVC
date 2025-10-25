@@ -88,9 +88,9 @@ function buySoulHard(itemId, userId) {
         })
 }
 
-function buyPremiumBoost(itemId, userId) {
+function buyPremiumAscend(itemId, userId) {
     const token = localStorage.getItem('masterTokenWebsite')
-    console.log(`Buying premium boost ID: ${itemId}, userId: ${userId}`)
+    console.log(`Buying gold Ascend ID: ${itemId}, userId: ${userId}`)
 
     const dataToSend = {
         itemId,
@@ -99,7 +99,7 @@ function buyPremiumBoost(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('/buyPremiumBoostWebsite', {
+    fetch('/buyPremiumAscendWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -162,7 +162,7 @@ function buyRole(itemId, userId) {
             placeholderMessage.innerHTML = ''
             console.log('Success:', data)
             if (data.success) {
-                const roleType = data.roleType || 'premium' // backend can send this if you want
+                const roleType = data.roleType || 'gold' // backend can send this if you want
                 placeholderMessage.innerHTML = `
                     ${data.message}<br/>
                     <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
@@ -257,8 +257,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .getAttribute('data-name')
                 .toLowerCase()
 
-            if (itemCategory === 'role' && itemName.includes('boost')) {
-                buyPremiumBoost(itemId, userIdHeader)
+            if (itemCategory === 'role' && itemName.includes('Ascend')) {
+                buyPremiumAscend(itemId, userIdHeader)
             } else if (itemCategory === 'role') {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {

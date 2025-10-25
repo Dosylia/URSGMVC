@@ -172,7 +172,7 @@ class ChatMessageController
                 //     $amount = 10;
                 //     $user = $this->user->getUserById($userId);
     
-                //     if ($user['user_isVip'] == 1) {
+                //     if ($user['user_isGold'] == 1) {
                 //         $amount = 12;
                 //     }
     

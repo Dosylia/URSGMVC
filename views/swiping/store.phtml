@@ -32,14 +32,14 @@
         <?php if ($item['items_category'] === 'badge') continue; ?>
         <?php
             $basePrice = $item['items_price'];
-            $vipDiscount = $user['user_isVip'] ? 20 : 0; // 20% VIP discount
+            $vipDiscount = $user['user_isGold'] ? 20 : 0; // 20% VIP discount
             $itemDiscount = $item['items_discount'] ?? 0; // item-specific discount
-            $isVipRole = $item['items_name'] === 'Premium';
-            $isBoostRole = $item['items_name'] === 'Boost';
+            $isGoldRole = $item['items_name'] === 'Gold';
+            $isAscendRole = $item['items_name'] === 'Ascend';
 
             $ownsRole =
-                ($isVipRole && $user['user_isVip'] === 1) ||
-                ($isBoostRole && $user['user_isBoost'] === 1);
+                ($isGoldRole && $user['user_isGold'] === 1) ||
+                ($isAscendRole && $user['user_isAscend'] === 1);
 
 
             // Combine discounts sequentially
@@ -48,7 +48,7 @@
 
             // Determine if there is any discount to show
             $hasDiscount = ($vipDiscount + $itemDiscount) > 0;
-            $isExcluded = $item['items_category'] === 'currency' || $item['items_name'] === 'Boost';
+            $isExcluded = $item['items_category'] === 'currency' || $item['items_name'] === 'Ascend';
             $totalDiscount = 0;
             if ($basePrice > 0) {
                 $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);

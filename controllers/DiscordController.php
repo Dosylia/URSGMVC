@@ -804,14 +804,14 @@ class DiscordController
         $clientSecret = $discordClientSecret;
         $redirectUri = "https://ur-sg.com/discordClaim";
 
-        $roleType = $_GET['role'] ?? 'premium';
+        $roleType = $_GET['role'] ?? 'gold';
 
         $roleIds = [
-            'premium' => 1375359507063902219,
-            'boost'   => 1429461787534950563,
+            'gold' => 1375359507063902219,
+            'Ascend'   => 1429461787534950563,
         ];
 
-        $roleId = $roleIds[$roleType] ?? $roleIds['premium'];
+        $roleId = $roleIds[$roleType] ?? $roleIds['gold'];
 
         $code = $_GET['code'] ?? null;
         if (!$code) {
@@ -876,7 +876,7 @@ class DiscordController
         // Debug output
         if (strpos($http_response_header[0] ?? '', "204") === false) {
             file_put_contents('discord_log.txt', "[Role Assignment Failed] Response:\n" . print_r($http_response_header, true), FILE_APPEND);
-            die("There was a problem assigning your premium role. Please contact support.");
+            die("There was a problem assigning your gold role. Please contact support.");
         }
 
         // Step 5: Re-check if role was added (optional but recommended)
@@ -1102,7 +1102,7 @@ class DiscordController
                         'twitter' => $user['user_twitter'] ?? null,
                         'bluesky' => $user['user_bluesky'] ?? null,
                         'currency' => $user['user_currency'] ?? null,
-                        'isVip' => $user['user_isVip'] ?? null,
+                        'isGold' => $user['user_isGold'] ?? null,
                         'isPartner'=> $user['user_isPartner'] ?? null,
                         'isCertified' => $user['user_isCertified'] ?? null,
                         'hasChatFilter' => $user['user_hasChatFilter'] ?? null,

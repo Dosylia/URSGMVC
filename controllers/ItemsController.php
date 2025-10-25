@@ -236,7 +236,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 
@@ -310,7 +310,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 
@@ -392,7 +392,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 
@@ -452,7 +452,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 
@@ -526,7 +526,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 
@@ -608,7 +608,7 @@ class ItemsController
                     $price = $item['items_price'];
 
                     // Apply VIP discount if user is VIP
-                    if ($user['user_isVip'] == 1) {
+                    if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
 

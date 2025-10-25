@@ -308,7 +308,7 @@ class User extends DataBase
                 user_id, 
                 user_username, 
                 user_currency, 
-                user_isVip
+                user_isGold
             FROM `user` 
             ORDER BY user_currency DESC 
             LIMIT 100
@@ -331,10 +331,10 @@ class User extends DataBase
                                             `user_id`,
                                             `user_username`,    
                                             `user_picture`,
-                                            `user_isVip`,
+                                            `user_isGold`,
                                             `user_isPartner`,
                                             `user_isCertified`,
-                                            `user_isBoost`,
+                                            `user_isAscend`,
                                             `user_currency`
                                         FROM
                                             `user`
@@ -958,7 +958,7 @@ class User extends DataBase
                                     UPDATE
                                         `user`
                                     SET
-                                        user_isVip = 1
+                                        user_isGold = 1
                                     WHERE
                                         user_id = ?
         ");
@@ -966,13 +966,13 @@ class User extends DataBase
         $query->execute([$userId]);
     }
 
-    public function grantBoostRole($userId)
+    public function grantAscendRole($userId)
     {
         $query = $this->bdd->prepare("
                                     UPDATE
                                         `user`
                                     SET
-                                        user_isBoost = 1
+                                        user_isAscend = 1
                                     WHERE
                                         user_id = ?
         ");

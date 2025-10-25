@@ -479,7 +479,7 @@ class UserController
                     'game' => $user['user_game'],
                     'shortBio' => $user['user_shortBio'],
                     'currency' => $user['user_currency'],
-                    'isVip' => $user['user_isVip'],
+                    'isGold' => $user['user_isGold'],
                     'hasChatFilter' => ['user_hasChatFilter'] ?? null
                 );
 
@@ -810,7 +810,7 @@ class UserController
                 exit();
             }
 
-            if (isset($_POST['username']) && $user['user_isBoost'] == 1)
+            if (isset($_POST['username']) && $user['user_isAscend'] == 1)
             {
                 $username = $this->validateInput($_POST["username"]);
                 $this->setUsername($username);
@@ -844,7 +844,7 @@ class UserController
 
             if ($updateUser)
             {
-                if (isset($_POST['username']) && $user['user_isBoost'] == 1)
+                if (isset($_POST['username']) && $user['user_isAscend'] == 1)
                 {
                     $currentMonth = date('Y-m');
                     if ($user['user_usernameChangeMonth'] !== $currentMonth) {
@@ -1566,8 +1566,8 @@ class UserController
                 exit;
             }
     
-            // Check for animated GIFs, only allow if user_isBoost === 1 
-            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isBoost'] !== 1) {
+            // Check for animated GIFs, only allow if user_isAscend === 1 
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isAscend'] !== 1) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated GIFs are not allowed");
                 exit;
@@ -1576,7 +1576,7 @@ class UserController
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
 
-            if ($fileExtension === 'gif' || $user['user_isBoost'] === 1) {
+            if ($fileExtension === 'gif' || $user['user_isAscend'] === 1) {
                 // Keep GIF as is
                 if (!copy($targetFilePath, $resizedFilePath)) {
                     unlink($targetFilePath);
@@ -2149,10 +2149,10 @@ class UserController
                                         'user_gender' => $userMatched['user_gender'],
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
-                                        'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isGold' => $userMatched['user_isGold'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
-                                        'user_isBoost' => $userMatched['user_isBoost'],
+                                        'user_isAscend' => $userMatched['user_isAscend'],
                                         'user_rating' => $userMatched['user_rating'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],
@@ -2182,7 +2182,7 @@ class UserController
                                         'user_gender' => $userMatched['user_gender'],
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
-                                        'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isGold' => $userMatched['user_isGold'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
                                         'valorant_main1' => $userMatched['valorant_main1'],
@@ -2246,7 +2246,7 @@ class UserController
                 $personalButtonDesign = "style='background-color: " . htmlspecialchars($personalColor) . "; border-color: " . htmlspecialchars($personalColor) . ";'";
                 $personalAddPicture = "style='color: " . htmlspecialchars($personalColor) . ";'";
             }
-            if ($user['user_isBoost']) {
+            if ($user['user_isAscend']) {
                 $colors = ['#4A90E2', '#50E3C2', '#9013FE', '#F5A623', '#7ED321', '#D0021B', '#F8E71C'];
             }
             if ($user['user_game'] == "League of Legends")
@@ -3592,8 +3592,8 @@ class UserController
             exit;
         }
 
-        // Check for animated GIFs, only allow if user_isBoost === 1 
-        if ($user['user_isBoost'] != 1) {
+        // Check for animated GIFs, only allow if user_isAscend === 1 
+        if ($user['user_isAscend'] != 1) {
             unlink($targetFilePath); // Delete the uploaded GIF immediately
             header("location:/userProfile?message=You do not own the package to upload animated banners ");
             exit;

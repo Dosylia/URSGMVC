@@ -553,12 +553,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (data.user_isVip === 1) {
+        if (data.user_isGold === 1) {
             addBadge(
                 badgeContainer,
-                'Premium Badge',
-                '/public/images/premium-badge.png',
-                'Premium',
+                'Gold Badge',
+                '/public/images/gold-badge.png',
+                'Gold',
                 '#e84056'
             )
         }
@@ -583,12 +583,12 @@ document.addEventListener('DOMContentLoaded', function () {
             )
         }
 
-        if (data.user_isBoost == 1) {
+        if (data.user_isAscend == 1) {
             addBadge(
                 badgeContainer,
-                'Boost Badge',
-                '/public/images/boost-badge.png',
-                'Boost',
+                'Ascend Badge',
+                '/public/images/Ascend-badge.png',
+                'Ascend',
                 '#9b59b6'
             )
         }

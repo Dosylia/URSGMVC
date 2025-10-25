@@ -70,7 +70,7 @@
         <hr class="divider">
 
         <!-- Profile Banner Section -->
-        <?php if ($user['user_isVip'] || $user['user_isBoost']) : ?>
+        <?php if ($user['user_isGold'] || $user['user_isAscend']) : ?>
             <div class="profile-card">
                 <h2 class="section-title"><?= $this->_('add_profile_banner') ?></h2>
 
@@ -106,7 +106,7 @@
                     <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
                 <?php endif; ?>
                 
-                <?php if ($user['user_isBoost']) : ?>
+                <?php if ($user['user_isAscend']) : ?>
                     <h3 class="section-title"><?= $this->_('upload_your_profile_banner') ?></h3>
                     <div class="upload-box"></div>
                         <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
@@ -120,12 +120,12 @@
                         </form>
                     </div>
                 <?php else : ?>
-                    <!-- Teaser for Non-Boost Users -->
-                    <h2 class="section-title"><?= $this->_('profile_banner_boost_teaser') ?></h2>
-                    <p class="section-subtitle"><?= $this->_('profile_banner_boost_teaser_desc') ?></p>
+                    <!-- Teaser for Non-Ascend Users -->
+                    <h2 class="section-title"><?= $this->_('profile_banner_Ascend_teaser') ?></h2>
+                    <p class="section-subtitle"><?= $this->_('profile_banner_Ascend_teaser_desc') ?></p>
                     <div class="teaser-box">
-                        <p><?= $this->_('upgrade_to_boost_to_customize_banners') ?></p>
-                        <a href="/store" class="btn-secondary"><?= $this->_('get_boost') ?></a>
+                        <p><?= $this->_('upgrade_to_Ascend_to_customize_banners') ?></p>
+                        <a href="/store" class="btn-secondary"><?= $this->_('get_Ascend') ?></a>
                     </div>
                 <?php endif; ?>
                 
@@ -143,15 +143,15 @@
                 <h2 class="section-title"><?= $this->_('profile_banner_vip_teaser') ?></h2>
                 <p class="section-subtitle"><?= $this->_('profile_banner_vip_teaser_desc') ?></p>
                 <div class="teaser-box">
-                    <p><?= $this->_('upgrade_to_vip_or_boost_to_customize_banners') ?></p>
-                    <a href="/store" class="btn-secondary"><?= $this->_('get_vip_or_boost') ?></a>
+                    <p><?= $this->_('upgrade_to_vip_or_Ascend_to_customize_banners') ?></p>
+                    <a href="/store" class="btn-secondary"><?= $this->_('get_vip_or_Ascend') ?></a>
                 </div>
         <?php endif; ?>
 
 
     <div class="profile-card">
-        <?php if ($user['user_isBoost']) : ?>
-            <!-- Full Profile Color Options for Boost Users -->
+        <?php if ($user['user_isAscend']) : ?>
+            <!-- Full Profile Color Options for Ascend Users -->
             <h2 class="section-title"><?= $this->_('add_profile_color') ?></h2>
             <p class="section-subtitle"><?= $this->_('add_profile_color_desc') ?></p>
             <span class="section-alert"></span>
@@ -175,12 +175,12 @@
                 <button id="remove-color-btn" class="btn-secondary"><?= $this->_('remove_color') ?></button>
             </div>
         <?php else : ?>
-            <!-- Teaser for Non-Boost Users -->
-            <h2 class="section-title"><?= $this->_('profile_color_boost_teaser') ?></h2>
-            <p class="section-subtitle"><?= $this->_('profile_color_boost_teaser_desc') ?></p>
+            <!-- Teaser for Non-Ascend Users -->
+            <h2 class="section-title"><?= $this->_('profile_color_Ascend_teaser') ?></h2>
+            <p class="section-subtitle"><?= $this->_('profile_color_Ascend_teaser_desc') ?></p>
             <div class="teaser-box">
-                <p><?= $this->_('upgrade_to_boost_to_customize_colors') ?></p>
-                <a href="/store" class="btn-secondary"><?= $this->_('get_boost') ?></a>
+                <p><?= $this->_('upgrade_to_Ascend_to_customize_colors') ?></p>
+                <a href="/store" class="btn-secondary"><?= $this->_('get_Ascend') ?></a>
             </div>
         <?php endif; ?>
     </div>
@@ -346,19 +346,19 @@
                 <h2><?= ucfirst($user['user_username']) ?></h2>
                 <p>,<?= ucfirst($user['user_age']) ?></p>
             </div>
-            <?php if  (($user['user_isVip']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
+            <?php if  (($user['user_isGold']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
             <span id="badge-container">
-                <?php if ($user['user_isVip']) : ?>
-                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium" style="padding: 5px 10px;"></span>
+                <?php if ($user['user_isGold']) : ?>
+                        <span class="vip-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
                 <?php endif; ?>
                 <?php if ($user['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium" style="padding: 5px 10px;"></span>
+                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
                 <?php endif; ?>  
                 <?php if ($user['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
+                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
                 <?php endif; ?>
-                <?php if ($user['user_isBoost']) : ?>
-                                        <span class="vip-badge" title="Boost badge"><img src="/public/images/boost-badge.png" alt="Boost"></span>
+                <?php if ($user['user_isAscend']) : ?>
+                                        <span class="vip-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
                 <?php endif; ?>  
             </span>
         <?php endif; ?>
