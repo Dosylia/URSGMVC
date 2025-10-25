@@ -50,7 +50,7 @@ class ChatMessageController
     $this->initializeLanguage();
     $user = $this->user->getUserById($_SESSION['userId']);
     $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
-    $ownVIPEmotes = $this->items->ownVIPEmotes($_SESSION['userId']);
+    $ownGoldEmotes = $this->items->ownGoldEmotes($_SESSION['userId']);
 
         if ($getFriendlist) {
             $firstFriend = reset($getFriendlist);
@@ -818,8 +818,8 @@ class ChatMessageController
                     $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
                     $friend = $this->user->getUserById($this->getFriendId());
                     $user = $this->user->getUserById($this->getUserId());
-                    $friendOwnVIPEmotes = $this->items->ownVIPEmotes($this->getFriendId());
-                    $userOwnVIPEmotes = $this->items->ownVIPEmotes($this->getUserId());
+                    $friendownGoldEmotes = $this->items->ownGoldEmotes($this->getFriendId());
+                    $userownGoldEmotes = $this->items->ownGoldEmotes($this->getUserId());
     
                     if ($messages) {
                         $this->chatmessage->updateMessageStatus('read', $this->getUserId(), $this->getFriendId());
@@ -832,14 +832,14 @@ class ChatMessageController
                                 'user_id' => $friend['user_id'],
                                 'user_username' => $friend['user_username'],
                                 'user_picture' => $friend['user_picture'],
-                                'ownVIPEmotes' => $friendOwnVIPEmotes,
+                                'ownGoldEmotes' => $friendownGoldEmotes,
                             ],
                             'user' => [
                                 'user_id' => $user['user_id'],
                                 'user_username' => $user['user_username'],
                                 'user_picture' => $user['user_picture'],
                                 'user_hasChatFilter' => $user['user_hasChatFilter'],
-                                'ownVIPEmotes' => $userOwnVIPEmotes,
+                                'ownGoldEmotes' => $userownGoldEmotes,
                             ],
                             'messages' => $messages
                         ];
@@ -854,14 +854,14 @@ class ChatMessageController
                             'user_id' => $friend['user_id'],
                             'user_username' => $friend['user_username'],
                             'user_picture' => $friend['user_picture'],
-                            'ownVIPEmotes' => $friendOwnVIPEmotes,
+                            'ownGoldEmotes' => $friendownGoldEmotes,
                         ],
                         'user' => [
                             'user_id' => $user['user_id'],
                             'user_username' => $user['user_username'],
                             'user_picture' => $user['user_picture'],
                             'user_hasChatFilter' => $user['user_hasChatFilter'],
-                            'ownVIPEmotes' => $userOwnVIPEmotes,
+                            'ownGoldEmotes' => $userownGoldEmotes,
                         ],
                     ];
                     echo json_encode($data);
@@ -907,8 +907,8 @@ class ChatMessageController
             $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
             $friend = $this->user->getUserById($this->getFriendId());
             $user = $this->user->getUserById($this->getUserId());
-            $friendOwnVIPEmotes = $this->items->ownVIPEmotes($this->getFriendId());
-            $userOwnVIPEmotes = $this->items->ownVIPEmotes($this->getUserId());
+            $friendownGoldEmotes = $this->items->ownGoldEmotes($this->getFriendId());
+            $userownGoldEmotes = $this->items->ownGoldEmotes($this->getUserId());
 
             if (!$friend) {
                 error_log("Friend not found for ID: " . $this->getFriendId());
@@ -938,14 +938,14 @@ class ChatMessageController
                         'user_isLooking' => $friend['user_isLooking'],
                         'lol_verified' => $friend['lol_verified'],
                         'lol_account' => $friend['lol_account'], 
-                        'ownVIPEmotes' => $friendOwnVIPEmotes,
+                        'ownGoldEmotes' => $friendownGoldEmotes,
                     ],
                     'user' => [
                         'user_id' => $user['user_id'],
                         'user_username' => $user['user_username'],
                         'user_picture' => $user['user_picture'],
                         'user_hasChatFilter' => $user['user_hasChatFilter'],
-                        'ownVIPEmotes' => $userOwnVIPEmotes,
+                        'ownGoldEmotes' => $userownGoldEmotes,
                     ],
                     'messages' => $messages
                 ];
@@ -958,14 +958,14 @@ class ChatMessageController
                         'user_id' => $friend['user_id'],
                         'user_username' => $friend['user_username'],
                         'user_picture' => $friend['user_picture'],
-                        'ownVIPEmotes' => $friendOwnVIPEmotes,
+                        'ownGoldEmotes' => $friendownGoldEmotes,
                     ],
                     'user' => [
                         'user_id' => $user['user_id'],
                         'user_username' => $user['user_username'],
                         'user_picture' => $user['user_picture'],
                         'user_hasChatFilter' => $user['user_hasChatFilter'], 
-                        'ownVIPEmotes' => $userOwnVIPEmotes,
+                        'ownGoldEmotes' => $userownGoldEmotes,
                     ],
                 ];
                 echo json_encode($data);

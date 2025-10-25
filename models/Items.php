@@ -335,7 +335,7 @@ class Items extends DataBase
         $query->execute([$userId]);
     }
 
-    public function ownVIPEmotes($userId) 
+    public function ownGoldEmotes($userId) 
     {
         $query = $this->bdd->prepare("
                                         SELECT

@@ -4600,7 +4600,7 @@ dialog .title_generalbox {
     color: black;
 }
 
-.vip-badge,
+.gold-badge,
 .regular-badge {
     display: inline-flex;
     align-items: center;
@@ -4679,7 +4679,7 @@ dialog .title_generalbox {
     background-color: var(--dark-grey);
 }
 
-.vip-badge {
+.gold-badge {
     color: black;
 }
 
@@ -6088,7 +6088,7 @@ dialog .title_generalbox {
     background-color: var(--dark-grey-hover);
 }
 
-.dark-mode .vip-badge {
+.dark-mode .gold-badge {
     color: white;
 }
 
@@ -6446,7 +6446,7 @@ dialog .title_generalbox {
         width: 4vh;
     }
 
-    .vip-badge,
+    .gold-badge,
     .regular-badge {
         justify-content: center;
         width: 15px;

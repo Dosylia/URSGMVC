@@ -85,7 +85,7 @@ class ItemsController
         }
     }
 
-    public function ownVIPEmotesPhone()
+    public function ownGoldEmotesPhone()
     {
         $response = array('message' => 'Error');
         if (isset($_POST['userId'])) 
@@ -103,12 +103,12 @@ class ItemsController
                 return;
             }
 
-            $ownedVIPEmotes = $this-> items -> ownVIPEmotes($_POST['userId']);
+            $ownedGoldEmotes = $this-> items -> ownGoldEmotes($_POST['userId']);
 
-            if ($ownedVIPEmotes)
+            if ($ownedGoldEmotes)
             {
                 $response = array(
-                    'ownVIPEmotes' => true,
+                    'ownGoldEmotes' => true,
                     'message' => 'Success'
                 );
 
@@ -117,7 +117,7 @@ class ItemsController
                 exit;  
             } else {
                 $response = array(
-                    'ownVIPEmotes' => false,
+                    'ownGoldEmotes' => false,
                     'message' => 'Success'
                 );
 
@@ -235,7 +235,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -309,7 +309,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -391,7 +391,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -451,7 +451,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -464,7 +464,7 @@ class ItemsController
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $this->user->buyPremium($userId);
+                        $this->user->buyGold($userId);
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Role bought successfully']);
                     } else {
@@ -525,7 +525,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -539,7 +539,7 @@ class ItemsController
                     // Check if the user has enough currency
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $this->user->buyPremium($userId);
+                        $this->user->buyGold($userId);
     
                         // Update user's currency after purchase
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
@@ -607,7 +607,7 @@ class ItemsController
                     // Base price
                     $price = $item['items_price'];
 
-                    // Apply VIP discount if user is VIP
+                    // Apply Gold discount if user is Gold
                     if ($user['user_isGold'] == 1) {
                         $price = $price * 0.8; // 20% off
                     }
@@ -620,7 +620,7 @@ class ItemsController
 
                     if ($user['user_currency'] >= $price) {
                         $this->items->buyItem($itemId, $userId);
-                        $this->user->buyPremium($userId);
+                        $this->user->buyGold($userId);
                         $this->user->updateCurrency($userId, $user['user_currency'] - $price);
                         echo json_encode(['success' => true, 'message' => 'Role bought successfully']);
                     } else {

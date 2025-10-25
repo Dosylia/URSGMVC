@@ -245,7 +245,7 @@ return [
     'rank' => 'Rang',
     'username' => 'Pseudo',
     'currency' => 'Monnaie',
-    'premium_status' => 'Gold',
+    'gold_status' => 'Gold',
     'Ascend_status' => 'Ascend',  
     'gold' => 'Gold',
     'regular' => 'Classique',

@@ -243,7 +243,7 @@ return [
     'rank' => 'Rango',
     'username' => 'Nombre de usuario',
     'currency' => 'Moneda',
-    'premium_status' => 'Gold',
+    'gold_status' => 'Gold',
     'Ascend_status' => 'Ascend',
     'gold' => 'Gold',
     'regular' => 'Normal',

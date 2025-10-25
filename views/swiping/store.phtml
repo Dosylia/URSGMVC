@@ -32,7 +32,7 @@
         <?php if ($item['items_category'] === 'badge') continue; ?>
         <?php
             $basePrice = $item['items_price'];
-            $vipDiscount = $user['user_isGold'] ? 20 : 0; // 20% VIP discount
+            $goldDiscount = $user['user_isGold'] ? 20 : 0; // 20% Gold discount
             $itemDiscount = $item['items_discount'] ?? 0; // item-specific discount
             $isGoldRole = $item['items_name'] === 'Gold';
             $isAscendRole = $item['items_name'] === 'Ascend';
@@ -43,12 +43,12 @@
 
 
             // Combine discounts sequentially
-            $priceAfterVip = $basePrice * (1 - $vipDiscount / 100);
-            $finalPrice = $priceAfterVip * (1 - $itemDiscount / 100);
+            $priceAfterGold = $basePrice * (1 - $goldDiscount / 100);
+            $finalPrice = $priceAfterGold * (1 - $itemDiscount / 100);
 
             // Determine if there is any discount to show
-            $hasDiscount = ($vipDiscount + $itemDiscount) > 0;
-            $isExcluded = $item['items_category'] === 'currency' || $item['items_name'] === 'Ascend';
+            $hasDiscount = ($goldDiscount + $itemDiscount) > 0;
+            $isExcluded = $item['items_category'] === 'currency' || $item['items_name'] === 'URSG Ascend';
             $totalDiscount = 0;
             if ($basePrice > 0) {
                 $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);
@@ -63,8 +63,8 @@
                     <?php if ($hasDiscount && !$isExcluded) : ?>
                         <span class="old-price"><?= number_format($basePrice, 2) ?></span>
                         <span class="new-price"><?= number_format($finalPrice, 2) ?></span>
-                        <?php if ($vipDiscount > 0 && !$isExcluded) : ?>
-                            <span class="discount-badge">VIP -<?= $vipDiscount ?>%</span>
+                        <?php if ($goldDiscount > 0 && !$isExcluded) : ?>
+                            <span class="discount-badge">Gold -<?= $goldDiscount ?>%</span>
                         <?php endif; ?>
                         <?php if ($itemDiscount > 0) : ?>
                             <span class="discount-badge">-<?= $itemDiscount ?>%</span>

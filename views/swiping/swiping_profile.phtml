@@ -138,13 +138,13 @@
                 
             </div>
         <?php else : ?>
-            <!-- Teaser for Non-VIP Users -->
+            <!-- Teaser for Non-Gold Users -->
             <div class="profile-card">
-                <h2 class="section-title"><?= $this->_('profile_banner_vip_teaser') ?></h2>
-                <p class="section-subtitle"><?= $this->_('profile_banner_vip_teaser_desc') ?></p>
+                <h2 class="section-title"><?= $this->_('profile_banner_gold_teaser') ?></h2>
+                <p class="section-subtitle"><?= $this->_('profile_banner_gold_teaser_desc') ?></p>
                 <div class="teaser-box">
-                    <p><?= $this->_('upgrade_to_vip_or_Ascend_to_customize_banners') ?></p>
-                    <a href="/store" class="btn-secondary"><?= $this->_('get_vip_or_Ascend') ?></a>
+                    <p><?= $this->_('upgrade_to_gold_or_Ascend_to_customize_banners') ?></p>
+                    <a href="/store" class="btn-secondary"><?= $this->_('get_gold_or_Ascend') ?></a>
                 </div>
         <?php endif; ?>
 
@@ -349,16 +349,16 @@
             <?php if  (($user['user_isGold']) || ($user['user_isPartner']) || ($user['user_isCertified'])) : ?>
             <span id="badge-container">
                 <?php if ($user['user_isGold']) : ?>
-                        <span class="vip-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
+                        <span class="gold-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
                 <?php endif; ?>
                 <?php if ($user['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
+                        <span class="gold-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold" style="padding: 5px 10px;"></span>
                 <?php endif; ?>  
                 <?php if ($user['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
                 <?php endif; ?>
                 <?php if ($user['user_isAscend']) : ?>
-                                        <span class="vip-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
+                                        <span class="gold-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
                 <?php endif; ?>  
             </span>
         <?php endif; ?>

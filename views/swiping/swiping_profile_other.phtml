@@ -146,16 +146,16 @@
             <?php if  (($anotherUser['user_isGold']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
             <span id="badge-container">
                 <?php if ($anotherUser['user_isGold']) : ?>
-                        <span class="vip-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold"></span>
                 <?php endif; ?>
                 <?php if ($anotherUser['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold"></span>
                 <?php endif; ?>  
                 <?php if ($anotherUser['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
                 <?php endif; ?> 
                 <?php if ($anotherUser['user_isAscend']) : ?>
-                    <span class="vip-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
+                    <span class="gold-badge" title="Ascend badge"><img src="/public/images/Ascend-badge.png" alt="Ascend"></span>
                 <?php endif; ?> 
             </span>
         <?php endif; ?>

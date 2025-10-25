@@ -28,7 +28,7 @@
                     <th> <?= $this->_('username') ?></th>
                     <th><?= $this->_('currency') ?></th>
                     <th class="hide-small-mobile"><?= $this->_('Ascend_status') ?></th>
-                    <th class="hide-small-mobile"><?= $this->_('premium_status') ?></th>
+                    <th class="hide-small-mobile"><?= $this->_('gold_status') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,10 +40,10 @@
                         <td><a
                                 href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?>
                                 <?php if ($user['user_isPartner']): ?>
-                                    <span class="vip-badge"><img src="/public/images/partner-badge.png" alt="Partner badge"></span>
+                                    <span class="gold-badge"><img src="/public/images/partner-badge.png" alt="Partner badge"></span>
                                 <?php endif; ?>
                                 <?php if ($user['user_isCertified']): ?>
-                                    <span class="vip-badge"><img src="/public/images/certified-badge.png" alt="Certified badge"></span>
+                                    <span class="gold-badge"><img src="/public/images/certified-badge.png" alt="Certified badge"></span>
                                 <?php endif; ?>
                             </a>
                         </td>
@@ -58,7 +58,7 @@
                         </td>
                         <td class="hide-small-mobile">
                             <?php if ($user['user_isGold']): ?>
-                                <span class="vip-badge"><span class="hide-mobile"><?= $this->_('gold') ?></span><img src="/public/images/gold-badge.png"
+                                <span class="gold-badge"><span class="hide-mobile"><?= $this->_('gold') ?></span><img src="/public/images/gold-badge.png"
                                         alt="Gold"></span>
                             <?php else: ?>
                                 <span class="regular-badge hide-mobile"><?= $this->_('regular') ?></span>

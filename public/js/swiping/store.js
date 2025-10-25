@@ -88,7 +88,7 @@ function buySoulHard(itemId, userId) {
         })
 }
 
-function buyPremiumAscend(itemId, userId) {
+function buyAscend(itemId, userId) {
     const token = localStorage.getItem('masterTokenWebsite')
     console.log(`Buying gold Ascend ID: ${itemId}, userId: ${userId}`)
 
@@ -99,7 +99,7 @@ function buyPremiumAscend(itemId, userId) {
 
     const jsonData = JSON.stringify(dataToSend)
 
-    fetch('/buyPremiumAscendWebsite', {
+    fetch('/buyAscendWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -165,8 +165,8 @@ function buyRole(itemId, userId) {
                 const roleType = data.roleType || 'gold' // backend can send this if you want
                 placeholderMessage.innerHTML = `
                     ${data.message}<br/>
-                    <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
-                    <button onclick="claimDiscordRole('${roleType}')" class="claimPremium">
+                    <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimGold">Join Discord before claiming</a>
+                    <button onclick="claimDiscordRole('${roleType}')" class="claimGold">
                         Claim ${
                             roleType.charAt(0).toUpperCase() + roleType.slice(1)
                         } Role on Discord
@@ -206,8 +206,8 @@ function getDiscordRole(itemId) {
 
     placeholderMessage.innerHTML = `
         Already got role but not on discord?<br/>
-        <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimPremium">Join Discord before claiming</a>
-        <button onclick="claimDiscordRole('${itemName}')" class="claimPremium">Claim ${
+        <a href="https://discord.gg/Bfpkws74V3" target="_blank" class="claimGold">Join Discord before claiming</a>
+        <button onclick="claimDiscordRole('${itemName}')" class="claimGold">Claim ${
         itemName.charAt(0).toUpperCase() + itemName.slice(1)
     } Role on Discord</button>
     `
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .toLowerCase()
 
             if (itemCategory === 'role' && itemName.includes('Ascend')) {
-                buyPremiumAscend(itemId, userIdHeader)
+                buyAscend(itemId, userIdHeader)
             } else if (itemCategory === 'role') {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {

@@ -952,7 +952,7 @@ class User extends DataBase
         }
     }
 
-    public function buyPremium($userId)
+    public function buyGold($userId)
     {
         $query = $this->bdd->prepare("
                                     UPDATE

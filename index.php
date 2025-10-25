@@ -161,7 +161,7 @@ $actionMap = [
     'getItemsWebsite' => [ItemsController::class, 'getItemsWebsite'],
     'getOwnedItems' => [ItemsController::class, 'getOwnedItems'],
     'getOwnedItemsPhone' => [ItemsController::class, 'getOwnedItemsPhone'],
-    'ownVIPEmotesPhone' => [ItemsController::class, 'ownVIPEmotesPhone'],
+    'ownGoldEmotesPhone' => [ItemsController::class, 'ownGoldEmotesPhone'],
     'Phone' => [ItemsController::class, 'getOwnedItemsPhone'], // Remove when mobile app update is out
     'usePictureFrame' => [ItemsController::class, 'usePictureFrame'],
     'usePictureFrameWebsite' => [ItemsController::class, 'usePictureFrameWebsite'],
@@ -280,7 +280,7 @@ $actionMap = [
     'paymentSuccess' => [PaymentController::class, 'paymentSuccess'],
     'paymentCancel' => [PaymentController::class, 'paymentCancel'],
     'handleWebhook' => [PaymentController::class, 'handleWebhook'],
-    'buyPremiumAscendWebsite' => [PaymentController::class, 'buyPremiumAscendWebsite'],
+    'buyAscendWebsite' => [PaymentController::class, 'buyAscendWebsite'],
     'switchPersonalColorWebsite' => [UserController::class, 'switchPersonalColorWebsite'],
 ];
 

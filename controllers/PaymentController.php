@@ -123,8 +123,8 @@ class PaymentController
     }
 
 
-    // ⭐ Buy Gold / VIP role
-    public function buyPremiumAscendWebsite(): void
+    // ⭐ Buy Gold / Gold role
+    public function buyAscendWebsite(): void
     {
         if (!isset($_POST['param'])) {
             echo json_encode(['success' => false, 'message' => 'Missing parameters']);
