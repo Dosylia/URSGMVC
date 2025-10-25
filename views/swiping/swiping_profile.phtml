@@ -70,41 +70,84 @@
         <hr class="divider">
 
         <!-- Profile Banner Section -->
-        <div class="profile-card">
-            <h2 class="section-title"><?= $this->_('add_profile_banner') ?></h2>
+        <?php if ($user['user_isVip'] || $user['user_isBoost']) : ?>
+            <div class="profile-card">
+                <h2 class="section-title"><?= $this->_('add_profile_banner') ?></h2>
 
-            <?php if ($ownedItems && count($ownedItems) > 0) : ?>
-                <?php
-                $profileBanners = array_filter($ownedItems, function($item) {
-                    return $item['items_category'] === 'Banner';
-                });
-                ?>
+                <?php if ($ownedItems && count($ownedItems) > 0) : ?>
+                    <?php
+                    $profileBanners = array_filter($ownedItems, function($item) {
+                        return $item['items_category'] === 'Banner';
+                    });
+                    ?>
 
-                <span id="placeholder-message"></span>
+                    <span id="placeholder-message"></span>
 
-                <?php if (count($profileBanners) > 0) : ?>
-                    <div class="frame-grid">
-                        <?php foreach ($profileBanners as $item) : ?>
-                            <div class="frame-card <?= $item['userItems_isUsed'] === 1 ? 'active' : '' ?>">
-                                <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
-                                <p><?= $item['items_name'] ?></p>
-                                <?php if ($item['userItems_isUsed'] == 1) : ?>
-                                    <button class="btn-danger btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
-                                <?php else : ?>
-                                    <button class="btn-primary btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php if (count($profileBanners) > 0) : ?>
+                        <div class="frame-grid">
+                            <?php foreach ($profileBanners as $item) : ?>
+                                <div class="frame-card <?= $item['userItems_isUsed'] === 1 ? 'active' : '' ?>">
+                                    <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
+                                    <p><?= $item['items_name'] ?></p>
+                                    <?php if ($item['userItems_isUsed'] == 1) : ?>
+                                        <button class="btn-danger btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
+                                    <?php else : ?>
+                                        <button class="btn-primary btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else : ?>
+                        <p><?= $this->_('no_profile_banner') ?></p>
+                        <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
+                    <?php endif; ?>
                 <?php else : ?>
-                    <p><?= $this->_('no_profile_banner') ?></p>
+                    <p><?= $this->_('no_items') ?></p>
                     <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
                 <?php endif; ?>
-            <?php else : ?>
-                <p><?= $this->_('no_items') ?></p>
-                <a href="/store" class="btn-primary"><?= $this->_('go_to_store') ?></a>
-            <?php endif; ?>
-        </div>
+                
+                <?php if ($user['user_isBoost']) : ?>
+                    <h3 class="section-title"><?= $this->_('upload_your_profile_banner') ?></h3>
+                    <div class="upload-box"></div>
+                        <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
+                            method="post"
+                            enctype="multipart/form-data"
+                        >
+                            <img id="bannerPreview" src="public/upload/<?= $user['user_banner'] ?>png" alt="" style=" max-width:300px; margin-top:10px;"><br>
+                            <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
+                            <input type="file" id="bannerFile" name="bannerFile" accept="image/gif"><br><br>
+                            <button type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
+                        </form>
+                    </div>
+                <?php else : ?>
+                    <!-- Teaser for Non-Boost Users -->
+                    <h2 class="section-title"><?= $this->_('profile_banner_boost_teaser') ?></h2>
+                    <p class="section-subtitle"><?= $this->_('profile_banner_boost_teaser_desc') ?></p>
+                    <div class="teaser-box">
+                        <p><?= $this->_('upgrade_to_boost_to_customize_banners') ?></p>
+                        <a href="/store" class="btn-secondary"><?= $this->_('get_boost') ?></a>
+                    </div>
+                <?php endif; ?>
+                
+
+                <?php if(!empty($user['user_banner'])) : ?>
+                    <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post">
+                        <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
+                    </form>
+                <?php endif; ?>
+                
+            </div>
+        <?php else : ?>
+            <!-- Teaser for Non-VIP Users -->
+            <div class="profile-card">
+                <h2 class="section-title"><?= $this->_('profile_banner_vip_teaser') ?></h2>
+                <p class="section-subtitle"><?= $this->_('profile_banner_vip_teaser_desc') ?></p>
+                <div class="teaser-box">
+                    <p><?= $this->_('upgrade_to_vip_or_boost_to_customize_banners') ?></p>
+                    <a href="/store" class="btn-secondary"><?= $this->_('get_vip_or_boost') ?></a>
+                </div>
+        <?php endif; ?>
+
 
     <div class="profile-card">
         <?php if ($user['user_isBoost']) : ?>
@@ -185,6 +228,17 @@
     </div>
     <div id="user-top-container"> <!--Flex column -->
         <div class="profile-banner-container">
+            
+        <?php if(empty($activeBanner)) : ?>
+            <?php if(!empty($user['user_banner'])) : ?>
+                    <div id="profile-banner" 
+                        class="profile-banner" 
+                        style="background-image: url('public/upload/<?= $user['user_banner'] ?>gif');"
+                        title="custom_banner">
+                    </div>
+             <?php endif; ?>
+        <?php endif; ?>
+            
             <?php if(!empty($activeBanner)) : ?>
                 <?php foreach ($activeBanner as $item) : ?>
                     <div id="profile-banner" 

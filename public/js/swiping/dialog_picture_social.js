@@ -315,44 +315,62 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
-    const colorCircles = document.querySelectorAll('.color-circle')
-    const colorPicker = document.getElementById('custom-color-input')
-    const colorPreview = document.querySelector('.color-preview')
-    const saveColorBtn = document.getElementById('save-color-btn')
-    const removeColorBtn = document.getElementById('remove-color-btn')
-    let selectedColor = null
+    // Gif banner section
+    document
+        .getElementById('bannerFile')
+        .addEventListener('change', async function (e) {
+            const bannerFile = e.target.files[0]
+            const bannerPreview = document.getElementById('bannerPreview')
+            console.log(bannerPreview, bannerFile)
 
-    // Handle preset color selection
-    colorCircles.forEach((circle) => {
-        circle.addEventListener('click', () => {
-            colorCircles.forEach((c) => c.classList.remove('selected'))
-            circle.classList.add('selected')
-            colorPreview.classList.remove('active')
-            selectedColor = circle.dataset.color
+            if (bannerFile) {
+                if (bannerFile.type !== 'image/gif') {
+                    alert('Please select a GIF file for the banner.')
+                    e.target.value = ''
+                    bannerPreview.src = ''
+                    bannerPreview.style.display = 'none'
+                    return
+                }
+                if (bannerFile.size > 6 * 1024 * 1024) {
+                    // 6MB limit
+                    alert('The selected GIF file exceeds the 6MB size limit.')
+                    e.target.value = ''
+                    bannerPreview.src = ''
+                    bannerPreview.style.display = 'none'
+                    return
+                }
+
+                // Cut image
+                const gifURL = URL.createObjectURL(bannerFile);
+
+                // Load GIF into an <img> tag
+                const img = new Image();
+                img.src = gifURL;
+
+                img.onload = function() {
+                    // Draw the first frame of the GIF onto a canvas
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    // Convert canvas to a PNG data URL
+                    const stillImage = canvas.toDataURL('image/png');
+
+                    // Show the still image as preview
+                    bannerPreview.src = stillImage;
+                    document.getElementById('bannerPreviewData').value = stillImage;
+                    bannerPreview.style.display = 'block';
+
+                    // Cleanup the blob URL
+                    URL.revokeObjectURL(gifURL);
+                };
+
+            } else {
+                bannerPreview.src = ''
+                bannerPreview.style.display = 'none'
+            }
         })
-    })
 
-    // Handle custom color selection
-    colorPicker.addEventListener('input', (e) => {
-        colorCircles.forEach((c) => c.classList.remove('selected'))
-        colorPreview.style.backgroundColor = e.target.value
-        colorPreview.classList.add('active')
-        selectedColor = e.target.value
-    })
-
-    // Save color
-    saveColorBtn.addEventListener('click', function () {
-        if (!selectedColor) {
-            document.querySelector('.section-alert').textContent =
-                'Please select or pick a color first!'
-            return
-        }
-
-        switchPersonalColorWebsite(selectedColor, userId, false)
-    })
-
-    removeColorBtn.addEventListener('click', function () {
-        selectedColor = null
-        switchPersonalColorWebsite('', userId, true)
-    })
 })
