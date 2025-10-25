@@ -11,7 +11,6 @@ class Items extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-
     public function getItems()
     {
         $query = $this->bdd->prepare("
@@ -29,8 +28,13 @@ class Items extends DataBase
                 `items`
             ORDER BY
                 CASE items_category
-                    WHEN 'currency' THEN 1
-                    WHEN 'role' THEN 2
+                    WHEN 'role' THEN 1
+                    WHEN 'currency' THEN 2
+                    ELSE 3
+                END,
+                CASE 
+                    WHEN items_category = 'role' AND items_name = 'URSG Ascend' THEN 1
+                    WHEN items_category = 'role' AND items_name = 'URSG Gold' THEN 2
                     ELSE 3
                 END,
                 items_id ASC
@@ -45,7 +49,6 @@ class Items extends DataBase
             return false;
         }
     }
-
     
     public function getItemsExceptBadges()
     {
