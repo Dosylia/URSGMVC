@@ -643,6 +643,32 @@ class UserController
 
     }
 
+    public function adjustBrightness($hex, $steps) 
+    {
+        // Steps should be between -255 and 255
+        $steps = max(-255, min(255, $steps));
+
+        $hex = str_replace('#', '', $hex);
+
+        if (strlen($hex) == 3) {
+            $hex = str_repeat(substr($hex,0,1), 2) .
+                str_repeat(substr($hex,1,1), 2) .
+                str_repeat(substr($hex,2,1), 2);
+        }
+
+        $r = hexdec(substr($hex,0,2));
+        $g = hexdec(substr($hex,2,2));
+        $b = hexdec(substr($hex,4,2));
+
+        $r = max(0,min(255,$r + $steps));
+        $g = max(0,min(255,$g + $steps));
+        $b = max(0,min(255,$b + $steps));
+
+        return '#'.str_pad(dechex($r),2,'0',STR_PAD_LEFT)
+                .str_pad(dechex($g),2,'0',STR_PAD_LEFT)
+                .str_pad(dechex($b),2,'0',STR_PAD_LEFT);
+    }
+
     public function updateSocialsWebsite()
     {
         $response = array('message' => 'Error');
@@ -2243,7 +2269,10 @@ class UserController
             $personalAddPicture = "";
             if ($user['user_personalColor']) {
                 $personalColor = $user['user_personalColor'];
-                $personalButtonDesign = "style='background-color: " . htmlspecialchars($personalColor) . "; border-color: " . htmlspecialchars($personalColor) . ";'";
+                $personalButtonDesign = "style='background: linear-gradient(135deg, "
+                    . htmlspecialchars($personalColor) . ", "
+                    . $this->adjustBrightness($personalColor, -40)
+                    . "); border-color: " . htmlspecialchars($personalColor) . ";'";
                 $personalAddPicture = "style='color: " . htmlspecialchars($personalColor) . ";'";
             }
             if ($user['user_isAscend']) {

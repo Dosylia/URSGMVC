@@ -80,7 +80,7 @@
 
 #menu-links {
     position: absolute;
-    top: 50px;
+    top: 90px;
     right: 0;
     border: none;
     width: 170px;
@@ -765,6 +765,7 @@
 
     #menu-links {
         width: 30px;
+        top: 120px;
     }
 
     .btn_updateProfilePicture {
@@ -772,11 +773,24 @@
         top: -30px;
         right: -50px;
     }
+
+    #additional-badges-container {
+        right: 40px;
+        padding: 7px;
+    }
+
+    #additional-badges-container p {
+        font-size: 13px;
+    }
 }
 
 @media only screen and (max-width: 500px) {
     #additional-badges-container {
-        padding: 2px;
+        padding: 5px;
+    }
+
+    #additional-badges-container p {
+        font-size: 10px;
     }
 
     .social-container-column {

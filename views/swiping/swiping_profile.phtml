@@ -261,12 +261,12 @@
             </a>
         </div> -->
 
-        <span class="profile-personal-color" 
-        <?php if (!empty($personalColor)) : ?>
-            style="background-color: <?= htmlspecialchars($personalColor) ?>;"
-        <?php endif; ?> 
-        >
+        <span class="profile-personal-color"
+            <?php if (!empty($personalColor)) : ?>
+            style="background: linear-gradient(135deg, <?= htmlspecialchars($personalColor) ?>, <?= $this->adjustBrightness($personalColor, -40) ?>);"
+            <?php endif; ?>>
         </span>
+
         <div id="edit-profile-container">
             <div id="menu-links">
                 <a href="/updateProfilePage" class="btn_user_updates_profile" data-text="Update Profile" <?= $personalButtonDesign ?>>

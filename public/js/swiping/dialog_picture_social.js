@@ -33,11 +33,17 @@ function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
                 const profileColor = document.querySelector(
                     '.profile-personal-color'
                 )
-                if (profileColor)
-                    profileColor.style.backgroundColor = selectedColor
+                if (profileColor) {
+                    profileColor.style.background = `linear-gradient(135deg, ${selectedColor}, ${adjustBrightnessJS(
+                        selectedColor,
+                        -40
+                    )})`
+                }
 
                 const userImage = document.getElementById('image_users')
-                if (userImage) userImage.style.borderColor = selectedColor
+                if (userImage) {
+                    userImage.style.borderColor = selectedColor
+                }
 
                 // Update all menu-links btn_user_updates_profile design
                 const menuButtons = document.querySelectorAll(
@@ -54,7 +60,10 @@ function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
                 }
 
                 menuButtons.forEach((button) => {
-                    button.style.backgroundColor = selectedColor
+                    button.style.background = `linear-gradient(135deg, ${selectedColor}, ${adjustBrightnessJS(
+                        selectedColor,
+                        -40
+                    )})`
                     button.style.borderColor = selectedColor
                 })
 
@@ -68,6 +77,29 @@ function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
         .catch((error) => {
             console.error('Fetch error:', error)
         })
+}
+
+function adjustBrightnessJS(hex, steps) {
+    // Convert to RGB
+    hex = hex.replace('#', '')
+    if (hex.length === 3) {
+        hex = hex
+            .split('')
+            .map((c) => c + c)
+            .join('')
+    }
+
+    let r = parseInt(hex.substring(0, 2), 16)
+    let g = parseInt(hex.substring(2, 4), 16)
+    let b = parseInt(hex.substring(4, 6), 16)
+
+    r = Math.max(0, Math.min(255, r + steps))
+    g = Math.max(0, Math.min(255, g + steps))
+    b = Math.max(0, Math.min(255, b + steps))
+
+    return `#${r.toString(16).padStart(2, '0')}${g
+        .toString(16)
+        .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
 // if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
