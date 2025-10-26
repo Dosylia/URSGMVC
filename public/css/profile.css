@@ -685,8 +685,6 @@
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: blur(2px) brightness(0.9);
-    transform: scale(1.05);
 }
 
 @keyframes spin {
