@@ -7121,16 +7121,6 @@ dialog .title_generalbox {
         padding: 2px 3px;
     }
 
-    .profile-banner-container {
-        height: 124px;
-        top: 53px;
-        padding: 12px;
-        gap: 6px;
-    }
-
-    .profile-banner {
-        width: 106%;
-    }
 }
 
 @media only screen and (max-width: 500px) {
@@ -7158,16 +7148,6 @@ dialog .title_generalbox {
         top: 50px;
     }
 
-    .profile-banner-container {
-        height: 124px;
-        top: 53px;
-        padding: 12px;
-        gap: 6px;
-    }
-
-    .profile-banner {
-        width: 106%;
-    }
 }
 
 @media only screen and (max-width: 400px) {
@@ -7238,36 +7218,4 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 55px;
     }
-
-    .profile-banner-container {
-        height: 100px;
-        top: 65px;
-        padding: 12px;
-        gap: 6px;
-    }
-
-    .profile-banner {
-        width: 108%;
-    }
 }
-
-/* Banner addition */
-/* .profile-banner {
-  position: absolute;
-  width: 100%;
-  height: 45%;
-  top: 20%;
-  background-image: url("/public/images/store/AuroraBorealis.png");
-  background-size: cover;
-  background-position: center;
-} */
-/* 
-.profile-banner {
-  position: absolute;
-  width: 100%;
-  height: 45%;
-  top: 50%;
-  background-image: url("/public/images/store/AuroraBorealis.png");
-  background-size: cover;
-  background-position: center;
-} */
