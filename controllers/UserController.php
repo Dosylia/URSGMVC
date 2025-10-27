@@ -3661,6 +3661,16 @@ class UserController
                 header("location:/userProfile?message=Couldn't update profile banner");
                 exit;
             }
+
+            // After all works we can see if there is any selected banner item and remove it if thats the case
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($ownedItem['items_category'] == "Banner") {
+                            $this->items->removeItems($ownedItem['userItems_id'], $_SESSION['userId']);
+                        }
+                    }
+                } 
     
             // ✅ **Now delete old images only after everything succeeds**
             if (!empty($user['user_banner'])) {
@@ -3711,6 +3721,9 @@ class UserController
             if (file_exists($oldPng)) {
                 unlink($oldPng);
             }
+        } else {
+            header("location:/userProfile?message=No profile banner to remove");
+            exit;
         }
 
         // Update database to remove banner reference

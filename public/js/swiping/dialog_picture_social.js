@@ -178,13 +178,14 @@ fileInputProfile.addEventListener('change', (event) => {
     }
 })
 
-function usePictureFrame(itemId, userId) {
+function usePictureFrame(itemId, userId, category) {
     console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`)
     const token = localStorage.getItem('masterTokenWebsite')
 
     const dataToSend = {
         itemId,
         userId,
+        category
     }
 
     const jsonData = JSON.stringify(dataToSend)
@@ -217,13 +218,14 @@ function usePictureFrame(itemId, userId) {
         })
 }
 
-function RemovePictureFrame(itemId, userId) {
+function RemovePictureFrame(itemId, userId, category) {
     const token = localStorage.getItem('masterTokenWebsite')
     console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`)
 
     const dataToSend = {
         itemId,
         userId,
+        category,
     }
 
     const jsonData = JSON.stringify(dataToSend)
@@ -336,21 +338,57 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureFrameButtons.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            usePictureFrame(itemId, userIdHeader)
+            usePictureFrame(itemId, userIdHeader, 'profile Picture')
         })
     })
 
     pictureFrameButtonsRemove.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            RemovePictureFrame(itemId, userIdHeader)
+            RemovePictureFrame(itemId, userIdHeader, 'profile Picture')
         })
     })
 
+    // Banner Buttons
+    const btn_banner_profile = document.querySelectorAll('.btn_banner_profile')
+    const btn_banner_remove = document.querySelectorAll('.btn_banner_remove')
+
+    btn_banner_profile.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            usePictureFrame(itemId, userIdHeader, 'Banner')
+        })
+    })
+
+    btn_banner_remove.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            RemovePictureFrame(itemId, userIdHeader, 'Banner')
+        }) 
+    })
+
+    // const setCustomBannerActive = document.getElementById('setCustomBannerActive')
+    // setCustomBannerActive.addEventListener('click', function () {
+    //     const itemId = this.getAttribute('data-item-id')
+    //     RemovePictureFrame(itemId, userIdHeader, 'Banner')
+    // });
+    
+
+
+    // const removeBtn = document.getElementById('removeBannerBtn');
+    // const bannerPreview = document.getElementById('currentBanner');
+
+    // if (bannerPreview.src != "" && !bannerPreview.src.includes("public/upload/")) {
+    //     removeBtn.disabled = false;
+    //     removeBtn.title = "";
+    // } else {
+    //     removeBtn.disabled = true;
+    //     removeBtn.title = "No banner uploaded";
+    // }
+
+
     // Gif banner section
-    document
-        .getElementById('bannerFile')
-        .addEventListener('change', async function (e) {
+    document.getElementById('bannerFile').addEventListener('change', async function (e) {
             const bannerFile = e.target.files[0]
             const bannerPreview = document.getElementById('bannerPreview')
             console.log(bannerPreview, bannerFile)
@@ -403,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 bannerPreview.src = ''
                 bannerPreview.style.display = 'none'
             }
-        })
+    })
 
     const colorCircles = document.querySelectorAll('.color-circle')
     const colorPicker = document.getElementById('custom-color-input')

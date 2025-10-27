@@ -90,9 +90,9 @@
                                     <img src="public/images/store/<?= $item['items_picture'] ?>" alt="<?= $item['items_name'] ?>">
                                     <p><?= $item['items_name'] ?></p>
                                     <?php if ($item['userItems_isUsed'] == 1) : ?>
-                                        <button class="btn-danger btn_picture_frame_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
+                                        <button class="btn-danger btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_remove') ?></button>
                                     <?php else : ?>
-                                        <button class="btn-primary btn_picture_frame" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
+                                        <button class="btn-primary btn_banner_profile" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button>
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
@@ -107,17 +107,36 @@
                 <?php endif; ?>
                 
                 <?php if ($user['user_isAscend']) : ?>
-                    <h3 class="section-title"><?= $this->_('upload_your_profile_banner') ?></h3>
-                    <div class="upload-box"></div>
-                        <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
-                            method="post"
-                            enctype="multipart/form-data"
-                        >
-                            <img id="bannerPreview" src="public/upload/<?= $user['user_banner'] ?>png" alt="" style=" max-width:300px; margin-top:10px;"><br>
-                            <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
-                            <input type="file" id="bannerFile" name="bannerFile" accept="image/gif"><br><br>
-                            <button type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
-                        </form>
+                    <h3 class="section-title"><?= $this->_('select_your_profile_banner') ?></h3>
+                    <div class="banner-grid">
+                        <div class="frame-card">
+                            <h4 class="section-title"><?= $this->_('current_uploaded_banner') ?></h4>
+                            <img id="currentBanner" src="public/upload/<?= $user['user_banner'] ?>png" alt="" style=" max-width:300px; margin-top:10px;"><br>
+
+                            <?php foreach ($profileBanners as $item) : ?>
+                                <?php if ($item['userItems_isUsed'] == 1) : ?>
+                                    <button class="btn-primary btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button><br><br>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+
+                            <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post" >
+                                <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
+                            </form>
+                            
+                        </div>
+                        <div class="frame-card">
+                            <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
+                                method="post"
+                                enctype="multipart/form-data"
+                            >
+                                <h4 class="section-title"><?= $this->_('upload_new_banner') ?></h4>
+                                <img id="bannerPreview"  alt="" style=" max-width:300px; margin-top:10px;"><br>
+                                <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
+                                <label for="bannerFile" class="file-label"><?= $this->_('add_picture_chose') ?></label>
+                                <input type="file" id="bannerFile" name="bannerFile" accept="image/gif" alt="Upload Preview" class="file-input"><br><br>
+                                <button id="bannerUploadSubmit" type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
+                            </form>
+                        </div>
                     </div>
                 <?php else : ?>
                     <!-- Teaser for Non-Ascend Users -->
@@ -128,14 +147,7 @@
                         <a href="/store" class="btn-secondary"><?= $this->_('get_Ascend') ?></a>
                     </div>
                 <?php endif; ?>
-                
-
-                <?php if(!empty($user['user_banner'])) : ?>
-                    <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post">
-                        <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
-                    </form>
-                <?php endif; ?>
-                
+                                
             </div>
         <?php else : ?>
             <!-- Teaser for Non-Gold Users -->

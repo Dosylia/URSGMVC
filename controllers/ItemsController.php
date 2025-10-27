@@ -698,6 +698,8 @@ class ItemsController
             if (isset($data->itemId) && isset($data->userId)) {
                 $itemId = $data->itemId;
                 $userId = $data->userId;
+                $cathegory = $data->category;
+
 
                 $token = $this->getBearerTokenOrJsonError();
                 if (!$token) {
@@ -724,7 +726,7 @@ class ItemsController
 
                 if ($ownedItems) {
                     foreach ($ownedItems as $ownedItem) {
-                        if ($ownedItem['items_category'] == 'profile Picture') {
+                        if ($ownedItem['items_category'] == $cathegory) {
                             $this->items->removeItems($ownedItem['userItems_id'], $userId);
                         }
                     }

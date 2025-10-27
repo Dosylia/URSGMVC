@@ -664,7 +664,26 @@
     animation: spin 1s linear infinite;
 }
 
-/* Container from banner */
+/* Profile Banner changes*/
+.banner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* genau zwei Spalten */
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.banner-grid > :first-child {
+    justify-self: start;
+}
+
+.banner-grid > :last-child {
+    justify-self: end; 
+}
+
+
+/* Show Banner */
 .profile-banner-container {
     display: flex;
     flex-direction: column;
@@ -1146,5 +1165,15 @@
     .profile-banner-container {
         height: 135px;
         top: 100px;
+    }
+
+    .banner-grid {
+        grid-template-columns: 1fr; 
+        justify-items: center; 
+    }
+
+    .banner-grid > * {
+        justify-self: center; 
+        text-align: center; 
     }
 }
