@@ -107,35 +107,41 @@
                 <?php endif; ?>
                 
                 <?php if ($user['user_isAscend']) : ?>
-                    <h3 class="section-title"><?= $this->_('select_your_profile_banner') ?></h3>
+                    <br><h3 class="section-title"><?= $this->_('select_your_profile_banner') ?></h3>
                     <div class="banner-grid">
                         <div class="frame-card">
-                            <h4 class="section-title"><?= $this->_('current_uploaded_banner') ?></h4>
-                            <img id="currentBanner" src="public/upload/<?= $user['user_banner'] ?>png" alt="" style=" max-width:300px; margin-top:10px;"><br>
-
-                            <?php foreach ($profileBanners as $item) : ?>
-                                <?php if ($item['userItems_isUsed'] == 1) : ?>
-                                    <button class="btn-primary btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button><br><br>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-
-                            <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post" >
-                                <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
-                            </form>
-                            
-                        </div>
+                                <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
+                                    method="post"
+                                    enctype="multipart/form-data"
+                                >
+                                    <h4 class="section-title"><?= $this->_('upload_new_banner') ?></h4>
+                                    <img id="bannerPreview"  alt="" style=" max-width:300px; margin-top:10px; display:none;"><br>
+                                    <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
+                                    <label for="bannerFile" class="file-label"><?= $this->_('add_picture_chose') ?></label>
+                                    <input type="file" id="bannerFile" name="bannerFile" accept="image/png, image/jpeg, image/gif" alt="Upload Preview" class="file-input"><br><br>
+                                    <button id="bannerUploadSubmit" type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
+                                </form>
+                        </div>    
                         <div class="frame-card">
-                            <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
-                                method="post"
-                                enctype="multipart/form-data"
-                            >
-                                <h4 class="section-title"><?= $this->_('upload_new_banner') ?></h4>
-                                <img id="bannerPreview"  alt="" style=" max-width:300px; margin-top:10px;"><br>
-                                <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
-                                <label for="bannerFile" class="file-label"><?= $this->_('add_picture_chose') ?></label>
-                                <input type="file" id="bannerFile" name="bannerFile" accept="image/gif" alt="Upload Preview" class="file-input"><br><br>
-                                <button id="bannerUploadSubmit" type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
-                            </form>
+                                <h4 class="section-title"><?= $this->_('current_uploaded_banner') ?></h4>
+                                <img 
+                                    id="currentBanner" 
+                                    src="public/upload/<?= $user['user_banner'] ?>" 
+                                    alt=""  
+                                    style=" max-width:300px; margin-top:10px; "
+                                    <?php if (empty($user['user_banner'] )): ?>hidden<?php endif; ?>
+                                    ><br>
+
+                                <?php foreach ($profileBanners as $item) : ?>
+                                    <?php if ($item['userItems_isUsed'] == 1) : ?>
+                                        <button class="btn-primary btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button><br><br>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+
+                                <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post" >
+                                    <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
+                                </form>
+                                
                         </div>
                     </div>
                 <?php else : ?>
@@ -245,7 +251,7 @@
             <?php if(!empty($user['user_banner'])) : ?>
                     <div id="profile-banner" 
                         class="profile-banner" 
-                        style="background-image: url('public/upload/<?= $user['user_banner'] ?>gif');"
+                        style="background-image: url('public/upload/<?= $user['user_banner'] ?>');"
                         title="custom_banner">
                     </div>
              <?php endif; ?>
@@ -253,9 +259,10 @@
             
             <?php if(!empty($activeBanner)) : ?>
                 <?php foreach ($activeBanner as $item) : ?>
+                    <?php $gifImage = str_replace('.png', '.gif', $item['items_picture']); ?>
                     <div id="profile-banner" 
                         class="profile-banner" 
-                        style="background-image: url('public/images/store/<?= $item['items_picture'] ?>');"
+                        style="background-image: url('public/images/store/<?= htmlspecialchars($gifImage, ENT_QUOTES) ?>');"
                         title="<?= htmlspecialchars($item['items_name']) ?>">
                     </div>
                 <?php endforeach; ?>

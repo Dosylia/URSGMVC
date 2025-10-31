@@ -187,7 +187,7 @@ return [
     'add_profile_banner' => "Change the profile banner",
     'no_profile_banner' => "You dont own any profile banners yet",
     'select_your_profile_banner' => 'Select your own profile banner',
-    'current_uploaded_banner' => 'Currently uploaded banner',
+    'current_uploaded_banner' => 'Current banner',
     'upload_new_banner' => 'Upload a new banner',
     'add_banner' => 'Choose gif as banner',
     'upload_banner' => 'Upload the chosen Banner',

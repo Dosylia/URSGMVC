@@ -391,51 +391,62 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('bannerFile').addEventListener('change', async function (e) {
             const bannerFile = e.target.files[0]
             const bannerPreview = document.getElementById('bannerPreview')
-            console.log(bannerPreview, bannerFile)
 
             if (bannerFile) {
-                if (bannerFile.type !== 'image/gif') {
-                    alert('Please select a GIF file for the banner.')
-                    e.target.value = ''
-                    bannerPreview.src = ''
-                    bannerPreview.style.display = 'none'
-                    return
-                }
-                if (bannerFile.size > 6 * 1024 * 1024) {
-                    // 6MB limit
-                    alert('The selected GIF file exceeds the 6MB size limit.')
-                    e.target.value = ''
-                    bannerPreview.src = ''
-                    bannerPreview.style.display = 'none'
-                    return
-                }
+                // if (bannerFile.type !== 'image/gif') {
+                //     alert('Please select a GIF file for the banner.')
+                //     e.target.value = ''
+                //     bannerPreview.src = ''
+                //     bannerPreview.style.display = 'none'
+                //     return
+                // }
+                // if (bannerFile.size > 6 * 1024 * 1024) {
+                //     // 6MB limit
+                //     alert('The selected GIF file exceeds the 6MB size limit.')
+                //     e.target.value = ''
+                //     bannerPreview.src = ''
+                //     bannerPreview.style.display = 'none'
+                //     return
+                // }
 
                 // Cut image
                 const gifURL = URL.createObjectURL(bannerFile)
 
                 // Load GIF into an <img> tag
-                const img = new Image()
-                img.src = gifURL
+                if (bannerFile.type == 'image/gif') {
+                    const img = new Image()
+                    img.src = gifURL
+                
+                     img.onload = async function () {
 
-                img.onload = function () {
-                    // Draw the first frame of the GIF onto a canvas
-                    const canvas = document.createElement('canvas')
-                    canvas.width = img.width
-                    canvas.height = img.height
-                    const ctx = canvas.getContext('2d')
-                    ctx.drawImage(img, 0, 0)
+                        // 🧩 Draw the image *after* decoding is guaranteed finished
+                        await img.decode() // ensures frame 0 is fully ready
 
-                    // Convert canvas to a PNG data URL
-                    const stillImage = canvas.toDataURL('image/png')
+                        const canvas = document.createElement('canvas')
+                        canvas.width = img.naturalWidth
+                        canvas.height = img.naturalHeight
+                        const ctx = canvas.getContext('2d')
 
-                    // Show the still image as preview
-                    bannerPreview.src = stillImage
-                    document.getElementById('bannerPreviewData').value =
-                        stillImage
-                    bannerPreview.style.display = 'block'
+                        // Draw frame 0
+                        ctx.drawImage(img, 0, 0)
 
-                    // Cleanup the blob URL
-                    URL.revokeObjectURL(gifURL)
+                        // Convert canvas to a PNG data URL
+                        const stillImage = canvas.toDataURL('image/png')
+
+                        // Show the still image as preview
+                        bannerPreview.src = stillImage
+                        document.getElementById('bannerPreviewData').value = stillImage
+                        bannerPreview.style.display = 'block'
+                        // bannerPreview.removeAttribute('hidden');
+
+                        URL.revokeObjectURL(gifURL)
+                    }
+    
+                } else {
+                    bannerPreview.src = gifURL;
+                    bannerPreview.style.display = 'block';
+                    // bannerPreview.removeAttribute('hidden');
+                    document.getElementById('bannerPreviewData').value = gifURL;
                 }
             } else {
                 bannerPreview.src = ''

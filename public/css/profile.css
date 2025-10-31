@@ -1155,6 +1155,16 @@
         height: 145px;
         top: 100px;
     }
+
+    .banner-grid {
+        grid-template-columns: 1fr;
+        justify-content: start;
+        align-items: start;
+    }
+
+    .banner-grid > * {
+        justify-self: start !important;
+    }
 }
 
 @media only screen and (max-width: 350px) {
@@ -1168,12 +1178,12 @@
     }
 
     .banner-grid {
-        grid-template-columns: 1fr; 
-        justify-items: center; 
+        grid-template-columns: 1fr;
+        justify-content: start;
+        align-items: start;
     }
 
     .banner-grid > * {
-        justify-self: center; 
-        text-align: center; 
+        justify-self: start !important;
     }
 }

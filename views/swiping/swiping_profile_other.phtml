@@ -88,7 +88,7 @@
                 <?php if(!empty($anotherUser['user_banner'])) : ?>
                         <div id="profile-banner" 
                             class="profile-banner" 
-                            style="background-image: url('public/upload/<?= $anotherUser['user_banner'] ?>gif');"
+                            style="background-image: url('public/upload/<?= $anotherUser['user_banner'] ?>');"
                             title="custom_banner">
                         </div>
                 <?php endif; ?>
@@ -96,9 +96,10 @@
             
             <?php if(!empty($activeBanner)) : ?>
                 <?php foreach ($activeBanner as $item) : ?>
+                    <?php $gifImage = str_replace('.png', '.gif', $item['items_picture']); ?>
                     <div id="profile-banner" 
                         class="profile-banner" 
-                        style="background-image: url('public/images/store/<?= $item['items_picture'] ?>');"
+                        style="background-image: url('public/images/store/<?= htmlspecialchars($gifImage, ENT_QUOTES) ?>');"
                         title="<?= htmlspecialchars($item['items_name']) ?>">
                     </div>
                 <?php endforeach; ?>
