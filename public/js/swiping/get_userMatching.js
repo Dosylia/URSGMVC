@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addBadge(
                 badgeContainer,
                 'Ascend Badge',
-                '/public/images/Ascend-badge.png',
+                '/public/images/ascend-badge.png',
                 'Ascend',
                 '#9b59b6'
             )

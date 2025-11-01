@@ -2056,6 +2056,38 @@ class GoogleUserController
         }
     }
 
+    public function isMobileUpdateNeeded()
+    {
+        if (isset($_POST['currentVersion'])) {
+            $currentVersion = $this->validateInput($_POST['currentVersion']);
+            $latestVersion = '1.3.8';
+
+            if (version_compare($currentVersion, $latestVersion, '<')) {
+                $response = [
+                    'updateNeeded' => true,
+                    'latestVersion' => $latestVersion,
+                    'message' => 'A new version is available. Please update the app.'
+                ];
+            } else {
+                $response = [
+                    'updateNeeded' => false,
+                    'message' => 'You are using the latest version.'
+                ];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit();
+        } else {
+            $response = [
+                'error' => 'Current version not provided.'
+            ];
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit();
+        }
+    }
+
 
     public function validateInput($input) 
     {
