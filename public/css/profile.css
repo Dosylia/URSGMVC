@@ -679,9 +679,27 @@
 }
 
 .banner-grid > :last-child {
-    justify-self: end; 
+    justify-self: end;
 }
 
+.personal-banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.personal-banner-container h3 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.personal-banner-container h4 {
+    font-size: 1em;
+}
 
 /* Show Banner */
 .profile-banner-container {
