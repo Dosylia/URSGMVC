@@ -3634,10 +3634,10 @@ class UserController
             exit;
         }
 
-        $allowTypes = array('gif');
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
     
         if (!in_array($fileExtension, $allowTypes)) {
-            header("location:/userProfile?message=Only gif allowed");
+            header("location:/userProfile?message=Only images allowed");
             exit;
         }
     
@@ -3649,32 +3649,53 @@ class UserController
             }
     
             // Save image from data
-            if (!empty($bannerPreviewData)) {
+            if (!empty($bannerPreviewData) && $fileExtension == "gif") {
                 $data = $bannerPreviewData;
                 list(, $data) = explode(',', $data);
                 file_put_contents($targetDir . $fileNamePreview, base64_decode($data));
             }
+           
+            // If needed, resize image (excluding GIFs). See how ppl use and respond to it
+            // if ( $fileExtension != "gif") {
+            //     // Resize image
+            //     // $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+            //     if (!$this->resizeImage($targetFilePath, $targetFilePath, 800, 400)) {
+            //         unlink($targetFilePath); // Clean up original if resize fails
+            //         header("location:/userProfile?message=Error resizing image");
+            //         exit;
+            //     }
+            // }
+
+            $uniqueFileName_base = $uniqueFileName_base . $fileExtension;
             
-    
             // Update database with image
             if (!$this->user->uploadBanner($this->getUsername(),  $uniqueFileName_base)) {
                 header("location:/userProfile?message=Couldn't update profile banner");
                 exit;
             }
+
+            // After all works we can see if there is any selected banner item and remove it if thats the case
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($ownedItem['items_category'] == "Banner") {
+                            $this->items->removeItems($ownedItem['userItems_id'], $_SESSION['userId']);
+                        }
+                    }
+                } 
     
             // ✅ **Now delete old images only after everything succeeds**
             if (!empty($user['user_banner'])) {
-                $oldGif = $targetDir . $user['user_banner'].'gif';
-                $oldPng = $targetDir . $user['user_banner'].'png';
-    
-                if (file_exists($oldGif)) {
-                    unlink($oldGif);
-                }
+                $baseName = pathinfo($user['user_banner'], PATHINFO_FILENAME);
+                $oldGif = $targetDir . $baseName . '.gif';
+                $oldPng = $targetDir . $baseName . '.png';
+                $oldFile = $targetDir . $user['user_banner'];
 
-                if (file_exists($oldPng)) {
-                    unlink($oldPng);
+                foreach ([$oldGif, $oldPng, $oldFile] as $oldPath) {
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
                 }
-
             }
     
     
@@ -3701,16 +3722,19 @@ class UserController
 
         // Delete banner files
         if (!empty($user['user_banner'])) {
-            $oldGif = $targetDir . $user['user_banner'].'gif';
-            $oldPng = $targetDir . $user['user_banner'].'png';
+            $baseName = pathinfo($user['user_banner'], PATHINFO_FILENAME);
+            $oldGif = $targetDir . $baseName . '.gif';
+            $oldPng = $targetDir . $baseName . '.png';
+            $oldFile = $targetDir . $user['user_banner'];
 
-            if (file_exists($oldGif)) {
-                unlink($oldGif);
+            foreach ([$oldGif, $oldPng, $oldFile] as $oldPath) {
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
             }
-
-            if (file_exists($oldPng)) {
-                unlink($oldPng);
-            }
+        } else {
+            header("location:/userProfile?message=No profile banner to remove");
+            exit;
         }
 
         // Update database to remove banner reference

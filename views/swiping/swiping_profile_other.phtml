@@ -83,18 +83,28 @@
         <div id="user-top-content"> <!--Flex column -->
 
 
-            <div class="profile-banner-container">
-                <?php if(!empty($activeBanner)) : ?>
-                    <?php foreach ($activeBanner as $item) : ?>
+        <div class="profile-banner-container">
+            <?php if(empty($activeBanner)) : ?>
+                <?php if(!empty($anotherUser['user_banner'])) : ?>
                         <div id="profile-banner" 
                             class="profile-banner" 
-                            style="background-image: url('public/images/store/<?= $item['items_picture'] ?>');"
-                            title="<?= htmlspecialchars($item['items_name']) ?>">
+                            style="background-image: url('public/upload/<?= $anotherUser['user_banner'] ?>');"
+                            title="custom_banner">
                         </div>
-                    <?php endforeach; ?>
                 <?php endif; ?>
-            </div>
-
+            <?php endif; ?>
+            
+            <?php if(!empty($activeBanner)) : ?>
+                <?php foreach ($activeBanner as $item) : ?>
+                    <?php $gifImage = str_replace('.png', '.gif', $item['items_picture']); ?>
+                    <div id="profile-banner" 
+                        class="profile-banner" 
+                        style="background-image: url('public/images/store/<?= htmlspecialchars($gifImage, ENT_QUOTES) ?>');"
+                        title="<?= htmlspecialchars($item['items_name']) ?>">
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
             <span id="additional-badges-container">
                 <?php if(!empty($additionalBadges)) : ?>
                     <?php foreach($additionalBadges as $badge): ?>
