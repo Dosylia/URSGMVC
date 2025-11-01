@@ -3590,9 +3590,27 @@ class UserController
         $this->valorantRoleLf = $valorantRoleLf;
     }
 
-
     // Function for uploading GIFs for banners
-    public function uploadBanner() {
+    public function uploadBannerWebsite() {
+        // Retrieve current user info
+        if (!isset($_GET['username'])) {
+            header("location:/userProfile?message=No username provided");
+            exit;
+        }
+        $user = $this->user->getUserById($_SESSION['userId']);
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+    
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized!");
+            exit;
+        }
+
+        if (empty($_FILES["bannerFile"]["name"]) && isset($_POST["bannerPreviewData"])) {
+            header("location:/userProfile?message=Nothing to upload");
+            exit;
+        }
+
         $targetDir = "public/upload/";
         $originalFileName = basename($_FILES["bannerFile"]["name"]);
         $bannerPreviewData = $_POST["bannerPreviewData"];
@@ -3605,21 +3623,6 @@ class UserController
 
         $this->setFileName($uniqueFileName);
         $targetFilePath = $targetDir . $uniqueFileName;
-    
-        if (empty($_FILES["bannerFile"]["name"])) {
-            header("location:/userProfile?message=Nothing to upload");
-            exit;
-        }
-    
-        // Retrieve current user info
-        $user = $this->user->getUserById($_SESSION['userId']);
-        $username = $this->validateInput($_GET["username"]);
-        $this->setUsername($username);
-    
-        if ($user['user_username'] !== $this->getUsername()) {
-            header("location:/userProfile?message=Unauthorized:");
-            exit;
-        }
 
         // Check for animated GIFs, only allow if user_isAscend === 1 
         if ($user['user_isAscend'] != 1) {
@@ -3634,7 +3637,7 @@ class UserController
             exit;
         }
 
-        $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif', 'webp');
     
         if (!in_array($fileExtension, $allowTypes)) {
             header("location:/userProfile?message=Only images allowed");
@@ -3706,7 +3709,13 @@ class UserController
         exit;
     }
 
-    public function removeUploadedBanner() {
+    public function removeBannerWebsite() {
+
+        if (!isset($_GET["username"])) {
+            header("location:/userProfile?message=No username provided");
+            exit;
+        }
+
         $username = $this->validateInput($_GET["username"]);
         $this->setUsername($username);
 
@@ -3723,11 +3732,10 @@ class UserController
         // Delete banner files
         if (!empty($user['user_banner'])) {
             $baseName = pathinfo($user['user_banner'], PATHINFO_FILENAME);
-            $oldGif = $targetDir . $baseName . '.gif';
             $oldPng = $targetDir . $baseName . '.png';
             $oldFile = $targetDir . $user['user_banner'];
 
-            foreach ([$oldGif, $oldPng, $oldFile] as $oldPath) {
+            foreach ([$oldPng, $oldFile] as $oldPath) {
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }

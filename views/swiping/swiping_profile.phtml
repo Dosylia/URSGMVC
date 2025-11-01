@@ -126,10 +126,10 @@
                                 <?php endif; ?>
                             <?php endforeach; ?>
 
-                            <form action="/removeBanner&username=<?= urlencode($user['user_username']) ?>" method="post" >
+                            <form action="/removeBannerWebsite&username=<?= urlencode($user['user_username']) ?>" method="post" >
                                 <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
                             </form>   
-                        <form action="/uploadBanner&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
+                        <form action="/uploadBannerWebsite&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
                             method="post"
                             enctype="multipart/form-data"
                         >
