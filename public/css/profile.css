@@ -545,6 +545,7 @@
 .banner-preview-container {
     position: relative;
     display: inline-block;
+    padding-left: 10%;
 }
 
 #removePreviewBannerBtn {
