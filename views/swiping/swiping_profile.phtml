@@ -113,31 +113,34 @@
                         <h3 class="section-title"><?= $this->_('select_your_profile_banner') ?></h3>
                         <h4><?= $this->_('upload_new_banner') ?></h4>
                         <img 
-                                id="currentBanner" 
+                                id="currentBanner"
                                 src="public/upload/<?= $user['user_banner'] ?>" 
                                 alt=""  
-                                style=" max-width:300px; margin-top:10px; max-width: 90%;"
                                 <?php if (empty($user['user_banner'] )): ?>hidden<?php endif; ?>
-                                ><br>
+                        ><br>
 
-                            <?php foreach ($profileBanners as $item) : ?>
-                                <?php if ($item['userItems_isUsed'] == 1) : ?>
-                                    <button class="btn-primary btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button><br><br>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
+                        <?php foreach ($profileBanners as $item) : ?>
+                            <?php if ($item['userItems_isUsed'] == 1 && !empty($user['user_banner'])) : ?>
+                                <button class="btn-primary btn_banner_remove" data-item-id="<?= $item['userItems_id'] ?>"><?= $this->_('add_profile_frame_use') ?></button><br><br>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
 
-                            <form action="/removeBannerWebsite&username=<?= urlencode($user['user_username']) ?>" method="post" >
-                                <button type="submit" id="removeBannerBtn" class="btn-danger"><?= $this->_('remove_banner') ?></button>
-                            </form>   
+                        <form action="/removeBannerWebsite&username=<?= urlencode($user['user_username']) ?>" method="post" >
+                            <button type="submit" id="removeBannerBtn" class="btn-danger" <?php if (empty($user['user_banner'] )): ?>hidden<?php endif; ?>><?= $this->_('remove_banner') ?></button>
+                        </form>
                         <form action="/uploadBannerWebsite&username=<?= urlencode($user['user_username']) ?>" id="formProfileBanner"
                             method="post"
                             enctype="multipart/form-data"
-                        >
-                            <img id="bannerPreview"  alt="" style=" max-width:300px; margin-top:10px; display:none;"><br>
+                        >   
+                            <div class="banner-preview-container">
+                                <button type="button" id="removePreviewBannerBtn" style="display: none;" >&times;</button>
+                                <img id="bannerPreview"  alt=""><br>
+                            </div>
+
                             <input id="bannerPreviewData" type="hidden" name="bannerPreviewData" >
-                            <label for="bannerFile" class="file-label"><?= $this->_('add_picture_chose') ?></label>
-                            <input type="file" id="bannerFile" name="bannerFile" accept="image/png, image/jpeg, image/gif" alt="Upload Preview" class="file-input"><br><br>
-                            <button id="bannerUploadSubmit" type="submit" name="submit" class="btn-primary"><?= $this->_('upload_banner') ?></button>
+                            <label for="bannerFile" id="bannerFileLabel" class="file-label"><?= $this->_('add_picture_chose') ?></label>
+                            <input type="file" id="bannerFile" name="bannerFile" accept="image/png, image/jpeg, image/gif, image/webp" alt="Upload Preview" class="file-input"><br><br>
+                            <button id="bannerUploadSubmit" type="submit" name="submit" style="display: none;" class="btn-primary"><?= $this->_('upload_banner') ?></button>
                         </form>
                     </div>
                 <?php else : ?>

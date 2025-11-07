@@ -521,6 +521,44 @@
     border: 3px solid #007bff;
 }
 
+#currentBanner {
+  max-width: 90%;
+  margin-top: 10px;
+  border: 3px solid #007bff;
+}
+
+#bannerPreview {
+  max-width: 90%;
+  margin-top: 10px;
+  border: 3px solid #007bff;
+}
+
+#bannerPreview {
+    display: none;
+    width: 100%;
+    max-width: 90%;
+    height: auto;
+    margin-top: 12px;
+    border-radius: 10px;
+}
+
+.banner-preview-container {
+    position: relative;
+    display: inline-block;
+}
+
+#removePreviewBannerBtn {
+    position: absolute;
+    top: 5px;
+    right: 7%;
+    color: #fff;
+    background-color: var(--main--red);
+    border: none;
+    border-radius: 50%;
+    padding: 5px 9px;
+    cursor: pointer;
+}
+
 .file-input {
     display: none;
 }

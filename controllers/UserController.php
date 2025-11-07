@@ -3659,15 +3659,15 @@ class UserController
             }
            
             // If needed, resize image (excluding GIFs). See how ppl use and respond to it
-            // if ( $fileExtension != "gif") {
-            //     // Resize image
-            //     // $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-            //     if (!$this->resizeImage($targetFilePath, $targetFilePath, 800, 400)) {
-            //         unlink($targetFilePath); // Clean up original if resize fails
-            //         header("location:/userProfile?message=Error resizing image");
-            //         exit;
-            //     }
-            // }
+            if ( $fileExtension != "gif") {
+                // Resize image
+                // $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+                if (!$this->resizeImage($targetFilePath, $targetFilePath, 800, 400)) {
+                    unlink($targetFilePath); // Clean up original if resize fails
+                    header("location:/userProfile?message=Error resizing image");
+                    exit;
+                }
+            }
 
             $uniqueFileName_base = $uniqueFileName_base . $fileExtension;
             

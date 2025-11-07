@@ -386,28 +386,30 @@ document.addEventListener('DOMContentLoaded', function () {
     //     removeBtn.title = "No banner uploaded";
     // }
 
+    
+
 
     // Gif banner section
     document.getElementById('bannerFile').addEventListener('change', async function (e) {
             const bannerFile = e.target.files[0]
+            const bannerFileInput = document.getElementById('bannerFile')
             const bannerPreview = document.getElementById('bannerPreview')
-
+            const bannerFileLabel = document.getElementById('bannerFileLabel')
+            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
+            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
+            
+            
             if (bannerFile) {
-                // if (bannerFile.type !== 'image/gif') {
-                //     alert('Please select a GIF file for the banner.')
-                //     e.target.value = ''
-                //     bannerPreview.src = ''
-                //     bannerPreview.style.display = 'none'
-                //     return
-                // }
-                // if (bannerFile.size > 6 * 1024 * 1024) {
-                //     // 6MB limit
-                //     alert('The selected GIF file exceeds the 6MB size limit.')
-                //     e.target.value = ''
-                //     bannerPreview.src = ''
-                //     bannerPreview.style.display = 'none'
-                //     return
-                // }
+
+                if (bannerFile.size > 6 * 1024 * 1024) {
+                    // 6MB limit
+                    console.log("File too large");
+                    window.location.href = '/userProfile?message=The selected GIF file exceeds the 6MB size limit.';
+                    e.target.value = ''
+                    bannerPreview.src = ''
+                    bannerPreview.style.display = 'none'
+                    return
+                }
 
                 // Cut image
                 const gifURL = URL.createObjectURL(bannerFile)
@@ -437,7 +439,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         bannerPreview.src = stillImage
                         document.getElementById('bannerPreviewData').value = stillImage
                         bannerPreview.style.display = 'block'
-                        // bannerPreview.removeAttribute('hidden');
+
+                        bannerFileInput.style.display = 'none'
+                        bannerFileLabel.style.display = 'none'
+                        removePreviewBannerBtn.style.display = ''
+                        bannerUploadSubmit.style.display = ''
 
                         URL.revokeObjectURL(gifURL)
                     }
@@ -447,6 +453,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     bannerPreview.style.display = 'block';
                     // bannerPreview.removeAttribute('hidden');
                     document.getElementById('bannerPreviewData').value = gifURL;
+
+                    bannerFileInput.style.display = 'none'
+                    bannerFileLabel.style.display = 'none'
+                    removePreviewBannerBtn.style.display = ''
+                    bannerUploadSubmit.style.display = ''
                 }
             } else {
                 bannerPreview.src = ''
@@ -454,6 +465,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }
     })
 
+    // Banner remove preview button control
+    document.getElementById('removePreviewBannerBtn').addEventListener('click', async function (e) {
+            const bannerFileInput = document.getElementById('bannerFile')
+            const bannerPreview = document.getElementById('bannerPreview')
+            const bannerFileLabel = document.getElementById('bannerFileLabel')
+            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
+            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
+
+            bannerPreview.src = ''
+            bannerPreview.style.display = 'none'
+            bannerFileInput.value = ''
+            bannerUploadSubmit.style.display = 'none'
+
+            bannerFileInput.style.display = ''
+            bannerFileLabel.style.display = ''
+            removePreviewBannerBtn.style.display = 'none'
+    })
+
+    // Personal color section
     const colorCircles = document.querySelectorAll('.color-circle')
     const colorPicker = document.getElementById('custom-color-input')
     const colorPreview = document.querySelector('.color-preview')
