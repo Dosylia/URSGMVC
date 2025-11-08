@@ -185,7 +185,7 @@ function usePictureFrame(itemId, userId, category) {
     const dataToSend = {
         itemId,
         userId,
-        category
+        category,
     }
 
     const jsonData = JSON.stringify(dataToSend)
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
             RemovePictureFrame(itemId, userIdHeader, 'Banner')
-        }) 
+        })
     })
 
     // const setCustomBannerActive = document.getElementById('setCustomBannerActive')
@@ -372,8 +372,6 @@ document.addEventListener('DOMContentLoaded', function () {
     //     const itemId = this.getAttribute('data-item-id')
     //     RemovePictureFrame(itemId, userIdHeader, 'Banner')
     // });
-    
-
 
     // const removeBtn = document.getElementById('removeBannerBtn');
     // const bannerPreview = document.getElementById('currentBanner');
@@ -386,25 +384,26 @@ document.addEventListener('DOMContentLoaded', function () {
     //     removeBtn.title = "No banner uploaded";
     // }
 
-    
-
-
     // Gif banner section
-    document.getElementById('bannerFile').addEventListener('change', async function (e) {
+    document
+        .getElementById('bannerFile')
+        ?.addEventListener('change', async function (e) {
             const bannerFile = e.target.files[0]
             const bannerFileInput = document.getElementById('bannerFile')
             const bannerPreview = document.getElementById('bannerPreview')
             const bannerFileLabel = document.getElementById('bannerFileLabel')
-            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
-            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
-            
-            
-            if (bannerFile) {
+            const removePreviewBannerBtn = document.getElementById(
+                'removePreviewBannerBtn'
+            )
+            const bannerUploadSubmit =
+                document.getElementById('bannerUploadSubmit')
 
+            if (bannerFile) {
                 if (bannerFile.size > 6 * 1024 * 1024) {
                     // 6MB limit
-                    console.log("File too large");
-                    window.location.href = '/userProfile?message=The selected GIF file exceeds the 6MB size limit.';
+                    console.log('File too large')
+                    window.location.href =
+                        '/userProfile?message=The selected GIF file exceeds the 6MB size limit.'
                     e.target.value = ''
                     bannerPreview.src = ''
                     bannerPreview.style.display = 'none'
@@ -418,9 +417,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (bannerFile.type == 'image/gif') {
                     const img = new Image()
                     img.src = gifURL
-                
-                     img.onload = async function () {
 
+                    img.onload = async function () {
                         // 🧩 Draw the image *after* decoding is guaranteed finished
                         await img.decode() // ensures frame 0 is fully ready
 
@@ -437,7 +435,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         // Show the still image as preview
                         bannerPreview.src = stillImage
-                        document.getElementById('bannerPreviewData').value = stillImage
+                        document.getElementById('bannerPreviewData').value =
+                            stillImage
                         bannerPreview.style.display = 'block'
 
                         bannerFileInput.style.display = 'none'
@@ -447,12 +446,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         URL.revokeObjectURL(gifURL)
                     }
-    
                 } else {
-                    bannerPreview.src = gifURL;
-                    bannerPreview.style.display = 'block';
+                    bannerPreview.src = gifURL
+                    bannerPreview.style.display = 'block'
                     // bannerPreview.removeAttribute('hidden');
-                    document.getElementById('bannerPreviewData').value = gifURL;
+                    document.getElementById('bannerPreviewData').value = gifURL
 
                     bannerFileInput.style.display = 'none'
                     bannerFileLabel.style.display = 'none'
@@ -463,15 +461,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 bannerPreview.src = ''
                 bannerPreview.style.display = 'none'
             }
-    })
+        })
 
     // Banner remove preview button control
-    document.getElementById('removePreviewBannerBtn').addEventListener('click', async function (e) {
+    document
+        .getElementById('removePreviewBannerBtn')
+        .addEventListener('click', async function (e) {
             const bannerFileInput = document.getElementById('bannerFile')
             const bannerPreview = document.getElementById('bannerPreview')
             const bannerFileLabel = document.getElementById('bannerFileLabel')
-            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
-            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
+            const removePreviewBannerBtn = document.getElementById(
+                'removePreviewBannerBtn'
+            )
+            const bannerUploadSubmit =
+                document.getElementById('bannerUploadSubmit')
 
             bannerPreview.src = ''
             bannerPreview.style.display = 'none'
@@ -481,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
             bannerFileInput.style.display = ''
             bannerFileLabel.style.display = ''
             removePreviewBannerBtn.style.display = 'none'
-    })
+        })
 
     // Personal color section
     const colorCircles = document.querySelectorAll('.color-circle')
