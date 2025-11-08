@@ -8,6 +8,100 @@ const fileInputProfile = document.getElementById('fileProfile')
 const fileNameProfile = document.getElementById('file-nameProfile')
 const placeholderMessage = document.getElementById('placeholder-message')
 
+function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
+    if (!selectedColor && !removeColor) {
+        alert('Please select a color first!')
+        return
+    }
+
+    const token = localStorage.getItem('masterTokenWebsite')
+
+    fetch('/switchPersonalColorWebsite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
+        body: `color=${encodeURIComponent(
+            selectedColor
+        )}&userId=${encodeURIComponent(userId)}`,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Update color visually
+                const profileColor = document.querySelector(
+                    '.profile-personal-color'
+                )
+                if (profileColor) {
+                    profileColor.style.background = `linear-gradient(135deg, ${selectedColor}, ${adjustBrightnessJS(
+                        selectedColor,
+                        -40
+                    )})`
+                }
+
+                const userImage = document.getElementById('image_users')
+                if (userImage) {
+                    userImage.style.borderColor = selectedColor
+                }
+
+                // Update all menu-links btn_user_updates_profile design
+                const menuButtons = document.querySelectorAll(
+                    '.btn_user_updates_profile'
+                )
+
+                //Update fa-solid fa-image icon color
+                const updatePictureButton = document.querySelector(
+                    '.btn_updateProfilePicture i'
+                )
+
+                if (updatePictureButton) {
+                    updatePictureButton.style.color = selectedColor
+                }
+
+                menuButtons.forEach((button) => {
+                    button.style.background = `linear-gradient(135deg, ${selectedColor}, ${adjustBrightnessJS(
+                        selectedColor,
+                        -40
+                    )})`
+                    button.style.borderColor = selectedColor
+                })
+
+                const overlay = document.getElementById('overlay')
+                overlay.style.display = 'none'
+                favDialogPicture.style.display = 'none'
+            } else {
+                console.error('Error:', data.error)
+            }
+        })
+        .catch((error) => {
+            console.error('Fetch error:', error)
+        })
+}
+
+function adjustBrightnessJS(hex, steps) {
+    // Convert to RGB
+    hex = hex.replace('#', '')
+    if (hex.length === 3) {
+        hex = hex
+            .split('')
+            .map((c) => c + c)
+            .join('')
+    }
+
+    let r = parseInt(hex.substring(0, 2), 16)
+    let g = parseInt(hex.substring(2, 4), 16)
+    let b = parseInt(hex.substring(4, 6), 16)
+
+    r = Math.max(0, Math.min(255, r + steps))
+    g = Math.max(0, Math.min(255, g + steps))
+    b = Math.max(0, Math.min(255, b + steps))
+
+    return `#${r.toString(16).padStart(2, '0')}${g
+        .toString(16)
+        .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
+
 // if (showButtonSocialLinks !== null && showButtonSocialLinks !== undefined) {
 //   showButtonSocialLinks.addEventListener('click', () => {
 //     openDialogSocialLinks();
@@ -84,13 +178,14 @@ fileInputProfile.addEventListener('change', (event) => {
     }
 })
 
-function usePictureFrame(itemId, userId) {
+function usePictureFrame(itemId, userId, category) {
     console.log(`Adding frame item ID: ${itemId}, userId: ${userId}`)
     const token = localStorage.getItem('masterTokenWebsite')
 
     const dataToSend = {
         itemId,
         userId,
+        category
     }
 
     const jsonData = JSON.stringify(dataToSend)
@@ -123,13 +218,14 @@ function usePictureFrame(itemId, userId) {
         })
 }
 
-function RemovePictureFrame(itemId, userId) {
+function RemovePictureFrame(itemId, userId, category) {
     const token = localStorage.getItem('masterTokenWebsite')
     console.log(`Removing frame item ID: ${itemId}, userId: ${userId}`)
 
     const dataToSend = {
         itemId,
         userId,
+        category,
     }
 
     const jsonData = JSON.stringify(dataToSend)
@@ -242,14 +338,192 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureFrameButtons.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            usePictureFrame(itemId, userIdHeader)
+            usePictureFrame(itemId, userIdHeader, 'profile Picture')
         })
     })
 
     pictureFrameButtonsRemove.forEach((button) => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-item-id')
-            RemovePictureFrame(itemId, userIdHeader)
+            RemovePictureFrame(itemId, userIdHeader, 'profile Picture')
         })
+    })
+
+    // Banner Buttons
+    const btn_banner_profile = document.querySelectorAll('.btn_banner_profile')
+    const btn_banner_remove = document.querySelectorAll('.btn_banner_remove')
+
+    btn_banner_profile.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            usePictureFrame(itemId, userIdHeader, 'Banner')
+        })
+    })
+
+    btn_banner_remove.forEach((button) => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-item-id')
+            RemovePictureFrame(itemId, userIdHeader, 'Banner')
+        }) 
+    })
+
+    // const setCustomBannerActive = document.getElementById('setCustomBannerActive')
+    // setCustomBannerActive.addEventListener('click', function () {
+    //     const itemId = this.getAttribute('data-item-id')
+    //     RemovePictureFrame(itemId, userIdHeader, 'Banner')
+    // });
+    
+
+
+    // const removeBtn = document.getElementById('removeBannerBtn');
+    // const bannerPreview = document.getElementById('currentBanner');
+
+    // if (bannerPreview.src != "" && !bannerPreview.src.includes("public/upload/")) {
+    //     removeBtn.disabled = false;
+    //     removeBtn.title = "";
+    // } else {
+    //     removeBtn.disabled = true;
+    //     removeBtn.title = "No banner uploaded";
+    // }
+
+    
+
+
+    // Gif banner section
+    document.getElementById('bannerFile').addEventListener('change', async function (e) {
+            const bannerFile = e.target.files[0]
+            const bannerFileInput = document.getElementById('bannerFile')
+            const bannerPreview = document.getElementById('bannerPreview')
+            const bannerFileLabel = document.getElementById('bannerFileLabel')
+            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
+            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
+            
+            
+            if (bannerFile) {
+
+                if (bannerFile.size > 6 * 1024 * 1024) {
+                    // 6MB limit
+                    console.log("File too large");
+                    window.location.href = '/userProfile?message=The selected GIF file exceeds the 6MB size limit.';
+                    e.target.value = ''
+                    bannerPreview.src = ''
+                    bannerPreview.style.display = 'none'
+                    return
+                }
+
+                // Cut image
+                const gifURL = URL.createObjectURL(bannerFile)
+
+                // Load GIF into an <img> tag
+                if (bannerFile.type == 'image/gif') {
+                    const img = new Image()
+                    img.src = gifURL
+                
+                     img.onload = async function () {
+
+                        // 🧩 Draw the image *after* decoding is guaranteed finished
+                        await img.decode() // ensures frame 0 is fully ready
+
+                        const canvas = document.createElement('canvas')
+                        canvas.width = img.naturalWidth
+                        canvas.height = img.naturalHeight
+                        const ctx = canvas.getContext('2d')
+
+                        // Draw frame 0
+                        ctx.drawImage(img, 0, 0)
+
+                        // Convert canvas to a PNG data URL
+                        const stillImage = canvas.toDataURL('image/png')
+
+                        // Show the still image as preview
+                        bannerPreview.src = stillImage
+                        document.getElementById('bannerPreviewData').value = stillImage
+                        bannerPreview.style.display = 'block'
+
+                        bannerFileInput.style.display = 'none'
+                        bannerFileLabel.style.display = 'none'
+                        removePreviewBannerBtn.style.display = ''
+                        bannerUploadSubmit.style.display = ''
+
+                        URL.revokeObjectURL(gifURL)
+                    }
+    
+                } else {
+                    bannerPreview.src = gifURL;
+                    bannerPreview.style.display = 'block';
+                    // bannerPreview.removeAttribute('hidden');
+                    document.getElementById('bannerPreviewData').value = gifURL;
+
+                    bannerFileInput.style.display = 'none'
+                    bannerFileLabel.style.display = 'none'
+                    removePreviewBannerBtn.style.display = ''
+                    bannerUploadSubmit.style.display = ''
+                }
+            } else {
+                bannerPreview.src = ''
+                bannerPreview.style.display = 'none'
+            }
+    })
+
+    // Banner remove preview button control
+    document.getElementById('removePreviewBannerBtn').addEventListener('click', async function (e) {
+            const bannerFileInput = document.getElementById('bannerFile')
+            const bannerPreview = document.getElementById('bannerPreview')
+            const bannerFileLabel = document.getElementById('bannerFileLabel')
+            const removePreviewBannerBtn = document.getElementById('removePreviewBannerBtn')
+            const bannerUploadSubmit = document.getElementById('bannerUploadSubmit')
+
+            bannerPreview.src = ''
+            bannerPreview.style.display = 'none'
+            bannerFileInput.value = ''
+            bannerUploadSubmit.style.display = 'none'
+
+            bannerFileInput.style.display = ''
+            bannerFileLabel.style.display = ''
+            removePreviewBannerBtn.style.display = 'none'
+    })
+
+    // Personal color section
+    const colorCircles = document.querySelectorAll('.color-circle')
+    const colorPicker = document.getElementById('custom-color-input')
+    const colorPreview = document.querySelector('.color-preview')
+    const saveColorBtn = document.getElementById('save-color-btn')
+    const removeColorBtn = document.getElementById('remove-color-btn')
+    let selectedColor = null
+
+    // Handle preset color selection
+
+    colorCircles.forEach((circle) => {
+        circle.addEventListener('click', () => {
+            colorCircles.forEach((c) => c.classList.remove('selected'))
+            circle.classList.add('selected')
+            colorPreview.classList.remove('active')
+            selectedColor = circle.dataset.color
+        })
+    })
+
+    // Handle custom color selection
+
+    colorPicker.addEventListener('input', (e) => {
+        colorCircles.forEach((c) => c.classList.remove('selected'))
+        colorPreview.style.backgroundColor = e.target.value
+        colorPreview.classList.add('active')
+        selectedColor = e.target.value
+    })
+
+    // Save color
+
+    saveColorBtn.addEventListener('click', function () {
+        if (!selectedColor) {
+            document.querySelector('.section-alert').textContent =
+                'Please select or pick a color first!'
+            return
+        }
+        switchPersonalColorWebsite(selectedColor, userId, false)
+    })
+
+    removeColorBtn.addEventListener('click', function () {
+        selectedColor = null
+        switchPersonalColorWebsite('', userId, true)
     })
 })

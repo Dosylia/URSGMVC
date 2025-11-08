@@ -123,8 +123,8 @@ class PaymentController
     }
 
 
-    // ⭐ Buy Premium / VIP role
-    public function buyPremiumBoostWebsite(): void
+    // ⭐ Buy Gold / Gold role
+    public function buyAscendWebsite(): void
     {
         if (!isset($_POST['param'])) {
             echo json_encode(['success' => false, 'message' => 'Missing parameters']);
@@ -158,10 +158,10 @@ class PaymentController
         }
 
         $amountUSD = 5.00;
-        $reward = 'boost'; // type marker
+        $reward = 'Ascend'; // type marker
 
         try {
-            $this->createStripeCheckout($userId, 'URSG Premium Boost', $amountUSD, $reward, 'vip');
+            $this->createStripeCheckout($userId, 'URSG Gold Ascend', $amountUSD, $reward, 'Ascend');
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()]);
             return;
@@ -199,10 +199,10 @@ class PaymentController
                 $this->payment->updateTransactionStatus($sessionId, 'paid');
                 header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received ' . $currency . ' SoulHard');
                 return;
-            } elseif ($transaction['type'] === 'boost') {
-                $this->user->grantBoostRole($transaction['user_id']);
+            } elseif ($transaction['type'] === 'Ascend') {
+                $this->user->grantAscendRole($transaction['user_id']);
                 $this->payment->updateTransactionStatus($sessionId, 'paid');
-                header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received the URSG Premium Boost');
+                header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment successful! You have received the URSG Gold Ascend');
                 return;
             }
         } else {
@@ -243,9 +243,9 @@ class PaymentController
                 if ($transaction['type'] === 'currency') {
                     error_log("Adding currency to user ID: " . $transaction['user_id']);
                     $this->user->addCurrency($transaction['user_id'], $transaction['soulhard_amount']);
-                } elseif ($transaction['type'] === 'boost') {
-                    error_log("Granting boost role to user ID: " . $transaction['user_id']);
-                    $this->user->grantBoostRole($transaction['user_id']);
+                } elseif ($transaction['type'] === 'Ascend') {
+                    error_log("Granting Ascend role to user ID: " . $transaction['user_id']);
+                    $this->user->grantAscendRole($transaction['user_id']);
                 }
             }
         }

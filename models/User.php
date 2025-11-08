@@ -308,7 +308,7 @@ class User extends DataBase
                 user_id, 
                 user_username, 
                 user_currency, 
-                user_isVip
+                user_isGold
             FROM `user` 
             ORDER BY user_currency DESC 
             LIMIT 100
@@ -331,9 +331,10 @@ class User extends DataBase
                                             `user_id`,
                                             `user_username`,    
                                             `user_picture`,
-                                            `user_isVip`,
+                                            `user_isGold`,
                                             `user_isPartner`,
                                             `user_isCertified`,
+                                            `user_isAscend`,
                                             `user_currency`
                                         FROM
                                             `user`
@@ -585,11 +586,16 @@ class User extends DataBase
 
     }
 
-    public function updateUser($gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
+    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
     {
         $sql = "UPDATE `user` SET ";
         $params = [];
         $updates = [];
+
+        if (!empty($username)) {
+            $updates[] = "`user_username` = ?";
+            $params[] = $username;
+        }
     
         if (!empty($gender)) {
             $updates[] = "`user_gender` = ?";
@@ -628,6 +634,46 @@ class User extends DataBase
         } else {
             return false;
         }
+    }
+
+    public function setUsernameChangeMonth($userId, $currentMonth)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_usernameChangeMonth` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $updateUsernameChangeMonth = $query->execute([$currentMonth, $userId]);
+
+        if ($updateUsernameChangeMonth) {
+            return true;
+        } else {
+            return false;  
+        }  
+    }
+
+    public function setUsernameChanges($userId, $nbChanges)
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_numberChangedUsername` = ?
+                                        WHERE
+                                            `user_id` = ?
+        ");
+
+        $updateUsernameChanges = $query->execute([$nbChanges, $userId]);
+
+        if ($updateUsernameChanges) {
+            return true;
+        } else {
+            return false;  
+        }        
     }
 
     public function registerToken($userId, $token)
@@ -762,6 +808,55 @@ class User extends DataBase
         }
     }
 
+    public function uploadBanner($username, $fileName) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_banner` = ?
+                                        WHERE
+                                            `user_username` = ?
+
+                                        ");
+
+        $uploadPictureTest = $query->execute([$fileName,$username]);
+
+        if($uploadPictureTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function removeBanner($username) 
+    {
+        $query = $this->bdd->prepare("
+                                        UPDATE 
+                                            `user`
+                                        SET
+                                            `user_banner` = NULL
+                                        WHERE
+                                            `user_username` = ?
+
+                                        ");
+
+        $removeBannerTest = $query->execute([$username]);
+
+        if($removeBannerTest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     public function updateBonusPictures($username, $picturesArray)
     {
         $updatedPicturesJson = json_encode($picturesArray);
@@ -857,13 +952,13 @@ class User extends DataBase
         }
     }
 
-    public function buyPremium($userId)
+    public function buyGold($userId)
     {
         $query = $this->bdd->prepare("
                                     UPDATE
                                         `user`
                                     SET
-                                        user_isVip = 1
+                                        user_isGold = 1
                                     WHERE
                                         user_id = ?
         ");
@@ -871,13 +966,13 @@ class User extends DataBase
         $query->execute([$userId]);
     }
 
-    public function grantBoostRole($userId)
+    public function grantAscendRole($userId)
     {
         $query = $this->bdd->prepare("
                                     UPDATE
                                         `user`
                                     SET
-                                        user_isBoost = 1
+                                        user_isAscend = 1
                                     WHERE
                                         user_id = ?
         ");
@@ -1258,6 +1353,26 @@ class User extends DataBase
 
         if ($result) {
             return $result['user_personalityTestResult'];
+        } else {
+            return false;
+        }
+    }
+
+    public function updatePersonalColor($color, $userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_personalColor` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updateColorTest = $query -> execute([$color, $userId]);
+
+        if ($updateColorTest) {
+            return true;
         } else {
             return false;
         }

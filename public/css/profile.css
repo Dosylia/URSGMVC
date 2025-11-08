@@ -15,6 +15,7 @@
     height: 1000px;
     margin: 20px auto;
     height: 100%;
+    position: relative;
 }
 
 .social-container-column {
@@ -79,7 +80,7 @@
 
 #menu-links {
     position: absolute;
-    top: 50px;
+    top: 90px;
     right: 0;
     border: none;
     width: 170px;
@@ -105,9 +106,203 @@
     right: -50px;
     color: var(--main--red);
     cursor: pointer;
-    font-size: 40px;
-    background: none;
+    font-size: 30px;
+    padding: 7px 15px;
+    background-color: white;
+    border-radius: 20px;
+    border: 2px solid white;
+}
+
+.dark-mode .btn_updateProfilePicture {
+    background-color: var(--ligher--grey);
+    border: 2px solid var(--ligher--grey);
+}
+
+.btn_updateProfilePicture:hover {
+    background-color: var(--main--red);
+    color: white;
+    border: 2px solid var(--main--red);
+}
+
+/* Personal Color on profile CSS */
+.profile-personal-color {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 0;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    pointer-events: none;
+    background-size: 200% 200%;
+    animation: gradientMove 8s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.profile-personal-color::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.color-circle,
+.color-picker-wrapper input[type='color'] {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: transform 0.2s ease, border 0.2s ease;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+}
+
+.color-circle:hover,
+.color-picker-wrapper input[type='color']:hover {
+    transform: scale(1.1);
+}
+
+.color-circle.selected {
+    border: 3px solid #e84056;
+}
+
+.profile-card .section-alert {
+    color: var(--main--red);
+    font-size: 0.9em;
+    font-family: 'Geologica', sans-serif;
+}
+
+.color-picker-wrapper h3 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.color-picker-wrapper input[type='color']::-webkit-color-swatch {
+    border-radius: 50%;
     border: none;
+}
+
+.color-picker-wrapper input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker-wrapper {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.custom-color-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.color-picker-wrapper input[type='color'] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.color-preview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.color-preview.active {
+    border: 3px solid #e84056;
+    box-shadow: 0 0 8px rgba(232, 64, 86, 0.5);
+}
+
+.teaser-box {
+    background: #f5f5f5; /* same as normal card */
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0.85; /* slightly faded to indicate locked */
+    position: relative;
+}
+
+.dark-mode .teaser-box {
+    background: #2a2a2a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    opacity: 0.85;
+}
+
+.teaser-box::after {
+    content: '🔒';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+    pointer-events: none;
+}
+
+.teaser-box h2,
+.teaser-box .section-subtitle {
+    color: #777;
+}
+
+.teaser-box a.btn-secondary {
+    background-color: #e84056;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.teaser-box a.btn-secondary:hover {
+    background-color: #c53045;
+    transform: scale(1.05);
+}
+
+.teaser-box p {
+    margin-bottom: 15px;
+    font-size: 0.95em;
+    line-height: 1.4;
+    color: #555;
 }
 
 .support_ursg {
@@ -121,7 +316,7 @@
     left: 30px;
     border-radius: 20px;
     border: none;
-    background-color: rgba(232, 64, 86, 0.08);
+    background-color: rgba(232, 64, 86, 0.4);
     width: 250px;
     padding: 20px;
     box-sizing: border-box;
@@ -326,6 +521,45 @@
     border: 3px solid #007bff;
 }
 
+#currentBanner {
+  max-width: 90%;
+  margin-top: 10px;
+  border: 3px solid #007bff;
+}
+
+#bannerPreview {
+  max-width: 90%;
+  margin-top: 10px;
+  border: 3px solid #007bff;
+}
+
+#bannerPreview {
+    display: none;
+    width: 100%;
+    max-width: 90%;
+    height: auto;
+    margin-top: 12px;
+    border-radius: 10px;
+}
+
+.banner-preview-container {
+    position: relative;
+    display: inline-block;
+    padding-left: 10%;
+}
+
+#removePreviewBannerBtn {
+    position: absolute;
+    top: 5px;
+    right: 7%;
+    color: #fff;
+    background-color: var(--main--red);
+    border: none;
+    border-radius: 50%;
+    padding: 5px 9px;
+    cursor: pointer;
+}
+
 .file-input {
     display: none;
 }
@@ -351,7 +585,8 @@
 
 /* Buttons */
 .btn-primary,
-.btn-danger {
+.btn-danger,
+.btn-secondary {
     padding: 8px 14px;
     border-radius: 8px;
     border: none;
@@ -367,6 +602,15 @@
 
 .btn-primary:hover {
     background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
 }
 
 .btn-danger {
@@ -459,6 +703,65 @@
     animation: spin 1s linear infinite;
 }
 
+/* Profile Banner changes*/
+.banner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* genau zwei Spalten */
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.banner-grid > :first-child {
+    justify-self: start;
+}
+
+.banner-grid > :last-child {
+    justify-self: end;
+}
+
+.personal-banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.personal-banner-container h3 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.personal-banner-container h4 {
+    font-size: 1em;
+}
+
+/* Show Banner */
+.profile-banner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 85px;
+    z-index: 490;
+    border: none;
+    width: 100%;
+    height: 205px;
+    box-sizing: border-box;
+}
+
+.profile-banner {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -472,6 +775,220 @@
 
 .dark-mode #loadingOverlay p {
     color: #fff;
+}
+
+.btn_user_updates_profile {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn_user_updates_profile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.btn_user_updates_profile i {
+    transition: transform 0.2s ease;
+}
+.btn_user_updates_profile:hover i {
+    transform: rotate(10deg) scale(1.2);
+}
+
+.dark-mode .profile-personal-color {
+    filter: brightness(1.2);
+}
+.dark-mode #user-container {
+    background: linear-gradient(225deg, #2b2828, #181616);
+}
+
+#user-bottom-nav {
+    display: flex;
+    gap: 7%;
+    width: 90%;
+    margin-left: 5%;
+    flex-wrap: wrap;
+}
+
+#user-bottom-nav button {
+    color: #b2a0a0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#user-bottom-nav button:hover {
+    animation: appearColor 0.5s ease forwards;
+}
+
+@keyframes appearColor {
+    0% {
+        color: #b2a0a0;
+        text-shadow: none;
+    }
+    100% {
+        color: var(--main--red);
+        text-shadow: 0 0 1px var(--main--red);
+    }
+}
+
+#aboutme-container,
+#pictures-container,
+#socials-container,
+#requests-container,
+#badges-container {
+    display: none;
+}
+
+#requests-container {
+    flex-direction: column;
+}
+
+#socials-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: 10px auto 35px;
+    gap: 10px;
+}
+
+#add-friend-container-profile-other {
+    margin: 0 20px;
+}
+
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.add-friend-button-profile-other {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: var(--main--red);
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.add-friend-button-profile-other img {
+    width: 18px;
+    height: 18px;
+}
+
+.add-friend-button-profile-other:hover {
+    background-color: var(--dark--red);
+    transform: translateY(-2px);
+}
+
+.add-friend-button-profile-other:disabled {
+    background-color: #6c6c6c;
+    cursor: default;
+    transform: none;
+}
+
+.dark-mode .add-friend-button-profile-other {
+    background-color: var(--main--red);
+    color: white;
+}
+
+.dark-mode .add-friend-button-profile-other:hover {
+    background-color: var(--dark--red);
+}
+
+#user-bottom-nav button.focused {
+    color: black;
+}
+
+#hr-user-bottom-nav {
+    width: 96%;
+    border: 1px solid #e9e3e3;
+    margin: 10px auto;
+}
+
+.dark-mode #hr-user-bottom-nav {
+    border: 1px solid #b2a0a0;
+}
+
+.dark-mode #user-bottom-nav button.focused {
+    color: white;
+}
+
+.social-container-right,
+.social-container-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn_user_updates_profile {
+    width: 100%;
+    min-height: 50px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    border: none;
+    text-shadow: 0.2px 0.2px 0.5px black;
+    font-size: 0.8rem;
+    padding: 15px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    background-color: var(--main--red);
+    border-radius: 11px 0 0 11px;
+    cursor: pointer;
+    position: relative;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.btn_user_updates_profile i {
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+.btn_user_updates_profile .menu-text {
+    display: inline;
+}
+
+.btn_user_updates_profile:hover {
+    background: var(--ligher--grey);
+}
+
+.dark-mode #edit-profile-container {
+    color: white;
+}
+
+#edit-profile-container:hover {
+    color: var(--main--red);
+}
+
+#user-top-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    min-height: 500px;
+    max-height: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    /* background-size: cover;
+    background-position: center;
+    background-image: url("/public/images/store/AuroraBorealis.png"); */
 }
 
 @media only screen and (max-width: 1420px) {
@@ -531,9 +1048,58 @@
         visibility: visible;
         width: 50px;
     }
+
+    .btn_user_updates_profile::before {
+        content: attr(data-text);
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .btn_user_updates_profile:hover::before {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .btn_user_updates_profile .menu-text {
+        display: none;
+    }
+
+    .btn_updateProfile {
+        min-height: 40px;
+        padding: 0 5px;
+    }
 }
 
 @media only screen and (max-width: 600px) {
+    #user-bottom-nav button {
+        font-size: 13px;
+    }
+
+    #user-bottom-nav {
+        gap: 4%;
+        margin-left: 10px;
+    }
+
+    .btn_user_updates_profile {
+        width: unset;
+        min-height: unset;
+        padding: 5px;
+    }
+
+    .btn_user_updates_profile i {
+        font-size: 17px;
+    }
+
     .btn-close {
         font-size: 0.8em;
     }
@@ -560,6 +1126,7 @@
 
     #menu-links {
         width: 30px;
+        top: 120px;
     }
 
     .btn_updateProfilePicture {
@@ -567,11 +1134,29 @@
         top: -30px;
         right: -50px;
     }
+
+    #additional-badges-container {
+        right: 40px;
+        padding: 7px;
+    }
+
+    #additional-badges-container p {
+        font-size: 13px;
+    }
+
+    .profile-banner-container {
+        height: 145px;
+        top: 100px;
+    }
 }
 
 @media only screen and (max-width: 500px) {
     #additional-badges-container {
-        padding: 2px;
+        padding: 5px;
+    }
+
+    #additional-badges-container p {
+        font-size: 10px;
     }
 
     .social-container-column {
@@ -595,6 +1180,11 @@
     .social-container-column i {
         font-size: 1em;
     }
+
+    .profile-banner-container {
+        height: 145px;
+        top: 100px;
+    }
 }
 
 @media only screen and (max-width: 400px) {
@@ -612,5 +1202,45 @@
 
     .support_ursg a {
         padding: 2px 5px;
+    }
+
+    .support_ursg {
+        display: none;
+    }
+
+    .profile-banner-container {
+        height: 145px;
+        top: 100px;
+    }
+
+    .banner-grid {
+        grid-template-columns: 1fr;
+        justify-content: start;
+        align-items: start;
+    }
+
+    .banner-grid > * {
+        justify-self: start !important;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .support_ursg {
+        display: none;
+    }
+
+    .profile-banner-container {
+        height: 135px;
+        top: 100px;
+    }
+
+    .banner-grid {
+        grid-template-columns: 1fr;
+        justify-content: start;
+        align-items: start;
+    }
+
+    .banner-grid > * {
+        justify-self: start !important;
     }
 }

@@ -113,63 +113,6 @@ body > div[style*='position: fixed'] {
     z-index: 9999;
 }
 
-.btn_user_updates_profile {
-    width: 100%;
-    min-height: 50px;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: bold;
-    font-family: 'Open Sans', sans-serif;
-    text-align: center;
-    border: none;
-    text-shadow: 0.2px 0.2px 0.5px black;
-    font-size: 0.8rem;
-    padding: 15px;
-    box-sizing: border-box;
-    border-bottom: 1px solid #ccc;
-    background-color: var(--main--red);
-    border-radius: 11px 0 0 11px;
-    cursor: pointer;
-    position: relative;
-    color: white;
-    margin-bottom: 5px;
-}
-
-.btn_user_updates_profile i {
-    font-size: 22px;
-    margin-right: 10px;
-}
-
-.btn_user_updates_profile .menu-text {
-    display: inline;
-}
-
-.btn_user_updates_profile:hover {
-    background: var(--ligher--grey);
-}
-
-.dark-mode #edit-profile-container {
-    color: white;
-}
-
-#edit-profile-container:hover {
-    color: var(--main--red);
-}
-
-#user-top-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    min-height: 500px;
-    max-height: 100%;
-    margin-bottom: 20px;
-    position: relative;
-}
-
 #user-info {
     display: flex;
     flex-direction: row;
@@ -201,98 +144,7 @@ body > div[style*='position: fixed'] {
 #profile-picture-container {
     position: relative;
     display: inline-block;
-}
-
-#user-bottom-nav {
-    display: flex;
-    gap: 7%;
-    width: 90%;
-    margin-left: 5%;
-    flex-wrap: wrap;
-}
-
-#user-bottom-nav button {
-    color: #b2a0a0;
-    border: none;
-    background: none;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-#user-bottom-nav button:hover {
-    color: var(--main--red);
-}
-
-#aboutme-container,
-#pictures-container,
-#socials-container,
-#requests-container,
-#badges-container {
-    display: none;
-}
-
-#requests-container {
-    flex-direction: column;
-}
-
-#socials-container {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    margin: 10px auto 35px;
-    gap: 10px;
-}
-
-#add-friend-container-profile-other {
-    margin: 0 20px;
-}
-
-.add-friend-button-profile-other {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 15px;
-    background-color: var(--main--red);
-    color: white;
-    font-weight: bold;
-    font-size: 0.85rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.1s ease;
-}
-
-.add-friend-button-profile-other img {
-    width: 18px;
-    height: 18px;
-}
-
-.add-friend-button-profile-other:hover {
-    background-color: var(--dark--red);
-    transform: translateY(-2px);
-}
-
-.add-friend-button-profile-other:disabled {
-    background-color: #6c6c6c;
-    cursor: default;
-    transform: none;
-}
-
-.dark-mode .add-friend-button-profile-other {
-    background-color: var(--main--red);
-    color: white;
-}
-
-.dark-mode .add-friend-button-profile-other:hover {
-    background-color: var(--dark--red);
-}
-
-.social-container-right,
-.social-container-left {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+    z-index: 500;
 }
 
 #validate-actions {
@@ -315,24 +167,6 @@ body > div[style*='position: fixed'] {
     background: linear-gradient(225deg, #363333, #1a1919);
     height: 60px;
     border: 1px solid var(--ligher--grey);
-}
-
-#user-bottom-nav button.focused {
-    color: black;
-}
-
-#hr-user-bottom-nav {
-    width: 96%;
-    border: 1px solid #e9e3e3;
-    margin: 10px auto;
-}
-
-.dark-mode #hr-user-bottom-nav {
-    border: 1px solid #b2a0a0;
-}
-
-.dark-mode #user-bottom-nav button.focused {
-    color: white;
 }
 
 #aboutme-container {
@@ -1779,7 +1613,6 @@ input:checked + .slider:before {
 #image_users {
     height: 200px;
     width: 200px;
-    border: none;
     border-radius: 50%;
     word-wrap: break-word;
     display: block;
@@ -1799,6 +1632,15 @@ input:checked + .slider:before {
     width: 50px;
     height: 50px;
     border-radius: 50px;
+}
+
+#image_users {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+#image_users:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 #user_page_username {
@@ -4590,7 +4432,7 @@ dialog .title_generalbox {
     color: black;
 }
 
-.vip-badge,
+.gold-badge,
 .regular-badge {
     display: inline-flex;
     align-items: center;
@@ -4669,7 +4511,7 @@ dialog .title_generalbox {
     background-color: var(--dark-grey);
 }
 
-.vip-badge {
+.gold-badge {
     color: black;
 }
 
@@ -6078,7 +5920,7 @@ dialog .title_generalbox {
     background-color: var(--dark-grey-hover);
 }
 
-.dark-mode .vip-badge {
+.dark-mode .gold-badge {
     color: white;
 }
 
@@ -6417,6 +6259,10 @@ dialog .title_generalbox {
 }
 
 @media only screen and (max-width: 900px) {
+    .hide-mobile {
+        display: none;
+    }
+
     .notif-modal {
         position: absolute;
         left: -200px;
@@ -6432,7 +6278,7 @@ dialog .title_generalbox {
         width: 4vh;
     }
 
-    .vip-badge,
+    .gold-badge,
     .regular-badge {
         justify-content: center;
         width: 15px;
@@ -6871,36 +6717,6 @@ dialog .title_generalbox {
         right: 20px;
     }
 
-    .btn_user_updates_profile::before {
-        content: attr(data-text);
-        position: absolute;
-        right: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.2s ease-in-out;
-    }
-
-    .btn_user_updates_profile:hover::before {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .btn_user_updates_profile .menu-text {
-        display: none;
-    }
-
-    .btn_updateProfile {
-        min-height: 40px;
-        padding: 0 5px;
-    }
-
     .minigame-window {
         width: 70%;
         gap: 10px;
@@ -7005,12 +6821,6 @@ dialog .title_generalbox {
         margin-bottom: 0;
     }
 
-    .btn_user_updates_profile {
-        width: unset;
-        min-height: unset;
-        padding: 5px;
-    }
-
     #restore-game-btn {
         font-size: 20px;
         padding: 5px 15px;
@@ -7079,15 +6889,6 @@ dialog .title_generalbox {
 
     .about-users-bio-desktop {
         display: none;
-    }
-
-    #add-friend-container-profile-other {
-        margin: unset;
-        position: absolute;
-        top: 20px;
-        left: 40px;
-        flex-direction: column;
-        gap: 10px;
     }
 
     .hat-message {
@@ -7288,23 +7089,10 @@ dialog .title_generalbox {
         border-radius: 20px;
     }
 
-    #user-bottom-nav button {
-        font-size: 13px;
-    }
-
-    #user-bottom-nav {
-        gap: 4%;
-        margin-left: 10px;
-    }
-
     #edit-profile-container {
         top: 0px;
         gap: 5px;
         font-size: 15px;
-    }
-
-    .btn_user_updates_profile i {
-        font-size: 17px;
     }
 
     #badge-container {
@@ -7332,6 +7120,7 @@ dialog .title_generalbox {
         font-size: 8px;
         padding: 2px 3px;
     }
+
 }
 
 @media only screen and (max-width: 500px) {
@@ -7358,9 +7147,14 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 50px;
     }
+
 }
 
 @media only screen and (max-width: 400px) {
+    .hide-small-mobile {
+        display: none;
+    }
+
     #currency {
         font-size: 15px;
     }
@@ -7396,10 +7190,6 @@ dialog .title_generalbox {
 @media only screen and (max-width: 350px) {
     .hat-message {
         margin-left: 0px;
-    }
-
-    .support_ursg {
-        display: none;
     }
 
     .badge span {

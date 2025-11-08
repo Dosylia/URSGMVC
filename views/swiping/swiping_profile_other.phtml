@@ -1,6 +1,12 @@
 <section id="user-container"> <!--Flex column -->
     <div class="user-profile-header">
-        <div class="swiping-buttons" style="margin: 20px;"> <!-- Buttons (report, filter) Display row -->
+        <span class="profile-personal-color" 
+            <?php if (!empty($personalColor)) : ?>
+                style="background-color: <?= htmlspecialchars($personalColor) ?>;"
+            <?php endif; ?> 
+        >
+        </span>
+        <div class="swiping-buttons" style="margin: 20px; z-index: 500;"> <!-- Buttons (report, filter) Display row -->
             <button class="swiping-buttons-report" id="report-button" type="button">
                 <img src="public/images/report.svg" alt="Report an user">
             </button>
@@ -45,11 +51,25 @@
                     <p class="report-modal-p"><?= $this->_('report_description') ?></p>
                     <div class="user-info">
                     <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
-                            <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
-                        <?php else :?>
-                            <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
-                        <?php endif; ?>
-                        <span id="report-username"><?= $anotherUser['user_username'] ?></span>
+                        <img 
+                            id="image_users"
+                            src="public/upload/<?= htmlspecialchars($anotherUser['user_picture']) ?>"
+                            alt="Picture of <?= htmlspecialchars($anotherUser['user_username']) ?>"
+                            <?php if (!empty($personalColor)) : ?>
+                                style="border-color: <?= htmlspecialchars($personalColor) ?>;"
+                            <?php endif; ?>
+                        >
+                    <?php else: ?>
+                        <img 
+                            id="image_users"
+                            src="public/images/defaultprofilepicture.jpg"
+                            alt="Default profile picture"
+                            <?php if (!empty($personalColor)) : ?>
+                                style="border-color:<?= htmlspecialchars($personalColor) ?>;"
+                            <?php endif; ?>
+                        >
+                    <?php endif; ?>
+                    <span id="report-username"><?= $anotherUser['user_username'] ?></span>
                     </div>
                     <div class="report-textarea">
                         <div class="label-container">
@@ -61,6 +81,30 @@
                 </div>
             </div>
         <div id="user-top-content"> <!--Flex column -->
+
+
+        <div class="profile-banner-container">
+            <?php if(empty($activeBanner)) : ?>
+                <?php if(!empty($anotherUser['user_banner'])) : ?>
+                        <div id="profile-banner" 
+                            class="profile-banner" 
+                            style="background-image: url('public/upload/<?= $anotherUser['user_banner'] ?>');"
+                            title="custom_banner">
+                        </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            
+            <?php if(!empty($activeBanner)) : ?>
+                <?php foreach ($activeBanner as $item) : ?>
+                    <?php $gifImage = str_replace('.png', '.gif', $item['items_picture']); ?>
+                    <div id="profile-banner" 
+                        class="profile-banner" 
+                        style="background-image: url('public/images/store/<?= htmlspecialchars($gifImage, ENT_QUOTES) ?>');"
+                        title="<?= htmlspecialchars($item['items_name']) ?>">
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
             <span id="additional-badges-container">
                 <?php if(!empty($additionalBadges)) : ?>
                     <?php foreach($additionalBadges as $badge): ?>
@@ -73,12 +117,20 @@
                 <?php else: ?>
                     <p><?= $this->_('no_additional_badges') ?></p>
                 <?php endif; ?>
-            </span>
+            </span>           
             <div id="profile-picture-container">
                 <?php if (isset($anotherUser['user_picture']) && $anotherUser['user_picture'] !== null): ?>
-                    <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>" />  
+                    <img id="image_users" src="public/upload/<?= $anotherUser['user_picture'] ?>" alt="Picture of <?= $anotherUser['user_username'] ?>"
+                    <?php if (!empty($personalColor)) : ?>
+                        style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
+                    <?php endif; ?>
+                     />
                 <?php else :?>
-                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
+                    <img id="image_users" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" 
+                    <?php if (!empty($personalColor)) : ?>
+                        style="border: 10px solid <?= htmlspecialchars($personalColor) ?>;"
+                    <?php endif; ?>
+                    />
                 <?php endif; ?>
                 
                 <?php if ($ownedItems && count($ownedItems) > 0) : ?>
@@ -101,17 +153,20 @@
                 <h2><?= ucfirst($anotherUser['user_username']) ?></h2>
                 <p>,<?= ucfirst($anotherUser['user_age']) ?></p>
             </div>
-            <?php if  (($anotherUser['user_isVip']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
+            <?php if  (($anotherUser['user_isGold']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
             <span id="badge-container">
-                <?php if ($anotherUser['user_isVip']) : ?>
-                        <span class="vip-badge" title="Premium badge"><img src="/public/images/premium-badge.png" alt="Premium"></span>
+                <?php if ($anotherUser['user_isGold']) : ?>
+                        <span class="gold-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold"></span>
                 <?php endif; ?>
                 <?php if ($anotherUser['user_isPartner']) : ?>
-                        <span class="vip-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Premium"></span>
+                        <span class="gold-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold"></span>
                 <?php endif; ?>  
                 <?php if ($anotherUser['user_isCertified']) : ?>
-                        <span class="vip-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Premium"></span>
-                <?php endif; ?>  
+                        <span class="gold-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
+                <?php endif; ?> 
+                <?php if ($anotherUser['user_isAscend']) : ?>
+                    <span class="gold-badge" title="Ascend badge"><img src="/public/images/ascend-badge.png" alt="Ascend"></span>
+                <?php endif; ?> 
             </span>
         <?php endif; ?>
             <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
@@ -516,6 +571,7 @@
 <script src="public/js/swiping/profile_nav.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/gender-icon.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/copy_username.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/show_banner.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/profile_updateRiotPic.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/report.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/add_friend_otherProfile.js?<?= time(); ?>"></script>

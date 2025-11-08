@@ -1124,7 +1124,7 @@ class GoogleUserController
                             'twitter' => $user['user_twitter'] ?? null,
                             'bluesky' => $user['user_bluesky'] ?? null,
                             'currency' => $user['user_currency'] ?? null,
-                            'isVip' => $user['user_isVip'] ?? null,
+                            'isGold' => $user['user_isGold'] ?? null,
                             'isPartner'=> $user['user_isPartner'] ?? null,
                             'isCertified' => $user['user_isCertified'] ?? null,
                             'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
@@ -2053,6 +2053,38 @@ class GoogleUserController
         } catch (Exception $e) {
             error_log("Mail to {$to} failed: {$mail->ErrorInfo}");
             return false;
+        }
+    }
+
+    public function isMobileUpdateNeeded()
+    {
+        if (isset($_POST['currentVersion'])) {
+            $currentVersion = $this->validateInput($_POST['currentVersion']);
+            $latestVersion = '1.3.8';
+
+            if (version_compare($currentVersion, $latestVersion, '<')) {
+                $response = [
+                    'updateNeeded' => true,
+                    'latestVersion' => $latestVersion,
+                    'message' => 'A new version is available. Please update the app.'
+                ];
+            } else {
+                $response = [
+                    'updateNeeded' => false,
+                    'message' => 'You are using the latest version.'
+                ];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit();
+        } else {
+            $response = [
+                'error' => 'Current version not provided.'
+            ];
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit();
         }
     }
 

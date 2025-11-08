@@ -466,7 +466,7 @@ class GoogleUser extends DataBase
                 u.user_deletionToken,
                 u.user_deletionTokenExpiry,
                 u.user_currency,
-                u.user_isVip,
+                u.user_isGold,
                 u.user_isPartner,
                 u.user_isCertified,
                 u.user_hasChatFilter,
