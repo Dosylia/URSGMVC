@@ -2060,7 +2060,7 @@ class GoogleUserController
     {
         if (isset($_POST['currentVersion'])) {
             $currentVersion = $this->validateInput($_POST['currentVersion']);
-            $latestVersion = '1.3.8';
+            $latestVersion = '1.3.9';
 
             if (version_compare($currentVersion, $latestVersion, '<')) {
                 $response = [
