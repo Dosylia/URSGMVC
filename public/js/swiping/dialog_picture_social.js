@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Banner remove preview button control
     document
         .getElementById('removePreviewBannerBtn')
-        .addEventListener('click', async function (e) {
+        ?.addEventListener('click', async function (e) {
             const bannerFileInput = document.getElementById('bannerFile')
             const bannerPreview = document.getElementById('bannerPreview')
             const bannerFileLabel = document.getElementById('bannerFileLabel')
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle preset color selection
 
-    colorCircles.forEach((circle) => {
+    colorCircles?.forEach((circle) => {
         circle.addEventListener('click', () => {
             colorCircles.forEach((c) => c.classList.remove('selected'))
             circle.classList.add('selected')
@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle custom color selection
 
-    colorPicker.addEventListener('input', (e) => {
+    colorPicker?.addEventListener('input', (e) => {
         colorCircles.forEach((c) => c.classList.remove('selected'))
         colorPreview.style.backgroundColor = e.target.value
         colorPreview.classList.add('active')
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Save color
 
-    saveColorBtn.addEventListener('click', function () {
+    saveColorBtn?.addEventListener('click', function () {
         if (!selectedColor) {
             document.querySelector('.section-alert').textContent =
                 'Please select or pick a color first!'
@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
         switchPersonalColorWebsite(selectedColor, userId, false)
     })
 
-    removeColorBtn.addEventListener('click', function () {
+    removeColorBtn?.addEventListener('click', function () {
         selectedColor = null
         switchPersonalColorWebsite('', userId, true)
     })
