@@ -91,7 +91,13 @@
                              <button class="buy-button-owned" disabled>Owned</button>
                         <?php endif; ?>
                     <?php else : ?>
-                        <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                        <?php if ($item['items_category'] === 'Banner' && $user['user_isGold'] != 1) : ?>
+                            <button class="buy-button-owned" disabled>
+                                Need to own Gold to buy
+                            </button>
+                        <?php else : ?>
+                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>
