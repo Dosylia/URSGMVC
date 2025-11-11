@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // DOM elements
-    console.log('userId : ', userId)
+    let userId = document.getElementById('userId').value
     let imageUser = document.getElementById('image_users')
     let username = document.getElementById('user_page_username')
     let userAge = document.getElementById('age_user')
@@ -553,12 +553,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (data.user_isVip === 1) {
+        if (data.user_isGold === 1) {
             addBadge(
                 badgeContainer,
-                'Premium Badge',
-                '/public/images/premium-badge.png',
-                'Premium',
+                'Gold Badge',
+                '/public/images/gold-badge.png',
+                'Gold',
                 '#e84056'
             )
         }
@@ -580,6 +580,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 '/public/images/certified-badge.png',
                 'Certified',
                 '#6BBEEB'
+            )
+        }
+
+        if (data.user_isAscend == 1) {
+            addBadge(
+                badgeContainer,
+                'Ascend Badge',
+                '/public/images/ascend-badge.png',
+                'Ascend',
+                '#9b59b6'
             )
         }
     }

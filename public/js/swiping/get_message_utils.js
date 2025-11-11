@@ -1,6 +1,3 @@
-'use strict'
-import apiFetch from './api_fetch.js'
-
 let userIdElement = document.getElementById('senderId')
 let friendIdElement = document.getElementById('receiverId')
 export const userId = userIdElement ? userIdElement.value : null
@@ -24,12 +21,13 @@ const RatingButton = document.getElementById('rating-button')
 export const submitRating = document.getElementById('submit-rating')
 
 // Function to fetch messages
-export function fetchMessages(friendId) {
+export function fetchMessages(userId, friendId) {
     if (numberofFail >= 5) {
         console.error('Too many failed attempts. Stopping fetch loop.')
         return
     }
 
+    const token = localStorage.getItem('masterTokenWebsite')
     const firstFriendInput = document.getElementById('firstFriend')
     let firstFriend = firstFriendInput ? firstFriendInput.value : null
 
@@ -50,13 +48,30 @@ export function fetchMessages(friendId) {
     apiFetch({
         url: '/getMessageDataWebsite',
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            Authorization: `Bearer ${token}`,
+        },
         body: `userId=${encodeURIComponent(
             userId
         )}&friendId=${encodeURIComponent(
             friendId
         )}&firstFriend=${encodeURIComponent(firstFriend)}`,
     })
+        .then(async (response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`)
+            }
+
+            let data
+            try {
+                data = await response.json()
+            } catch (jsonError) {
+                throw new Error('Invalid JSON response from server')
+            }
+
+            return data
+        })
         .then((data) => {
             if (data.success) {
                 numberofFail = 0 // Reset the fail counter on success
@@ -99,7 +114,7 @@ export function fetchMessages(friendId) {
                 }
 
                 // Optional: retry for other types of logical errors
-                setTimeout(() => fetchMessages(friendId), 5000)
+                setTimeout(() => fetchMessages(userId, friendId), 5000)
             }
         })
         .catch((error) => {
@@ -111,81 +126,11 @@ export function fetchMessages(friendId) {
                 !error.message.includes('Friend not found') &&
                 !error.message.includes('User not found')
             ) {
-                setTimeout(() => fetchMessages(friendId), 5000)
+                setTimeout(() => fetchMessages(userId, friendId), 5000)
             } else {
                 console.warn('Not retrying due to invalid user/friend.')
             }
         })
-
-    // fetch('/getMessageDataWebsite', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    //         'Authorization': `Bearer ${token}`,
-    //     },
-    //     body: `userId=${encodeURIComponent(userId)}&friendId=${encodeURIComponent(friendId)}&firstFriend=${encodeURIComponent(firstFriend)}`
-    // })
-    // .then(async response => {
-    //     if (!response.ok) {
-    //         throw new Error(`HTTP error ${response.status}`);
-    //     }
-
-    //     let data;
-    //     try {
-    //         data = await response.json();
-    //     } catch (jsonError) {
-    //         throw new Error('Invalid JSON response from server');
-    //     }
-
-    //     return data;
-    // })
-    // .then(data => {
-    //     if (data.success) {
-    //         numberofFail = 0; // Reset the fail counter on success
-    //         if (data.messages !== null && data.messages !== undefined) {
-    //             if (JSON.stringify(currentMessages) !== JSON.stringify(data.messages)) {
-    //                 currentMessages = data.messages;
-    //                 showFriendInfo(data.friend).then(() => {
-    //                     updateMessageContainer(data.messages, data.friend, data.user);
-    //                 });
-    //             } else {
-    //                 showFriendInfo(data.friend);
-    //             }
-    //         } else {
-    //             // Handle empty messages case
-    //             currentMessages = [];
-    //             showFriendInfo(data.friend).then(() => {
-    //                 updateMessageContainer([], data.friend, data.user); // Pass empty array
-    //             });
-    //             console.log('No messages found.');
-    //         }
-    //     } else {
-    //         numberofFail++;
-    //         console.error('Error fetching messages:', data.error);
-
-    //         if (
-    //             data.error.includes('Friend not found') ||
-    //             data.error.includes('User not found')
-    //         ) {
-    //             console.warn('Stopping message fetch loop due to missing friend/user.');
-    //             return;
-    //         }
-
-    //         // Optional: retry for other types of logical errors
-    //         setTimeout(() => fetchMessages(friendId), 5000);
-    //     }
-    // })
-    // .catch(error => {
-    //     numberofFail++;
-    //     console.error('Fetch or JSON parse error:', error);
-
-    //     // Retry only for temporary issues (not "Friend not found", etc.)
-    //     if (!error.message.includes('Friend not found') && !error.message.includes('User not found')) {
-    //         setTimeout(() => fetchMessages(friendId), 5000);
-    //     } else {
-    //         console.warn('Not retrying due to invalid user/friend.');
-    //     }
-    // });
 }
 
 // Show loading indicator
@@ -195,12 +140,14 @@ function showLoadingIndicator() {
 }
 
 function getGameStatusLoL(friendId) {
-    return apiFetch({
-        url: '/getGameStatusLoL',
+    return fetch('/getGameStatusLoL', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: `friendId=${encodeURIComponent(friendId)}`,
     })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success) {
                 return data // ✅ Return the actual game data here
@@ -210,8 +157,6 @@ function getGameStatusLoL(friendId) {
             }
         })
         .catch((error) => {
-            // General error happened. Probably not user related and more on the dev side.
-            console.log(error)
             return null
         })
 }
@@ -238,10 +183,10 @@ function updateMessageContainer(messages, friend, user) {
         let replyContainerClass = isCurrentUser ? 'normal' : 'inverted'
         let backgroundColor = isCurrentUser ? '#e84056' : ''
         let pictureLink
-        let senderOwnsVIPEmotes =
+        let senderOwnsGoldEmotes =
             message.chat_senderId == user.user_id
-                ? user.ownVIPEmotes
-                : friend.ownVIPEmotes
+                ? user.ownGoldEmotes
+                : friend.ownGoldEmotes
 
         if (
             messageUser.user_picture === null ||
@@ -341,12 +286,12 @@ function updateMessageContainer(messages, friend, user) {
                                 ? renderEmotes(
                                       chatfilter(
                                           message.chat_message,
-                                          senderOwnsVIPEmotes
+                                          senderOwnsGoldEmotes
                                       )
                                   )
                                 : renderEmotes(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                         }
                                 ${
@@ -394,12 +339,12 @@ function updateMessageContainer(messages, friend, user) {
                                 ? renderEmotes(
                                       chatfilter(
                                           message.chat_message,
-                                          senderOwnsVIPEmotes
+                                          senderOwnsGoldEmotes
                                       )
                                   )
                                 : renderEmotes(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                         }
                                     ${
@@ -451,12 +396,12 @@ function updateMessageContainer(messages, friend, user) {
                                                 ? renderEmotes(
                                                       chatfilter(
                                                           message.chat_message,
-                                                          senderOwnsVIPEmotes
+                                                          senderOwnsGoldEmotes
                                                       )
                                                   )
                                                 : renderEmotes(
                                                       message.chat_message,
-                                                      senderOwnsVIPEmotes
+                                                      senderOwnsGoldEmotes
                                                   )
                                         }
                                         ${
@@ -485,7 +430,7 @@ function updateMessageContainer(messages, friend, user) {
                                     data-reply-id="${message.chat_replyTo}">
                                         ${renderEmotes(
                                             finalMessage,
-                                            senderOwnsVIPEmotes
+                                            senderOwnsGoldEmotes
                                         )}
                                     </span>
                                 </p>
@@ -509,12 +454,12 @@ function updateMessageContainer(messages, friend, user) {
                                 ? renderEmotes(
                                       chatfilter(
                                           message.chat_message,
-                                          senderOwnsVIPEmotes
+                                          senderOwnsGoldEmotes
                                       )
                                   )
                                 : renderEmotes(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                         }
                                 ${
@@ -562,12 +507,12 @@ function updateMessageContainer(messages, friend, user) {
                                 ? renderEmotes(
                                       chatfilter(
                                           message.chat_message,
-                                          senderOwnsVIPEmotes
+                                          senderOwnsGoldEmotes
                                       )
                                   )
                                 : renderEmotes(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                         }
                                     ${
@@ -616,12 +561,12 @@ function updateMessageContainer(messages, friend, user) {
                             ? renderEmotes(
                                   chatfilter(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                               )
                             : renderEmotes(
                                   message.chat_message,
-                                  senderOwnsVIPEmotes
+                                  senderOwnsGoldEmotes
                               )
                     }
                                 ${
@@ -670,12 +615,12 @@ function updateMessageContainer(messages, friend, user) {
                             ? renderEmotes(
                                   chatfilter(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                               )
                             : renderEmotes(
                                   message.chat_message,
-                                  senderOwnsVIPEmotes
+                                  senderOwnsGoldEmotes
                               )
                     }
                             ${
@@ -703,12 +648,12 @@ function updateMessageContainer(messages, friend, user) {
                             ? renderEmotes(
                                   chatfilter(
                                       message.chat_message,
-                                      senderOwnsVIPEmotes
+                                      senderOwnsGoldEmotes
                                   )
                               )
                             : renderEmotes(
                                   message.chat_message,
-                                  senderOwnsVIPEmotes
+                                  senderOwnsGoldEmotes
                               )
                     }
                                 ${
@@ -737,12 +682,12 @@ function updateMessageContainer(messages, friend, user) {
                         ? renderEmotes(
                               chatfilter(
                                   message.chat_message,
-                                  senderOwnsVIPEmotes
+                                  senderOwnsGoldEmotes
                               )
                           )
                         : renderEmotes(
                               message.chat_message,
-                              senderOwnsVIPEmotes
+                              senderOwnsGoldEmotes
                           )
                 }
                             ${
@@ -973,7 +918,7 @@ function cancelReply() {
 }
 
 // Function to replace emote codes with actual emote images
-function renderEmotes(message, ownVIPEmotes) {
+function renderEmotes(message, ownGoldEmotes) {
     const emoteMap = {
         ':surprised-cat:':
             '<img src="public/images/emotes/surprised-cat.png" alt="surprised-cat" class="emote">',
@@ -1001,70 +946,70 @@ function renderEmotes(message, ownVIPEmotes) {
             '<img src="public/images/emotes/cat-love.png" alt="cat-love" class="emote">',
     }
 
-    if (ownVIPEmotes) {
+    if (ownGoldEmotes) {
         emoteMap[':urpe-stonks:'] =
             '<img src="public/images/emotes/urpe-stonks.png" alt="urpe-stonks" class="emote">'
-        emoteMap[':vipurpe-stonks:'] =
+        emoteMap[':goldurpe-stonks:'] =
             '<img src="public/images/emotes/urpe-stonks.png" alt="urpe-stonks" class="emote">'
         emoteMap[':urpe-cry:'] =
             '<img src="public/images/emotes/urpe-cry.png" alt="urpe-cry" class="emote">'
-        emoteMap[':vipurpe-cry:'] =
+        emoteMap[':goldurpe-cry:'] =
             '<img src="public/images/emotes/urpe-cry.png" alt="urpe-cry" class="emote">'
         emoteMap[':urpe-sip:'] =
             '<img src="public/images/emotes/urpe-sip.png" alt="urpe-sip" class="emote">'
-        emoteMap[':vipurpe-sip:'] =
+        emoteMap[':goldurpe-sip:'] =
             '<img src="public/images/emotes/urpe-sip.png" alt="urpe-sip" class="emote">'
         emoteMap[':urpe-jesus:'] =
             '<img src="public/images/emotes/urpe-jesus.png" alt="urpe-jesus" class="emote">'
-        emoteMap[':vipurpe-jesus:'] =
+        emoteMap[':goldurpe-jesus:'] =
             '<img src="public/images/emotes/urpe-jesus.png" alt="urpe-jesus" class="emote">'
         emoteMap[':urpe-hype:'] =
             '<img src="public/images/emotes/urpe-hype.png" alt="urpe-hype" class="emote">'
-        emoteMap[':vipurpe-hype:'] =
+        emoteMap[':goldurpe-hype:'] =
             '<img src="public/images/emotes/urpe-hype.png" alt="urpe-hype" class="emote">'
         emoteMap[':urpe-hide:'] =
             '<img src="public/images/emotes/urpe-hide.png" alt="urpe-hide" class="emote">'
-        emoteMap[':vipurpe-hide:'] =
+        emoteMap[':goldurpe-hide:'] =
             '<img src="public/images/emotes/urpe-hide.png" alt="urpe-hide" class="emote">'
         emoteMap[':urpe-heart:'] =
             '<img src="public/images/emotes/urpe-heart.png" alt="urpe-heart" class="emote">'
-        emoteMap[':vipurpe-heart:'] =
+        emoteMap[':goldurpe-heart:'] =
             '<img src="public/images/emotes/urpe-heart.png" alt="urpe-heart" class="emote">'
         emoteMap[':urpe-dead:'] =
             '<img src="public/images/emotes/urpe-dead.png" alt="urpe-dead" class="emote">'
-        emoteMap[':vipurpe-dead:'] =
+        emoteMap[':goldurpe-dead:'] =
             '<img src="public/images/emotes/urpe-dead.png" alt="urpe-dead" class="emote">'
         emoteMap[':urpe-blush:'] =
             '<img src="public/images/emotes/urpe-blush.png" alt="urpe-blush" class="emote">'
-        emoteMap[':vipurpe-blush:'] =
+        emoteMap[':goldurpe-blush:'] =
             '<img src="public/images/emotes/urpe-blush.png" alt="urpe-blush" class="emote">'
         emoteMap[':urpe-blanket:'] =
             '<img src="public/images/emotes/urpe-blanket.png" alt="urpe-blanket" class="emote">'
-        emoteMap[':vipurpe-blanket:'] =
+        emoteMap[':goldurpe-blanket:'] =
             '<img src="public/images/emotes/urpe-blanket.png" alt="urpe-blanket" class="emote">'
         emoteMap[':urpe-cool:'] =
             '<img src="public/images/emotes/urpe-cool.png" alt="urpe-cool" class="emote">'
-        emoteMap[':vipurpe-cool:'] =
+        emoteMap[':goldurpe-cool:'] =
             '<img src="public/images/emotes/urpe-cool.png" alt="urpe-cool" class="emote">'
         emoteMap[':urpe-eat:'] =
             '<img src="public/images/emotes/urpe-eat.png" alt="urpe-eat" class="emote">'
-        emoteMap[':vipurpe-eat:'] =
+        emoteMap[':goldurpe-eat:'] =
             '<img src="public/images/emotes/urpe-eat.png" alt="urpe-eat" class="emote">'
         emoteMap[':urpe-notstonks:'] =
             '<img src="public/images/emotes/urpe-notstonks.png" alt="urpe-notstonks" class="emote">'
-        emoteMap[':vipurpe-notstonks:'] =
+        emoteMap[':goldurpe-notstonks:'] =
             '<img src="public/images/emotes/urpe-notstonks.png" alt="urpe-notstonks" class="emote">'
         emoteMap[':urpe-madaf:'] =
             '<img src="public/images/emotes/urpe-madaf.png" alt="urpe-madaf" class="emote">'
-        emoteMap[':vipurpe-madaf:'] =
+        emoteMap[':goldurpe-madaf:'] =
             '<img src="public/images/emotes/urpe-madaf.png" alt="urpe-madaf" class="emote">'
         emoteMap[':urpe-sad:'] =
             '<img src="public/images/emotes/urpe-sad.png" alt="urpe-sad" class="emote">'
-        emoteMap[':vipurpe-sad:'] =
+        emoteMap[':goldurpe-sad:'] =
             '<img src="public/images/emotes/urpe-sad.png" alt="urpe-sad" class="emote">'
         emoteMap[':urpe-run:'] =
             '<img src="public/images/emotes/urpe-run.png" alt="urpe-run" class="emote">'
-        emoteMap[':vipurpe-run:'] =
+        emoteMap[':goldurpe-run:'] =
             '<img src="public/images/emotes/urpe-run.png" alt="urpe-run" class="emote">'
     }
 
@@ -1076,23 +1021,26 @@ function renderEmotes(message, ownVIPEmotes) {
 }
 
 function deleteMessage(chatId, userId) {
-    apiFetch({
-        url: '/deleteMessageWebsite',
+    const token = localStorage.getItem('masterTokenWebsite')
+    fetch('/deleteMessageWebsite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
         body: `userId=${encodeURIComponent(userId)}&chatId=${encodeURIComponent(
             chatId
         )}`,
     })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                fetchMessages(friendId) // Reload messages after deletion
+                fetchMessages(userId, friendId) // Reload messages after deletion
             } else {
                 console.error('Error deleting message:', data.error)
             }
         })
         .catch((error) => {
-            // General error happened. Probably not user related and more on the dev side.
             console.error('Fetch error (accepted requests):', error)
         })
 }
@@ -1137,7 +1085,7 @@ async function showFriendInfo(friend) {
     let gamemode = ''
 
     if (friend.lol_verified === 1) {
-        checkIfUsersPlayedTogether(friend.user_id)
+        checkIfUsersPlayedTogether(friend.user_id, userId)
         friendLeagueStatus = await getGameStatusLoL(friend.user_id)
         if (friendLeagueStatus) {
             friendGameStatus = true
@@ -1284,24 +1232,25 @@ export function clearImageFalse() {
     console.log('clearImageVar set to false')
 }
 
-function checkIfUsersPlayedTogether(friendId) {
-    apiFetch({
-        url: '/checkIfUsersPlayedTogether',
+function checkIfUsersPlayedTogether(friendId, userId) {
+    const token = localStorage.getItem('masterTokenWebsite')
+    fetch('/checkIfUsersPlayedTogether', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
         body: `userId=${encodeURIComponent(
             parseInt(userId)
         )}&friendId=${encodeURIComponent(parseInt(friendId))}`,
     })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success && data.playedTogether) {
                 handleRatingPrompt(friendId, data.commonMatches)
             }
         })
-        .catch((error) => {
-            // General error happened. Probably not user related and more on the dev side.
-            console.error('Fetch error:', error)
-        })
+        .catch((error) => console.error('Fetch error:', error))
 }
 
 function handleRatingPrompt(friendId, commonMatches) {
@@ -1356,17 +1305,21 @@ export function sendRating() {
     const friendId = submitRating.getAttribute('data-friend-id')
     const matchId = submitRating.getAttribute('data-match-id')
     const rating = document.getElementById('rating-score').value
+    const token = localStorage.getItem('masterTokenWebsite')
 
-    apiFetch({
-        url: '/rateFriendWebsite',
+    fetch('/rateFriendWebsite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${token}`,
+        },
         body: `friendId=${encodeURIComponent(
             friendId
         )}&matchId=${encodeURIComponent(matchId)}&rating=${encodeURIComponent(
             rating
         )}&userId=${encodeURIComponent(userId)}`,
     })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success) {
                 let ratingData = JSON.parse(
@@ -1389,8 +1342,5 @@ export function sendRating() {
                 console.error('Rating failed:', data.error)
             }
         })
-        .catch((error) => {
-            // General error happened. Probably not user related and more on the dev side.
-            console.log(error)
-        })
+        .catch((error) => console.error('Fetch error:', error))
 }

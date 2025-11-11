@@ -1034,7 +1034,7 @@ class RiotController
                             'twitter' => $user['user_twitter'] ?? null,
                             'bluesky' => $user['user_bluesky'] ?? null,
                             'currency' => $user['user_currency'] ?? null,
-                            'isVip' => $user['user_isVip'] ?? null,
+                            'isGold' => $user['user_isGold'] ?? null,
                             'isPartner'=> $user['user_isPartner'] ?? null,
                             'isCertified' => $user['user_isCertified'] ?? null,
                             'hasChatFilter' => $user['user_hasChatFilter'] ?? null,

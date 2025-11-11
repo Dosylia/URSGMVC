@@ -185,7 +185,7 @@
     background-color: var(--ligher--grey);
 }
 
-.claimPremium {
+.claimGold {
     margin-top: 20px;
     background-color: var(--main--red);
     color: white;
@@ -197,7 +197,7 @@
     padding: 5px 10px;
 }
 
-.claimPremium:hover {
+.claimGold:hover {
     background-color: var(--ligher--grey);
 }
 

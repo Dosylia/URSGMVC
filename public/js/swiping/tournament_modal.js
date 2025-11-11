@@ -1,13 +1,14 @@
+
 document.addEventListener("DOMContentLoaded", function() {
     const modalTournament = document.getElementById('tournament-modal');
     const closeModalTournament = document.getElementById('close-modal-tournament');
-    const shownModalTournament = localStorage.getItem('tournamentModalShown');
+    const shownModalTournament = localStorage.getItem('tournamentModal112025Shown');
 
     if (!shownModalTournament) {
         modalTournament?.classList.remove('tournament-modal-hidden');
         const overlay = document.getElementById("overlay");
         overlay.style.display = "block";
-        localStorage.setItem('tournamentModalShown', 'true');
+        localStorage.setItem('tournamentModal112025Shown', 'true');
     }
 
     // Close modal when 'x' is clicked

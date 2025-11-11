@@ -32,62 +32,77 @@
         <?php if ($item['items_category'] === 'badge') continue; ?>
         <?php
             $basePrice = $item['items_price'];
-            $vipDiscount = $user['user_isVip'] ? 20 : 0; // 20% VIP discount
+            $goldDiscount = $user['user_isGold'] ? 20 : 0; // 20% Gold discount
             $itemDiscount = $item['items_discount'] ?? 0; // item-specific discount
+            $isGoldRole = $item['items_name'] === 'Gold';
+            $isAscendRole = $item['items_name'] === 'Ascend';
+
+            $ownsRole =
+                ($isGoldRole && $user['user_isGold'] === 1) ||
+                ($isAscendRole && $user['user_isAscend'] === 1);
+
 
             // Combine discounts sequentially
-            $priceAfterVip = $basePrice * (1 - $vipDiscount / 100);
-            $finalPrice = $priceAfterVip * (1 - $itemDiscount / 100);
+            $priceAfterGold = $basePrice * (1 - $goldDiscount / 100);
+            $finalPrice = $priceAfterGold * (1 - $itemDiscount / 100);
 
             // Determine if there is any discount to show
-            $hasDiscount = ($vipDiscount + $itemDiscount) > 0;
+            $hasDiscount = ($goldDiscount + $itemDiscount) > 0;
+            $isExcluded = $item['items_category'] === 'currency' || $item['items_name'] === 'URSG Ascend';
             $totalDiscount = 0;
             if ($basePrice > 0) {
                 $totalDiscount = round((1 - ($finalPrice / $basePrice)) * 100, 2);
             }
         ?>
-        <div class="item-card" data-category="<?= $item['items_category'] ?>" 
+        <div class="item-card" data-category="<?= $item['items_category'] ?>" data-name="<?= htmlspecialchars($item['items_name']) ?>" 
              <?php if ($item['items_id'] == 6) echo 'id="kitty-frame-card"'; ?>>
             <img src="<?= $item['items_picture'] ? '/public/images/store/' . $item['items_picture'] : '/public/images/store/defaultpicture.jpg'; ?>" alt="<?= $item['items_name'] ?>">
             <div class="item-info">
                 <h3><?= $item['items_name'] ?></h3>
                 <p class="price_display">
-                    <?php if ($hasDiscount && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')) : ?>
+                    <?php if ($hasDiscount && !$isExcluded) : ?>
                         <span class="old-price"><?= number_format($basePrice, 2) ?></span>
                         <span class="new-price"><?= number_format($finalPrice, 2) ?></span>
-                        <?php if ($vipDiscount > 0 && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')) : ?>
-                            <span class="discount-badge">VIP -<?= $vipDiscount ?>%</span>
+                        <?php if ($goldDiscount > 0 && !$isExcluded) : ?>
+                            <span class="discount-badge">Gold -<?= $goldDiscount ?>%</span>
                         <?php endif; ?>
                         <?php if ($itemDiscount > 0) : ?>
                             <span class="discount-badge">-<?= $itemDiscount ?>%</span>
                         <?php endif; ?>
                     <?php else: ?>
-                        <?php if ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost') : ?>
+                        <?php if (!$isExcluded) : ?>
                             <span class="new-price"><?= number_format($basePrice, 2) ?></span>
                         <?php else : ?>
                             <span class="new-price"><?= number_format($basePrice, 2) ?> €</span>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <?php if ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost') : ?> 
+                    <?php if (!$isExcluded) : ?> 
                         <img src="public/images/soulhard.png" alt="soulhard">
                     <?php endif; ?>
                 </p>
                 <p><?= preg_replace('/[\.:](\s|$)/', '$0<br>', $item['items_desc']) ?></p>
                 <div class="buy-button-container">
-                    <?php if (($item['items_category'] === 'role' && $user['user_isVip'] === 1) || 
-                              in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
-                        <?php if (($item['items_category'] === 'role') && $user['user_isVip'] === 1) : ?>
-                            <button class="buy-button-owned" id="getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">Get premium on Discord</button>
+                    <?php if ($ownsRole || in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
+                        <?php if ($item['items_category'] === 'role' && $ownsRole) : ?>
+                            <button class="buy-button-owned getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">
+                                Get <?= strtolower($item['items_name']) ?> on Discord
+                            </button>
                         <?php else : ?>
                              <button class="buy-button-owned" disabled>Owned</button>
                         <?php endif; ?>
                     <?php else : ?>
-                        <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                        <?php if ($item['items_category'] === 'Banner' && $user['user_isGold'] != 1) : ?>
+                            <button class="buy-button-owned" disabled>
+                                Need to own Gold to buy
+                            </button>
+                        <?php else : ?>
+                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>
             <span class="placeholder-message" id='placeholder-message-<?= $item['items_id'] ?>'></span>
-            <?php if ($totalDiscount > 0 && ($item['items_category'] !== 'currency' && $item['items_category'] !== 'boost')): ?>
+            <?php if ($totalDiscount > 0 && !$isExcluded): ?>
                 <div class="discount-badge-corner">
                     -<?= $totalDiscount ?>%
                 </div>

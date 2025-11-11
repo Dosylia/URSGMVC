@@ -479,7 +479,7 @@ class UserController
                     'game' => $user['user_game'],
                     'shortBio' => $user['user_shortBio'],
                     'currency' => $user['user_currency'],
-                    'isVip' => $user['user_isVip'],
+                    'isGold' => $user['user_isGold'],
                     'hasChatFilter' => ['user_hasChatFilter'] ?? null
                 );
 
@@ -641,6 +641,32 @@ class UserController
             }
         }
 
+    }
+
+    public function adjustBrightness($hex, $steps) 
+    {
+        // Steps should be between -255 and 255
+        $steps = max(-255, min(255, $steps));
+
+        $hex = str_replace('#', '', $hex);
+
+        if (strlen($hex) == 3) {
+            $hex = str_repeat(substr($hex,0,1), 2) .
+                str_repeat(substr($hex,1,1), 2) .
+                str_repeat(substr($hex,2,1), 2);
+        }
+
+        $r = hexdec(substr($hex,0,2));
+        $g = hexdec(substr($hex,2,2));
+        $b = hexdec(substr($hex,4,2));
+
+        $r = max(0,min(255,$r + $steps));
+        $g = max(0,min(255,$g + $steps));
+        $b = max(0,min(255,$b + $steps));
+
+        return '#'.str_pad(dechex($r),2,'0',STR_PAD_LEFT)
+                .str_pad(dechex($g),2,'0',STR_PAD_LEFT)
+                .str_pad(dechex($b),2,'0',STR_PAD_LEFT);
     }
 
     public function updateSocialsWebsite()
@@ -810,6 +836,14 @@ class UserController
                 exit();
             }
 
+            if (isset($_POST['username']) && $user['user_isAscend'] == 1)
+            {
+                $username = $this->validateInput($_POST["username"]);
+                $this->setUsername($username);
+            } else {
+                $this->setUsername($user['user_username']);
+            }
+
             if ($this->emptyInputSignupUpdate($this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
                 exit();
@@ -831,11 +865,22 @@ class UserController
                 $user = $this->user->getUserById($this->getUserId());
             }
 
-            $updateUser = $this->user->updateUser($this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame(), $this->getUserId());
+            $updateUser = $this->user->updateUser($this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame(), $this->getUserId());
 
 
             if ($updateUser)
             {
+                if (isset($_POST['username']) && $user['user_isAscend'] == 1)
+                {
+                    $currentMonth = date('Y-m');
+                    if ($user['user_usernameChangeMonth'] !== $currentMonth) {
+                        $this->user->setUsernameChanges($this->getUserId(), 1);
+                        $this->user->setUsernameChangeMonth($this->getUserId(), $currentMonth);
+                    } else {
+                        $newNumber = $user['user_numberChangedUsername'] + 1;
+                        $this->user->setUsernameChanges($this->getUserId(), $newNumber);
+                    }
+                }
 
                 if ($user['user_game'] !== $this->getGame())
                 {
@@ -1317,6 +1362,7 @@ class UserController
             $createLoLUser = false;
 
             $updateUser = $this->user->updateUser(
+                $this->getUsername(),
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),
@@ -1448,6 +1494,7 @@ class UserController
 
 
             $updateUser = $this->user->updateUser(
+                $this->getUsername(),
                 $this->getGender(),
                 $this->getAge(),
                 $this->getKindOfGamer(),
@@ -1545,8 +1592,8 @@ class UserController
                 exit;
             }
     
-            // Check for animated GIFs
-            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
+            // Check for animated GIFs, only allow if user_isAscend === 1 
+            if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isAscend'] !== 1) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated GIFs are not allowed");
                 exit;
@@ -1554,10 +1601,21 @@ class UserController
     
             // Resize image
             $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
-            if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
-                unlink($targetFilePath); // Clean up original if resize fails
-                header("location:/userProfile?message=Error resizing image");
-                exit;
+
+            if ($fileExtension === 'gif' || $user['user_isAscend'] === 1) {
+                // Keep GIF as is
+                if (!copy($targetFilePath, $resizedFilePath)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error copying GIF");
+                    exit;
+                }
+            } else {
+                // Resize other images
+                if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    unlink($targetFilePath);
+                    header("location:/userProfile?message=Error resizing image");
+                    exit;
+                }
             }
     
             // Update database with resized image
@@ -1633,7 +1691,15 @@ class UserController
     
                     // Resize the image to 200x200
                     $resizedFilePath = $targetDir . 'resized_' . $fileName;
-                    if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                    $resized = false;
+                    if ($fileExtension === 'gif') {
+                        $resized = true;
+                    } else {
+                        if ($this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
+                            $resized = true;
+                        }
+                    }
+                    if ($resized) {
                         // Retrieve userId from POST data
                         $username = isset($_POST["username"]) ? $this->validateInput($_POST["username"]) : null;
     
@@ -2109,9 +2175,10 @@ class UserController
                                         'user_gender' => $userMatched['user_gender'],
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
-                                        'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isGold' => $userMatched['user_isGold'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
+                                        'user_isAscend' => $userMatched['user_isAscend'],
                                         'user_rating' => $userMatched['user_rating'],
                                         'lol_main1' => $userMatched['lol_main1'],
                                         'lol_main2' => $userMatched['lol_main2'],
@@ -2141,7 +2208,7 @@ class UserController
                                         'user_gender' => $userMatched['user_gender'],
                                         'user_kindOfGamer' => $userMatched['user_kindOfGamer'],
                                         'user_shortBio' => $userMatched['user_shortBio'],
-                                        'user_isVip' => $userMatched['user_isVip'],
+                                        'user_isGold' => $userMatched['user_isGold'],
                                         'user_isPartner' => $userMatched['user_isPartner'],
                                         'user_isCertified' => $userMatched['user_isCertified'],
                                         'valorant_main1' => $userMatched['valorant_main1'],
@@ -2202,10 +2269,13 @@ class UserController
             $personalAddPicture = "";
             if ($user['user_personalColor']) {
                 $personalColor = $user['user_personalColor'];
-                $personalButtonDesign = "style='background-color: " . htmlspecialchars($personalColor) . "; border-color: " . htmlspecialchars($personalColor) . ";'";
+                $personalButtonDesign = "style='background: linear-gradient(135deg, "
+                    . htmlspecialchars($personalColor) . ", "
+                    . $this->adjustBrightness($personalColor, -40)
+                    . "); border-color: " . htmlspecialchars($personalColor) . ";'";
                 $personalAddPicture = "style='color: " . htmlspecialchars($personalColor) . ";'";
             }
-            if ($user['user_isBoost']) {
+            if ($user['user_isAscend']) {
                 $colors = ['#4A90E2', '#50E3C2', '#9013FE', '#F5A623', '#7ED321', '#D0021B', '#F8E71C'];
             }
             if ($user['user_game'] == "League of Legends")
@@ -3519,4 +3589,171 @@ class UserController
     {
         $this->valorantRoleLf = $valorantRoleLf;
     }
+
+    // Function for uploading GIFs for banners
+    public function uploadBannerWebsite() {
+        // Retrieve current user info
+        if (!isset($_GET['username'])) {
+            header("location:/userProfile?message=No username provided");
+            exit;
+        }
+        $user = $this->user->getUserById($_SESSION['userId']);
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+    
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized!");
+            exit;
+        }
+
+        if (empty($_FILES["bannerFile"]["name"]) && isset($_POST["bannerPreviewData"])) {
+            header("location:/userProfile?message=Nothing to upload");
+            exit;
+        }
+
+        $targetDir = "public/upload/";
+        $originalFileName = basename($_FILES["bannerFile"]["name"]);
+        $bannerPreviewData = $_POST["bannerPreviewData"];
+        $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+        
+        // Generate a unique file name
+        $uniqueFileName_base = uniqid('img_', true) . '.';
+        $uniqueFileName = $uniqueFileName_base . $fileExtension;
+        $fileNamePreview = $uniqueFileName_base . 'png';
+
+        $this->setFileName($uniqueFileName);
+        $targetFilePath = $targetDir . $uniqueFileName;
+
+        // Check for animated GIFs, only allow if user_isAscend === 1 
+        if ($user['user_isAscend'] != 1) {
+            unlink($targetFilePath); // Delete the uploaded GIF immediately
+            header("location:/userProfile?message=You do not own the package to upload animated banners ");
+            exit;
+        }
+
+        if (empty($bannerPreviewData)) {
+            unlink($targetFilePath); // Delete the uploaded GIF immediately
+            header("location:/userProfile?message=There has been an error with the preview data");
+            exit;
+        }
+
+        $allowTypes = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    
+        if (!in_array($fileExtension, $allowTypes)) {
+            header("location:/userProfile?message=Only images allowed");
+            exit;
+        }
+    
+        try {
+            // Move uploaded file
+            if (!move_uploaded_file($_FILES["bannerFile"]["tmp_name"], $targetFilePath)) {
+                header("location:/userProfile?message=Error uploading file");
+                exit;
+            }
+    
+            // Save image from data
+            if (!empty($bannerPreviewData) && $fileExtension == "gif") {
+                $data = $bannerPreviewData;
+                list(, $data) = explode(',', $data);
+                file_put_contents($targetDir . $fileNamePreview, base64_decode($data));
+            }
+           
+            // If needed, resize image (excluding GIFs). See how ppl use and respond to it
+            if ( $fileExtension != "gif") {
+                // Resize image
+                // $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
+                if (!$this->resizeImage($targetFilePath, $targetFilePath, 800, 400)) {
+                    unlink($targetFilePath); // Clean up original if resize fails
+                    header("location:/userProfile?message=Error resizing image");
+                    exit;
+                }
+            }
+
+            $uniqueFileName_base = $uniqueFileName_base . $fileExtension;
+            
+            // Update database with image
+            if (!$this->user->uploadBanner($this->getUsername(),  $uniqueFileName_base)) {
+                header("location:/userProfile?message=Couldn't update profile banner");
+                exit;
+            }
+
+            // After all works we can see if there is any selected banner item and remove it if thats the case
+            $ownedItems = $this->items->getOwnedItems($_SESSION['userId']);
+                if ($ownedItems) {
+                    foreach ($ownedItems as $ownedItem) {
+                        if ($ownedItem['items_category'] == "Banner") {
+                            $this->items->removeItems($ownedItem['userItems_id'], $_SESSION['userId']);
+                        }
+                    }
+                } 
+    
+            // ✅ **Now delete old images only after everything succeeds**
+            if (!empty($user['user_banner'])) {
+                $baseName = pathinfo($user['user_banner'], PATHINFO_FILENAME);
+                $oldGif = $targetDir . $baseName . '.gif';
+                $oldPng = $targetDir . $baseName . '.png';
+                $oldFile = $targetDir . $user['user_banner'];
+
+                foreach ([$oldGif, $oldPng, $oldFile] as $oldPath) {
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+            }
+    
+    
+            header("location:/userProfile?message=Updated profile banner successfully");
+        } catch (Exception $e) {
+            header("location:/userProfile?message=" . urlencode($e->getMessage()));
+        }
+        exit;
+    }
+
+    public function removeBannerWebsite() {
+
+        if (!isset($_GET["username"])) {
+            header("location:/userProfile?message=No username provided");
+            exit;
+        }
+
+        $username = $this->validateInput($_GET["username"]);
+        $this->setUsername($username);
+
+        // Retrieve current user info
+        $user = $this->user->getUserById($_SESSION['userId']);
+
+        if ($user['user_username'] !== $this->getUsername()) {
+            header("location:/userProfile?message=Unauthorized:");
+            exit;
+        }
+
+        $targetDir = "public/upload/";
+
+        // Delete banner files
+        if (!empty($user['user_banner'])) {
+            $baseName = pathinfo($user['user_banner'], PATHINFO_FILENAME);
+            $oldPng = $targetDir . $baseName . '.png';
+            $oldFile = $targetDir . $user['user_banner'];
+
+            foreach ([$oldPng, $oldFile] as $oldPath) {
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+        } else {
+            header("location:/userProfile?message=No profile banner to remove");
+            exit;
+        }
+
+        // Update database to remove banner reference
+        if (!$this->user->removeBanner($this->getUsername())) {
+            header("location:/userProfile?message=Couldn't remove profile banner from database");
+            exit;
+        }
+
+        header("location:/userProfile?message=Removed profile banner successfully");
+        exit;
+
+    }
+
 }

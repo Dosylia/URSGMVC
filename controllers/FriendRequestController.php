@@ -1046,7 +1046,7 @@ class FriendRequestController
             $amount = 2;
             $user = $this->user->getUserById($userId);
     
-            if ($user['user_isVip'] == 1) {
+            if ($user['user_isGold'] == 1) {
                 $amount = 3;
             }
     
@@ -1167,7 +1167,7 @@ class FriendRequestController
         if ($currentTime - $lastRequestTimeDb > 100) {
             $amount = 10;
             $amountGiven = 10;
-            if ($user['user_isVip'] == 1) {
+            if ($user['user_isGold'] == 1) {
                 $amount = 15;
                 $amountGiven = 15;
             }
