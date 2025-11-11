@@ -27,6 +27,7 @@
                     <th><?= $this->_('rank') ?></th>
                     <th> <?= $this->_('username') ?></th>
                     <th><?= $this->_('currency') ?></th>
+                    <th><?= $this->_('role') ?></th>
                     <th class="hide-small-mobile"><?= $this->_('Ascend_status') ?></th>
                     <th class="hide-small-mobile"><?= $this->_('gold_status') ?></th>
                 </tr>
@@ -48,16 +49,12 @@
                             </a>
                         </td>
                         <td><?= $user['user_currency'] ?><img src="/public/images/soulhard.png" alt="currency"></td>
+                        <!-- Mix all kind of roles in one column -->
                         <td class="hide-small-mobile">
                             <?php if ($user['user_isAscend']): ?>
                                 <span class="Ascend-badge"><span class="hide-mobile"><?= $this->_('Ascend_status') ?></span><img src="/public/images/ascend-badge.png"
                                         alt="Ascend"></span>
-                            <?php else: ?>
-                                <span class="regular-badge hide-mobile"><?= $this->_('regular') ?></span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="hide-small-mobile">
-                            <?php if ($user['user_isGold']): ?>
+                            <?php elseif ($user['user_isGold']): ?>
                                 <span class="gold-badge"><span class="hide-mobile"><?= $this->_('gold') ?></span><img src="/public/images/gold-badge.png"
                                         alt="Gold"></span>
                             <?php else: ?>

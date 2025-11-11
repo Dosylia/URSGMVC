@@ -304,6 +304,10 @@ body > div[style*='position: fixed'] {
     display: flex;
     gap: 5px;
     margin-top: 30px;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
 }
 
 .aboutme-match .champions img {
@@ -326,6 +330,7 @@ body > div[style*='position: fixed'] {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    width: 100%;
 }
 
 .aboutme-match .champions .user-rating {
@@ -7120,7 +7125,6 @@ dialog .title_generalbox {
         font-size: 8px;
         padding: 2px 3px;
     }
-
 }
 
 @media only screen and (max-width: 500px) {
@@ -7147,7 +7151,6 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 50px;
     }
-
 }
 
 @media only screen and (max-width: 400px) {
