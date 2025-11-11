@@ -282,7 +282,7 @@ $actionMap = [
     'handleWebhook' => [PaymentController::class, 'handleWebhook'],
     'buyAscendWebsite' => [PaymentController::class, 'buyAscendWebsite'],
     'switchPersonalColorWebsite' => [UserController::class, 'switchPersonalColorWebsite'],
-    'mobileUpdateNeeded' => [GoogleUserController::class, 'mobileUpdateNeeded'],
+    'isMobileUpdateNeeded' => [GoogleUserController::class, 'isMobileUpdateNeeded'],
 ];
 
 $action = "home";

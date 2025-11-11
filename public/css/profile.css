@@ -471,9 +471,13 @@
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#closeButton_user_picture {
+    top: 8px !important;
 }
 
 .dark-mode .profile-card {
@@ -522,15 +526,15 @@
 }
 
 #currentBanner {
-  max-width: 90%;
-  margin-top: 10px;
-  border: 3px solid #007bff;
+    max-width: 90%;
+    margin-top: 10px;
+    border: 3px solid #007bff;
 }
 
 #bannerPreview {
-  max-width: 90%;
-  margin-top: 10px;
-  border: 3px solid #007bff;
+    max-width: 90%;
+    margin-top: 10px;
+    border: 3px solid #007bff;
 }
 
 #bannerPreview {
@@ -1130,9 +1134,10 @@
     }
 
     .btn_updateProfilePicture {
-        font-size: 30px;
+        font-size: 20px;
         top: -30px;
         right: -50px;
+        padding: 3px 8px;
     }
 
     #additional-badges-container {
