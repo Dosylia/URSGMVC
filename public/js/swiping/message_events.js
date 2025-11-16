@@ -87,9 +87,6 @@ export function deleteMessage(chatId, userId) {
     }
 }
 
-// Track the actual current friend ID separately from the initial friendId
-let actualFriendId = friendId
-
 export function initChatEvents() {
     closeRatingModalBtn.addEventListener('click', () => {
         closeRatingModal()
