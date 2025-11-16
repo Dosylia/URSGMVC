@@ -257,9 +257,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .getAttribute('data-name')
                 .toLowerCase()
 
-            if (itemCategory === 'role' && itemName.includes('Ascend')) {
+            if (itemCategory === 'role' && itemName.includes('ascend')) {
                 buyAscend(itemId, userIdHeader)
-            } else if (itemCategory === 'role') {
+            } else if (
+                itemCategory === 'role' &&
+                !itemName.includes('ascend')
+            ) {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {
                 buySoulHard(itemId, userIdHeader)
