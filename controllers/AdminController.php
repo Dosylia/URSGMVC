@@ -1294,6 +1294,19 @@ class AdminController
                 $userId = $_POST['user_id'];
                 $itemId = $_POST['item_id'];
 
+                // Get the item to know if it's a role
+                $item = $this->items->getItemById($itemId);
+                if ($item && $item['items_category'] === 'role') {
+                    switch($item['items_name']) {
+                        case 'URSG Ascend':
+                            $this->user->grantAscendRole($userId);
+                            break;
+                        case 'URSG Gold':
+                            $this->user->buyGold($userId);
+                            break;
+                    }
+                }
+
                 $addItem = $this->items->addItemToUser($userId, $itemId);
 
                 if ($addItem) {
