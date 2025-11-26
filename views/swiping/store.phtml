@@ -34,8 +34,8 @@
             $basePrice = $item['items_price'];
             $goldDiscount = $user['user_isGold'] ? 20 : 0; // 20% Gold discount
             $itemDiscount = $item['items_discount'] ?? 0; // item-specific discount
-            $isGoldRole = $item['items_name'] === 'Gold';
-            $isAscendRole = $item['items_name'] === 'Ascend';
+            $isGoldRole = $item['items_name'] === 'URSG Gold';
+            $isAscendRole = $item['items_name'] === 'URSG Ascend';
 
             $ownsRole =
                 ($isGoldRole && $user['user_isGold'] === 1) ||

@@ -214,13 +214,14 @@ function getDiscordRole(itemId) {
 }
 
 function claimDiscordRole(roleType) {
-    let redirectUri = encodeURIComponent(
-        'https://ur-sg.com/discordClaim?role=' + roleType
-    )
+    const redirectUri = 'https://ur-sg.com/discordClaim'
     const clientId = '1354386306746159235'
 
+    // Discord only keeps the state variable
     window.open(
-        `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=identify`,
+        `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
+            redirectUri
+        )}&scope=identify&state=${encodeURIComponent(roleType)}`,
         '_blank'
     )
 }
@@ -257,9 +258,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .getAttribute('data-name')
                 .toLowerCase()
 
-            if (itemCategory === 'role' && itemName.includes('Ascend')) {
+            if (itemCategory === 'role' && itemName.includes('ascend')) {
                 buyAscend(itemId, userIdHeader)
-            } else if (itemCategory === 'role') {
+            } else if (
+                itemCategory === 'role' &&
+                !itemName.includes('ascend')
+            ) {
                 buyRole(itemId, userIdHeader)
             } else if (itemCategory === 'currency') {
                 buySoulHard(itemId, userIdHeader)
