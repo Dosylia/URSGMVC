@@ -1,3 +1,6 @@
+'use strict'
+import apiFetch from '../Functions/api_fetch.js'
+
 document.addEventListener('DOMContentLoaded', function () {
     // DOM elements
     let userId = document.getElementById('userId').value
@@ -171,27 +174,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getOwnedItems(userId) {
-        fetch('/getOwnedItems', {
+
+        apiFetch({
+            url: '/getOwnedItems',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `userId=${encodeURIComponent(userId)}`,
         })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.text().then((text) => {
-                        console.error('Fetch error:', response.status, text)
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`
-                        )
-                        z
-                    })
-                }
-                return response.json()
-            })
-            .then((data) => {
-                if (data.message === 'Success') {
+        .then((data) => {
+            if (data.message === 'Success') {
                     const items = data.items
                     profileFrames = items.filter(
                         (item) =>
@@ -223,29 +214,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const server = localStorage.getItem('server') || ''
         const gender = localStorage.getItem('gender') || ''
         const gamemode = localStorage.getItem('gamemode') || ''
-        fetch('/getUserMatching', {
+
+        apiFetch({
+            url: '/getUserMatching',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `userId=${encodeURIComponent(
                 userId
             )}&isNotReactNative=1&server=${server}&gender=${gender}&gamemode=${gamemode}`,
         })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.text().then((text) => {
-                        console.error('Fetch error:', response.status, text)
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`
-                        )
-                    })
-                }
-                return response.json()
-            })
-            .then((data) => {
-                if (data.success && data.user) {
+        .then((data) => {
+            if (data.success && data.user) {
                     document.querySelector('.noUserToSee').style.display =
                         'none'
                     getOwnedItems(data.user.user_id)
@@ -730,35 +709,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Swipe functions
     function swipeYes(userId, receiverId) {
-        fetch('index.php?action=swipeDoneWebsite', {
+
+        apiFetch({
+            url: 'index.php?action=swipeDoneWebsite',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `swipe_yes=1&senderId=${encodeURIComponent(
                 userId
             )}&receiverId=${encodeURIComponent(receiverId)}`,
         })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.text().then((text) => {
-                        console.error('Fetch error:', response.status, text)
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`
-                        )
-                    })
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log('Swipe yes response data:', data)
-                if (data.success) {
+        .then((data) => {
+            if (data.success) {
                     buttonSuccess()
                     setTimeout(() => {
                         fetchMatchingUser(userId)
                     }, 1000)
                 }
+            else {
+                console.error('Swipe yes failed:', data.message)
+            }
             })
             .catch((error) => {
                 console.error('Fetch error:', error)
@@ -766,35 +735,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function swipeNo(userId, receiverId) {
-        fetch('index.php?action=swipeDoneWebsite', {
+
+        apiFetch({
+            url: 'index.php?action=swipeDoneWebsite',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `swipe_no=1&senderId=${encodeURIComponent(
                 userId
             )}&receiverId=${encodeURIComponent(receiverId)}`,
         })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.text().then((text) => {
-                        console.error('Fetch error:', response.status, text)
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`
-                        )
-                    })
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log('Swipe no response data:', data)
-                if (data.success) {
+        .then((data) => {
+            if (data.success) {
                     buttonFailure()
                     setTimeout(() => {
                         fetchMatchingUser(userId)
                     }, 1000)
                 }
+            else {
+                console.error('Swipe no failed:', data.message)
+            }
             })
             .catch((error) => {
                 console.error('Fetch error:', error)

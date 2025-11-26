@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "../Functions/api_fetch.js";
+
 let userIdElement = document.getElementById('senderId')
 let friendIdElement = document.getElementById('receiverId')
 export const userId = userIdElement ? userIdElement.value : null

@@ -1,4 +1,5 @@
 "use strict";
+import apiFetch from "../Functions/api_fetch.js";
 
 let lolAccount, btnSubmit, lolserver, verificationDiv;
 

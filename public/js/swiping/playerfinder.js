@@ -1,5 +1,7 @@
+"use strict";
+import apiFetch from "../Functions/api_fetch.js";
+
 function sendMessageDiscord(userId, account, message, oldTime, voice, role, rank) {
-  const token = localStorage.getItem('masterTokenWebsite');
 
   const formData = new URLSearchParams();
   formData.append('userId', parseInt(userId));
@@ -11,31 +13,28 @@ function sendMessageDiscord(userId, account, message, oldTime, voice, role, rank
   if (role) formData.append('roleLookingFor', role);
   if (rank) formData.append('rankLookingFor', rank);
 
-  return fetch('/sendMessageDiscord', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${token}`,
-    },
-    body: formData.toString()
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
+  return apiFetch({
+        url: '/sendMessageDiscord',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString(),
+    })
+    .then((data) => {
+        if (data.success) {
         console.log('Message sent to Discord successfully!');
       } else {
         console.error('Message error:', data.error);
         throw new Error(data.error || 'Unknown error');
       }
     })
-    .catch(error => {
-      console.error('Fetch error:', error);
+    .catch((error) => {
+        console.error('Fetch error:', error);
       throw error;
-    });
+    })
 }
 
+
 function addPlayerFinderPost({ voice, role, rank, desc, account }) {
-  const token = localStorage.getItem('masterTokenWebsite');
   const bodyData = {
     voiceChat: voice,
     roleLookingFor: role,
@@ -44,18 +43,14 @@ function addPlayerFinderPost({ voice, role, rank, desc, account }) {
     userId: userId,
   };
 
-  fetch('/addPlayerFinderPost', {
+  apiFetch({
+    url: '/addPlayerFinderPost',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: JSON.stringify(bodyData),
-  })
-    .then(response => response.json())
-    .then(data => {
+})
+    .then((data) => {
       if (data.success) {
-        console.log(data.oldTime);
         sendMessageDiscord(userId, account, desc, data.oldTime, voice, role, rank)
           .then(() => {
             location.reload();
@@ -68,133 +63,123 @@ function addPlayerFinderPost({ voice, role, rank, desc, account }) {
         console.log('Error: ' + data.message);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Request failed', error);
-    });
+  })
 }
 
 function editPlayerPost(postId, desc, newRole, newRank) {
-  fetch('/editPlayerPost', {
+  apiFetch({
+    url: '/editPlayerPost',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${token}`,
-    },
-        body: `userId=${encodeURIComponent(parseInt(userId))}&postId=${encodeURIComponent(parseInt(postId))}&description=${encodeURIComponent(desc)}&role=${encodeURIComponent(newRole)}&rank=${encodeURIComponent(newRank)}`,
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      const newParagraph = document.createElement('p');
-      newParagraph.className = `desc-${postId}`;
-      newParagraph.innerHTML = desc.replace(/\n/g, "<br>");
-      document.getElementById('descriptionField')?.replaceWith(newParagraph);
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(parseInt(userId))}&postId=${encodeURIComponent(parseInt(postId))}&description=${encodeURIComponent(desc)}&role=${encodeURIComponent(newRole)}&rank=${encodeURIComponent(newRank)}`,
+})
+    .then((data) => {
+        if (data.success) {
+        const newParagraph = document.createElement('p');
+        newParagraph.className = `desc-${postId}`;
+        newParagraph.innerHTML = desc.replace(/\n/g, "<br>");
+        document.getElementById('descriptionField')?.replaceWith(newParagraph);
 
-      const updateBtn = document.getElementById('update-post');
-      updateBtn.remove();
-      const deleteDiv = document.querySelector('.delete');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'submit-button';
-      button.id = 'delete-post';
-      button.innerText = 'Delete';
-      button.dataset.postid = postId;
-      deleteDiv.appendChild(button);
-      const editPlayerFinderBtn = document.getElementById('edit-playerfinder');
-      editPlayerFinderBtn.style.display = 'block';
-      // Restore span display and update images
-      const card = document.querySelector(`.playerfinder-card[data-postid="${postId}"]`);
-      const game = card.dataset.game;
-      const isLoL = game === 'League of Legends';
+        const updateBtn = document.getElementById('update-post');
+        updateBtn.remove();
+        const deleteDiv = document.querySelector('.delete');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'submit-button';
+        button.id = 'delete-post';
+        button.innerText = 'Delete';
+        button.dataset.postid = postId;
+        deleteDiv.appendChild(button);
+        const editPlayerFinderBtn = document.getElementById('edit-playerfinder');
+        editPlayerFinderBtn.style.display = 'block';
+        // Restore span display and update images
+        const card = document.querySelector(`.playerfinder-card[data-postid="${postId}"]`);
+        const game = card.dataset.game;
+        const isLoL = game === 'League of Legends';
 
-      const roleFolder = isLoL ? 'roles' : 'valorant_roles';
-      const rankFolder = isLoL ? 'ranks' : 'valorant_ranks';
-      const roleExt = isLoL ? 'png' : 'webp';
+        const roleFolder = isLoL ? 'roles' : 'valorant_roles';
+        const rankFolder = isLoL ? 'ranks' : 'valorant_ranks';
+        const roleExt = isLoL ? 'png' : 'webp';
 
-      const roleImg = card.querySelector('.looking-for span:nth-child(2) img');
-      const rankImg = card.querySelector('.looking-for span:nth-child(3) img');
+        const roleImg = card.querySelector('.looking-for span:nth-child(2) img');
+        const rankImg = card.querySelector('.looking-for span:nth-child(3) img');
 
-      const newRoleSanitized = newRole.replace(/\s+/g, '');
-      const newRolePath = `public/images/${roleFolder}/${newRoleSanitized}.${roleExt}`;
-      const newRankPath = `public/images/${rankFolder}/${newRank}.png`;
+        const newRoleSanitized = newRole.replace(/\s+/g, '');
+        const newRolePath = `public/images/${roleFolder}/${newRoleSanitized}.${roleExt}`;
+        const newRankPath = `public/images/${rankFolder}/${newRank}.png`;
 
-      roleImg.src = newRolePath;
-      roleImg.alt = newRole;
-      rankImg.src = newRankPath;
-      rankImg.alt = newRank;
+        roleImg.src = newRolePath;
+        roleImg.alt = newRole;
+        rankImg.src = newRankPath;
+        rankImg.alt = newRank;
 
-      card.dataset.roleNameUser = newRole;
-      card.dataset.rankUser = newRank;
+        card.dataset.roleNameUser = newRole;
+        card.dataset.rankUser = newRank;
 
-      const roleSelect = document.getElementById('editRole');
-      const rankSelect = document.getElementById('editRank');
-      roleSelect?.remove();
-      rankSelect?.remove();
+        const roleSelect = document.getElementById('editRole');
+        const rankSelect = document.getElementById('editRank');
+        roleSelect?.remove();
+        rankSelect?.remove();
 
-      const spans = card.querySelectorAll('.looking-for span');
-      spans.forEach(span => span.style.display = 'inline-block');
+        const spans = card.querySelectorAll('.looking-for span');
+        spans.forEach(span => span.style.display = 'inline-block');
 
-      const deletePostBtn = document.getElementById('delete-post');
-      deletePostBtn?.addEventListener('click', () => {
-      const token = localStorage.getItem('masterTokenWebsite');
-      const postId = deletePostBtn.dataset.postid;
-      deletePost(postId, token);
-    });
+        const deletePostBtn = document.getElementById('delete-post');
+        deletePostBtn?.addEventListener('click', () => {
+        const token = localStorage.getItem('masterTokenWebsite');
+        const postId = deletePostBtn.dataset.postid;
+        deletePost(postId, token);
+      });
 
-    } else {
-      console.error('Error updating:', data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Request failed', error);
-  });
+      } else {
+        console.error('Error updating:', data.message);
+      }
+    })
+    .catch((error) => {
+        console.error('Request failed', error);
+    })
 }
 
 function deletePost(postId, token) {
-        fetch('/deletePlayerFinderPost', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ postId, userId }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log(data.message);
-          location.reload();
-        } else {
-          console.log('Error: ' + data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Request failed', error);
-      });
+        apiFetch({
+            url: '/deletePlayerFinderPost',
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: JSON.stringify({ postId, userId }),
+        })
+        .then((data) => {
+          if (data.success) {
+            console.log(data.message);
+            location.reload();
+          } else {
+            console.log('Error: ' + data.message);
+          }
+        })
+        .catch((error) => {
+            console.error('Request failed', error);
+        })
 }
 
 
   function addFriendAndChat(friendId, userId) {
-    const token = localStorage.getItem('masterTokenWebsite');
-    fetch('/addFriendAndChat', {
+    apiFetch({
+        url: '/addFriendAndChat',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `userId=${encodeURIComponent(parseInt(userId))}&friendId=${encodeURIComponent(parseInt(friendId))}`
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = `persoChat&friend_id=${friendId}`;
-            } else {
-                console.error('Error adding as friend', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+    .then((data) => {
+        if (data.success) {
+          window.location.href = `persoChat&friend_id=${friendId}`;
+        } else {
+          console.error('Error adding as friend', data.message);
+        }
+    })
+    .catch((error) => {
+      console.error('Fetch error:', error);
+    })
   }
 
 const applyFilters = () => {
@@ -408,20 +393,15 @@ const applyFilters = () => {
     // Play with them button
     playWithThemBtns.forEach(button => {
       button.addEventListener('click', () => {
-        const token = localStorage.getItem('masterTokenWebsite');
         const postId = button.dataset.postid;
-
-        fetch('/playWithThem', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({ postId, userId }), // Make sure userId is defined
+        apiFetch({
+        url: '/playWithThem',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: "Just use the old body",
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
+        .then((data) => {
+            if (data.success) {
             if (data.isFriend) {
                 const friendId = data.friendId;
                 window.location.href = `persoChat&friend_id=${friendId}`;             
@@ -436,9 +416,9 @@ const applyFilters = () => {
             console.error('Error:', data.message);
           }
         })
-        .catch(error => {
-          console.error('Request failed', error);
-        });
+        .catch((error) => {
+            console.error('Request failed', error);
+        })
       });
     });
 

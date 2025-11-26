@@ -1,5 +1,5 @@
 "use strict";
-import apiFetch from "./api_fetch.js";
+import apiFetch from "../Functions/api_fetch.js";
 
 // Variables
 const addFriendButton = document.getElementById('add-friend-button-user')

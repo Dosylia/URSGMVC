@@ -1,5 +1,5 @@
 'use strict'
-import apiFetch from './api_fetch.js'
+import apiFetch from '../Functions/api_fetch.js'
 
 // Variables
 let originalTitle = document.title
@@ -173,17 +173,14 @@ function fetchInterestedUsers(userId) {
         )
         return
     }
-    fetch('/getInterestedPeople', {
+    apiFetch({
+        url: '/getInterestedPeople',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `userId=${encodeURIComponent(userId)}`,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success && data.interestedUsers) {
+    .then((data) => {
+         if (data.success && data.interestedUsers) {
                 numberOfFailsInterested = 0
                 // Filter out existing interested notifications
                 AllNotifications = AllNotifications.filter(
@@ -220,17 +217,15 @@ function fetchAcceptedFriendRequest(userId) {
         )
         return
     }
-    fetch('/getAcceptedFriendRequestWebsite', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(userId)}`,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success && data.acceptedFriendRequest) {
+
+    apiFetch({
+    url: '/getAcceptedFriendRequestWebsite',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `userId=${encodeURIComponent(userId)}`,
+})
+    .then((data) => {
+        if (data.success && data.acceptedFriendRequest) {
                 numberOfFailsAccepted = 0
                 // Filter out existing accepted notifications
                 AllNotifications = AllNotifications.filter(
@@ -442,21 +437,16 @@ function clearAllNotifications() {
 }
 
 async function updateNotificationPlayerFinder(frId, userId) {
-    const token = localStorage.getItem('masterTokenWebsite')
-    try {
-        const response = await fetch('/markInterestAsSeen', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
-            body: `postId=${encodeURIComponent(
+
+    apiFetch({
+    url: '/markInterestAsSeen',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `postId=${encodeURIComponent(
                 frId
             )}&userId=${encodeURIComponent(userId)}`,
-        })
-
-        const data = await response.json()
-
+})
+    .then((data) => {
         if (data.success) {
             console.log('Notification updated successfully')
 
@@ -479,30 +469,24 @@ async function updateNotificationPlayerFinder(frId, userId) {
         } else {
             console.log('Failed to update notification')
         }
-    } catch (error) {
+    })
+    .catch((error) => {
+        // General error happened. Probably not user related and more on the dev side.
         console.error('Fetch error:', error)
-    }
+    })
 }
 
 async function updateNotificationFriendRequestAccepted(frId, userId) {
-    const token = localStorage.getItem('masterTokenWebsite')
-    try {
-        const response = await fetch(
-            '/updateNotificationFriendRequestAcceptedWebsite',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: `frId=${encodeURIComponent(
+    
+    apiFetch({
+        url: '/updateNotificationFriendRequestAcceptedWebsite',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `frId=${encodeURIComponent(
                     frId
                 )}&userId=${encodeURIComponent(userId)}`,
-            }
-        )
-
-        const data = await response.json()
-
+    })
+    .then((data) => {
         if (data.success) {
             console.log('Notification updated successfully')
 
@@ -531,27 +515,24 @@ async function updateNotificationFriendRequestAccepted(frId, userId) {
             console.log('Failed to update notification')
             return false
         }
-    } catch (error) {
+    })
+    .catch((error) => {
         console.error('Fetch error:', error)
         return false
-    }
+    })
 }
 
 function updateNotificationFriendRequestPending(frId, userId, type) {
-    const token = localStorage.getItem('masterTokenWebsite')
-    fetch('/updateNotificationFriendRequestPendingWebsite', {
+    apiFetch({
+        url: '/updateNotificationFriendRequestPendingWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: `frId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:  `frId=${encodeURIComponent(frId)}&userId=${encodeURIComponent(
             userId
         )}`,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
+    .then((data) => {
+         if (data.success) {
                 console.log('Notification updated successfully')
 
                 // Remove only the dismissed notification row
@@ -583,10 +564,10 @@ function updateNotificationFriendRequestPending(frId, userId, type) {
             } else {
                 console.log('Failed to update notification')
             }
-        })
-        .catch((error) => {
-            console.error('Fetch error:', error)
-        })
+    })
+    .catch((error) => {
+         console.error('Fetch error:', error)
+    })
 }
 
 function addNewNotification(newNotification) {
@@ -613,7 +594,6 @@ function addNewNotification(newNotification) {
 }
 
 function fetchUnreadMessage(userId) {
-    const token = localStorage.getItem('masterTokenWebsite')
     if (numberOfFailsUnred >= 5) {
         console.error(
             'Too many failed attempts to fetch unread messages. Stopping further attempts.'
@@ -623,17 +603,14 @@ function fetchUnreadMessage(userId) {
     const servedSenderIds =
         JSON.parse(localStorage.getItem('servedSenderIds')) || []
 
-    fetch('index.php?action=getUnreadMessageWebsite', {
+    apiFetch({
+        url: '/index.php?action=getUnreadMessageWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `userId=${encodeURIComponent(userId)}`,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success && data.unreadCount) {
+    .then((data) => {
+        if (data.success && data.unreadCount) {
                 numberOfFailsUnred = 0
                 console.log('Unread messages fetched successfully')
 
@@ -802,7 +779,6 @@ function updateUnreadMessagesForFriends(unreadCounts) {
 }
 
 function addNotificationPermission(userId) {
-    const token = localStorage.getItem('masterTokenWebsite')
     console.log('Adding notification permission...')
     if ('Notification' in window && navigator.serviceWorker) {
         Notification.requestPermission().then((permission) => {
@@ -810,20 +786,16 @@ function addNotificationPermission(userId) {
                 console.log('Notification permission granted.')
                 // Optionally save this info
                 localStorage.setItem('notification_permission', 'granted')
-                const token = localStorage.getItem('masterTokenWebsite')
 
                 // Step 1: Send notification permission update
-                fetch('/updateNotificationPermission', {
+                apiFetch({
+                    url: '/updateNotificationPermission',
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: `userId=${encodeURIComponent(parseInt(userId))}`,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "Just use the old body",
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
+                .then((data) => {
+                     if (data.success) {
                             console.log(
                                 'Notification permission updated successfully.'
                             )
@@ -837,9 +809,9 @@ function addNotificationPermission(userId) {
                             )
                         }
                     })
-                    .catch((error) => {
-                        console.error('Error:', error)
-                    })
+                .catch((error) => {
+                    console.error('Error:', error)
+                })
             } else {
                 localStorage.setItem('notification_permission', 'denied')
             }
@@ -876,7 +848,6 @@ function registerServiceWorker(userId) {
 
 // Send the subscription object to the backend
 function sendSubscriptionToBackend(subscription, userId) {
-    const token = localStorage.getItem('masterTokenWebsite')
     // Stringify the subscription object
     const subscriptionJSON = JSON.stringify(subscription.toJSON())
     // Use URLSearchParams for proper encoding
@@ -884,26 +855,23 @@ function sendSubscriptionToBackend(subscription, userId) {
     body.append('param', subscriptionJSON)
     body.append('userId', userId)
 
-    return fetch('/saveNotificationSubscription', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-        body: body,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
+   return apiFetch({
+    url: '/saveNotificationSubscription',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body,
+})
+    .then((data) => {
+         if (data.success) {
                 console.log('Subscription saved:', data)
             } else {
                 console.log('Subscription failed:', data)
             }
         })
-        .catch((error) => {
-            console.error('Error saving subscription:', error)
-            throw error
-        })
+    .catch((error) => {
+        console.error('Error saving subscription:', error)
+        throw error
+    })
 }
 
 function refreshPushSubscription(userId) {
@@ -1065,44 +1033,39 @@ window.addEventListener('load', async function () {
         currentPrefix = 'apple'
     }
 
-    try {
-        const token = localStorage.getItem('masterTokenWebsite')
-        const res = await fetch('/fetchNotificationEndpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${token}`,
-            },
-            body: `userId=${encodeURIComponent(parseInt(userId))}`,
-        })
+    apiFetch({
+        url: '/fetchNotificationEndpoint',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `userId=${encodeURIComponent(parseInt(userId))}`,
+    })
+    .then((data) => {
+        if (data.success) {
+            const serverEndpoint = data.endpoint
+            const endpointChanged = serverEndpoint !== currentEndpoint
+            const timeExpired = isNaN(lastRefresh) || now - lastRefresh > sevenDays
+            const browserChanged = lastBrowserPrefix !== currentPrefix
 
-        const data = await res.json()
+            const shouldRefresh = endpointChanged || timeExpired || browserChanged
 
-        if (!data.success) {
+            if (shouldRefresh) {
+                console.log('🔄 Refreshing subscription because:')
+                if (endpointChanged) console.log('- Endpoint changed')
+                if (timeExpired) console.log('- Last refresh too old')
+                if (browserChanged) console.log('- Browser changed')
+
+                refreshPushSubscription(userId)
+                localStorage.setItem('notification_last_refresh', now.toString())
+                localStorage.setItem('notification_browser_prefix', currentPrefix)
+            } else {
+                console.log('✅ Subscription is up-to-date')
+            }
+        } else {
             console.error('Error fetching server endpoint:', data.error)
             return
         }
-
-        const serverEndpoint = data.endpoint
-        const endpointChanged = serverEndpoint !== currentEndpoint
-        const timeExpired = isNaN(lastRefresh) || now - lastRefresh > sevenDays
-        const browserChanged = lastBrowserPrefix !== currentPrefix
-
-        const shouldRefresh = endpointChanged || timeExpired || browserChanged
-
-        if (shouldRefresh) {
-            console.log('🔄 Refreshing subscription because:')
-            if (endpointChanged) console.log('- Endpoint changed')
-            if (timeExpired) console.log('- Last refresh too old')
-            if (browserChanged) console.log('- Browser changed')
-
-            refreshPushSubscription(userId)
-            localStorage.setItem('notification_last_refresh', now.toString())
-            localStorage.setItem('notification_browser_prefix', currentPrefix)
-        } else {
-            console.log('✅ Subscription is up-to-date')
-        }
-    } catch (error) {
-        console.error('Network error while fetching endpoint:', error)
-    }
+    })
+    .catch((error) => {
+         console.error('Network error while fetching endpoint:', error)
+    })
 })

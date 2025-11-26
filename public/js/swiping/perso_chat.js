@@ -1,3 +1,5 @@
+"use strict";
+import apiFetch from '../Functions/api_fetch.js';
 import { chatInterface, messageContainer } from './get_message_utils.js';
 
 const buttonclose = document.getElementById('buttonSwitchChat');
@@ -18,18 +20,14 @@ if (buttonclose !== null && buttonclose !== undefined) {
 
 // Fetch the full friend list once
 function fetchAllFriends(userId) {
-    const token = localStorage.getItem('masterTokenWebsite');
-    return fetch('/getFriendlistWebsite', {
+   return apiFetch({
+        url: '/getFriendlistWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: `userId=${encodeURIComponent(parseInt(userId))}`
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: "Just use the old body",
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+    .then((data) => {
+        if (data.success) {
                 allFriends = data.friendlist; // Store the entire friend list
             } else {
                 console.error('Error fetching friends:', data.error);

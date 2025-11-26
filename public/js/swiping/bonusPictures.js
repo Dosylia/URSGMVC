@@ -1,5 +1,5 @@
 "use strict";
-import apiFetch from "./api_fetch.js";
+import apiFetch from "../Functions/api_fetch.js";
 
 const buttonAddBonusPicture = document.getElementById('opendialog_bonuspicture')
 const favDialogBonusPicture = document.getElementById('favDialogBonusPicture')

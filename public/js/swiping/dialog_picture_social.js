@@ -1,5 +1,5 @@
 'use strict'
-import apiFetch from './api_fetch.js'
+import apiFetch from '../Functions/api_fetch.js'
 
 // const showButtonSocialLinks = document.getElementById('opendialog_add_social_links');
 // const favDialogSocialLinks = document.getElementById('favDialogSocialLinks');
@@ -17,21 +17,16 @@ function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
         return
     }
 
-    const token = localStorage.getItem('masterTokenWebsite')
-
-    fetch('/switchPersonalColorWebsite', {
+    apiFetch({
+        url: '/switchPersonalColorWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `color=${encodeURIComponent(
-            selectedColor
-        )}&userId=${encodeURIComponent(userId)}`,
+                selectedColor
+            )}&userId=${encodeURIComponent(userId)}`,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
+    .then((data) => {
+        if (data.success) {
                 // Update color visually
                 const profileColor = document.querySelector(
                     '.profile-personal-color'

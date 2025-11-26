@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "../Functions/api_fetch.js";
+
 let receiverId = document.getElementById('receiverId');
 
 function reportUser(userId, reportedId, content, status, reason) {
@@ -11,18 +14,14 @@ function reportUser(userId, reportedId, content, status, reason) {
 
     const jsonData = JSON.stringify(dataToSend);
 
-    const token = localStorage.getItem('masterTokenWebsite');
-    fetch('/reportUserWebsite', {
+    apiFetch({
+        url: '/reportUserWebsite',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: "param=" + encodeURIComponent(jsonData)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: "param=" + encodeURIComponent(jsonData),
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+    .then((data) => {
+        if (data.success) {
                 console.log('Reported user:', data.message);
                 displayNotification("User reported successfully!");
                 const overlay = document.getElementById("overlay");
@@ -30,10 +29,10 @@ function reportUser(userId, reportedId, content, status, reason) {
             } else {
                 console.error('Error fetching messages:', data.error);
             }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+    })
+    .catch((error) => {
+        console.error('Fetch error:', error);
+    })
 }
 
 document.addEventListener("DOMContentLoaded", function() {

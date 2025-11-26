@@ -45,7 +45,7 @@ export default apiFetch
 
 // Add this to the JS script
 // "use strict";
-// import apiFetch from "./api_fetch.js";
+// import apiFetch from "../Functions/api_fetch.js";
 
 // Add this to the Script call in the phtml file so it looks like that: 
 // Add type="module"

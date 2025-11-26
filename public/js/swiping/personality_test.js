@@ -1,3 +1,6 @@
+"use strict";
+import apiFetch from "../Functions/api_fetch.js";
+
 let archetypes = {
   toxic: 0,
   egirl: 0,
@@ -481,30 +484,32 @@ function matchTypes(type) {
 }
 
 function getMatchingPersonality(userId) {
-  const token = localStorage.getItem("masterTokenWebsite");
     const personalityType = matchTypes(getHighestKey(Object.entries(archetypes).reduce((acc, [key, value]) => {
     acc[key] = value;
     return acc;
   }, {})))
 
-  fetch("/getMatchingPersonalityUser", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
+  apiFetch({
+    url: '/getMatchingPersonalityUser',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `userId=${encodeURIComponent(parseInt(userId))}&personalityType=${encodeURIComponent(personalityType)}`,
-  })
-    .then((response) => response.json())
+})
     .then((data) => {
-      const matchingUserAvatar = document.getElementById("matchingUserAvatar");
-      const matchingUserName = document.getElementById("matchingUserName");
-      matchingUserAvatar.src = `public/upload/${data.result.user_picture}`;
-      matchingUserAvatar.alt = `Avatar ${data.result.user_username}`;
-      matchingUserName.href = `/anotherUser&username=${encodeURIComponent(data.result.user_username)}`;
-      matchingUserName.querySelector(".strong_text").textContent = data.result.user_username;
+        if (data.success) {
+          const matchingUserAvatar = document.getElementById("matchingUserAvatar");
+          const matchingUserName = document.getElementById("matchingUserName");
+          matchingUserAvatar.src = `public/upload/${data.result.user_picture}`;
+          matchingUserAvatar.alt = `Avatar ${data.result.user_username}`;
+          matchingUserName.href = `/anotherUser&username=${encodeURIComponent(data.result.user_username)}`;
+          matchingUserName.querySelector(".strong_text").textContent = data.result.user_username;
+        } else {
+          console.error("Error getting matching user:", data.error);
+        }
     })
-    .catch((error) => console.error("Error getting matching user", error));
+    .catch((error) => {
+        console.error("Error getting matching user", error);
+    })
 }
 
 function showResult(loadingOldResult = false, result = null) {
@@ -693,18 +698,15 @@ function drawChart(data) {
 }
 
 function getOldResult(userId) {
-  const token = localStorage.getItem("masterTokenWebsite");
-  fetch("/getPersonalityTestResult", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${token}`,
-    },
+
+  apiFetch({
+    url: '/getPersonalityTestResult',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `userId=${encodeURIComponent(parseInt(userId))}`,
-  })
-    .then((response) => response.json())
+})
     .then((data) => {
-      if (data.success) {
+        if (data.success) {
         if (!data.result) {
           console.log("No previous result found for this user.");
           fetchQuestions();
@@ -721,11 +723,12 @@ function getOldResult(userId) {
         fetchQuestions();
       }
     })
-    .catch((error) => console.error("Error fetching old result:", error));
+    .catch((error) => {
+        console.error("Error fetching old result:", error)
+    })
 }
 
 function savePersonalityTestResult(userId) {
-  const token = localStorage.getItem("masterTokenWebsite");
   const result = Object.entries(archetypes).reduce((acc, [key, value]) => {
     acc[key] = value;
     return acc;
@@ -737,17 +740,23 @@ function savePersonalityTestResult(userId) {
     result: result,
   };
 
-  fetch("/savePersonalityTestResult", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(bodyData),
-  })
-    .then((response) => response.json())
-    .then((data) => console.log("Result saved:", data))
-    .catch((error) => console.error("Error saving result:", error));
+
+  apiFetch({
+        url: '/savePersonalityTestResult',
+        method: 'POST',
+        headers: { 'Content-Type': "application/json" },
+        body: JSON.stringify(bodyData),
+    })
+    .then((data) => {
+        if (data.success) {
+            console.log("Result saved:", data)
+        } else {
+            console.error("An error happened", data)
+        }
+    })
+    .catch((error) => {
+        console.error("Error saving result:", error)
+    })
 }
 
 document.addEventListener("DOMContentLoaded", function () {

@@ -1,5 +1,5 @@
 'use strict'
-import apiFetch from './api_fetch.js'
+import apiFetch from '../Functions/api_fetch.js'
 
 let currentPage = 1
 const itemsPerPage = 10
