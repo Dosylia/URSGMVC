@@ -1,4 +1,4 @@
-import { fetchMessagesApi } from './message_api.js'
+import { fetchMessagesApi, fetchRandomChatMessagesApi } from './message_api.js'
 import { showFriendInfo } from './message_friends.js'
 import {
     updateMessageContainer,
@@ -22,6 +22,10 @@ export async function fetchMessages(userId, friendId) {
         return
     }
 
+    // Check if this is a random chat session
+    const randomSession = localStorage.getItem('randomChatSession')
+    const isRandomChat = randomSession !== null
+
     const firstFriendInput = document.getElementById('firstFriend')
     let firstFriend = firstFriendInput ? firstFriendInput.value : null
 
@@ -40,7 +44,10 @@ export async function fetchMessages(userId, friendId) {
     }
 
     try {
-        const data = await fetchMessagesApi(userId, friendId, firstFriend)
+        // Use different API endpoint for random chat
+        const data = isRandomChat
+            ? await fetchRandomChatMessagesApi(userId, friendId, firstFriend)
+            : await fetchMessagesApi(userId, friendId, firstFriend)
 
         if (data.success) {
             setNumberOfFail(0)
@@ -58,6 +65,14 @@ export async function fetchMessages(userId, friendId) {
                     )
                 } else {
                     await showFriendInfo(data.friend)
+                    // Still call updateMessageContainer for random chat even if messages haven't changed
+                    if (isRandomChat) {
+                        updateMessageContainer(
+                            data.messages,
+                            data.friend,
+                            data.user
+                        )
+                    }
                 }
             } else {
                 setCurrentMessages([])
@@ -67,6 +82,20 @@ export async function fetchMessages(userId, friendId) {
         } else {
             incrementNumberOfFail()
             console.error('Error fetching messages:', data.error)
+
+            // Handle expired random chat session
+            if (
+                isRandomChat &&
+                data.error.includes('No active random chat session')
+            ) {
+                console.log(
+                    'Random chat session expired - clearing localStorage and redirecting'
+                )
+                localStorage.removeItem('randomChatSession')
+                // Redirect to normal chat flow
+                window.location.href = '/persoChat'
+                return
+            }
 
             if (
                 data.error.includes('Friend not found') ||

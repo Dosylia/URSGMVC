@@ -3,12 +3,13 @@
   <div class="playerfinder-banner">
     <div class="playerfinder-banner-content">
       <h2>Find your next <span style="color: var(--main--red);">teammate</span>!</h2>
-            <?php if (
-      $this->isConnectGoogle() &&
-      $this->isConnectWebsite() &&
-      ($this->isConnectLeague() || $this->isConnectValorant()) && 
+      <?php if (
+        $this->isConnectGoogle() &&
+        $this->isConnectWebsite() &&
+        ($this->isConnectLeague() || $this->isConnectValorant()) && 
       $this->isConnectLf()) : ?>
       <button type="button" id="createPostBtn">Create a Post</button>
+      <button type="button" id="findRandomPlayer">Find a random player</button>
       <?php else : ?>
         <button type="button" class="offline-btn">Create a Post</button>
       <?php endif; ?>

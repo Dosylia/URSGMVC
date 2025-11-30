@@ -7,6 +7,7 @@ use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
 use models\Items;
+use models\PlayerFinder;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use traits\SecurityController;
@@ -24,6 +25,7 @@ class ChatMessageController
     private FriendRequest $friendrequest;
     private GoogleUser $googleUser;
     private Items $items;
+    private PlayerFinder $playerfinder;
     private int $senderId;
     private int $receiverId;
     private string $message;
@@ -37,6 +39,7 @@ class ChatMessageController
         $this->friendrequest = new FriendRequest();
         $this -> googleUser = new GoogleUser();
         $this-> items = new Items();
+        $this->playerfinder = new PlayerFinder();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -230,9 +233,10 @@ class ChatMessageController
         $sender = $this->user->getUserById($this->getSenderId());
 
         $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
+        $hasActiveRandomSession = $this->chatmessage->getActiveRandomChatSession($this->getSenderId(), $this->getReceiverId());
 
-        if ($testFriendstatus != "accepted") {
-            echo json_encode(['success' => false, 'error' => 'You are not friends with this user']);
+        if ($testFriendstatus != "accepted" && !$hasActiveRandomSession) {
+            echo json_encode(['success' => false, 'error' => 'You are not friends with this user and have no active random chat session']);
             return;
         }
     
@@ -315,10 +319,12 @@ class ChatMessageController
                  return;
              }
 
+                // We test if users are friends, or if they have a random session
                 $testFriendstatus = $this->friendrequest->getFriendStatus($this->getSenderId(), $this->getReceiverId());
+                $hasActiveRandomSession = $this->chatmessage->getActiveRandomChatSession($this->getSenderId(), $this->getReceiverId());
 
-                if ($testFriendstatus != "accepted") {
-                    echo json_encode(['success' => false, 'error' => 'You are not friends with this user']);
+                if ($testFriendstatus != "accepted" && !$hasActiveRandomSession) {
+                    echo json_encode(['success' => false, 'error' => 'You are not friends with this user and have no active random chat session']);
                     return;
                 }
 
@@ -1253,5 +1259,319 @@ class ChatMessageController
     public function setFriendId(int $friendId): void
     {
         $this->friendId = $friendId;
+    }
+
+    public function getRandomChatMessages(): void
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        
+        if (!isset($data->userId, $data->friendId, $data->isRandomChat)) {
+            echo json_encode(['success' => false, 'error' => 'Missing required parameters']);
+            return;
+        }
+
+        $this->setUserId($data->userId);
+        $this->setFriendId((int) $data->friendId);
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        // Validate Token for User
+        if (!$this->validateTokenWebsite($token, $this->getUserId())) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Check if there's an active random chat session
+        $randomSession = $this->chatmessage->getActiveRandomChatSession($this->getUserId(), $this->getFriendId());
+        
+        if (!$randomSession) {
+            echo json_encode(['success' => false, 'error' => 'No active random chat session']);
+            return;
+        }
+
+        // Update the last fetch time for this user
+        $this->chatmessage->updateRandomChatLastFetch($randomSession['session_id'], $this->getUserId());
+
+        $messages = $this->chatmessage->getMessage($this->getUserId(), $this->getFriendId());
+        $friend = $this->user->getUserById($this->getFriendId());
+        $user = $this->user->getUserById($this->getUserId());
+        $friendownGoldEmotes = $this->items->ownGoldEmotes($this->getFriendId());
+        $userownGoldEmotes = $this->items->ownGoldEmotes($this->getUserId());
+
+        if (!$friend || !$user) {
+            echo json_encode(['success' => false, 'error' => 'User not found']);
+            return;
+        }
+
+        // Mark as read if not first friend
+        if (isset($data->firstFriend) && $data->firstFriend === "no" && $messages) {
+            $this->chatmessage->updateMessageStatus('read', $this->getUserId(), $this->getFriendId());
+        }
+
+        // Determine if this user is the target of random chat
+        $isRandomChatTarget = ($randomSession['target_user_id'] == $this->getUserId());
+
+        $responseData = [
+            'success' => true,
+            'friend' => [
+                'user_id' => $friend['user_id'],
+                'user_username' => $friend['user_username'],
+                'user_picture' => $friend['user_picture'],
+                'user_lastRequestTime' => $friend['user_lastRequestTime'],
+                'user_isOnline' => $friend['user_isOnline'],
+                'user_isLooking' => $friend['user_isLooking'],
+                'lol_verified' => $friend['lol_verified'],
+                'lol_account' => $friend['lol_account'], 
+                'ownGoldEmotes' => $friendownGoldEmotes,
+                'isRandomChatTarget' => $isRandomChatTarget,
+            ],
+            'user' => [
+                'user_id' => $user['user_id'],
+                'user_username' => $user['user_username'],
+                'user_picture' => $user['user_picture'],
+                'user_hasChatFilter' => $user['user_hasChatFilter'],
+                'ownGoldEmotes' => $userownGoldEmotes,
+            ],
+            'messages' => $messages ?: [],
+            'randomChatSession' => [
+                'sessionId' => $randomSession['session_id'],
+                'status' => $randomSession['session_status'],
+                'isInitiator' => ($randomSession['initiator_user_id'] == $this->getUserId())
+            ]
+        ];
+
+        echo json_encode($responseData);
+    }
+
+    public function closeRandomChat(): void
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        
+        if (!isset($data->targetUserId)) {
+            echo json_encode(['success' => false, 'error' => 'Missing target user ID']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        $userId = $_SESSION['userId'] ?? null;
+        if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Close the random chat session
+        $result = $this->chatmessage->closeRandomChatSession($userId, $data->targetUserId);
+
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Random chat session closed']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to close session']);
+        }
+    }
+
+    public function getRandomPlayerFinder(): void
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        
+        if (!isset($data->userId)) {
+            echo json_encode(['success' => false, 'error' => 'Missing user ID']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        if (!$this->validateTokenWebsite($token, $data->userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Check preferences of user to filter players (default them to League of Legends, Any role, Any rank, voice chat yes/no)
+        $gamePref      = strtolower($data->gamePref ?? 'any') === 'any' ? null : $data->gamePref;
+        $voiceChatPref = strtolower($data->voiceChat ?? 'any') === 'any' ? null : $data->voiceChat;
+        $rolePref      = strtolower($data->roleLookingFor ?? 'any') === 'any' ? null : $data->roleLookingFor;
+        $rankPref      = strtolower($data->rankLookingFor ?? 'any') === 'any' ? null : $data->rankLookingFor;
+
+        $filters = [
+            'userId'    => $data->userId,
+            'game'      => $gamePref,
+            'voiceChat' => $voiceChatPref,
+            'role'      => $rolePref,
+            'rank'      => $rankPref
+        ];
+
+        $randomPlayer = $this->playerfinder->getRandomPlayerFinderPost($filters);
+
+        if ($randomPlayer) {
+            // Create a new random chat session
+            $sessionId = $this->chatmessage->createRandomChatSession($data->userId, $randomPlayer['user_id']);
+            
+            if ($sessionId) {
+                echo json_encode([
+                    'success' => true, 
+                    'randomUserId' => $randomPlayer['user_id'],
+                    'sessionId' => $sessionId
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to create chat session']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No suitable players found']);
+        }
+    }
+
+    public function checkIfRandomChatClosed(): void
+    {
+        // CRON JOB that checks if random chat sessions are closed every minute
+        require_once 'keys.php';
+
+        $token = $_GET['token'] ?? null;
+
+        if (!isset($token) || $token !== $tokenRefresh) { 
+            header("Location: /?message=Unauthorized");
+            exit();
+        }
+
+        $AllSessions = $this->chatmessage->getAllActiveRandomChatSessions();
+
+        if (!$AllSessions || count($AllSessions) === 0) {
+            echo "No active random chat sessions found.";
+            return;
+        }
+
+        foreach ($AllSessions as $session) {
+            // Check last_fetch times for both initiator and target, if either is over 30s change status to closed
+            $lastFetchInitiator = strtotime($session['last_fetch_initiator']);
+            $lastFetchTarget = strtotime($session['last_fetch_target']);
+            $currentTime = time();
+            
+            // If either user hasn't fetched in 30 seconds, close the session
+            if (($currentTime - $lastFetchInitiator) > 30 || ($currentTime - $lastFetchTarget) > 30) {
+                $this->chatmessage->closeRandomChatBySessionId($session['session_id']);
+                // Make sure messages in between those users are marketed as read
+                $this->chatmessage->updateMessageStatus('read', $session['initiator_user_id'], $session['target_user_id']);
+                echo "Closed session ID: " . $session['session_id'] . " (inactive for >30s)\n";
+            }
+        }
+    }
+
+    public function checkIncomingRandomChats(): void
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        
+        if (!isset($data->userId)) {
+            echo json_encode(['success' => false, 'error' => 'Missing user ID']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        if (!$this->validateTokenWebsite($token, $data->userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Check if this user is the target of any active random chat sessions
+        $incomingChats = $this->chatmessage->getIncomingRandomChatSessions($data->userId);
+        
+        if ($incomingChats && count($incomingChats) > 0) {
+            // Get initiator user details for each session
+            $chatDetails = [];
+            foreach ($incomingChats as $chat) {
+                $initiator = $this->user->getUserById($chat['initiator_user_id']);
+                if ($initiator) {
+                    $chatDetails[] = [
+                        'sessionId' => $chat['session_id'],
+                        'initiatorUserId' => $chat['initiator_user_id'],
+                        'initiatorUsername' => $initiator['user_username'],
+                        'initiatorPicture' => $initiator['user_picture'],
+                        'createdAt' => $chat['created_at']
+                    ];
+                }
+            }
+
+            echo json_encode([
+                'success' => true, 
+                'incomingRandomChats' => $chatDetails
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true, 
+                'incomingRandomChats' => []
+            ]);
+        }
+    }
+
+    public function validateRandomChatSession(): void
+    {
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            return;
+        }
+
+        $data = json_decode($_POST['param']);
+        
+        if (!isset($data->userId, $data->targetUserId)) {
+            echo json_encode(['success' => false, 'error' => 'Missing required parameters']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        if (!$this->validateTokenWebsite($token, $data->userId)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            return;
+        }
+
+        // Check if there's an active random chat session between these users
+        $randomSession = $this->chatmessage->getActiveRandomChatSession($data->userId, $data->targetUserId);
+        
+        if ($randomSession && $randomSession['session_status'] === 'active') {
+            echo json_encode([
+                'success' => true, 
+                'isActive' => true,
+                'sessionId' => $randomSession['session_id']
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true, 
+                'isActive' => false
+            ]);
+        }
     }
 }

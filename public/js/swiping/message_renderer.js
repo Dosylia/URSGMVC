@@ -1,5 +1,6 @@
 import { renderEmotes, chatfilter } from './message_emotes.js'
 import { replyToMessage, deleteMessage } from './message_events.js'
+import { handleSendMessage } from './message_sender.js'
 import { userId, messageContainer } from './message_utils.js'
 
 export function showLoadingIndicator() {
@@ -11,6 +12,37 @@ export function showLoadingIndicator() {
 export function updateMessageContainer(messages, friend, user) {
     let messagesContainer = document.getElementById('messages')
     messagesContainer.innerHTML = '' // Clear current messages
+
+    // Check if this is a random chat session
+    const randomSession = localStorage.getItem('randomChatSession')
+    const isRandomChat = randomSession !== null
+
+    // Check if this is a random chat session (for the target user)
+    const isTargetOfRandomChat = friend?.isRandomChatTarget
+
+    if (isTargetOfRandomChat) {
+        // Add special header for users who were randomly found
+        const randomTargetHeader = document.createElement('div')
+        randomTargetHeader.style.cssText = `
+            background: #ff6b35;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        `
+        randomTargetHeader.innerHTML = `
+            <p>🎯 This user randomly found you!</p>
+            <p style="font-size: 12px;">You can chat until they close the session.</p>
+        `
+        messagesContainer.appendChild(randomTargetHeader)
+    }
+
+    // Add conversation starters if this is a random chat with no messages
+    if (isRandomChat && (!messages || messages.length === 0)) {
+        addRandomChatOpeners(messagesContainer)
+        return // Exit early since there are no messages to display
+    }
 
     let previousMessage = null // Variable to store the previous message
     let unreadSectionStarted = false
@@ -673,6 +705,104 @@ export function updateMessageContainer(messages, friend, user) {
     })
 
     setTimeout(scrollToBottom, 100)
+}
+
+// Add conversation openers for random chat when no messages exist
+function addRandomChatOpeners(messagesContainer) {
+    const openersContainer = document.createElement('div')
+    openersContainer.style.cssText = `
+        padding: 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        margin: 20px 0;
+        color: white;
+    `
+
+    openersContainer.innerHTML = `
+        <h3 style="margin-bottom: 15px; color: white;">🎮 Start the conversation!</h3>
+        <p style="margin-bottom: 20px; opacity: 0.9;">Choose a conversation starter or type your own message:</p>
+    `
+
+    // Gaming conversation starters
+    const gameOpeners = [
+        'Hey! Wanna play some ARAM? 🎯',
+        'Looking for someone to duo with! 🤝',
+        "What's your main role? 🎮",
+        'Want to try some ranked games? 🏆',
+        'Ready for some fun matches? ⚔️',
+        'What rank are you aiming for? 🎯',
+        'Fancy a quick game? ⚡',
+        "Let's climb together! 📈",
+    ]
+
+    const buttonContainer = document.createElement('div')
+    buttonContainer.style.cssText = `
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    `
+
+    // Create buttons for each opener
+    gameOpeners.forEach((opener, index) => {
+        const button = document.createElement('button')
+        button.textContent = opener
+        button.style.cssText = `
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        `
+
+        button.addEventListener('mouseenter', () => {
+            button.style.background = 'rgba(255, 255, 255, 0.3)'
+            button.style.transform = 'translateY(-2px)'
+        })
+
+        button.addEventListener('mouseleave', () => {
+            button.style.background = 'rgba(255, 255, 255, 0.2)'
+            button.style.transform = 'translateY(0)'
+        })
+
+        button.addEventListener('click', () => {
+            console.log('[DEV] Opener button clicked:', opener)
+            // Fill the message input with the selected opener
+            const messageInput = document.getElementById('message_text')
+            if (messageInput) {
+                messageInput.value = opener
+                messageInput.focus()
+
+                console.log('[DEV] Message input set to opener:', opener)
+                // Trigger any input events to update UI state
+                messageInput.dispatchEvent(
+                    new Event('input', { bubbles: true })
+                )
+
+                console.log('[DEV] Random chat opener selected:', opener)
+
+                // Automatically send the message
+                setTimeout(() => {
+                    const fakeEvent = new Event('submit', {
+                        bubbles: true,
+                        cancelable: true,
+                    })
+                    handleSendMessage(fakeEvent)
+                }, 100) // Small delay to ensure input value is set
+            }
+        })
+
+        buttonContainer.appendChild(button)
+    })
+
+    openersContainer.appendChild(buttonContainer)
+    messagesContainer.appendChild(openersContainer)
 }
 
 export function processMessageContent(messageContent) {

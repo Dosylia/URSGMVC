@@ -443,4 +443,215 @@ class ChatMessage extends DataBase
         }
     }
 
+    // Random Chat Session Methods
+
+    public function getActiveRandomChatSession($userId1, $userId2)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                session_id, 
+                initiator_user_id, 
+                target_user_id, 
+                session_status,
+                created_at
+            FROM 
+                random_chat_sessions 
+            WHERE 
+                ((initiator_user_id = ? AND target_user_id = ?) 
+                OR (initiator_user_id = ? AND target_user_id = ?))
+                AND session_status = 'active'
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ");
+        
+        $query->execute([$userId1, $userId2, $userId2, $userId1]);
+        $result = $query->fetch();
+        
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function createRandomChatSession($initiatorId, $targetId)
+    {
+        $query = $this->bdd->prepare("
+            INSERT INTO random_chat_sessions 
+            (initiator_user_id, target_user_id, session_status, created_at) 
+            VALUES (?, ?, 'active', NOW())
+        ");
+        
+        $result = $query->execute([$initiatorId, $targetId]);
+        
+        if ($result) {
+            return $this->bdd->lastInsertId();
+        } else {
+            return false;
+        }
+    }
+
+    public function getRandomChatSession($userId, $targetUserId)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                session_id, 
+                initiator_user_id, 
+                target_user_id, 
+                session_status
+            FROM 
+                random_chat_sessions 
+            WHERE 
+                ((initiator_user_id = ? AND target_user_id = ?) 
+                OR (initiator_user_id = ? AND target_user_id = ?))
+                AND session_status = 'active'
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ");
+        
+        $query->execute([$userId, $targetUserId, $targetUserId, $userId]);
+        $result = $query->fetch();
+        
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateRandomChatSession($sessionId, $newStatus)
+    {
+        $query = $this->bdd->prepare("
+            UPDATE random_chat_sessions 
+            SET 
+                session_status = ?,
+                closed_at = NOW()
+            WHERE 
+                session_id = ?
+        ");
+        
+        $result = $query->execute([$newStatus, $sessionId]);
+        
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    // Get incoming random chat sessions for a user (when someone finds them)
+    public function getIncomingRandomChatSessions($userId)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                session_id, 
+                initiator_user_id, 
+                target_user_id, 
+                session_status,
+                created_at
+            FROM 
+                random_chat_sessions 
+            WHERE 
+                target_user_id = ?
+                AND session_status = 'active'
+            ORDER BY created_at DESC
+        ");
+        
+        $query->execute([$userId]);
+        $result = $query->fetchAll();
+        
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function getAllActiveRandomChatSessions()
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                session_id, 
+                initiator_user_id, 
+                target_user_id, 
+                session_status,
+                created_at,
+                last_fetch_initiator,
+                last_fetch_target,
+                closed_at
+            FROM 
+                random_chat_sessions 
+            WHERE 
+                session_status = 'active'
+            ORDER BY created_at DESC
+        ");
+        
+        $query->execute();
+        $result = $query->fetchAll();
+        
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateRandomChatLastFetch($sessionId, $userId)
+    {
+        // Determine which column to update based on whether the user is initiator or target
+        $sessionQuery = $this->bdd->prepare("
+            SELECT initiator_user_id, target_user_id 
+            FROM random_chat_sessions 
+            WHERE session_id = ?
+        ");
+        $sessionQuery->execute([$sessionId]);
+        $session = $sessionQuery->fetch();
+        
+        if (!$session) {
+            return false;
+        }
+        
+        $columnToUpdate = ($session['initiator_user_id'] == $userId) ? 'last_fetch_initiator' : 'last_fetch_target';
+        
+        $query = $this->bdd->prepare("
+            UPDATE random_chat_sessions 
+            SET {$columnToUpdate} = NOW() 
+            WHERE session_id = ?
+        ");
+        
+        return $query->execute([$sessionId]);
+    }
+
+    public function closeRandomChatBySessionId($sessionId)
+    {
+        $query = $this->bdd->prepare("
+            UPDATE random_chat_sessions 
+            SET 
+                session_status = 'closed',
+                closed_at = NOW()
+            WHERE 
+                session_id = ?
+        ");
+        
+        return $query->execute([$sessionId]);
+    }
+
+    public function closeRandomChatSession($userId, $targetUserId)
+    {
+        $query = $this->bdd->prepare("
+            UPDATE random_chat_sessions 
+            SET 
+                session_status = 'closed',
+                closed_at = NOW()
+            WHERE 
+                ((initiator_user_id = ? AND target_user_id = ?) 
+                OR (initiator_user_id = ? AND target_user_id = ?))
+                AND session_status = 'active'
+        ");
+        
+        return $query->execute([$userId, $targetUserId, $targetUserId, $userId]);
+    }
+
+
 }

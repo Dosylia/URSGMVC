@@ -309,7 +309,8 @@
     background: var(--dark--red);
 }
 
-.playerfinder #createPostBtn {
+.playerfinder #createPostBtn,
+.playerfinder #findRandomPlayer {
     background: var(--main--red);
     color: #fff;
     padding: 0.5em 1em;
@@ -319,11 +320,13 @@
     border: none;
 }
 
-.playerfinder #createPostBtn:hover {
+.playerfinder #createPostBtn:hover,
+.playerfinder #findRandomPlayer:hover {
     background: var(--dark--red);
 }
 
-.dark-mode .playerfinder #createPostBtn {
+.dark-mode .playerfinder #createPostBtn,
+.dark-mode .playerfinder #findRandomPlayer {
     color: #fff;
 }
 

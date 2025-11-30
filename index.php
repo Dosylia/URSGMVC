@@ -241,6 +241,7 @@ $actionMap = [
     'sendMessageDiscordPhone' => [DiscordController::class, 'sendMessageDiscordPhone'],
     'playerfinder' => [PlayerFinderController::class, 'playerfinderPage'],
     'addPlayerFinderPost' => [PlayerFinderController::class, 'addPlayerFinderPost'],
+    'getRandomPlayerFinder' => [PlayerFinderController::class, 'getRandomPlayerFinder'],
     'deletePlayerFinderPost' => [PlayerFinderController::class, 'deletePlayerFinderPost'],
     'playWithThem' => [PlayerFinderController::class, 'playWithThem'],    
     'getInterestedPeople' => [PlayerFinderController::class, 'getInterestedPeople'],
@@ -283,6 +284,13 @@ $actionMap = [
     'buyAscendWebsite' => [PaymentController::class, 'buyAscendWebsite'],
     'switchPersonalColorWebsite' => [UserController::class, 'switchPersonalColorWebsite'],
     'isMobileUpdateNeeded' => [GoogleUserController::class, 'isMobileUpdateNeeded'],
+    'getRandomChatMessages' => [ChatMessageController::class, 'getRandomChatMessages'],
+    'closeRandomChat' => [ChatMessageController::class, 'closeRandomChat'],
+    'getRandomPlayerFinderChat' => [ChatMessageController::class, 'getRandomPlayerFinder'],
+    'checkIncomingRandomChats' => [ChatMessageController::class, 'checkIncomingRandomChats'],
+    'validateRandomChatSession' => [ChatMessageController::class, 'validateRandomChatSession'],
+    'checkIfRandomChatClosed' => [ChatMessageController::class, 'checkIfRandomChatClosed'],
+
 ];
 
 $action = "home";

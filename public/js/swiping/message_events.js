@@ -1,4 +1,10 @@
-import { deleteMessageApi, markMessageAsReadApi } from './message_api.js'
+import {
+    deleteMessageApi,
+    markMessageAsReadApi,
+    sendFriendRequestApi,
+    closeRandomChatApi,
+    findRandomPlayerApi,
+} from './message_api.js'
 import { fetchMessages } from './message_fetcher.js'
 import { closeRatingModal, sendRating } from './message_friends.js'
 import { showLoadingIndicator } from './message_renderer.js'
@@ -198,4 +204,121 @@ function handleFormSubmit(event) {
     import('./message_sender.js').then((module) => {
         module.handleSendMessage(event)
     })
+}
+
+// Initialize random chat specific events
+export function initRandomChatEvents() {
+    // Add friend button
+    document
+        .getElementById('add-friend-btn')
+        ?.addEventListener('click', async () => {
+            const randomSession = JSON.parse(
+                localStorage.getItem('randomChatSession')
+            )
+            if (randomSession) {
+                await sendFriendRequest(userId, randomSession.targetUserId)
+            }
+        })
+
+    // Skip to next user button
+    document
+        .getElementById('skip-user-btn')
+        ?.addEventListener('click', async () => {
+            await skipToNextRandomUser()
+        })
+
+    // Close chat button
+    document
+        .getElementById('close-chat-btn')
+        ?.addEventListener('click', async () => {
+            await closeRandomChat()
+        })
+}
+
+// Send friend request to random user
+async function sendFriendRequest(senderId, receiverId) {
+    try {
+        const data = await sendFriendRequestApi(senderId, receiverId)
+        if (data.success) {
+            // Update the button to show success
+            const addFriendBtn = document.getElementById('add-friend-btn')
+            if (addFriendBtn) {
+                addFriendBtn.textContent = 'Successfully Added'
+                addFriendBtn.style.backgroundColor = '#93c47d'
+                addFriendBtn.disabled = true
+            }
+        } else {
+            const addFriendBtn = document.getElementById('add-friend-btn')
+            if (addFriendBtn) {
+                addFriendBtn.textContent = 'Failed to Add'
+                addFriendBtn.style.backgroundColor = 'grey'
+            }
+        }
+    } catch (error) {
+        console.error('Error sending friend request:', error)
+        const addFriendBtn = document.getElementById('add-friend-btn')
+        if (addFriendBtn) {
+            addFriendBtn.textContent = 'Error'
+            addFriendBtn.style.backgroundColor = 'grey'
+        }
+    }
+}
+
+// Skip to next random user
+async function skipToNextRandomUser() {
+    // Close current session
+    await closeRandomChat(false)
+
+    // Get stored preferences and find new random player
+    const prefs = {
+        voice: localStorage.getItem('playerFinder_voice'),
+        role: localStorage.getItem('playerFinder_role'),
+        rank: localStorage.getItem('playerFinder_rank'),
+        description: localStorage.getItem('playerFinder_description'),
+    }
+
+    findRandomPlayer(prefs)
+}
+
+// Close random chat session
+async function closeRandomChat(showMessage = true) {
+    const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+    if (!randomSession) return
+
+    try {
+        // Notify server that chat is closed
+        await closeRandomChatApi(randomSession.targetUserId)
+
+        // Clear local storage
+        localStorage.removeItem('randomChatSession')
+
+        if (showMessage) {
+            alert('Random chat session closed.')
+        }
+
+        // Redirect back to main chat or player finder
+        window.location.href = 'persoChat'
+    } catch (error) {
+        console.error('Error closing random chat:', error)
+        alert('Error closing chat. Please try again.')
+    }
+}
+
+// Find random player function (moved from player finder)
+function findRandomPlayer(prefs) {
+    findRandomPlayerApi(prefs, userId)
+        .then((data) => {
+            if (data.success) {
+                const randomUserId = data.randomUserId
+                window.location.href = `persoChat&random_user_id=${randomUserId}`
+            } else {
+                alert(
+                    'No random players found. Try adjusting your preferences.'
+                )
+            }
+        })
+        .catch((error) => {
+            console.error('Request failed', error)
+            alert('Error finding random player. Please try again.')
+        })
 }

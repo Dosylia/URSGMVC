@@ -6,6 +6,7 @@ use models\FriendRequest;
 use models\User;
 use models\GoogleUser;
 use models\PlayerFinder;
+use models\ChatMessage;
 
 use traits\SecurityController;
 use traits\Translatable;
@@ -19,6 +20,7 @@ class PlayerFinderController
     private User $user;
     private GoogleUser $googleUser;
     private PlayerFinder $playerFinder;
+    private ChatMessage $chatmessage;
 
     public function __construct()
     {
@@ -26,6 +28,7 @@ class PlayerFinderController
         $this -> user = new User();
         $this -> googleUser = new GoogleUser();
         $this -> playerFinder = new PlayerFinder();
+        $this->chatmessage = new ChatMessage();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -447,6 +450,80 @@ class PlayerFinderController
             echo json_encode(['success' => true, 'message' => 'Player Finder post added successfully', 'oldTime' => $oldTime]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Failed to add Player Finder post']);
+        }
+    }
+
+    public function getRandomPlayerFinder() 
+    {
+        // Goal of that function, is to find a random player from the player finder posts, that is not the user himself fitting him with criterias sent
+        // Then redirect the user to that player's chat page, with a selection a ready messages (about gaming)
+        // They would not be friends yet, but can start chatting directly
+        // And somehow if they don't like the player, they can skip to another random one (limit to 5 skips per day ?)
+        // This chat should vanish if they don't become friends within 24 hours ?
+        // Should have clear option to add as friends
+
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        $data = json_decode($_POST['param']);
+
+        if (!$token) {
+            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
+            return;
+        }
+
+        if (!isset($data->userId)) {
+            echo json_encode(['success' => false, 'message' => 'Missing userId']);
+            return;
+        }
+
+        $userId = $data->userId;
+
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
+            return;
+        }
+
+        $user = $this->user->getUserById($_SESSION['userId']);
+        if (!$user || $user['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        // Check preferences of user to filter players (default them to League of Legends, Any role, Any rank, voice chat yes/no)
+        $gamePref      = strtolower($data->gamePref ?? 'any') === 'any' ? null : $data->gamePref;
+        $voiceChatPref = strtolower($data->voiceChat ?? 'any') === 'any' ? null : $data->voiceChat;
+        $rolePref      = strtolower($data->roleLookingFor ?? 'any') === 'any' ? null : $data->roleLookingFor;
+        $rankPref      = strtolower($data->rankLookingFor ?? 'any') === 'any' ? null : $data->rankLookingFor;
+
+        $filters = [
+            'userId'    => $userId,
+            'game'      => $gamePref,
+            'voiceChat' => $voiceChatPref,
+            'role'      => $rolePref,
+            'rank'      => $rankPref
+        ];
+
+
+
+        $randomPlayer = $this->playerFinder->getRandomPlayerFinderPost($filters);
+
+        if ($randomPlayer) {
+              $sessionId = $this->chatmessage->createRandomChatSession($data->userId, 158); // 2 is a placeholder for $randomPlayer['user_id']
+            if ($sessionId) {
+                echo json_encode([
+                    'success' => true, 
+                    'randomUserId' => 158, // $randomPlayer['user_id'],
+                    'sessionId' => $sessionId
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to create chat session']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No matching player found']);
         }
     }
 
