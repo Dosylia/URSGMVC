@@ -58,6 +58,17 @@ class PlayerFinder extends DataBase
             LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
             LEFT JOIN valorant val ON val.user_id = u.user_id
             WHERE pf.user_id != :userId
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM friendrequest fr
+                WHERE 
+                    (
+                        (fr.fr_senderId = :userId AND fr.fr_receiverId = u.user_id)
+                        OR
+                        (fr.fr_senderId = u.user_id AND fr.fr_receiverId = :userId)
+                    )
+                    AND fr.fr_status = 'accepted'
+            )
         ";
 
         $params = [

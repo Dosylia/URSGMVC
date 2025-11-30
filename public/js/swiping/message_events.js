@@ -322,3 +322,64 @@ function findRandomPlayer(prefs) {
             alert('Error finding random player. Please try again.')
         })
 }
+
+// Initialize random chat control event listeners
+export function initRandomChatControlEvents(validateSessionFn) {
+    const addFriendBtn = document.getElementById('add-friend-btn')
+    const skipUserBtn = document.getElementById('skip-user-btn')
+    const closeChatBtn = document.getElementById('close-chat-btn')
+
+    if (addFriendBtn) {
+        addFriendBtn.addEventListener('click', async () => {
+            // Validate session before allowing friend request
+            if (await validateSessionFn()) {
+                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                if (randomSession) {
+                    try {
+                        await sendFriendRequestApi(userId, randomSession.targetUserId)
+                        addFriendBtn.textContent = 'Request Sent!'
+                        addFriendBtn.style.background = '#28a745'
+                        addFriendBtn.disabled = true
+                    } catch (error) {
+                        console.error('Error sending friend request:', error)
+                        addFriendBtn.textContent = 'Error'
+                        addFriendBtn.style.background = '#dc3545'
+                    }
+                }
+            } else {
+                alert('This chat session has expired. Please start a new one.')
+                window.location.href = '/persoChat'
+            }
+        })
+    }
+
+    if (skipUserBtn) {
+        skipUserBtn.addEventListener('click', async () => {
+            if (await validateSessionFn()) {
+                // Close current session and find new player
+                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                if (randomSession) {
+                    await closeRandomChatApi(randomSession.targetUserId)
+                    localStorage.removeItem('randomChatSession')
+                    // Redirect to player finder or main chat
+                    window.location.href = '/persoChat'
+                }
+            } else {
+                window.location.href = '/persoChat'
+            }
+        })
+    }
+
+    if (closeChatBtn) {
+        closeChatBtn.addEventListener('click', async () => {
+            if (await validateSessionFn()) {
+                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                if (randomSession) {
+                    await closeRandomChatApi(randomSession.targetUserId)
+                }
+            }
+            localStorage.removeItem('randomChatSession')
+            window.location.href = '/persoChat'
+        })
+    }
+}

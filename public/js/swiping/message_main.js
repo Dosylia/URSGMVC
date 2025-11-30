@@ -162,155 +162,17 @@ async function initRandomChatUI(randomUserId) {
     await addRandomChatControls()
 }
 
-// Add special controls for random chat
+// Initialize random chat controls (orchestration only)
 async function addRandomChatControls() {
-    const messageContainer = document.getElementById('messages')
-    if (!messageContainer) return
-
-    // Check if controls already exist to avoid duplicates
-    if (document.getElementById('random-chat-header')) {
-        return
-    }
-
-    // Create random chat header
-    const randomChatHeader = document.createElement('div')
-    randomChatHeader.id = 'random-chat-header'
-    randomChatHeader.style.cssText = `
-        background: #007bff;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        border-radius: 5px;
-        margin-bottom: 10px;
-    `
-    randomChatHeader.innerHTML = `
-        <p>🎲 Random Chat Session</p>
-        <p style="font-size: 12px;">Chat with a random player!</p>
-    `
-
-    // Create action buttons
-    const actionButtons = document.createElement('div')
-    actionButtons.id = 'random-chat-buttons'
-    actionButtons.style.cssText = `
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin: 10px 0;
-    `
-
-    actionButtons.innerHTML = `
-        <button id="add-friend-btn" style="
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        ">Add Friend</button>
-        <button id="skip-user-btn" style="
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        ">Skip to Next</button>
-        <button id="close-chat-btn" style="
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        ">Close Chat</button>
-    `
-
-    // Insert at the top of message container
-    if (messageContainer.firstChild) {
-        messageContainer.insertBefore(
-            randomChatHeader,
-            messageContainer.firstChild
-        )
-        messageContainer.insertBefore(
-            actionButtons,
-            messageContainer.children[1]
-        )
-    } else {
-        messageContainer.appendChild(randomChatHeader)
-        messageContainer.appendChild(actionButtons)
-    }
-
-    // Add event listeners with session validation
-    const addFriendBtn = document.getElementById('add-friend-btn')
-    const skipUserBtn = document.getElementById('skip-user-btn')
-    const closeChatBtn = document.getElementById('close-chat-btn')
-
-    if (addFriendBtn) {
-        addFriendBtn.addEventListener('click', async () => {
-            // Validate session before allowing friend request
-            if (await validateRandomChatSession()) {
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    try {
-                        // Import sendFriendRequestApi function
-                        const { sendFriendRequestApi } = await import(
-                            './message_api.js'
-                        )
-                        await sendFriendRequestApi(
-                            userId,
-                            randomSession.targetUserId
-                        )
-                        addFriendBtn.textContent = 'Request Sent!'
-                        addFriendBtn.style.background = '#28a745'
-                        addFriendBtn.disabled = true
-                    } catch (error) {
-                        console.error('Error sending friend request:', error)
-                        addFriendBtn.textContent = 'Error'
-                        addFriendBtn.style.background = '#dc3545'
-                    }
-                }
-            } else {
-                alert('This chat session has expired. Please start a new one.')
-                window.location.href = '/persoChat'
-            }
-        })
-    }
-
-    if (skipUserBtn) {
-        skipUserBtn.addEventListener('click', async () => {
-            if (await validateRandomChatSession()) {
-                // Close current session and find new player
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    await closeRandomChatApi(randomSession.targetUserId)
-                    localStorage.removeItem('randomChatSession')
-                    // Redirect to player finder or main chat
-                    window.location.href = '/persoChat'
-                }
-            } else {
-                window.location.href = '/persoChat'
-            }
-        })
-    }
-
-    if (closeChatBtn) {
-        closeChatBtn.addEventListener('click', async () => {
-            if (await validateRandomChatSession()) {
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    await closeRandomChatApi(randomSession.targetUserId)
-                }
-            }
-            localStorage.removeItem('randomChatSession')
-            window.location.href = '/persoChat'
-        })
-    }
+    // Import and use the proper modules
+    const { renderRandomChatControls } = await import('./message_renderer.js')
+    const { initRandomChatControlEvents } = await import('./message_events.js')
+    
+    // Render the controls
+    renderRandomChatControls()
+    
+    // Initialize event handlers
+    initRandomChatControlEvents(validateRandomChatSession)
 }
 
 // Check for incoming random chat sessions (when someone finds you)

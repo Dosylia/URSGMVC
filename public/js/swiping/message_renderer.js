@@ -3,6 +3,90 @@ import { replyToMessage, deleteMessage } from './message_events.js'
 import { handleSendMessage } from './message_sender.js'
 import { userId, messageContainer } from './message_utils.js'
 
+// Render random chat control elements (UI only)
+export function renderRandomChatControls() {
+    const messagesContainer = document.getElementById('messages')
+    if (!messagesContainer) return
+
+    // Check if controls already exist to avoid duplicates
+    if (document.getElementById('random-chat-header')) {
+        return
+    }
+
+    // Create a persistent container for random chat controls (outside message container)
+    let controlsContainer = document.getElementById('random-chat-controls-container')
+    if (!controlsContainer) {
+        controlsContainer = document.createElement('div')
+        controlsContainer.id = 'random-chat-controls-container'
+        controlsContainer.style.cssText = `
+            position: relative;
+            z-index: 1000;
+        `
+        
+        // Insert before the messages container
+        if (messagesContainer && messagesContainer.parentNode) {
+            messagesContainer.parentNode.insertBefore(controlsContainer, messagesContainer)
+        }
+    }
+
+    // Create random chat header
+    const randomChatHeader = document.createElement('div')
+    randomChatHeader.id = 'random-chat-header'
+    randomChatHeader.style.cssText = `
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    `
+    randomChatHeader.innerHTML = `
+        <p>🎲 Random Chat Session</p>
+        <p style="font-size: 12px;">Chat with a random player!</p>
+    `
+
+    // Create action buttons
+    const actionButtons = document.createElement('div')
+    actionButtons.id = 'random-chat-buttons'
+    actionButtons.style.cssText = `
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 10px 0;
+    `
+
+    actionButtons.innerHTML = `
+        <button id="add-friend-btn" style="
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        ">Add Friend</button>
+        <button id="skip-user-btn" style="
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        ">Skip to Next</button>
+        <button id="close-chat-btn" style="
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        ">Close Chat</button>
+    `
+
+    // Append to persistent container
+    controlsContainer.appendChild(randomChatHeader)
+    controlsContainer.appendChild(actionButtons)
+}
+
 export function showLoadingIndicator() {
     let messagesContainer = document.getElementById('messages')
     messagesContainer.innerHTML = '<p>Loading messages...</p>'

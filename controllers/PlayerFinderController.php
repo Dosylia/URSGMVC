@@ -507,12 +507,11 @@ class PlayerFinderController
             'rank'      => $rankPref
         ];
 
-
-
+        // Do not take friends, this feature is to find new people
         $randomPlayer = $this->playerFinder->getRandomPlayerFinderPost($filters);
 
         if ($randomPlayer) {
-              $sessionId = $this->chatmessage->createRandomChatSession($data->userId, 158); // 2 is a placeholder for $randomPlayer['user_id']
+              $sessionId = $this->chatmessage->createRandomChatSession($data->userId, 158); // placeholder for $randomPlayer['user_id']
             if ($sessionId) {
                 echo json_encode([
                     'success' => true, 
