@@ -839,7 +839,14 @@ class UserController
             if (isset($_POST['username']) && $user['user_isAscend'] == 1)
             {
                 $username = $this->validateInput($_POST["username"]);
+                // Check if username is taken by another user
                 $this->setUsername($username);
+                $existingUser = $this->uidExists($this->getUsername());
+
+                if ($existingUser && $existingUser['user_id'] != $this->getUserId()) {
+                    header("location:/userProfile?message=Username already exists");
+                    exit();
+                }
             } else {
                 $this->setUsername($user['user_username']);
             }
@@ -3165,6 +3172,18 @@ class UserController
         return $result;
     }
 
+    public function uidExists($username) 
+    {
+        $result;
+        $userExists = $this->user->getUserByUsername($username);
+        if ($userExists) {
+            $result = true;
+        } 
+        else {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function invalidUid($username) 
     {

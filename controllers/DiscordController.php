@@ -804,14 +804,41 @@ class DiscordController
         $clientSecret = $discordClientSecret;
         $redirectUri = "https://ur-sg.com/discordClaim";
 
-        $roleType = $_GET['role'] ?? 'gold';
+        $roleType = $_GET['state'] ?? null;
+        
+        if(!in_array($roleType, ['ursg gold', 'ursg ascend'])) {
+            header("Location: /store?message=Role is not valid.");
+            exit();
+        }
+
+        // For the role, check that user actually owns it
+        $userId = $_SESSION['userId'] ?? null;
+        if (!$userId) {
+            header("Location: /store?message=You must be logged in to claim a role.");
+            exit();
+        }
+
+        switch($roleType) {
+            case 'ursggold':
+                if ($user['user_isGold'] != 1) {
+                    header("Location: /store?message=You do not own the gold role.");
+                    exit();
+                }
+                break;
+            case 'ursgascend':
+                if ($user['user_isAscend'] != 1) {
+                    header("Location: /store?message=You do not own the Ascend role.");
+                    exit();
+                }
+                break;
+        }
 
         $roleIds = [
-            'gold' => 1375359507063902219,
-            'Ascend'   => 1429461787534950563,
+            'ursg gold' => 1375359507063902219,
+            'ursg ascend'   => 1429461787534950563,
         ];
 
-        $roleId = $roleIds[$roleType] ?? $roleIds['gold'];
+        $roleId = $roleIds[$roleType];
 
         $code = $_GET['code'] ?? null;
         if (!$code) {
