@@ -89,7 +89,7 @@ class RiotController
                 if ($puuid) {
                     $existingUser = $this->googleUser->getUserByPuuidGoogle($puuid);
 
-                    if ($existingUser)
+                    if ($existingUser && $existingUser['google_userId'] != $_SESSION['google_userId'])
                     {
                         header('Location: /userProfile?message=This League of Legends account is already used on URSG.');
                         exit();
