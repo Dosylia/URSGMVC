@@ -100,11 +100,21 @@ export function showLoadingIndicator() {
 // Function to update message container
 export function updateMessageContainer(messages, friend, user) {
     let messagesContainer = document.getElementById('messages')
-    messagesContainer.innerHTML = '' // Clear current messages
 
     // Check if this is a random chat session
     const randomSession = localStorage.getItem('randomChatSession')
     const isRandomChat = randomSession !== null
+
+    // Skip re-render if random chat openers are already showing and there are still no messages
+    if (
+        isRandomChat &&
+        (!messages || messages.length === 0) &&
+        messagesContainer.querySelector('#random-chat-openers')
+    ) {
+        return
+    }
+
+    messagesContainer.innerHTML = '' // Clear current messages
 
     // Check if this is a random chat session (for the target user)
     const isTargetOfRandomChat = friend?.isRandomChatTarget
@@ -806,6 +816,7 @@ export function updateMessageContainer(messages, friend, user) {
 // Add conversation openers for random chat when no messages exist
 function addRandomChatOpeners(messagesContainer, userGame) {
     const openersContainer = document.createElement('div')
+    openersContainer.id = 'random-chat-openers'
     openersContainer.style.cssText = `
         padding: 20px;
         text-align: center;
@@ -837,6 +848,12 @@ function addRandomChatOpeners(messagesContainer, userGame) {
         .then((response) => response.json())
         .then((data) => {
             const gameOpeners = data[userGame] || []
+
+            //Use only 3 random openers if there are more than 3
+            if (gameOpeners.length > 3) {
+                gameOpeners.sort(() => 0.5 - Math.random())
+                gameOpeners.length = 3
+            }
 
             gameOpeners.forEach((opener) => {
                 const button = document.createElement('button')
