@@ -3,7 +3,6 @@ import {
     initChatEvents,
     initMessageInputEvents,
     initSendButtonEvents,
-    initRandomChatEvents,
 } from './message_events.js'
 import { initImageHandlers } from './message_images.js'
 import { initEmoteHandlers } from './message_emotes.js'
@@ -120,10 +119,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     initImageHandlers()
     initEmoteHandlers()
 
-    if (randomUserId) {
-        initRandomChatEvents()
-    }
-
     // Check for incoming random chat sessions (for target users)
     checkForIncomingRandomChats()
     setInterval(checkForIncomingRandomChats, 10000) // Check every 10 seconds
@@ -167,10 +162,10 @@ async function addRandomChatControls() {
     // Import and use the proper modules
     const { renderRandomChatControls } = await import('./message_renderer.js')
     const { initRandomChatControlEvents } = await import('./message_events.js')
-    
+
     // Render the controls
     renderRandomChatControls()
-    
+
     // Initialize event handlers
     initRandomChatControlEvents(validateRandomChatSession)
 }

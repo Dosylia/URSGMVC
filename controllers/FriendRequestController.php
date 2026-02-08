@@ -1327,9 +1327,15 @@ class FriendRequestController
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
 
             if ($checkIfPending) {
-                $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
-                if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                // This should only work if it's the receiver that accepts the friend request, otherwise it would update it to accepted when the sender tries to send a new friend request while it's still pending
+                if ($checkIfPending['fr_receiverId'] === $this->getSenderId()) {
+                    $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
+                    if ($updateFriendRequest) {
+                        echo json_encode(['success' => true, 'message' => 'Friend request accepted']);
+                        return;
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Friend request is pending, waiting for the other user to accept it']);
                     return;
                 }
             }

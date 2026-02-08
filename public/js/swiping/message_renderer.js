@@ -14,7 +14,9 @@ export function renderRandomChatControls() {
     }
 
     // Create a persistent container for random chat controls (outside message container)
-    let controlsContainer = document.getElementById('random-chat-controls-container')
+    let controlsContainer = document.getElementById(
+        'random-chat-controls-container'
+    )
     if (!controlsContainer) {
         controlsContainer = document.createElement('div')
         controlsContainer.id = 'random-chat-controls-container'
@@ -22,10 +24,13 @@ export function renderRandomChatControls() {
             position: relative;
             z-index: 1000;
         `
-        
+
         // Insert before the messages container
         if (messagesContainer && messagesContainer.parentNode) {
-            messagesContainer.parentNode.insertBefore(controlsContainer, messagesContainer)
+            messagesContainer.parentNode.insertBefore(
+                controlsContainer,
+                messagesContainer
+            )
         }
     }
 
@@ -124,7 +129,14 @@ export function updateMessageContainer(messages, friend, user) {
 
     // Add conversation starters if this is a random chat with no messages
     if (isRandomChat && (!messages || messages.length === 0)) {
-        addRandomChatOpeners(messagesContainer)
+        // Get the game from playerfinder filters (set before random chat starts)
+        const filters = JSON.parse(
+            localStorage.getItem('playerfinder_filters') || '{}'
+        )
+        addRandomChatOpeners(
+            messagesContainer,
+            filters.game || 'League of Legends'
+        )
         return // Exit early since there are no messages to display
     }
 
@@ -244,18 +256,18 @@ export function updateMessageContainer(messages, friend, user) {
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 20px; padding-bottom: 5px; position: relative; z-index: 950;">
                                 <span class="timestamp-hover">${formattedTime}</span>
                                 <span class="message-text" style="text-align: ${messagePosition}; background-color: ${backgroundColor};">${
-                            user.user_hasChatFilter
-                                ? renderEmotes(
-                                      chatfilter(
-                                          message.chat_message,
-                                          senderOwnsGoldEmotes
-                                      )
-                                  )
-                                : renderEmotes(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                        }
+                                    user.user_hasChatFilter
+                                        ? renderEmotes(
+                                              chatfilter(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                          )
+                                        : renderEmotes(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                }
                                 ${
                                     isCurrentUser
                                         ? `<span class="message-status">${messageStatus}</span>`
@@ -288,27 +300,27 @@ export function updateMessageContainer(messages, friend, user) {
                         messageContent = `
                                 <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
                                     <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                            messageUser.user_username
-                        )}"><strong class="strong_text">${
-                            messageUser.user_username
-                        }</strong></a>
+                                        messageUser.user_username
+                                    )}"><strong class="strong_text">${
+                                        messageUser.user_username
+                                    }</strong></a>
                                     <span class="timestamp ${messagePosition}">${formattedDate}</span>
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative; z-index: 950;">
                                     <span class="timestamp-hover">${formattedTime}</span>
                                     <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                            user.user_hasChatFilter
-                                ? renderEmotes(
-                                      chatfilter(
-                                          message.chat_message,
-                                          senderOwnsGoldEmotes
-                                      )
-                                  )
-                                : renderEmotes(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                        }
+                                        user.user_hasChatFilter
+                                            ? renderEmotes(
+                                                  chatfilter(
+                                                      message.chat_message,
+                                                      senderOwnsGoldEmotes
+                                                  )
+                                              )
+                                            : renderEmotes(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                    }
                                     ${
                                         isCurrentUser
                                             ? `<span class="message-status">${messageStatus}</span>`
@@ -342,8 +354,8 @@ export function updateMessageContainer(messages, friend, user) {
                     messageContent = `
                                 <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
                                     <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                        messageUser.user_username
-                    )}">
+                                        messageUser.user_username
+                                    )}">
                                         <strong class="strong_text">${
                                             messageUser.user_username
                                         }</strong>
@@ -412,18 +424,18 @@ export function updateMessageContainer(messages, friend, user) {
                             <p class="last-message" style="text-align: ${messagePosition}; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
                                 <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                            user.user_hasChatFilter
-                                ? renderEmotes(
-                                      chatfilter(
-                                          message.chat_message,
-                                          senderOwnsGoldEmotes
-                                      )
-                                  )
-                                : renderEmotes(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                        }
+                                    user.user_hasChatFilter
+                                        ? renderEmotes(
+                                              chatfilter(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                          )
+                                        : renderEmotes(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                }
                                 ${
                                     isCurrentUser
                                         ? `<span class="message-status">${messageStatus}</span>`
@@ -456,27 +468,27 @@ export function updateMessageContainer(messages, friend, user) {
                         messageContent = `
                                 <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
                                     <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                            messageUser.user_username
-                        )}"><strong class="strong_text">${
-                            messageUser.user_username
-                        }</strong></a>
+                                        messageUser.user_username
+                                    )}"><strong class="strong_text">${
+                                        messageUser.user_username
+                                    }</strong></a>
                                     <span class="timestamp ${messagePosition}">${formattedDate}</span>
                                 </p>
                                 <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                     <span class="timestamp-hover">${formattedTime}</span>
                                     <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                            user.user_hasChatFilter
-                                ? renderEmotes(
-                                      chatfilter(
-                                          message.chat_message,
-                                          senderOwnsGoldEmotes
-                                      )
-                                  )
-                                : renderEmotes(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                        }
+                                        user.user_hasChatFilter
+                                            ? renderEmotes(
+                                                  chatfilter(
+                                                      message.chat_message,
+                                                      senderOwnsGoldEmotes
+                                                  )
+                                              )
+                                            : renderEmotes(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                    }
                                     ${
                                         isCurrentUser
                                             ? `<span class="message-status">${messageStatus}</span>`
@@ -510,27 +522,27 @@ export function updateMessageContainer(messages, friend, user) {
                     messageContent = `
                             <p id="username_message" style="text-align: ${userPosition}; padding-bottom: 20px;">
                                 <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                        messageUser.user_username
-                    )}"><strong class="strong_text">${
-                        messageUser.user_username
-                    }</strong></a>
+                                    messageUser.user_username
+                                )}"><strong class="strong_text">${
+                                    messageUser.user_username
+                                }</strong></a>
                                 <span class="timestamp ${messagePosition}">${formattedDate}</span>
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px; position: relative;">
                                 <span class="timestamp-hover">${formattedTime}</span>
                                 <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                        user.user_hasChatFilter
-                            ? renderEmotes(
-                                  chatfilter(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                              )
-                            : renderEmotes(
-                                  message.chat_message,
-                                  senderOwnsGoldEmotes
-                              )
-                    }
+                                    user.user_hasChatFilter
+                                        ? renderEmotes(
+                                              chatfilter(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                          )
+                                        : renderEmotes(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                }
                                 ${
                                     isCurrentUser
                                         ? `<span class="message-status">${messageStatus}</span>`
@@ -573,18 +585,18 @@ export function updateMessageContainer(messages, friend, user) {
                         <p class="last-message" style="text-align: ${messagePosition};">
                             <span class="timestamp-hover">${formattedTime}</span>
                             <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                        user.user_hasChatFilter
-                            ? renderEmotes(
-                                  chatfilter(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                              )
-                            : renderEmotes(
-                                  message.chat_message,
-                                  senderOwnsGoldEmotes
-                              )
-                    }
+                                user.user_hasChatFilter
+                                    ? renderEmotes(
+                                          chatfilter(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                      )
+                                    : renderEmotes(
+                                          message.chat_message,
+                                          senderOwnsGoldEmotes
+                                      )
+                            }
                             ${
                                 isCurrentUser
                                     ? `<span class="message-status">${messageStatus}</span>`
@@ -597,27 +609,27 @@ export function updateMessageContainer(messages, friend, user) {
                     messageContent = `
                             <p id="username_message" style="text-align: ${userPosition};">
                                 <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                        messageUser.user_username
-                    )}"><strong class="strong_text">${
-                        messageUser.user_username
-                    }</strong></a>
+                                    messageUser.user_username
+                                )}"><strong class="strong_text">${
+                                    messageUser.user_username
+                                }</strong></a>
                                 <span class="timestamp ${messagePosition}">${formattedDate}</span>
                             </p>
                             <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                                 <span class="timestamp-hover">${formattedTime}</span>
                                 <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                        user.user_hasChatFilter
-                            ? renderEmotes(
-                                  chatfilter(
-                                      message.chat_message,
-                                      senderOwnsGoldEmotes
-                                  )
-                              )
-                            : renderEmotes(
-                                  message.chat_message,
-                                  senderOwnsGoldEmotes
-                              )
-                    }
+                                    user.user_hasChatFilter
+                                        ? renderEmotes(
+                                              chatfilter(
+                                                  message.chat_message,
+                                                  senderOwnsGoldEmotes
+                                              )
+                                          )
+                                        : renderEmotes(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                }
                                 ${
                                     isCurrentUser
                                         ? `<span class="message-status">${messageStatus}</span>`
@@ -631,27 +643,27 @@ export function updateMessageContainer(messages, friend, user) {
                 messageContent = `
                         <p id="username_message" style="text-align: ${userPosition};">
                             <a class="username_chat_friend clickable" target="_blank" href="/${messageLink}&username=${encodeURIComponent(
-                    messageUser.user_username
-                )}"><strong class="strong_text">${
-                    messageUser.user_username
-                }</strong></a>
+                                messageUser.user_username
+                            )}"><strong class="strong_text">${
+                                messageUser.user_username
+                            }</strong></a>
                             <span class="timestamp ${messagePosition}">${formattedDate}</span>
                         </p>
                         <p class="last-message" style="text-align: ${messagePosition}; padding-top: 3px;">
                             <span class="timestamp-hover">${formattedTime}</span>
                             <span class="message-text" style="text-align: ${messagePosition};  background-color: ${backgroundColor};">${
-                    user.user_hasChatFilter
-                        ? renderEmotes(
-                              chatfilter(
-                                  message.chat_message,
-                                  senderOwnsGoldEmotes
-                              )
-                          )
-                        : renderEmotes(
-                              message.chat_message,
-                              senderOwnsGoldEmotes
-                          )
-                }
+                                user.user_hasChatFilter
+                                    ? renderEmotes(
+                                          chatfilter(
+                                              message.chat_message,
+                                              senderOwnsGoldEmotes
+                                          )
+                                      )
+                                    : renderEmotes(
+                                          message.chat_message,
+                                          senderOwnsGoldEmotes
+                                      )
+                            }
                             ${
                                 isCurrentUser
                                     ? `<span class="message-status">${messageStatus}</span>`
@@ -792,7 +804,7 @@ export function updateMessageContainer(messages, friend, user) {
 }
 
 // Add conversation openers for random chat when no messages exist
-function addRandomChatOpeners(messagesContainer) {
+function addRandomChatOpeners(messagesContainer, userGame) {
     const openersContainer = document.createElement('div')
     openersContainer.style.cssText = `
         padding: 20px;
@@ -808,18 +820,6 @@ function addRandomChatOpeners(messagesContainer) {
         <p style="margin-bottom: 20px; opacity: 0.9;">Choose a conversation starter or type your own message:</p>
     `
 
-    // Gaming conversation starters
-    const gameOpeners = [
-        'Hey! Wanna play some ARAM? 🎯',
-        'Looking for someone to duo with! 🤝',
-        "What's your main role? 🎮",
-        'Want to try some ranked games? 🏆',
-        'Ready for some fun matches? ⚔️',
-        'What rank are you aiming for? 🎯',
-        'Fancy a quick game? ⚡',
-        "Let's climb together! 📈",
-    ]
-
     const buttonContainer = document.createElement('div')
     buttonContainer.style.cssText = `
         display: flex;
@@ -829,64 +829,63 @@ function addRandomChatOpeners(messagesContainer) {
         margin-top: 15px;
     `
 
-    // Create buttons for each opener
-    gameOpeners.forEach((opener, index) => {
-        const button = document.createElement('button')
-        button.textContent = opener
-        button.style.cssText = `
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        `
-
-        button.addEventListener('mouseenter', () => {
-            button.style.background = 'rgba(255, 255, 255, 0.3)'
-            button.style.transform = 'translateY(-2px)'
-        })
-
-        button.addEventListener('mouseleave', () => {
-            button.style.background = 'rgba(255, 255, 255, 0.2)'
-            button.style.transform = 'translateY(0)'
-        })
-
-        button.addEventListener('click', () => {
-            console.log('[DEV] Opener button clicked:', opener)
-            // Fill the message input with the selected opener
-            const messageInput = document.getElementById('message_text')
-            if (messageInput) {
-                messageInput.value = opener
-                messageInput.focus()
-
-                console.log('[DEV] Message input set to opener:', opener)
-                // Trigger any input events to update UI state
-                messageInput.dispatchEvent(
-                    new Event('input', { bubbles: true })
-                )
-
-                console.log('[DEV] Random chat opener selected:', opener)
-
-                // Automatically send the message
-                setTimeout(() => {
-                    const fakeEvent = new Event('submit', {
-                        bubbles: true,
-                        cancelable: true,
-                    })
-                    handleSendMessage(fakeEvent)
-                }, 100) // Small delay to ensure input value is set
-            }
-        })
-
-        buttonContainer.appendChild(button)
-    })
-
     openersContainer.appendChild(buttonContainer)
     messagesContainer.appendChild(openersContainer)
+
+    // Fetch openers and create buttons once data arrives
+    fetch('public/js/swiping/chat_openers.json')
+        .then((response) => response.json())
+        .then((data) => {
+            const gameOpeners = data[userGame] || []
+
+            gameOpeners.forEach((opener) => {
+                const button = document.createElement('button')
+                button.textContent = opener
+                button.style.cssText = `
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 14px;
+                    backdrop-filter: blur(10px);
+                `
+
+                button.addEventListener('mouseenter', () => {
+                    button.style.background = 'rgba(255, 255, 255, 0.3)'
+                    button.style.transform = 'translateY(-2px)'
+                })
+
+                button.addEventListener('mouseleave', () => {
+                    button.style.background = 'rgba(255, 255, 255, 0.2)'
+                    button.style.transform = 'translateY(0)'
+                })
+
+                button.addEventListener('click', () => {
+                    const messageInput = document.getElementById('message_text')
+                    if (messageInput) {
+                        messageInput.value = opener
+                        messageInput.focus()
+                        messageInput.dispatchEvent(
+                            new Event('input', { bubbles: true })
+                        )
+
+                        // Automatically send the message
+                        setTimeout(() => {
+                            const fakeEvent = new Event('submit', {
+                                bubbles: true,
+                                cancelable: true,
+                            })
+                            handleSendMessage(fakeEvent)
+                        }, 100)
+                    }
+                })
+
+                buttonContainer.appendChild(button)
+            })
+        })
 }
 
 export function processMessageContent(messageContent) {

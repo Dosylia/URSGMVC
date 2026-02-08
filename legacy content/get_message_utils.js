@@ -1206,7 +1206,6 @@ function scrollToBottom() {
 }
 
 const chatfilter = (textToFilter) => {
-    console.log('Filtering chat message:', textToFilter)
     // Combine all bad words from all languages into a single array
     const allBadWords = badWordsList.flatMap(([, badWords]) => badWords)
 

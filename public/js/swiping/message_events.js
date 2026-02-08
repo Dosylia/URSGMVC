@@ -206,108 +206,14 @@ function handleFormSubmit(event) {
     })
 }
 
-// Initialize random chat specific events
-export function initRandomChatEvents() {
-    // Add friend button
-    document
-        .getElementById('add-friend-btn')
-        ?.addEventListener('click', async () => {
-            const randomSession = JSON.parse(
-                localStorage.getItem('randomChatSession')
-            )
-            if (randomSession) {
-                await sendFriendRequest(userId, randomSession.targetUserId)
-            }
-        })
-
-    // Skip to next user button
-    document
-        .getElementById('skip-user-btn')
-        ?.addEventListener('click', async () => {
-            await skipToNextRandomUser()
-        })
-
-    // Close chat button
-    document
-        .getElementById('close-chat-btn')
-        ?.addEventListener('click', async () => {
-            await closeRandomChat()
-        })
-}
-
-// Send friend request to random user
-async function sendFriendRequest(senderId, receiverId) {
-    try {
-        const data = await sendFriendRequestApi(senderId, receiverId)
-        if (data.success) {
-            // Update the button to show success
-            const addFriendBtn = document.getElementById('add-friend-btn')
-            if (addFriendBtn) {
-                addFriendBtn.textContent = 'Successfully Added'
-                addFriendBtn.style.backgroundColor = '#93c47d'
-                addFriendBtn.disabled = true
-            }
-        } else {
-            const addFriendBtn = document.getElementById('add-friend-btn')
-            if (addFriendBtn) {
-                addFriendBtn.textContent = 'Failed to Add'
-                addFriendBtn.style.backgroundColor = 'grey'
-            }
-        }
-    } catch (error) {
-        console.error('Error sending friend request:', error)
-        const addFriendBtn = document.getElementById('add-friend-btn')
-        if (addFriendBtn) {
-            addFriendBtn.textContent = 'Error'
-            addFriendBtn.style.backgroundColor = 'grey'
-        }
-    }
-}
-
-// Skip to next random user
-async function skipToNextRandomUser() {
-    // Close current session
-    await closeRandomChat()
-
-    // Get stored preferences and find new random player
-    const prefs = {
-        voice: localStorage.getItem('playerFinder_voice'),
-        role: localStorage.getItem('playerFinder_role'),
-        rank: localStorage.getItem('playerFinder_rank'),
-        description: localStorage.getItem('playerFinder_description'),
-    }
-
-    findRandomPlayer(prefs)
-}
-
-// Close random chat session
-async function closeRandomChat() {
-    const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
-    if (!randomSession) return
-
-    try {
-        // Notify server that chat is closed
-        await closeRandomChatApi(randomSession.targetUserId)
-
-        // Clear local storage
-        localStorage.removeItem('randomChatSession')
-
-        // Redirect back to main chat or player finder
-        console.log('Random chat closed successfully')
-        window.location.href = '/persoChat?message=Chat closed successfully'
-    } catch (error) {
-        console.error('Error closing random chat:', error)
-        alert('Error closing chat. Please try again.')
-    }
-}
-
 // Find random player function (moved from player finder)
 function findRandomPlayer(prefs) {
     findRandomPlayerApi(prefs, userId)
         .then((data) => {
             if (data.success) {
                 const randomUserId = data.randomUserId
-                window.location.href = `persoChat&random_user_id=${randomUserId}`
+                const sessionId = data.sessionId
+                window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
             } else {
                 alert(
                     'No random players found. Try adjusting your preferences.'
@@ -365,7 +271,15 @@ export function initRandomChatControlEvents(validateSessionFn) {
                 if (randomSession) {
                     await closeRandomChatApi(randomSession.targetUserId)
                     localStorage.removeItem('randomChatSession')
-                    // Redirect to player finder or main chat
+                    // Add loading indicator while finding new player
+                    showLoadingIndicator()
+                    const prefs =
+                        JSON.parse(
+                            localStorage.getItem('playerfinder_filters')
+                        ) || {}
+
+                    findRandomPlayer(prefs)
+                } else {
                     window.location.href = '/persoChat'
                 }
             } else {
