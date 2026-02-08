@@ -34,7 +34,7 @@ function createChannel() {
                 // Open the link to the newly created channel
                 window.open(link, '_blank')
             } else {
-                console.error('Error creating temporary channel:', data.error)
+                console.error('Error creating temporary channel:', data.message)
             }
         })
         .catch((error) => {

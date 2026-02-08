@@ -105,7 +105,7 @@ export async function sendMessageToPhp(senderId, message, replyToChatId) {
             clearReplyPreview()
             fetchMessages(userId, receiverId)
         } else {
-            console.error('Error sending message:', data.error)
+            console.error('Error sending message:', data.message)
         }
     } catch (error) {
         console.error('Exception in sendMessageToPhp:', error)

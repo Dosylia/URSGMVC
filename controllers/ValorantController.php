@@ -48,7 +48,7 @@ class ValorantController
             if (isset($_GET['user_id'])) {
                 if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
-                    exit();
+                    return;
                 }
             }
             $this->initializeLanguage();
@@ -65,7 +65,7 @@ class ValorantController
             if (isset($_GET['user_id'])) {
                 if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
-                    exit();
+                    return;
                 }
             }
             $this->initializeLanguage();
@@ -88,7 +88,7 @@ class ValorantController
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -127,7 +127,7 @@ class ValorantController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -164,7 +164,7 @@ class ValorantController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -178,7 +178,7 @@ class ValorantController
 
             if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                 header("location:/userProfile?message=Token not valid");
-                exit();
+                return;
             }
 
 
@@ -203,19 +203,19 @@ class ValorantController
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
                     header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                    return;
                 }
     
             } else {
                 if (($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3)) {
                     header("location:/signup?message=Each agents must be unique");
-                    exit();
+                    return;
                 }
 
                 if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
                     header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                    return;
                 }
     
             }
@@ -224,7 +224,7 @@ class ValorantController
 
             if ($testValorantAccount && $testValorantAccount['valorant_id'] !== null) {
                 header("location:/signup?message=Valorant user already exists");
-                exit();
+                return;
             }
 
             $createValorantUser = $this->valorant->createValorantUser(
@@ -254,14 +254,14 @@ class ValorantController
                     if($testValorantAccount['lf_id'] !== NULL)
                     {
                         header("location:/updateLookingForGamePage");
-                        exit();
+                        return;
                     }
 
                 header("location:/lookingforuservalorant");
-                exit();
+                return;
             } else {
                 header("location:/signup?message=Could not create Valorant user");
-                exit();
+                return;
             }
 
         }
@@ -270,7 +270,6 @@ class ValorantController
 
     public function createValorantUserPhone()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['valorantData'])) 
         {
             $data = json_decode($_POST['valorantData']);
@@ -283,7 +282,7 @@ class ValorantController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -306,28 +305,22 @@ class ValorantController
             if ($statusChampion == 1) {
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit;  
+                    echo json_encode(['message' => 'Fill all fields']);
+                    return;  
                 }
             } else {
                 if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit;  
+                    echo json_encode(['message' => 'Fill all fields']);
+                    return;  
                 }
             }
 
             $testValorantAccount = $this->user->getUserById($this->getUserId());
 
             if ($testValorantAccount && $testValorantAccount['valorant_id'] !== null) {
-                $response = array('message' => 'User already exist');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'User already exist']);
+                return;  
             }
 
             $createValorantUser = $this->valorant->createValorantUser(
@@ -345,27 +338,25 @@ class ValorantController
 
                 $valorantUser = $this->valorant->getValorantAccountByValorantId($createValorantUser);
 
-                $valorantUserData = array(
-                    'valorantId' => $valorantUser['valorant_id'],
-                    'main1' => $valorantUser['valorant_main1'],
-                    'main2' => $valorantUser['valorant_main2'],
-                    'main3' => $valorantUser['valorant_main3'],
-                    'rank' => $valorantUser['valorant_rank'],
-                    'role' => $valorantUser['valorant_role'],
-                    'server' => $valorantUser['valorant_server']
-                );
-
-                $response = array(
+                echo json_encode([
                     'sessionId' => session_id(),
-                    'user' => $valorantUserData,
+                    'user' => [
+                        'valorantId' => $valorantUser['valorant_id'],
+                        'main1' => $valorantUser['valorant_main1'],
+                        'main2' => $valorantUser['valorant_main2'],
+                        'main3' => $valorantUser['valorant_main3'],
+                        'rank' => $valorantUser['valorant_rank'],
+                        'role' => $valorantUser['valorant_role'],
+                        'server' => $valorantUser['valorant_server']
+                    ],
                     'message' => 'Success'
-                );
+                ]);
+                return;
             }
 
         }
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit;  
+        echo json_encode(['message' => 'Error']);
+        return;  
     }
 
 
@@ -378,7 +369,7 @@ class ValorantController
 
             if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                 header("location:/userProfile?message=Token not valid");
-                exit();
+                return;
             }
 
             $this->setUserId($userId);
@@ -401,12 +392,12 @@ class ValorantController
             // if ($user['user_id'] != $this->getUserId())
             // {
             //     header("location:/userProfile?message=Not allowed");
-            //     exit();
+            //     return;
             // }
             if ($statusChampion == "0") {
                 if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
                     header("location:/userProfile?message=Each agents must be unique");
-                    exit();
+                    return;
                 }
             }
 
@@ -423,12 +414,12 @@ class ValorantController
             if ($updateValorant)
             {
                 header("location:/userProfile?message=Updated successfully");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
 
         }

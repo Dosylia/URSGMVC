@@ -86,7 +86,7 @@ export function deleteMessage(chatId, userId) {
         if (data.success) {
             fetchMessages(userId, friendId) // Reload messages after deletion
         } else {
-            console.error('Error deleting message:', data.error)
+            console.error('Error deleting message:', data.message)
         }
     } catch (error) {
         console.error('Fetch error (delete message):', error)
@@ -267,7 +267,7 @@ async function sendFriendRequest(senderId, receiverId) {
 // Skip to next random user
 async function skipToNextRandomUser() {
     // Close current session
-    await closeRandomChat(false)
+    await closeRandomChat()
 
     // Get stored preferences and find new random player
     const prefs = {
@@ -281,7 +281,7 @@ async function skipToNextRandomUser() {
 }
 
 // Close random chat session
-async function closeRandomChat(showMessage = true) {
+async function closeRandomChat() {
     const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
     if (!randomSession) return
 
@@ -292,12 +292,9 @@ async function closeRandomChat(showMessage = true) {
         // Clear local storage
         localStorage.removeItem('randomChatSession')
 
-        if (showMessage) {
-            alert('Random chat session closed.')
-        }
-
         // Redirect back to main chat or player finder
-        window.location.href = 'persoChat'
+        console.log('Random chat closed successfully')
+        window.location.href = '/persoChat?message=Chat closed successfully'
     } catch (error) {
         console.error('Error closing random chat:', error)
         alert('Error closing chat. Please try again.')
@@ -333,10 +330,15 @@ export function initRandomChatControlEvents(validateSessionFn) {
         addFriendBtn.addEventListener('click', async () => {
             // Validate session before allowing friend request
             if (await validateSessionFn()) {
-                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                const randomSession = JSON.parse(
+                    localStorage.getItem('randomChatSession')
+                )
                 if (randomSession) {
                     try {
-                        await sendFriendRequestApi(userId, randomSession.targetUserId)
+                        await sendFriendRequestApi(
+                            userId,
+                            randomSession.targetUserId
+                        )
                         addFriendBtn.textContent = 'Request Sent!'
                         addFriendBtn.style.background = '#28a745'
                         addFriendBtn.disabled = true
@@ -357,7 +359,9 @@ export function initRandomChatControlEvents(validateSessionFn) {
         skipUserBtn.addEventListener('click', async () => {
             if (await validateSessionFn()) {
                 // Close current session and find new player
-                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                const randomSession = JSON.parse(
+                    localStorage.getItem('randomChatSession')
+                )
                 if (randomSession) {
                     await closeRandomChatApi(randomSession.targetUserId)
                     localStorage.removeItem('randomChatSession')
@@ -373,7 +377,9 @@ export function initRandomChatControlEvents(validateSessionFn) {
     if (closeChatBtn) {
         closeChatBtn.addEventListener('click', async () => {
             if (await validateSessionFn()) {
-                const randomSession = JSON.parse(localStorage.getItem('randomChatSession'))
+                const randomSession = JSON.parse(
+                    localStorage.getItem('randomChatSession')
+                )
                 if (randomSession) {
                     await closeRandomChatApi(randomSession.targetUserId)
                 }

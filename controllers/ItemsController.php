@@ -55,39 +55,27 @@ class ItemsController
     }
     public function getItems()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['items'])) 
         {
             $items = $this-> items -> getItemsExceptBadges();
 
             if ($items)
             {
-                $response = array(
-                    'items' => $items,
-                    'message' => 'Success'
-                );
-
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['items' => $items, 'message' => 'Success']);
+                return;  
             } else {
-                $response = array('message' => 'Couldnt get all items');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'Couldnt get all items']);
+                return;  
             }
 
         } else {
-            $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;  
+            echo json_encode(['message' => 'Cant access this']);
+            return;  
         }
     }
 
     public function ownGoldEmotesPhone()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['userId'])) 
         {
             $userId = $_POST['userId'];
@@ -99,7 +87,7 @@ class ItemsController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -107,68 +95,42 @@ class ItemsController
 
             if ($ownedGoldEmotes)
             {
-                $response = array(
-                    'ownGoldEmotes' => true,
-                    'message' => 'Success'
-                );
-
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['ownGoldEmotes' => true, 'message' => 'Success']);
+                return;  
             } else {
-                $response = array(
-                    'ownGoldEmotes' => false,
-                    'message' => 'Success'
-                );
-
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['ownGoldEmotes' => false, 'message' => 'Success']);
+                return;  
             }
 
         } else {
-            $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;  
+            echo json_encode(['message' => 'Cant access this']);
+            return;  
         }
     }
 
     public function getOwnedItems()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['userId'])) 
         {
             $items = $this-> items -> getOwnedItems($_POST['userId']);
 
             if ($items)
             {
-                $response = array(
-                    'items' => $items,
-                    'message' => 'Success'
-                );
-
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['items' => $items, 'message' => 'Success']);
+                return;  
             } else {
-                $response = array('message' => 'Couldnt get all items');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'Couldnt get all items']);
+                return;  
             }
 
         } else {
-            $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;  
+            echo json_encode(['message' => 'Cant access this']);
+            return;  
         }
     }
 
     public function getOwnedItemsPhone()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['userId'])) 
         {
             $userId = $_POST['userId'];
@@ -180,33 +142,23 @@ class ItemsController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
             $items = $this-> items -> getOwnedItems($_POST['userId']);
 
             if ($items)
             {
-                $response = array(
-                    'items' => $items,
-                    'message' => 'Success'
-                );
-
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['items' => $items, 'message' => 'Success']);
+                return;  
             } else {
-                $response = array('message' => 'Couldnt get all items');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'Couldnt get all items']);
+                return;  
             }
 
         } else {
-            $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;  
+            echo json_encode(['message' => 'Cant access this']);
+            return;  
         }
     }
 
@@ -285,7 +237,7 @@ class ItemsController
     
                 // Validate token for the user
                 if (!$this->validateToken($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
     
@@ -358,7 +310,7 @@ class ItemsController
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -501,7 +453,7 @@ class ItemsController
     
                 // Validate token for the user
                 if (!$this->validateToken($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
     
@@ -575,7 +527,7 @@ class ItemsController
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -655,7 +607,7 @@ class ItemsController
 
                 // Validate Token for User
                 if (!$this->validateToken($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -708,7 +660,7 @@ class ItemsController
 
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -768,7 +720,7 @@ class ItemsController
                 }
 
                 if (!$this->validateToken($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -807,7 +759,7 @@ class ItemsController
                 }
 
                 if (!$this->validateTokenWebsite($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 
@@ -845,7 +797,7 @@ class ItemsController
                 }
 
                 if (!$this->validateTokenWebsite($token, $userId)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
                     return;
                 }
 

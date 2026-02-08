@@ -1,4 +1,4 @@
-let receiverId = document.getElementById('receiverId');
+let receiverId = document.getElementById('receiverId')
 
 function reportUser(userId, reportedId, content, status, reason) {
     const dataToSend = {
@@ -6,78 +6,78 @@ function reportUser(userId, reportedId, content, status, reason) {
         reportedId,
         content,
         status,
-        reason
-    };
+        reason,
+    }
 
-    const jsonData = JSON.stringify(dataToSend);
+    const jsonData = JSON.stringify(dataToSend)
 
-    const token = localStorage.getItem('masterTokenWebsite');
+    const token = localStorage.getItem('masterTokenWebsite')
     fetch('/reportUserWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
-        body: "param=" + encodeURIComponent(jsonData)
+        body: 'param=' + encodeURIComponent(jsonData),
     })
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
             if (data.success) {
-                console.log('Reported user:', data.message);
-                displayNotification("User reported successfully!");
-                const overlay = document.getElementById("overlay");
-                overlay.style.display = "none";
+                console.log('Reported user:', data.message)
+                displayNotification('User reported successfully!')
+                const overlay = document.getElementById('overlay')
+                overlay.style.display = 'none'
             } else {
-                console.error('Error fetching messages:', data.error);
+                console.error('Error fetching messages:', data.message)
             }
         })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+        .catch((error) => {
+            console.error('Fetch error:', error)
+        })
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const reportButton = document.getElementById('report-button');
-    const modal = document.getElementById('report-modal');
-    const closeModal = document.getElementById('close-modal');
-    const submitReport = document.getElementById('submit-report');
-    const reportDescription = document.getElementById('report-description');
+document.addEventListener('DOMContentLoaded', function () {
+    const reportButton = document.getElementById('report-button')
+    const modal = document.getElementById('report-modal')
+    const closeModal = document.getElementById('close-modal')
+    const submitReport = document.getElementById('submit-report')
+    const reportDescription = document.getElementById('report-description')
 
     // Open the modal when the report button is clicked
-    reportButton.addEventListener('click', function() {
-        modal.classList.remove('report-modal-hidden');
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "block";
-    });
+    reportButton.addEventListener('click', function () {
+        modal.classList.remove('report-modal-hidden')
+        const overlay = document.getElementById('overlay')
+        overlay.style.display = 'block'
+    })
 
     // Close modal when 'x' is clicked
-    closeModal.addEventListener('click', function() {
-        modal.classList.add('report-modal-hidden');
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "none";
-    });
+    closeModal.addEventListener('click', function () {
+        modal.classList.add('report-modal-hidden')
+        const overlay = document.getElementById('overlay')
+        overlay.style.display = 'none'
+    })
 
     // Close modal if clicking outside the modal content
-    window.addEventListener('click', function(event) {
+    window.addEventListener('click', function (event) {
         if (event.target === modal) {
-            modal.classList.add('report-modal-hidden');
-            const overlay = document.getElementById("overlay");
-            overlay.style.display = "none";
+            modal.classList.add('report-modal-hidden')
+            const overlay = document.getElementById('overlay')
+            overlay.style.display = 'none'
         }
-    });
+    })
 
     // Report User Logic
-    submitReport.addEventListener('click', function() {
-        const content = "Profile";
-        const status = "pending";
-        const reason = reportDescription.value || "No reason provided"; // Optional description
+    submitReport.addEventListener('click', function () {
+        const content = 'Profile'
+        const status = 'pending'
+        const reason = reportDescription.value || 'No reason provided' // Optional description
 
-        submitReport.disabled = true; // Prevent duplicate clicks
+        submitReport.disabled = true // Prevent duplicate clicks
 
         // Call your reportUser function
-        reportUser(userId, receiverId.value, content, status, reason);
+        reportUser(userId, receiverId.value, content, status, reason)
 
         // Close the modal
-        modal.classList.add('report-modal-hidden');
-    });
-});
+        modal.classList.add('report-modal-hidden')
+    })
+})

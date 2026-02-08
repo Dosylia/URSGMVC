@@ -82,8 +82,8 @@ export async function showFriendInfo(friend) {
     userInfo.style.gap = '5px'
     userInfo.innerHTML = `
             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${
-        friend.user_username
-    }">
+                friend.user_username
+            }">
             <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(
                 friend.user_username
             )}">
@@ -237,7 +237,7 @@ export function sendRating() {
                 ratingData[friendKey] = friendData
                 localStorage.setItem('ratingData', JSON.stringify(ratingData))
             } else {
-                console.error('Rating failed:', data.error)
+                console.error('Rating failed:', data.message)
             }
         })
         .catch((error) => console.error('Fetch error:', error))

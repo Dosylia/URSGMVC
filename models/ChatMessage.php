@@ -445,7 +445,7 @@ class ChatMessage extends DataBase
 
     // Random Chat Session Methods
 
-    public function getActiveRandomChatSession($userId1, $userId2)
+    public function getActiveRandomChatSession($senderId, $receiverId)
     {
         $query = $this->bdd->prepare("
             SELECT 
@@ -464,7 +464,7 @@ class ChatMessage extends DataBase
             LIMIT 1
         ");
         
-        $query->execute([$userId1, $userId2, $userId2, $userId1]);
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
         $result = $query->fetch();
         
         if ($result) {

@@ -77,7 +77,7 @@ class ChatMessageController
                     $friendChat = $this->user->getUserById($friendId);
                 } else {
                     header("Location: /persoChat?msg=You are not friends with this user.");
-                    exit();
+                    return;
                 }
 
             } else {
@@ -111,7 +111,7 @@ class ChatMessageController
             echo "event: error\ndata: Invalid token\n\n";
             ob_flush();
             flush();
-            exit;
+            return;
         }
 
         // Set initial last message ID
@@ -146,7 +146,7 @@ class ChatMessageController
 
             // Check if client disconnected
             if (connection_aborted()) {
-                exit;
+                return;
             }
         }
     }
@@ -236,7 +236,7 @@ class ChatMessageController
         $hasActiveRandomSession = $this->chatmessage->getActiveRandomChatSession($this->getSenderId(), $this->getReceiverId());
 
         if ($testFriendstatus != "accepted" && !$hasActiveRandomSession) {
-            echo json_encode(['success' => false, 'error' => 'You are not friends with this user and have no active random chat session']);
+            echo json_encode(['success' => false, 'message' => 'You are not friends with this user and have no active random chat session']);
             return;
         }
     
@@ -307,7 +307,7 @@ class ChatMessageController
  
              // Validate Token for User
              if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
-                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 echo json_encode(['success' => false, 'message' => 'Invalid token']);
                  return;
              }
 
@@ -315,7 +315,7 @@ class ChatMessageController
     
              if ($user['user_id'] != $this->getSenderId())
              {
-                 echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                 echo json_encode(['success' => false, 'message' => 'Request not allowed']);
                  return;
              }
 
@@ -324,7 +324,7 @@ class ChatMessageController
                 $hasActiveRandomSession = $this->chatmessage->getActiveRandomChatSession($this->getSenderId(), $this->getReceiverId());
 
                 if ($testFriendstatus != "accepted" && !$hasActiveRandomSession) {
-                    echo json_encode(['success' => false, 'error' => 'You are not friends with this user and have no active random chat session']);
+                    echo json_encode(['success' => false, 'message' => 'You are not friends with this user and have no active random chat session']);
                     return;
                 }
 
@@ -333,7 +333,7 @@ class ChatMessageController
                 
                     if (!$originalMessage || 
                         ($originalMessage['chat_senderId'] != $this->getReceiverId() && $originalMessage['chat_receiverId'] != $this->getReceiverId())) {
-                        echo json_encode(['success' => false, 'error' => 'Invalid message reference']);
+                        echo json_encode(['success' => false, 'message' => 'Invalid message reference']);
                         return;
                     }
                 }
@@ -396,7 +396,7 @@ class ChatMessageController
         if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             http_response_code(401); // Return Unauthorized for cron logs
             echo "❌ Unauthorized.\n";
-            exit();
+            return;
         }
     
         $queuedNotifications = $this->chatmessage->getAllQueuedNotifications();
@@ -446,7 +446,7 @@ class ChatMessageController
         $userId = $_SESSION['userId'] ?? null;
     
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -507,7 +507,7 @@ class ChatMessageController
         $userId = $_POST['userId'] ?? null;
 
         if (!$userId || !$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -569,7 +569,7 @@ class ChatMessageController
         $userId = $_SESSION['userId'] ?? null;
         
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -577,7 +577,7 @@ class ChatMessageController
         $imageUrl = $data['imageUrl'] ?? null;
         
         if (!$imageUrl) {
-            echo json_encode(['success' => false, 'error' => 'Image URL is required']);
+            echo json_encode(['success' => false, 'message' => 'Image URL is required']);
             return;
         }
 
@@ -588,10 +588,10 @@ class ChatMessageController
             if (unlink($filePath)) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Failed to delete the file']);
+                echo json_encode(['success' => false, 'message' => 'Failed to delete the file']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'File not found']);
+            echo json_encode(['success' => false, 'message' => 'File not found']);
         }
     }
 
@@ -680,7 +680,7 @@ class ChatMessageController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -725,7 +725,7 @@ class ChatMessageController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getSenderId())) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -734,7 +734,7 @@ class ChatMessageController
 
                 if ($user['user_id'] != $this->getSenderId())
                 {
-                    echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
                     return;
                 }
             }
@@ -803,7 +803,7 @@ class ChatMessageController
                 echo json_encode($data);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -874,17 +874,17 @@ class ChatMessageController
                     return;
                 }
     
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
     
             // If token validation fails
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return;
         }
     
         // If no Authorization header is present
-        echo json_encode(['success' => false, 'error' => 'Authorization header missing']);
+        echo json_encode(['success' => false, 'message' => 'Authorization header missing']);
     }
     
 
@@ -900,13 +900,13 @@ class ChatMessageController
             }
 
             //  if (!isset($token)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             //     return;
             //  }
  
              // Validate Token for User
              if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 echo json_encode(['success' => false, 'message' => 'Invalid token']);
                  return;
              }
 
@@ -918,13 +918,13 @@ class ChatMessageController
 
             if (!$friend) {
                 error_log("Friend not found for ID: " . $this->getFriendId());
-                echo json_encode(['success' => false, 'error' => 'Friend not found']);
+                echo json_encode(['success' => false, 'message' => 'Friend not found']);
                 return;
             }
             
             if (!$user) {
                 error_log("User not found for ID: " . $this->getUserId());
-                echo json_encode(['success' => false, 'error' => 'User not found']);
+                echo json_encode(['success' => false, 'message' => 'User not found']);
                 return;
             }
 
@@ -977,7 +977,7 @@ class ChatMessageController
                 echo json_encode($data);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -989,7 +989,7 @@ class ChatMessageController
 
         if (!isset($token) || $token !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
-            exit();
+            return;
         }
         
         try {
@@ -1026,10 +1026,10 @@ class ChatMessageController
 
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+                echo json_encode(['success' => false, 'message' => 'No unread messages found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -1041,7 +1041,7 @@ class ChatMessageController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -1049,7 +1049,7 @@ class ChatMessageController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -1070,7 +1070,7 @@ class ChatMessageController
     
             echo json_encode($data);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+            echo json_encode(['success' => false, 'message' => 'No unread messages found']);
         }
     }
     
@@ -1087,7 +1087,7 @@ class ChatMessageController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -1105,10 +1105,10 @@ class ChatMessageController
 
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+                echo json_encode(['success' => false, 'message' => 'No unread messages found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -1264,14 +1264,20 @@ class ChatMessageController
     public function getRandomChatMessages(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $data = json_decode($_POST['param']);
         
         if (!isset($data->userId, $data->friendId, $data->isRandomChat)) {
-            echo json_encode(['success' => false, 'error' => 'Missing required parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
+            return;
+        }
+
+        // Probably add a fallback to normal fetching if not random chat, but for now just return error
+        if (!$data->isRandomChat) {
+            echo json_encode(['success' => false, 'message' => 'Not a random chat session']);
             return;
         }
 
@@ -1285,7 +1291,7 @@ class ChatMessageController
 
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -1293,7 +1299,7 @@ class ChatMessageController
         $randomSession = $this->chatmessage->getActiveRandomChatSession($this->getUserId(), $this->getFriendId());
         
         if (!$randomSession) {
-            echo json_encode(['success' => false, 'error' => 'No active random chat session']);
+            echo json_encode(['success' => false, 'message' => 'No active random chat session']);
             return;
         }
 
@@ -1307,7 +1313,7 @@ class ChatMessageController
         $userownGoldEmotes = $this->items->ownGoldEmotes($this->getUserId());
 
         if (!$friend || !$user) {
-            echo json_encode(['success' => false, 'error' => 'User not found']);
+            echo json_encode(['success' => false, 'message' => 'User not found']);
             return;
         }
 
@@ -1354,14 +1360,14 @@ class ChatMessageController
     public function closeRandomChat(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $data = json_decode($_POST['param']);
         
         if (!isset($data->targetUserId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing target user ID']);
+            echo json_encode(['success' => false, 'message' => 'Missing target user ID']);
             return;
         }
 
@@ -1372,7 +1378,7 @@ class ChatMessageController
 
         $userId = $_SESSION['userId'] ?? null;
         if (!$userId || !$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -1382,21 +1388,21 @@ class ChatMessageController
         if ($result) {
             echo json_encode(['success' => true, 'message' => 'Random chat session closed']);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to close session']);
+            echo json_encode(['success' => false, 'message' => 'Failed to close session']);
         }
     }
 
     public function getRandomPlayerFinder(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $data = json_decode($_POST['param']);
         
         if (!isset($data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing user ID']);
+            echo json_encode(['success' => false, 'message' => 'Missing user ID']);
             return;
         }
 
@@ -1406,7 +1412,7 @@ class ChatMessageController
         }
 
         if (!$this->validateTokenWebsite($token, $data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -1437,10 +1443,10 @@ class ChatMessageController
                     'sessionId' => $sessionId
                 ]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Failed to create chat session']);
+                echo json_encode(['success' => false, 'message' => 'Failed to create chat session']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'No suitable players found']);
+            echo json_encode(['success' => false, 'message' => 'No suitable players found']);
         }
     }
 
@@ -1453,7 +1459,7 @@ class ChatMessageController
 
         if (!isset($token) || $token !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
-            exit();
+            return;
         }
 
         $AllSessions = $this->chatmessage->getAllActiveRandomChatSessions();
@@ -1482,14 +1488,14 @@ class ChatMessageController
     public function checkIncomingRandomChats(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $data = json_decode($_POST['param']);
         
         if (!isset($data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing user ID']);
+            echo json_encode(['success' => false, 'message' => 'Missing user ID']);
             return;
         }
 
@@ -1499,7 +1505,7 @@ class ChatMessageController
         }
 
         if (!$this->validateTokenWebsite($token, $data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -1537,14 +1543,14 @@ class ChatMessageController
     public function validateRandomChatSession(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $data = json_decode($_POST['param']);
         
         if (!isset($data->userId, $data->targetUserId)) {
-            echo json_encode(['success' => false, 'error' => 'Missing required parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
             return;
         }
 
@@ -1554,7 +1560,7 @@ class ChatMessageController
         }
 
         if (!$this->validateTokenWebsite($token, $data->userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 

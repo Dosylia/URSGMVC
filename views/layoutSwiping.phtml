@@ -9,7 +9,7 @@
 <?php 
     if (!isset($_COOKIE['auth_token'])) {
         header("Location: /logout");
-        exit();
+        return;
     }
 ?>
 

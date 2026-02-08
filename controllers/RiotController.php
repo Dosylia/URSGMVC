@@ -92,7 +92,7 @@ class RiotController
                     if ($existingUser)
                     {
                         header('Location: /userProfile?message=This League of Legends account is already used on URSG.');
-                        exit();
+                        return;
                     }
                     if ($user['lol_id']) {
                         $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
@@ -129,7 +129,7 @@ class RiotController
 
                             if ($summonerProfile === null) {
                                 header('Location: /userProfile?message=Your League of Legends region does not match the account.');
-                                exit();
+                                return;
                             }
 
                             // Now you can access the profileIconId
@@ -178,7 +178,7 @@ class RiotController
 
                                 if (!$updateSummoner) {
                                     header('Location: /userProfile?message=Couldnt bind account');
-                                    exit();
+                                    return;
                                 }
 
 
@@ -213,20 +213,20 @@ class RiotController
                         // }
 
                         header('Location: /userProfile?message=Binded successfully');
-                        exit();
+                        return;
                     } else {
                         header('Location: /userProfile?message=Couldnt find Puuid');
-                        exit();
+                        return;
                     }
                 } else {
                     // Handle case where puuid is empty
                     header('Location: /userProfile?message=No Puuid received'.$accessToken);
-                    exit();
+                    return;
                 }
             } else {
                 error_log('Failed to obtain access token. Authorization code: ' . $authCode);
                 header('Location: /&message=NO_ACCESS_TOKEN' . $authCode);
-                exit();
+                return;
             }
         } else {
             // Step 3: Exchange the authorization code for an access token
@@ -300,18 +300,18 @@ class RiotController
                                             {
                                                 $_SESSION['lf_id'] = $lfUser['lf_id'];
                                                 header('Location: /swiping?message=Connected successfully.');
-                                                exit();
+                                                return;
                                             }
                                             else 
                                             {
                                                 header('Location: /signup?message=Create your Looking for account.');
-                                                exit();
+                                                return;
                                             }
                                         }
                                         else 
                                         {
                                             header('Location: /signup?message=Create your LoL account.');
-                                            exit();
+                                            return;
                                         }
                                     }
                                     else 
@@ -328,19 +328,19 @@ class RiotController
                                             {
                                                 $_SESSION['lf_id'] = $lfUser['lf_id'];
                                                 header('Location: /swiping?message=Connected successfully.');
-                                                exit();
+                                                return;
                                             }
                                             else 
                                             {
                                                 header('Location: /signup?message=Create your Looking for account.');
-                                                exit();
+                                                return;
                                             }
 
                                         }
                                         else 
                                         {
                                             header('Location: /signup?message=Create your Valorant account.');
-                                            exit();
+                                            return;
                                         }
 
                                     }
@@ -349,20 +349,20 @@ class RiotController
                                 else 
                                 {
                                     header('Location: /signup?message=Create your account.');
-                                    exit();
+                                    return;
                                 }
                             }
                             else 
                             {
                                 header('Location: /signup?message=Create your account.');
-                                exit();
+                                return;
                             }
 
                         }
                         else
                         {
                             header('Location: /?message=This League of Legends account is already used on URSG.');
-                            exit();
+                            return;
                         }
 
                     }
@@ -415,7 +415,7 @@ class RiotController
                             }
 
                             header('Location: /signup?message=Account created');
-                            exit();
+                            return;
 
                         }
 
@@ -423,12 +423,12 @@ class RiotController
                 } else {
                     // Handle case where puuid is empty
                     header('Location: /userProfile?message=No Puuid received'.$accessToken);
-                    exit();
+                    return;
                 }
             } else {
                 error_log('Failed to obtain access token. Authorization code: ' . $authCode);
                 header('Location: /&message=NO_ACCESS_TOKEN' . $authCode);
-                exit();
+                return;
             }
         }
         
@@ -482,24 +482,24 @@ class RiotController
 
                     $championName = $this->getChampionNameById($playerChampionId, $championData);
 
-                    $response = [
+                    echo json_encode([
                         'success' => true,
                         'gameId' => $gameStatus['gameId'],
                         'region' => $selectedRegionValue,
                         'gameMode' => $gameStatus['gameMode'],
                         'mapId' => $gameStatus['mapId'],
                         'champion' => $championName,
-                    ];
+                    ]);
+                    return;
                 } else {
-                    $response = ['success' => false, 'error' => 'No active game found'];
+                    echo json_encode(['success' => false, 'message' => 'No active game found']);
+                    return;
                 }
             }
-            echo json_encode($response);
-            return;
         }
         else
         {
-            echo json_encode(['success' => false, 'error' => 'Wrong request']);
+            echo json_encode(['success' => false, 'message' => 'Wrong request']);
             return;
         }
     }
@@ -616,13 +616,11 @@ class RiotController
     public function riotAccountPhone()
     {
         if (!isset($_GET['code'])) {
-            $response = array('message' => 'Error');
-            echo json_encode($response);
-            exit;
+            echo json_encode(['message' => 'Error']);
+            return;
         } else {
-            $response = array('message' => 'Success', 'code' => $_GET['code']);
-            echo json_encode($response);
-            exit;
+            echo json_encode(['message' => 'Success', 'code' => $_GET['code']]);
+            return;
         }
     }
 
@@ -720,28 +718,24 @@ class RiotController
                             }
                         }
 
-                        $response = array('message' => 'Success');
-                        echo json_encode($response);
-                        exit;
+                        echo json_encode(['message' => 'Success']);
+                        return;
                     } else {
-                        $response = array('message' => 'Couldnt find Puuid');
-                        echo json_encode($response);
-                        exit;
+                        echo json_encode(['message' => 'Couldnt find Puuid']);
+                        return;
                     }
                 } else {
                     // Handle case where puuid is empty
-                    $response = array('message' => 'No Puuid received');
-                    echo json_encode($response);
-                    exit;
+                    echo json_encode(['message' => 'No Puuid received']);
+                    return;
                 }
             }
 
         }
         else
         {
-            $response = array('message' => 'Error');
-            echo json_encode($response);
-            exit;
+            echo json_encode(['message' => 'Error']);
+            return;
         }
     }
 
@@ -839,7 +833,7 @@ class RiotController
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
                 return;
             }
 
@@ -847,7 +841,7 @@ class RiotController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -855,13 +849,13 @@ class RiotController
             $user = $this->user->getUserById($userId);
             $friend = $this->user->getUserById($friendId);
             if (!$user || !$friend) {
-                echo json_encode(['success' => false, 'error' => 'User or friend not found']);
+                echo json_encode(['success' => false, 'message' => 'User or friend not found']);
                 return;
             }
 
             // Check if both have LoL accounts
             if (!$user['lol_verified'] || !$friend['lol_verified']) {
-                echo json_encode(['success' => false, 'error' => 'One or both users do not have a verified League of Legends account']);
+                echo json_encode(['success' => false, 'message' => 'One or both users do not have a verified League of Legends account']);
                 return;
             }
 
@@ -883,7 +877,7 @@ class RiotController
             $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
 
             if (!$selectedRegionValue) {
-                echo json_encode(['success' => false, 'error' => 'Invalid region']);
+                echo json_encode(['success' => false, 'message' => 'Invalid region']);
                 return;
             }
 
@@ -892,7 +886,7 @@ class RiotController
             $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue, $apiKey);
 
             if (!$userMatches || !$friendMatches) {
-                echo json_encode(['success' => false, 'error' => 'Could not retrieve match history']);
+                echo json_encode(['success' => false, 'message' => 'Could not retrieve match history']);
                 return;
             }
 
@@ -916,7 +910,7 @@ class RiotController
                 'commonMatches' => array_values($commonMatches) // optional, useful for debugging
             ]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -940,9 +934,9 @@ class RiotController
     public function connectRiotMobile()
     {
         if (!isset($_GET['phoneData'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing phone data']);
+            echo json_encode(['success' => false, 'message' => 'Missing phone data']);
             header("Location: /?error=Incorrect phone data");
-            exit();
+            return;
         }
 
         // Generate a simple token to mark this as mobile flow
@@ -961,7 +955,7 @@ class RiotController
         ]);
 
         header("Location: $riotAuthUrl");
-        exit();
+        return;
     }
 
     public function handleMobileFlow($authCode, $riotClientId, $riotClientSecret, $apiKey)
@@ -1362,6 +1356,6 @@ class RiotController
             </div>
         </body>
         </html>';
-        exit();
+        return;
     }
 }

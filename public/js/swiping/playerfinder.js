@@ -32,8 +32,8 @@ function sendMessageDiscord(
             if (data.success) {
                 console.log('Message sent to Discord successfully!')
             } else {
-                console.error('Message error:', data.error)
-                throw new Error(data.error || 'Unknown error')
+                console.error('Message error:', data.message)
+                throw new Error(data.message || 'Unknown error')
             }
         })
         .catch((error) => {

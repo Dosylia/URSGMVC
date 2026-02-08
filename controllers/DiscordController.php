@@ -51,7 +51,7 @@ class DiscordController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -59,12 +59,12 @@ class DiscordController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
         if ($this->discord->hasCreatedChannelRecently($userId)) {
-            echo json_encode(['success' => false, 'error' => 'You have to wait before creating another channel.']);
+            echo json_encode(['success' => false, 'message' => 'You have to wait before creating another channel.']);
             return;
         }
 
@@ -94,7 +94,7 @@ class DiscordController
         $channelId = $response['id'] ?? null;
 
         if (!$channelId) {
-            echo json_encode(['success' => false, 'error' => 'Failed to create channel']);
+            echo json_encode(['success' => false, 'message' => 'Failed to create channel']);
             return;
         }
 
@@ -111,7 +111,7 @@ class DiscordController
         $inviteCode = $inviteResponse['code'] ?? null;
 
         if (!$inviteCode) {
-            echo json_encode(['success' => false, 'error' => 'Failed to create invite']);
+            echo json_encode(['success' => false, 'message' => 'Failed to create invite']);
             return;
         }
 
@@ -126,7 +126,7 @@ class DiscordController
 
         if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
-            exit();
+            return;
         }
 
         $botToken = $discordToken;
@@ -314,7 +314,7 @@ class DiscordController
 
         if ($isMobile) {
             $this->handleMobileFlow($discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken, $expiresIn);
-            exit();
+            return;
         }
 
         $existingUser = $this->googleUser->getUserByDiscordId($discordId);
@@ -376,18 +376,18 @@ class DiscordController
                             {
                                 $_SESSION['lf_id'] = $lfUser['lf_id'];
                                 header('Location: /swiping?message=Connected successfully.');
-                                exit();
+                                return;
                             }
                             else 
                             {
                                 header('Location: /signup?message=Create your Looking for account.');
-                                exit();
+                                return;
                             }
                         }
                         else 
                         {
                             header('Location: /signup?message=Create your LoL account.');
-                            exit();
+                            return;
                         }
                     }
                     else 
@@ -404,19 +404,19 @@ class DiscordController
                             {
                                 $_SESSION['lf_id'] = $lfUser['lf_id'];
                                 header('Location: /swiping?message=Connected successfully.');
-                                exit();
+                                return;
                             }
                             else 
                             {
                                 header('Location: /signup?message=Create your Looking for account.');
-                                exit();
+                                return;
                             }
 
                         }
                         else 
                         {
                             header('Location: /signup?message=Create your Valorant account.');
-                            exit();
+                            return;
                         }
 
                     }
@@ -425,13 +425,13 @@ class DiscordController
                 else 
                 {
                     header('Location: /signup?message=Create your account.');
-                    exit();
+                    return;
                 }
             }
             else 
             {
                 header('Location: /signup?message=Create your account.');
-                exit();
+                return;
             }
         } else {
 
@@ -439,7 +439,7 @@ class DiscordController
 
             if($googleUser) {
                 header('Location: /?message=An URSG account already exist with that email.');
-                exit();
+                return;
             }
 
             $fullName = $discordUsername;
@@ -486,7 +486,7 @@ class DiscordController
                 }
 
                 header('Location: /signup?message=Account created');
-                exit();
+                return;
 
             }
         }
@@ -500,14 +500,14 @@ class DiscordController
         }
 
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $userId = (int)$_POST['userId'];
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -518,7 +518,7 @@ class DiscordController
         $oldTime = strtotime($oldTimeFormatted);
 
         if (time() - $oldTime < 120) {
-            echo json_encode(['success' => false, 'error' => 'Please wait before sending another request']);
+            echo json_encode(['success' => false, 'message' => 'Please wait before sending another request']);
             return;
         }
 
@@ -527,7 +527,7 @@ class DiscordController
         $server = "Unknown";
 
         if (!isset($user['user_game'])) {
-            echo json_encode(['success' => false, 'error' => 'User game not defined']);
+            echo json_encode(['success' => false, 'message' => 'User game not defined']);
             return;
         }
 
@@ -540,12 +540,12 @@ class DiscordController
                     $account = $lolUser['lol_account'];
                     $server = $lolUser['lol_server'];
                 } else {
-                    echo json_encode(['success' => false, 'error' => 'No League account found for verified user']);
+                    echo json_encode(['success' => false, 'message' => 'No League account found for verified user']);
                     return;
                 }
             } else {
                 if (!$account) {
-                    echo json_encode(['success' => false, 'error' => 'No League account provided for unverified user']);
+                    echo json_encode(['success' => false, 'message' => 'No League account provided for unverified user']);
                     return;
                 } else {
                     $server = $user['lol_server'] ?? 'Unknown';
@@ -553,13 +553,13 @@ class DiscordController
             }
         } elseif ($game === 'Valorant') {
             if (!$account) {
-                echo json_encode(['success' => false, 'error' => 'No Valorant account provided']);
+                echo json_encode(['success' => false, 'message' => 'No Valorant account provided']);
                 return;
             } else {
                 $server = $user['valorant_server'] ?? 'Unknown';
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Unsupported game type']);
+            echo json_encode(['success' => false, 'message' => 'Unsupported game type']);
             return;
         }
 
@@ -649,7 +649,7 @@ class DiscordController
         if (isset($response['id'])) {
             echo json_encode(['success' => true, 'messageId' => $response['id']]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
+            echo json_encode(['success' => false, 'message' => 'Failed to send message', 'details' => $response]);
         }
     }
 
@@ -661,14 +661,14 @@ class DiscordController
         }
 
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $userId = (int)$_POST['userId'];
 
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -679,7 +679,7 @@ class DiscordController
         $oldTime = strtotime($oldTimeFormatted);
 
         if (time() - $oldTime < 120) {
-            echo json_encode(['success' => false, 'error' => 'Please wait before sending another request']);
+            echo json_encode(['success' => false, 'message' => 'Please wait before sending another request']);
             return;
         }
 
@@ -688,7 +688,7 @@ class DiscordController
         $server = "Unknown";
 
         if (!isset($user['user_game'])) {
-            echo json_encode(['success' => false, 'error' => 'User game not defined']);
+            echo json_encode(['success' => false, 'message' => 'User game not defined']);
             return;
         }
 
@@ -701,12 +701,12 @@ class DiscordController
                     $account = $lolUser['lol_account'];
                     $server = $lolUser['lol_server'];
                 } else {
-                    echo json_encode(['success' => false, 'error' => 'No League account found for verified user']);
+                    echo json_encode(['success' => false, 'message' => 'No League account found for verified user']);
                     return;
                 }
             } else {
                 if (!$account) {
-                    echo json_encode(['success' => false, 'error' => 'No League account provided for unverified user']);
+                    echo json_encode(['success' => false, 'message' => 'No League account provided for unverified user']);
                     return;
                 } else {
                     $server = $user['lol_server'] ?? 'Unknown';
@@ -714,13 +714,13 @@ class DiscordController
             }
         } elseif ($game === 'Valorant') {
             if (!$account) {
-                echo json_encode(['success' => false, 'error' => 'No Valorant account provided']);
+                echo json_encode(['success' => false, 'message' => 'No Valorant account provided']);
                 return;
             } else {
                 $server = $user['valorant_server'] ?? 'Unknown';
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Unsupported game type']);
+            echo json_encode(['success' => false, 'message' => 'Unsupported game type']);
             return;
         }
 
@@ -792,7 +792,7 @@ class DiscordController
         if (isset($response['id'])) {
             echo json_encode(['success' => true, 'messageId' => $response['id']]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to send message', 'details' => $response]);
+            echo json_encode(['success' => false, 'message' => 'Failed to send message', 'details' => $response]);
         }
     }
 
@@ -808,27 +808,27 @@ class DiscordController
         
         if(!in_array($roleType, ['ursg gold', 'ursg ascend'])) {
             header("Location: /store?message=Role is not valid.");
-            exit();
+            return;
         }
 
         // For the role, check that user actually owns it
         $userId = $_SESSION['userId'] ?? null;
         if (!$userId) {
             header("Location: /store?message=You must be logged in to claim a role.");
-            exit();
+            return;
         }
 
         switch($roleType) {
             case 'ursggold':
                 if ($user['user_isGold'] != 1) {
                     header("Location: /store?message=You do not own the gold role.");
-                    exit();
+                    return;
                 }
                 break;
             case 'ursgascend':
                 if ($user['user_isAscend'] != 1) {
                     header("Location: /store?message=You do not own the Ascend role.");
-                    exit();
+                    return;
                 }
                 break;
         }
@@ -923,7 +923,7 @@ class DiscordController
         }
 
         header("Location: /store?message=" . ucfirst($roleType) . " role assigned successfully.");
-        exit();
+        return;
     }
 
     public function startBotCronJob()
@@ -935,7 +935,7 @@ class DiscordController
         if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             http_response_code(401); // Return Unauthorized for cron logs
             echo "❌ Unauthorized.\n";
-            exit();
+            return;
         }
 
         $result = DiscordBotService::start();
@@ -951,9 +951,9 @@ class DiscordController
       public function connectDiscordMobile()
     {
         if (!isset($_GET['phoneData'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing phone data']);
+            echo json_encode(['success' => false, 'message' => 'Missing phone data']);
             header("Location: /?error=Incorrect phone data");
-            exit();
+            return;
         }
 
         // Generate a simple token to mark this as mobile flow
@@ -967,7 +967,7 @@ class DiscordController
         $discordAuthUrl = "https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections";
 
         header("Location: $discordAuthUrl");
-        exit();
+        return;
     }
 
     public function discordBind()
@@ -1060,14 +1060,14 @@ class DiscordController
                     $this->items->addItemToUser($userId, $badge['items_id']);
                 }
                 header('Location: /userProfile?message=Discord account linked successfully.');
-                exit();
+                return;
             } else {
                 header('Location: /userProfile?error=Failed to update Discord username.');
-                exit();
+                return;
             }
         } else {
             header('Location: /userProfile?error=Failed to link Discord account. It might be already linked to another user.');
-            exit();
+            return;
         }
     }
 
@@ -1386,7 +1386,7 @@ class DiscordController
 
         $response = array(
             'status' => 'failure',
-            'error' => $error
+            'message' => $error
         );
         error_log(print_r('Error ' . $error, true));
         $responseJson = json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -1446,7 +1446,7 @@ class DiscordController
             </div>
         </body>
         </html>';
-        exit();
+        return;
     }
 }
 

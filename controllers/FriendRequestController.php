@@ -167,7 +167,7 @@ class FriendRequestController
         }
 
         if (!$this->validateToken($token, $this->getUserId())) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -215,7 +215,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -228,10 +228,10 @@ class FriendRequestController
                 ];
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No unread messages found']);
+                echo json_encode(['success' => false, 'message' => 'No unread messages found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -249,7 +249,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -279,7 +279,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -303,7 +303,7 @@ class FriendRequestController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -311,7 +311,7 @@ class FriendRequestController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -373,10 +373,10 @@ class FriendRequestController
                 ];
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No friends found']);
+                echo json_encode(['success' => false, 'message' => 'No friends found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'No friends found']);
+            echo json_encode(['success' => false, 'message' => 'No friends found']);
         }
     }
 
@@ -392,7 +392,7 @@ class FriendRequestController
     
                     if ($user['user_id'] != $this->getUserId())
                     {
-                        echo json_encode(['success' => false, 'error' => 'Request not allowed']);
+                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
                         return;
                     }
                 }
@@ -437,13 +437,13 @@ class FriendRequestController
                     ];
                     echo json_encode($data);
                 } else {
-                    echo json_encode(['success' => false, 'error' => 'No friends found']);
+                    echo json_encode(['success' => false, 'message' => 'No friends found']);
                 }
             } else {
-                echo json_encode(['success' => false, 'error' => 'No friends found']);
+                echo json_encode(['success' => false, 'message' => 'No friends found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -455,7 +455,7 @@ class FriendRequestController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -463,7 +463,7 @@ class FriendRequestController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -511,10 +511,10 @@ class FriendRequestController
                 ];
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No friends found']);
+                echo json_encode(['success' => false, 'message' => 'No friends found']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'No friends found']);
+            echo json_encode(['success' => false, 'message' => 'No friends found']);
         }
     }
     
@@ -536,7 +536,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
             
@@ -551,11 +551,11 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                    echo json_encode(['success' => true, 'message' => 'Swipped No, updated']);
                 }
             } else {
                 $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped yes, created']);
             }
 
 
@@ -570,7 +570,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -589,15 +589,15 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                    echo json_encode(['success' => true, 'message' => 'Swipped No, updated']);
                 }
             } else {
                 $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
-                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped No, created']);
             }
 
         } else {
-            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
+            echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
         }
     }
 
@@ -613,7 +613,7 @@ class FriendRequestController
             }
         
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
         
@@ -621,12 +621,12 @@ class FriendRequestController
         
             // Validate Token for User
             if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
             if (!isset($_POST['senderId']) || !isset($_POST['receiverId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
     
@@ -641,7 +641,7 @@ class FriendRequestController
 
             if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
                 echo json_encode(["status" => "error", "message" => "You can't send a friend request to a blocked user."]);
-                exit;
+                return;
             }
 
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
@@ -649,7 +649,7 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Accepted friend request directly']);
+                    echo json_encode(['success' => true, 'message' => 'Accepted friend request directly']);
                 }
             } else {
                 // Check if there is already a friend request with those 
@@ -667,13 +667,13 @@ class FriendRequestController
                     // Create new one
                     $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
                 }
-                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped yes, created']);
             }
     
         } elseif (isset($_POST['swipe_no'])) {
             // Check for required fields in POST data
             if (!isset($_POST['senderId']) || !isset($_POST['receiverId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
     
@@ -683,7 +683,7 @@ class FriendRequestController
             }
         
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
         
@@ -692,7 +692,7 @@ class FriendRequestController
             
             // Validate token for user
             if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
     
@@ -709,7 +709,7 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                    echo json_encode(['success' => true, 'message' => 'Swipped No, updated']);
                 }
             } else {
                 $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
@@ -721,11 +721,11 @@ class FriendRequestController
                     // Create new one
                     $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
                 }
-                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped No, created']);
             }
     
         } else {
-            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
+            echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
         }
     }
     
@@ -744,7 +744,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -756,7 +756,7 @@ class FriendRequestController
 
             if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
                 echo json_encode(["status" => "error", "message" => "You can't send a friend request to a blocked user."]);
-                exit;
+                return;
             }
 
             $checkIfPending = $this->friendrequest->checkifPending($this->getSenderId(), $this->getReceiverId());
@@ -764,7 +764,7 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->acceptFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Accepted friend request directly']);
+                    echo json_encode(['success' => true, 'message' => 'Accepted friend request directly']);
                 }
             } else {
                 // Check if there is already a friend request with those 
@@ -782,7 +782,7 @@ class FriendRequestController
                     // Create new one
                     $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
                 }
-                echo json_encode(['success' => true, 'error' => 'Swipped yes, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped yes, created']);
             }
 
 
@@ -798,7 +798,7 @@ class FriendRequestController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $_POST["senderId"])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -813,7 +813,7 @@ class FriendRequestController
             if ($checkIfPending) {
                 $updateFriendRequest = $this->friendrequest->rejectFriendRequest($checkIfPending['fr_id']);
                 if ($updateFriendRequest) {
-                    echo json_encode(['success' => true, 'error' => 'Swipped No, updated']);
+                    echo json_encode(['success' => true, 'message' => 'Swipped No, updated']);
                 }
             } else {
                 $checkOldFriendRequest = $this->friendrequest->checkOldFriendRequest($this->getSenderId(), $this->getReceiverId());
@@ -825,11 +825,11 @@ class FriendRequestController
                     // Create new one
                     $swipeStatusNo = $this->friendrequest->swipeStatusNo($this->getSenderId(), $this->getReceiverId(), $requestDate, $status);
                 }
-                echo json_encode(['success' => true, 'error' => 'Swipped No, created']);
+                echo json_encode(['success' => true, 'message' => 'Swipped No, created']);
             }
 
         } else {
-            echo json_encode(['success' => false, 'error' => 'Proper data were not sent']);
+            echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
         }
     }
 
@@ -892,7 +892,7 @@ class FriendRequestController
 
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -901,14 +901,14 @@ class FriendRequestController
         if ($updateStatus) {
             $sendNotifications = $this->sendNotificationsPhone($friendId, "You have matched with ". $user['user_username'], $userId);
             echo json_encode(['success' => false, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
-            exit();
+            return;
         } else {
             echo json_encode(['success' => false, 'message' => 'Could not accept it']);
-            exit();
+            return;
         }
         } else {
             echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
-            exit();
+            return;
         }
     }
 
@@ -929,7 +929,7 @@ class FriendRequestController
 
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -937,14 +937,14 @@ class FriendRequestController
 
         if ($updateStatus) {
             echo json_encode(['success' => true, 'message' => 'Success', 'fr_id' => $this->getFrId()]);
-            exit();
+            return;
         } else {
             echo json_encode(['success' => false, 'message' => 'Could not accept it']);
-            exit();
+            return;
         }
         } else {
             echo json_encode(['success' => false, 'message' => 'Proper data were not sent']);
-            exit();
+            return;
         }
     }
     
@@ -1002,7 +1002,7 @@ class FriendRequestController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -1010,7 +1010,7 @@ class FriendRequestController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -1068,7 +1068,7 @@ class FriendRequestController
     
             echo json_encode($data);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No friend requests found']);
+            echo json_encode(['success' => false, 'message' => 'No friend requests found']);
         }
     }
     
@@ -1076,7 +1076,7 @@ class FriendRequestController
     public function getFriendRequestWebsite(): void
     {
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
@@ -1089,7 +1089,7 @@ class FriendRequestController
         }
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -1115,7 +1115,7 @@ class FriendRequestController
         } else {
             echo json_encode(array_merge([
                 'success' => false,
-                'error' => 'No friend requests found',
+                'message' => 'No friend requests found',
             ], $rewardData));
         }
     }
@@ -1198,7 +1198,7 @@ class FriendRequestController
 
         if (!isset($token) || $token !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
-            exit();
+            return;
         }
         
         try {
@@ -1229,7 +1229,7 @@ class FriendRequestController
 
             if ($user['user_id'] !== $this->getSenderId()) {
                 header("location:/userProfile?message=Unauthorized");
-                exit;
+                return;
             }
 
             $status = 'rejected';
@@ -1239,12 +1239,12 @@ class FriendRequestController
             {
                 $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
                 header("location:/friendlistPage?message=User unfriended");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/friendlistPage?message=Could not unfriend user");
-                exit();
+                return;
             }
 
          
@@ -1252,7 +1252,7 @@ class FriendRequestController
         else
         {
             header("location:/friendlistPage?message=No form");
-            exit();    
+            return;    
         }
     }
 
@@ -1263,7 +1263,6 @@ class FriendRequestController
             return;
         }
 
-        $response = array('message' => 'Error');
         if (isset($_POST['userData']))
         {
             $data = json_decode($_POST['userData']);
@@ -1275,7 +1274,7 @@ class FriendRequestController
 
             // Validate token for user
             if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
                 
@@ -1285,25 +1284,19 @@ class FriendRequestController
             if ($updateFriend)
             {
                 $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
-                $response = array('message' => 'Success');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit(); 
+                echo json_encode(['message' => 'Success']);
+                return; 
             }
             else
             {
-                $response = array('message' => 'Could not unfriend user');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit(); 
+                echo json_encode(['message' => 'Could not unfriend user']);
+                return; 
             }
         }
         else
         {
-            $response = array('message' => 'No form');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit(); 
+            echo json_encode(['message' => 'No form']);
+            return; 
         }
     }
 
@@ -1326,7 +1319,7 @@ class FriendRequestController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -1347,12 +1340,12 @@ class FriendRequestController
             $swipeStatusYes = $this->friendrequest->swipeStatusYes($this->getSenderId(), $this->getReceiverId(), $date, $status);
 
             if ($swipeStatusYes) {
-                echo json_encode(['success' => true, 'error' => 'Successfully sent friend request']);
+                echo json_encode(['success' => true, 'message' => 'Successfully sent friend request']);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Failed to send friend request']);
+                echo json_encode(['success' => false, 'message' => 'Failed to send friend request']);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'No form']);
+            echo json_encode(['success' => false, 'message' => 'No form']);
         }
     }
 

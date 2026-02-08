@@ -24,7 +24,7 @@ async function fetchAllFriends(userId) {
         if (data.success) {
             allFriends = data.friendlist // Store the entire friend list
         } else {
-            console.error('Error fetching friends:', data.error)
+            console.error('Error fetching friends:', data.message)
         }
     } catch (error) {
         console.error('Fetch error:', error)
@@ -79,8 +79,8 @@ function searchFriends(query) {
             friend.friend_online === 1 && friend.friend_isLookingGame === 1
                 ? '<span class="looking-game-status"></span>'
                 : friend.friend_online === 1
-                ? '<span class="online-status"></span>'
-                : ''
+                  ? '<span class="online-status"></span>'
+                  : ''
         }
         `
 

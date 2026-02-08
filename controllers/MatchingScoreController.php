@@ -52,7 +52,7 @@ class MatchingScoreController
             }
     
             echo json_encode($messages);
-            exit();
+            return;
         } else {
             echo json_encode(['message' => 'Invalid request']);
         }

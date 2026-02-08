@@ -105,22 +105,18 @@ class UserController
                     'allUsers' => $allUsers,
                     'message' => 'Success'
                 );
-
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;  
+                return;  
             } else {
                 $response = array('message' => 'Couldnt get all users');
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;  
+                return;  
             }
 
         } else {
             $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
             echo json_encode($response);
-            exit;  
+            return;  
         }
     }
 
@@ -136,7 +132,7 @@ class UserController
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return;
         }
     
@@ -149,22 +145,18 @@ class UserController
                     'allUsers' => $allUsers,
                     'message' => 'Success'
                 );
-    
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;
+                return;
             } else {
                 $response = array('message' => 'Could not get all users');
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;
+                return;
             }
     
         } else {
             $response = array('message' => 'Cannot access this');
-            header('Content-Type: application/json');
             echo json_encode($response);
-            exit;
+            return;
         }
     }
 
@@ -180,7 +172,7 @@ class UserController
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return;
         }
     
@@ -193,22 +185,18 @@ class UserController
                     'allUsers' => $allUsers,
                     'message' => 'Success'
                 );
-    
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;
+                return;
             } else {
                 $response = array('message' => 'Could not get all users');
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;
+                return;
             }
     
         } else {
             $response = array('message' => 'Cannot access this');
-            header('Content-Type: application/json');
             echo json_encode($response);
-            exit;
+            return;
         }        
     }
 
@@ -430,7 +418,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenGoogleUserId($token, $googleUserId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -438,31 +426,31 @@ class UserController
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
                 $response = array('message' => 'Inputs cannot be empty');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             if ($this->user->getUserByUsername($this->getUsername())) {
                 $response = array('message' => 'Username already exists');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
                 $response = array('message' => 'Username is not valid');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             if ($age < 13 || $age > 99) {
                 $response = array('message' => 'Age is not valid');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             if (strlen($this->getShortBio()) > 200) {
                 $response = array('message' => 'Short bio is too long');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
@@ -490,9 +478,8 @@ class UserController
                 );
             }
         }
-        header('Content-Type: application/json');
         echo json_encode($response);
-        exit;  
+        return;  
     }
     
     public function createUser()
@@ -518,38 +505,38 @@ class UserController
             // if ($_SESSION['google_id'] != $this->getGoogleUserId())
             // {
             //     header("location:/signup?message=Unauthorized");
-            //     exit();
+            //     return;
             // }
 
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
-                exit();
+                return;
             }
 
             if ($this->user->getUserByUsername($this->getUsername())) {
                 header("location:/signup?message=Username already exists");
-                exit();
+                return;
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
                 header("location:/signup?message=Username is not valid");
-                exit();
+                return;
             }
 
             if ($age < 13 || $age > 99)
             {
                 header("location:/signup?message=Age is not valid");
-                exit();
+                return;
             }
 
             if (strlen($this->getShortBio()) > 200) {
                 header("location:/signup?message=Short bio is too long");
-                exit();
+                return;
             }
 
             if ($this->isUsernameForbidden($this->getUsername())) { 
                 header("location:/signup?message=Username is forbidden");
-                exit();
+                return;
             }       
 
             $createUser = $this->user->createUser($this->getGoogleUserId(), $this->getUsername(), $this->getGender(), $this->getAge(), $this->getKindOfGamer(), $this->getShortBio(), $this->getGame());
@@ -586,12 +573,12 @@ class UserController
                 if($user['user_game'] === "League of Legends" || $user['user_game'] === "LoL and Valorant") 
                 { 
                     header("location:/leagueuser?user_id=".$user['user_id']);
-                    exit();
+                    return;
                 }
                 else if($user['user_game'] === "Valorant")
                 {
                     header("location:/valorantuser?user_id=".$user['user_id']);
-                    exit();
+                    return;
                 }
                 else {
                     header("location:/home");
@@ -623,7 +610,7 @@ class UserController
             if ($user['user_username'] != $this->getUsername())
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
 
             $updateSocial = $this->user->updateSocial2($this->getUsername(),  $this->getDiscord(), $this->getTwitter(), $this->getInstagram(), $this->getTwitch(), $this->getBluesky());
@@ -632,12 +619,12 @@ class UserController
             if ($updateSocial)
             {
                 header("location:/userProfile?message=Updated successfully");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
         }
 
@@ -711,18 +698,18 @@ class UserController
                 {
                     $response = array('message' => 'Success');
                     echo json_encode($response);
-                    exit();  
+                    return;  
                 }
                 else
                 {
                     $response = array('message' => 'Token not valid');
                     echo json_encode($response);
-                    exit();
+                    return;
                 }
             } else {
                 $response = array('message' => 'Could not update user');
                 echo json_encode($response);
-                exit();
+                return;
             }
 
         }
@@ -744,7 +731,7 @@ class UserController
             }
  
              if (!$this->validateToken($token, $user['user_id'])) {
-                 echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                 echo json_encode(['success' => false, 'message' => 'Invalid token']);
                  return;
              }
 
@@ -764,18 +751,18 @@ class UserController
             {
                 $response = array('message' => 'Success');
                 echo json_encode($response);
-                exit();  
+                return;  
             }
             else
             {
                 $response = array('message' => 'Couldnt update user');
                 echo json_encode($response);
-                exit();
+                return;
             }
         } else {
             $response = array('message' => 'Couldnt update user');
             echo json_encode($response);
-            exit();
+            return;
         }
 
     }
@@ -833,7 +820,7 @@ class UserController
             if ($user['user_id'] != $this->getUserId())
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
 
             if (isset($_POST['username']) && $user['user_isAscend'] == 1)
@@ -845,7 +832,7 @@ class UserController
 
                 if ($existingUser && $existingUser['user_id'] != $this->getUserId()) {
                     header("location:/userProfile?message=Username already exists");
-                    exit();
+                    return;
                 }
             } else {
                 $this->setUsername($user['user_username']);
@@ -853,18 +840,18 @@ class UserController
 
             if ($this->emptyInputSignupUpdate($this->getAge(), $this->getShortBio()) !== false) {
                 header("location:/signup?message=Inputs cannot be empty");
-                exit();
+                return;
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
                 header("location:/signup?message=Username is not valid");
-                exit();
+                return;
             }
 
             if ($age < 13 || $age > 99)
             {
                 header("location:/userProfile?message=Age is not valid");
-                exit();
+                return;
             }
 
             if (!empty($userId))
@@ -902,14 +889,14 @@ class UserController
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
                                 header("location:/userProfile?message=Updated successfully");
-                                exit();  
+                                return;  
                             } else {
                                 header("location:/updateLookingForGame?message=Updated successfully");
-                                exit();  
+                                return;  
                             }
                         } else {
                             header("location:/valorantuser?user_id=".$user['user_id']);
-                            exit();  
+                            return;  
                         }
                     }
                     else 
@@ -924,30 +911,30 @@ class UserController
                             {
                                 $_SESSION['lf_id'] = $user['lf_id']; 
                                 header("location:/userProfile?message=Updated successfully");
-                                exit();  
+                                return;  
                             } else {
                                 header("location:/updateLookingForGamePage?message=Updated successfully");
-                                exit();  
+                                return;  
                             }
                         } else {
                             header("location:/leagueuser?user_id=".$user['user_id']);
-                            exit();  
+                            return;  
                         }
 
                         header("location:/updateLookingForGamePage?message=Updated successfully");
-                        exit();  
+                        return;  
                     }
                 }
                 else 
                 {
                     header("location:/userProfile?message=Updated successfully");
-                    exit();  
+                    return;  
                 }
             }
             else
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
         }
 
@@ -966,7 +953,7 @@ class UserController
     
         if (!isset($_POST["submit"]) || empty($_FILES["file"]["name"])) {
             header("location:/userProfile?message=Nothing to upload");
-            exit;
+            return;
         }
     
         // Retrieve current user info
@@ -976,28 +963,28 @@ class UserController
     
         if ($user['user_username'] !== $this->getUsername()) {
             header("location:/userProfile?message=Unauthorized");
-            exit;
+            return;
         }
     
         $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
     
         if (!in_array($fileExtension, $allowTypes)) {
             header("location:/userProfile?message=Wrong type of picture");
-            exit;
+            return;
         }
     
         try {
             // Move uploaded file
             if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
                 header("location:/userProfile?message=Error uploading file. Picture was probably too big");
-                exit;
+                return;
             }
     
             // Check for animated GIFs
             if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated Gifs are not allowed");
-                exit;
+                return;
             }
     
             // Resize image
@@ -1005,7 +992,7 @@ class UserController
             if (!$this->resizeImage($targetFilePath, $resizedFilePath, 500, 500)) {
                 unlink($targetFilePath); // Clean up original if resize fails
                 header("location:/userProfile?message=Error resizing image");
-                exit;
+                return;
             }
     
             // Get current bonus pictures
@@ -1020,7 +1007,7 @@ class UserController
             if (count($bonusPictures) >= 10) {
                 unlink($targetFilePath); // Delete the uploaded file if limit exceeded
                 header("location:/userProfile?message=You cannot upload more than 10 pictures.");
-                exit;
+                return;
             }
     
             // Add new picture to the list
@@ -1029,7 +1016,7 @@ class UserController
             // Update the bonus pictures in the database
             if (!$this->user->updateBonusPictures($this->getUsername(), $bonusPictures)) {
                 header("location:/userProfile?message=Couldn't update profile picture");
-                exit;
+                return;
             }
     
             // Delete original uploaded file after resizing
@@ -1039,7 +1026,7 @@ class UserController
         } catch (Exception $e) {
             header("location:/userProfile?message=" . urlencode($e->getMessage()));
         }
-        exit;
+        return;
     }
     
 
@@ -1062,7 +1049,7 @@ class UserController
             }
         
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
         
@@ -1070,7 +1057,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -1082,7 +1069,7 @@ class UserController
             }
 
             if (!in_array($this->getFileName(), $bonusPictures)) {
-                echo json_encode(['success' => false, 'error' => 'Picture not found in user\'s collection']);
+                echo json_encode(['success' => false, 'message' => 'Picture not found in user\'s collection']);
                 return;
             }
 
@@ -1096,7 +1083,7 @@ class UserController
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
                 $response = array('message' => 'Could not delete picture');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             $filePath = "public/upload/" . $this->getFileName();
@@ -1106,11 +1093,11 @@ class UserController
 
             $response = array('message' => 'Success');
             echo json_encode($response);
-            exit;
+            return;
         } else {
             $response = array('message' => 'Could not delete picture');
             echo json_encode($response);
-            exit;
+            return;
         }
     }
 
@@ -1167,7 +1154,7 @@ class UserController
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
                 $response = array('message' => 'Could not delete picture');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             $filePath = "public/upload/" . $this->getFileName();
@@ -1177,11 +1164,11 @@ class UserController
 
             $response = array('message' => 'Success', 'bonusPictures' => $bonusPictures);
             echo json_encode($response);
-            exit;
+            return;
         } else {
             $response = array('message' => 'Could not delete picture, invalid data sent');
             echo json_encode($response);
-            exit;
+            return;
         }
     }
 
@@ -1195,7 +1182,7 @@ class UserController
             // $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
     
             // if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             //     return;
             // }
         
@@ -1203,7 +1190,7 @@ class UserController
         
             // // Check if the provided token matches the valid token
             // if ($token !== $validToken) {
-            //     echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            //     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             //     return;
             // }
 
@@ -1242,7 +1229,7 @@ class UserController
         
             // Check if the provided token matches the valid token
             if ($token !== $validToken) {
-                echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
                 return;
             }
 
@@ -1285,7 +1272,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -1325,7 +1312,7 @@ class UserController
             if (!empty($filteredServer)) {
                 foreach ($filteredServer as $serverTest) {
                     if (!in_array($serverTest, $validRegions)) {
-                        echo json_encode(['success' => false, 'error' => 'Filtered region not valid']);
+                        echo json_encode(['success' => false, 'message' => 'Filtered region not valid']);
                         return;
                     }
                 }
@@ -1362,7 +1349,7 @@ class UserController
             {
                 $response = array('message' => 'Age is not valid');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             $updateLeague = false;
@@ -1456,7 +1443,7 @@ class UserController
             if (!empty($filteredServer)) {
                 foreach ($filteredServer as $serverTest) {
                     if (!in_array($serverTest, $validRegions)) {
-                        echo json_encode(['success' => false, 'error' => 'Filtered region not valid']);
+                        echo json_encode(['success' => false, 'message' => 'Filtered region not valid']);
                         return;
                     }
                 }
@@ -1493,7 +1480,7 @@ class UserController
             {
                 $response = array('message' => 'Age is not valid');
                 echo json_encode($response);
-                exit;
+                return;
             }
 
             $updateValorant = false;
@@ -1572,7 +1559,7 @@ class UserController
     
         if (!isset($_POST["submit"]) || empty($_FILES["fileProfile"]["name"])) {
             header("location:/userProfile?message=Nothing to upload");
-            exit;
+            return;
         }
     
         // Retrieve current user info
@@ -1582,28 +1569,28 @@ class UserController
     
         if ($user['user_username'] !== $this->getUsername()) {
             header("location:/userProfile?message=Unauthorized");
-            exit;
+            return;
         }
     
         $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
     
         if (!in_array($fileExtension, $allowTypes)) {
             header("location:/userProfile?message=Wrong type of picture");
-            exit;
+            return;
         }
     
         try {
             // Move uploaded file
             if (!move_uploaded_file($_FILES["fileProfile"]["tmp_name"], $targetFilePath)) {
                 header("location:/userProfile?message=Error uploading file");
-                exit;
+                return;
             }
     
             // Check for animated GIFs, only allow if user_isAscend === 1 
             if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath) && $user['user_isAscend'] !== 1) {
                 unlink($targetFilePath); // Delete the uploaded GIF immediately
                 header("location:/userProfile?message=Animated GIFs are not allowed");
-                exit;
+                return;
             }
     
             // Resize image
@@ -1614,21 +1601,21 @@ class UserController
                 if (!copy($targetFilePath, $resizedFilePath)) {
                     unlink($targetFilePath);
                     header("location:/userProfile?message=Error copying GIF");
-                    exit;
+                    return;
                 }
             } else {
                 // Resize other images
                 if (!$this->resizeImage($targetFilePath, $resizedFilePath, 200, 200)) {
                     unlink($targetFilePath);
                     header("location:/userProfile?message=Error resizing image");
-                    exit;
+                    return;
                 }
             }
     
             // Update database with resized image
             if (!$this->user->uploadPicture($this->getUsername(), 'resized_' . $this->getFilename())) {
                 header("location:/userProfile?message=Couldn't update profile picture");
-                exit;
+                return;
             }
     
             // ✅ **Now delete old images only after everything succeeds**
@@ -1651,7 +1638,7 @@ class UserController
         } catch (Exception $e) {
             header("location:/userProfile?message=" . urlencode($e->getMessage()));
         }
-        exit;
+        return;
     }
     
 
@@ -1693,7 +1680,7 @@ class UserController
                     // Check for animated GIFs
                     if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
                         echo json_encode(['message' => 'Animated GIFs are not allowed']);
-                        exit;
+                        return;
                     }
     
                     // Resize the image to 200x200
@@ -1904,7 +1891,7 @@ class UserController
             }
     
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
         
@@ -1912,7 +1899,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -1921,11 +1908,11 @@ class UserController
             if ($updatePermission) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Could not update preferences']);
+                echo json_encode(['success' => false, 'message' => 'Could not update preferences']);
             }
     
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
 
@@ -1942,20 +1929,20 @@ class UserController
         $userId = $_POST['userId'] ?? null;
     
         if (!$param || !$userId) {
-            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
             return;
         }
     
         // Step 3: Decode subscription data
         $subscriptionData = json_decode($param, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
             return;
         }
     
         // Step 4: Validate subscription structure
         if (!isset($subscriptionData['endpoint'], $subscriptionData['keys']['p256dh'], $subscriptionData['keys']['auth'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid subscription data']);
+            echo json_encode(['success' => false, 'message' => 'Invalid subscription data']);
             return;
         }
     
@@ -1966,7 +1953,7 @@ class UserController
     
         // Step 6: Validate token
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token', 'userId' => $userId]);
+            echo json_encode(['success' => false, 'message' => 'Invalid token', 'userId' => $userId]);
             return;
         }
     
@@ -1976,7 +1963,7 @@ class UserController
         if ($saveSubscription) {
             echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to save subscription']);
+            echo json_encode(['success' => false, 'message' => 'Failed to save subscription']);
         }
     }
 
@@ -1990,13 +1977,13 @@ class UserController
         // Step 2: Retrieve and validate userId
         $userId = $_POST['userId'] ?? null;
         if (!$userId) {
-            echo json_encode(['success' => false, 'error' => 'Missing userId']);
+            echo json_encode(['success' => false, 'message' => 'Missing userId']);
             return;
         }
     
         // Step 3: Validate token
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2006,7 +1993,7 @@ class UserController
         if ($subscriptionEndpoint) {
             echo json_encode(['success' => true, 'endpoint' => $subscriptionEndpoint]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to fetch subscription endpoint']);
+            echo json_encode(['success' => false, 'message' => 'Failed to fetch subscription endpoint']);
         }
     }
 
@@ -2019,7 +2006,7 @@ class UserController
         if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             http_response_code(401); // Return Unauthorized for cron logs
             echo "❌ Unauthorized.\n";
-            exit();
+            return;
         } 
 
         echo "✅ Token is valid.\n";
@@ -2155,7 +2142,7 @@ class UserController
                 $gameModeCondition
             );
                 
-            $data = ['success' => false, 'error' => 'No matching users found.', 'matching' => $usersAfterMatching];
+            $data = ['success' => false, 'message' => 'No matching users found.', 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {
                 foreach ($usersAfterMatching as $match) {
                     $matchedUserId = $match['user_id'];
@@ -2172,7 +2159,7 @@ class UserController
                                 $data = [
                                     'success' => true,
                                     'user' => [
-                                        'error' => 'No error',
+                                        'message' => 'No error',
                                         'user_id' => $userMatched['user_id'],
                                         'user_username' => $userMatched['user_username'],
                                         'user_picture' => $userMatched['user_picture'],
@@ -2206,7 +2193,7 @@ class UserController
                                 $data = [
                                     'success' => true,
                                     'user' => [
-                                        'error' => 'No error',
+                                        'message' => 'No error',
                                         'user_id' => $userMatched['user_id'],
                                         'user_username' => $userMatched['user_username'],
                                         'user_picture' => $userMatched['user_picture'],
@@ -2231,17 +2218,17 @@ class UserController
                                 break;
                             }
                         } else {
-                            $data = ['success' => false, 'error' => 'No matching users found..', 'matching2' => $usersAfterMatching];
+                            $data = ['success' => false, 'message' => 'No matching users found..', 'matching2' => $usersAfterMatching];
                         }
                     }
                 }
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'error' => 'No matching users found...', 'matching3' => $usersAfterMatching]);
+                echo json_encode(['success' => false, 'message' => 'No matching users found...', 'matching3' => $usersAfterMatching]);
             }
             
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
         }
     }
     
@@ -2261,7 +2248,7 @@ class UserController
                 {
                     $username = $_GET['username'];
                     header("Location: /anotherUser&username=" . $username);
-                    exit();                    
+                    return;                    
                 }
             }
 
@@ -2326,12 +2313,12 @@ class UserController
             {
                 $username = $_GET['username'];
                 header("Location: /anotherUser&username=" . $username);
-                exit();                    
+                return;                    
             }
             else 
             {
                 header("Location: /");
-                exit();
+                return;
             }
         }
     }
@@ -2354,7 +2341,7 @@ class UserController
                 if ($_GET['username'] === $_SESSION['username'])
                 {
                     header("Location: /userProfile");
-                    exit();
+                    return;
                 }
                 $user = $this-> user -> getUserById($_SESSION['userId']);
                 $anotherUser = $this-> user -> getUserByUsername($username);
@@ -2405,13 +2392,13 @@ class UserController
                     require "views/layoutSwiping.phtml";
                 } else {
                     header("Location: /userProfile?message=No user found");
-                    exit();
+                    return;
                 }
             }
             else 
             {
                 header("Location: /userProfile?message=No user found");
-                exit();
+                return;
             }
         } 
         else
@@ -2457,13 +2444,13 @@ class UserController
                     require "views/layoutSwiping_noheader.phtml";
                 } else {
                     header("Location: /?message=No user found");
-                    exit();
+                    return;
                 }
             }
             else 
             {
                 header("Location: /No user found");
-                exit();
+                return;
             }
         }
     }
@@ -2515,7 +2502,7 @@ class UserController
             }
 
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -2524,11 +2511,11 @@ class UserController
             if ($updateFilter) {
                 $response = array('message' => 'Success');
                 echo json_encode($response);
-                exit;
+                return;
             } else {
                 $response = array('message' => 'Couldnt update status');
                 echo json_encode($response);
-                exit;
+                return;
             }
         }
     }
@@ -2548,7 +2535,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -2568,11 +2555,11 @@ class UserController
                 if ($updateFilter) {
                     $response = array('message' => 'Success');
                     echo json_encode($response);
-                    exit;
+                    return;
                 } else {
                     $response = array('message' => 'Couldnt update status');
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
         }
     }
@@ -2593,10 +2580,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Piltover');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
 
                 // if they pick Zaun
@@ -2606,10 +2593,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Zaun');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
 
                 //if they wanna ignore
@@ -2619,10 +2606,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Ignored');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
             }
         }
@@ -2654,10 +2641,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Piltover');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
 
                 // if they pick Zaun
@@ -2667,10 +2654,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Zaun');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
 
                 //if they wanna ignore
@@ -2680,10 +2667,10 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Ignored');
                     } else {
-                        $response = array('success' => false, 'error' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => 'No side could be picked');
                     }
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
             }
         }
@@ -2700,7 +2687,7 @@ class UserController
             }
 
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'error' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
                 return;
             }
         
@@ -2708,7 +2695,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -2761,7 +2748,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -2803,7 +2790,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -2835,7 +2822,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -2843,7 +2830,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2869,7 +2856,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -2877,7 +2864,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2901,7 +2888,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -2909,7 +2896,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2921,7 +2908,7 @@ class UserController
     
             echo json_encode(['success' => true, 'result' => $decodedResult]);
         } else {
-            echo json_encode(['success' => true, 'error' => 'Could not get personality test result', 'result' => false]);
+            echo json_encode(['success' => true, 'message' => 'Could not get personality test result', 'result' => false]);
         }
     }
 
@@ -2935,7 +2922,7 @@ class UserController
         $input = json_decode(file_get_contents('php://input'), true);
     
         if (!isset($input['userId']) || !isset($input['result'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -2944,7 +2931,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2954,7 +2941,7 @@ class UserController
         if ($savePersonalityTestResult) {
             echo json_encode(['success' => true, 'userFitting' => $savePersonalityTestResult]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Database save failed']);
+            echo json_encode(['success' => false, 'message' => 'Database save failed']);
         }
     }
 
@@ -2966,7 +2953,7 @@ class UserController
         }
     
         if (!isset($_POST['userId']) || !isset($_POST['personalityType'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -2975,7 +2962,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
     
@@ -2984,7 +2971,7 @@ class UserController
         if ($matchingPersonalityUser !== false) {
             echo json_encode(['success' => true, 'result' => $matchingPersonalityUser]);
         } else {
-            echo json_encode(['success' => true, 'error' => 'Could not get matching personality user', 'result' => false]);
+            echo json_encode(['success' => true, 'message' => 'Could not get matching personality user', 'result' => false]);
         }
     }
 
@@ -2992,7 +2979,7 @@ class UserController
     {
         // Check POST parameters
         if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'], $_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
             return;
         }
 
@@ -3002,7 +2989,7 @@ class UserController
 
         // Validate rating range (e.g. 1 to 5)
         if ($rating < 1 || $rating > 5) {
-            echo json_encode(['success' => false, 'error' => 'Invalid rating value']);
+            echo json_encode(['success' => false, 'message' => 'Invalid rating value']);
             return;
         }
 
@@ -3014,20 +3001,20 @@ class UserController
         // Validate token and get rater's userId
         $userId = intval($_POST['userId']);
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
         // Prevent rating yourself
         if ($userId === $friendId) {
-            echo json_encode(['success' => false, 'error' => 'Cannot rate yourself']);
+            echo json_encode(['success' => false, 'message' => 'Cannot rate yourself']);
             return;
         }
 
         // Check friend exists
         $friend = $this->user->getUserById($friendId);
         if (!$friend) {
-            echo json_encode(['success' => false, 'error' => 'Friend not found']);
+            echo json_encode(['success' => false, 'message' => 'Friend not found']);
             return;
         }
 
@@ -3039,14 +3026,14 @@ class UserController
             // Update existing rating
             $result = $this->rating->updateRating($userId, $friendId, $matchId, $rating);
             if (!$result) {
-                echo json_encode(['success' => false, 'error' => 'Database error']);
+                echo json_encode(['success' => false, 'message' => 'Database error']);
                 return;
             }
         } else {
             // Insert new rating
             $result = $this->rating->insertFirstRating($userId, $friendId, $matchId, $rating);
             if (!$result) {
-                echo json_encode(['success' => false, 'error' => 'Database error']);
+                echo json_encode(['success' => false, 'message' => 'Database error']);
                 return;
             }
         }
@@ -3058,14 +3045,14 @@ class UserController
                 'success' => true,
             ]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Database error']);
+            echo json_encode(['success' => false, 'message' => 'Database error']);
         }
     }
 
     public function switchPersonalColorWebsite()
     {
         if (!isset($_POST['color']) || !isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
             return;
         }
 
@@ -3079,7 +3066,7 @@ class UserController
 
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -3087,10 +3074,10 @@ class UserController
 
         if ($updateColor) {
             echo json_encode(['success' => true, 'message' => 'Color updated successfully']);
-            exit;
+            return;
         } else {
-            echo json_encode(['success' => false, 'error' => 'Could not update color']);
-            exit;
+            echo json_encode(['success' => false, 'message' => 'Could not update color']);
+            return;
         }
     }
     
@@ -3614,7 +3601,7 @@ class UserController
         // Retrieve current user info
         if (!isset($_GET['username'])) {
             header("location:/userProfile?message=No username provided");
-            exit;
+            return;
         }
         $user = $this->user->getUserById($_SESSION['userId']);
         $username = $this->validateInput($_GET["username"]);
@@ -3622,12 +3609,12 @@ class UserController
     
         if ($user['user_username'] !== $this->getUsername()) {
             header("location:/userProfile?message=Unauthorized!");
-            exit;
+            return;
         }
 
         if (empty($_FILES["bannerFile"]["name"]) && isset($_POST["bannerPreviewData"])) {
             header("location:/userProfile?message=Nothing to upload");
-            exit;
+            return;
         }
 
         $targetDir = "public/upload/";
@@ -3647,27 +3634,27 @@ class UserController
         if ($user['user_isAscend'] != 1) {
             unlink($targetFilePath); // Delete the uploaded GIF immediately
             header("location:/userProfile?message=You do not own the package to upload animated banners ");
-            exit;
+            return;
         }
 
         if (empty($bannerPreviewData)) {
             unlink($targetFilePath); // Delete the uploaded GIF immediately
             header("location:/userProfile?message=There has been an error with the preview data");
-            exit;
+            return;
         }
 
         $allowTypes = array('jpg', 'jpeg', 'png', 'gif', 'webp');
     
         if (!in_array($fileExtension, $allowTypes)) {
             header("location:/userProfile?message=Only images allowed");
-            exit;
+            return;
         }
     
         try {
             // Move uploaded file
             if (!move_uploaded_file($_FILES["bannerFile"]["tmp_name"], $targetFilePath)) {
                 header("location:/userProfile?message=Error uploading file");
-                exit;
+                return;
             }
     
             // Save image from data
@@ -3684,7 +3671,7 @@ class UserController
                 if (!$this->resizeImage($targetFilePath, $targetFilePath, 800, 400)) {
                     unlink($targetFilePath); // Clean up original if resize fails
                     header("location:/userProfile?message=Error resizing image");
-                    exit;
+                    return;
                 }
             }
 
@@ -3693,7 +3680,7 @@ class UserController
             // Update database with image
             if (!$this->user->uploadBanner($this->getUsername(),  $uniqueFileName_base)) {
                 header("location:/userProfile?message=Couldn't update profile banner");
-                exit;
+                return;
             }
 
             // After all works we can see if there is any selected banner item and remove it if thats the case
@@ -3725,14 +3712,14 @@ class UserController
         } catch (Exception $e) {
             header("location:/userProfile?message=" . urlencode($e->getMessage()));
         }
-        exit;
+        return;
     }
 
     public function removeBannerWebsite() {
 
         if (!isset($_GET["username"])) {
             header("location:/userProfile?message=No username provided");
-            exit;
+            return;
         }
 
         $username = $this->validateInput($_GET["username"]);
@@ -3743,7 +3730,7 @@ class UserController
 
         if ($user['user_username'] !== $this->getUsername()) {
             header("location:/userProfile?message=Unauthorized:");
-            exit;
+            return;
         }
 
         $targetDir = "public/upload/";
@@ -3761,17 +3748,17 @@ class UserController
             }
         } else {
             header("location:/userProfile?message=No profile banner to remove");
-            exit;
+            return;
         }
 
         // Update database to remove banner reference
         if (!$this->user->removeBanner($this->getUsername())) {
             header("location:/userProfile?message=Couldn't remove profile banner from database");
-            exit;
+            return;
         }
 
         header("location:/userProfile?message=Removed profile banner successfully");
-        exit;
+        return;
 
     }
 

@@ -23,6 +23,7 @@ export async function fetchMessages(userId, friendId) {
     }
 
     // Check if this is a random chat session
+    // This check might seem too light
     const randomSession = localStorage.getItem('randomChatSession')
     const isRandomChat = randomSession !== null
 
@@ -81,12 +82,12 @@ export async function fetchMessages(userId, friendId) {
             }
         } else {
             incrementNumberOfFail()
-            console.error('Error fetching messages:', data.error)
+            console.error('Error fetching messages:', data.message)
 
             // Handle expired random chat session
             if (
                 isRandomChat &&
-                data.error.includes('No active random chat session')
+                data.message.includes('No active random chat session')
             ) {
                 console.log(
                     'Random chat session expired - clearing localStorage and redirecting'
@@ -98,8 +99,8 @@ export async function fetchMessages(userId, friendId) {
             }
 
             if (
-                data.error.includes('Friend not found') ||
-                data.error.includes('User not found')
+                data.message.includes('Friend not found') ||
+                data.message.includes('User not found')
             ) {
                 console.warn(
                     'Stopping message fetch loop due to missing friend/user.'
