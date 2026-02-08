@@ -2432,10 +2432,14 @@ class UserController
                     $fullStars = intval($userRating);
                     $emptyStars = $maxStars - $fullStars;
                     $ownedItems = $this->items->getOwnedItems($anotherUser['user_id']);
-                    $additionalBadges = array_filter($ownedItems, function($item) {
-                        return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
-                    });
-                    $additionalBadges = array_slice($additionalBadges, 0, 3);
+                    if (is_array($ownedItems)) {
+                        $additionalBadges = array_filter($ownedItems, function($item) {
+                            return $item['items_category'] === 'badge' && $item['userItems_isUsed'] == 1;
+                        });
+                        $additionalBadges = array_slice($additionalBadges, 0, 3);
+                    } else {
+                        $additionalBadges = [];
+                    }
                     $page_css = ['tools/offline_modal', 'profile'];
                     $current_url = "https://ur-sg.com/anotherUser";
                     $template = "views/swiping/swiping_profile_other";
