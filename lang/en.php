@@ -150,6 +150,7 @@ return [
     'language' => 'Change language',
     'sound_notifications' => 'Sound notifications',
     'delete_account' => 'Delete account',
+    'random_chat_permission' => 'Allow messages from people who are not your friends',
 
     //profilepage
     'update_league' => 'Update League',

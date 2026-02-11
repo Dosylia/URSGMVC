@@ -151,6 +151,7 @@ return [
     'language' => 'Sprache ändern',
     'sound_notifications' => 'Tonbenachrichtigungen',
     'delete_account' => 'Konto löschen',
+    'random_chat_permission' => 'Erlaube Nachrichten von Personen, die nicht deine Freunde sind',
 
     //profilepage
     'update_league' => 'League aktualisieren',

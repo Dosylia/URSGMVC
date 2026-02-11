@@ -57,7 +57,8 @@ class PlayerFinder extends DataBase
             JOIN user u ON pf.user_id = u.user_id
             LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
             LEFT JOIN valorant val ON val.user_id = u.user_id
-            WHERE pf.user_id != :userId
+            WHERE u.user_randomChatPermission = 1
+             AND pf.user_id != :userId
             AND NOT EXISTS (
                 SELECT 1 
                 FROM friendrequest fr

@@ -183,6 +183,7 @@ $actionMap = [
     'arcaneSideWebsite' => [UserController::class, 'arcaneSideWebsite'],
     'chatFilterSwitch' => [UserController::class, 'chatFilterSwitch'],
     'chatFilterSwitchWebsite' => [UserController::class, 'chatFilterSwitchWebsite'],
+    'switchRandomChatPermission' => [UserController::class, 'switchRandomChatPermission'],
     'deleteAccount' => [GoogleUserController::class, 'deleteAccountPage'],
     'deleteGoogleAccount' => [GoogleUserController::class, 'deleteGoogleAccount'],
     'deleteRiotAccount' => [GoogleUserController::class, 'deleteRiotAccount'],

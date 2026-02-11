@@ -2459,6 +2459,80 @@ class UserController
         }
     }
 
+    public function switchRandomChatPermission()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            
+            $userId = $data->userId;
+            $status = $data->status;
+
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
+
+            if (!$this->validateTokenWebsite($token, $userId)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                return;
+            }
+
+            if (isset($_SESSION)) {
+                $user = $this-> user -> getUserById($userId);
+
+                if ($user['user_id'] != $userId)
+                {
+                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    return;
+                }
+            }
+
+            // Switch boolean value
+            $updatePermission = $this->user->updateRandomChatPermission($userId, $status);
+
+            if ($updatePermission) {
+                $response = array('message' => 'Success');
+                echo json_encode($response);
+                return;
+            } else {
+                $response = array('message' => 'Couldnt update status');
+                echo json_encode($response);
+                return;
+            }
+        }
+    }
+
+    public function getRandomChatPermission()
+    {
+        if (isset($_POST['param'])) {
+            $data = json_decode($_POST['param']);
+            
+            $userId = $data->userId;
+
+            $token = $this->getBearerTokenOrJsonError();
+            if (!$token) {
+                return;
+            }
+
+            if (!$this->validateToken($token, $userId)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                return;
+            }
+
+            $getPermission = $this->user->getRandomChatPermission($userId);
+
+            if ($getPermission !== null) {
+                $response = array('message' => 'Success', 'permission' => $getPermission);
+                echo json_encode($response);
+                return;
+            } else {
+                $response = array('message' => 'Couldnt fetch status');
+                echo json_encode($response);
+                return;
+            }
+        }
+    }
+
     public function pageUpdateProfile()
     {
         $this->requireUserSessionOrRedirect($redirectUrl = '/');
