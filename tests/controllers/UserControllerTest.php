@@ -825,4 +825,239 @@ class UserControllerTest extends BaseControllerTestCase
         // Should return false for a normal username
         $this->assertIsBool($result);
     }
+
+    // ─── switchRandomChatPermission ─────────────────────────────
+
+    public function testSwitchRandomChatPermissionNoParam(): void
+    {
+        $controller = $this->createController();
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNull($result);
+    }
+
+    public function testSwitchRandomChatPermissionNoBearer(): void
+    {
+        $controller = $this->createController();
+        $_POST['param'] = json_encode(['userId' => 1, 'status' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertFalse($result['success'] ?? true);
+    }
+
+    public function testSwitchRandomChatPermissionInvalidToken(): void
+    {
+        $this->setBearerToken('invalid_token');
+        $this->simulateLoggedInUser(1);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenWebsiteByUserId')->willReturn([
+            'google_masterTokenWebsite' => 'different_token',
+        ]);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1, 'status' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Invalid token', $result['message']);
+    }
+
+    public function testSwitchRandomChatPermissionUserMismatch(): void
+    {
+        $this->setBearerToken('valid_token');
+        $this->simulateLoggedInUser(1);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenWebsiteByUserId')->willReturn([
+            'google_masterTokenWebsite' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getUserById')->willReturn($this->fakeUser(['user_id' => 999]));
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1, 'status' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Request not allowed', $result['message']);
+    }
+
+    public function testSwitchRandomChatPermissionSuccess(): void
+    {
+        $this->setBearerToken('valid_token');
+        $this->simulateLoggedInUser(1);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenWebsiteByUserId')->willReturn([
+            'google_masterTokenWebsite' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getUserById')->willReturn($this->fakeUser());
+        $userMock->method('updateRandomChatPermission')->willReturn(true);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1, 'status' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertEquals('Success', $result['message']);
+    }
+
+    public function testSwitchRandomChatPermissionUpdateFails(): void
+    {
+        $this->setBearerToken('valid_token');
+        $this->simulateLoggedInUser(1);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenWebsiteByUserId')->willReturn([
+            'google_masterTokenWebsite' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getUserById')->willReturn($this->fakeUser());
+        $userMock->method('updateRandomChatPermission')->willReturn(false);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1, 'status' => 0]);
+
+        $result = $this->captureJsonOutput($controller, 'switchRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertEquals('Couldnt update status', $result['message']);
+    }
+
+    // ─── getRandomChatPermission ────────────────────────────────
+
+    public function testGetRandomChatPermissionNoParam(): void
+    {
+        $controller = $this->createController();
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNull($result);
+    }
+
+    public function testGetRandomChatPermissionNoBearer(): void
+    {
+        $controller = $this->createController();
+        $_POST['param'] = json_encode(['userId' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertFalse($result['success'] ?? true);
+    }
+
+    public function testGetRandomChatPermissionInvalidToken(): void
+    {
+        $this->setBearerToken('invalid_token');
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenByUserId')->willReturn([
+            'google_masterToken' => 'different_token',
+        ]);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Invalid token', $result['message']);
+    }
+
+    public function testGetRandomChatPermissionSuccess(): void
+    {
+        $this->setBearerToken('valid_token');
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenByUserId')->willReturn([
+            'google_masterToken' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getRandomChatPermission')->willReturn(1);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertEquals('Success', $result['message']);
+        $this->assertEquals(1, $result['permission']);
+    }
+
+    public function testGetRandomChatPermissionReturnsZero(): void
+    {
+        $this->setBearerToken('valid_token');
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenByUserId')->willReturn([
+            'google_masterToken' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getRandomChatPermission')->willReturn(0);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertEquals('Success', $result['message']);
+        $this->assertEquals(0, $result['permission']);
+    }
+
+    public function testGetRandomChatPermissionNull(): void
+    {
+        $this->setBearerToken('valid_token');
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getMasterTokenByUserId')->willReturn([
+            'google_masterToken' => 'valid_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getRandomChatPermission')->willReturn(null);
+
+        $controller = $this->createController([
+            'googleUser' => $googleUserMock,
+            'user' => $userMock,
+        ]);
+
+        $_POST['param'] = json_encode(['userId' => 1]);
+
+        $result = $this->captureJsonOutput($controller, 'getRandomChatPermission');
+        $this->assertNotNull($result);
+        $this->assertEquals('Couldnt fetch status', $result['message']);
+    }
 }
