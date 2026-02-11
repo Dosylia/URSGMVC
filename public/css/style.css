@@ -6509,7 +6509,7 @@ dialog .title_generalbox {
         background-color: #ccc;
         border-radius: 25px;
         width: 40px;
-        height: 15px;
+        height: 20px;
         position: relative;
         cursor: pointer;
         display: flex;
@@ -6522,17 +6522,13 @@ dialog .title_generalbox {
     #toggle-button-sound,
     #toggleRandomChatPermission {
         width: 20px;
-        height: 15px;
+        height: 20px;
         background-color: #fff;
         border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
         transition: transform 0.3s;
-    }
-
-    .filter-button {
-        width: 20px;
-        height: 15px;
-        background-color: #fff;
-        border-radius: 50%;
     }
 
     .dark-mode .toggle-button {
@@ -6550,7 +6546,7 @@ dialog .title_generalbox {
     .toggle-container .toggle-button,
     .toggle-container-sound #toggle-button-sound,
     .toggle-container-random-chat #toggleRandomChatPermission {
-        transform: translateX(unset);
+        transform: translateX(0);
     }
 
     #open_menu_profile {
