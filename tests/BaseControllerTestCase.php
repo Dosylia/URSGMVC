@@ -52,7 +52,9 @@ abstract class BaseControllerTestCase extends TestCase
         ]);
         $_COOKIE['lang'] = 'en';
         $_FILES = [];
-        $_SESSION['lang'] = 'en';    
+        $_SESSION['lang'] = 'en';
+        $_SESSION['masterTokenWebsite'] = 'test_master_token_website_123';
+        $_SESSION['masterToken'] = 'test_master_token_123';    
     }
 
     protected function tearDown(): void
