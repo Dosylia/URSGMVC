@@ -90,7 +90,7 @@ class AdminController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -343,7 +343,7 @@ class AdminController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -369,7 +369,7 @@ class AdminController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -404,26 +404,26 @@ class AdminController
                         if ($addChar) {
                             $this->admin->logAdminActionGame($_SESSION['userId'], $gameUsername, "Added Character");
                             header("Location: /adminGame?message=Character added successfully");
-                            exit();
+                            return;
                         } else {
                             header("Location: /adminGame?message=Error adding character");
-                            exit();
+                            return;
                         }
                     } else {
                         header("Location: /adminGame?message=Error resizing image");
-                        exit();
+                        return;
                     }
                 } else {
                     header("Location: /adminGame?message=Image upload failed");
-                    exit();
+                    return;
                 }
             } else {
                 header("Location: /adminGame?message=Invalid input data");
-                exit();
+                return;
             }
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -446,7 +446,7 @@ class AdminController
             require "views/layoutAdmin.phtml";
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -466,18 +466,18 @@ class AdminController
                 if ($removePartner) {
                     $this->admin->logAdminAction($_SESSION['userId'], null, "Removed Partner");
                     header("Location: /adminPartnerPage?message=Partner removed successfully");
-                    exit();
+                    return;
                 } else {
                     header("Location: /adminPartnerPage?message=Error removing partner");
-                    exit();
+                    return;
                 }
             } else {
                 header("Location: /adminPartnerPage?message=Invalid input data");
-                exit();
+                return;
             }
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -543,26 +543,26 @@ class AdminController
                         if ($addPartner) {
                             $this->admin->logAdminAction($_SESSION['userId'], null, "Added Partner");
                             header("Location: /adminPartnerPage?message=Partner added successfully");
-                            exit();
+                            return;
                         } else {
                             header("Location: /adminPartnerPage?message=Error adding partner");
-                            exit();
+                            return;
                         }
                     } else {
                         header("Location: /adminPartnerPage?message=Error resizing image");
-                        exit();
+                        return;
                     }
                 } else {
                     header("Location: /adminPartnerPage?message=Image upload failed");
-                    exit();
+                    return;
                 }
             } else {
                 header("Location: /adminPartnerPage?message=Invalid input data");
-                exit();
+                return;
             }
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -666,24 +666,24 @@ class AdminController
                 {
                     $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Updated Currency");
                     header("Location: /adminUsers?message=Money updated");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error updating money");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Error updating money");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -711,30 +711,30 @@ class AdminController
                     {
                         $this-> admin -> logAdminActionBan($_SESSION['userId'],  $userId, $username, $userToBan['google_email'], "Ban");
                         header("Location: /adminUsers?message=User banned");
-                        exit();
+                        return;
                     }
                     else
                     {
                         header("Location: /adminUsers?message=Error banning user");
-                        exit();
+                        return;
                     }
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error banning user");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Error banning user");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -756,24 +756,24 @@ class AdminController
                 {
                     $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Censor Bio");
                     header("Location: /adminUsers?message=Bio censored");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error censoring bio");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Error censoring bio");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -795,24 +795,24 @@ class AdminController
                 {
                     $this-> admin -> logAdminAction($_SESSION['userId'],  $_POST['user_id'], "Censor Picture");
                     header("Location: /adminUsers?message=Picture censored");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error censoring picture");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Error censoring picture");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -840,7 +840,7 @@ class AdminController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -878,36 +878,36 @@ class AdminController
                             }
     
                             header("Location: /adminReports?message=User banned and reports reviewed");
-                            exit();
+                            return;
                         }
                         else
                         {
                             header("Location: /adminReports?message=Error banning user");
-                            exit();
+                            return;
                         }
                     }
                     else
                     {
                         header("Location: /adminReports?message=Error deleting user account");
-                        exit();
+                        return;
                     }
                 }
                 else
                 {
                     header("Location: /adminUsers?message=User not found");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -935,24 +935,24 @@ class AdminController
                     }
 
                     header("Location: /adminReports?message=Bio censored and reports reviewed");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminReports?message=Error censoring bio");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminReports?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -980,24 +980,24 @@ class AdminController
                     }
 
                     header("Location: /adminReports?message=Picture censored and reports reviewed");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminReports?message=Error censoring picture");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminReports?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1026,24 +1026,24 @@ class AdminController
                     }
 
                     header("Location: /adminReports?message=Bio and picture censored and reports reviewed");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminReports?message=Error censoring bio and picture");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminReports?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1071,25 +1071,25 @@ class AdminController
                     }
 
                     header("Location: /adminReports?message=Requested the ban successfully");
-                    exit();
+                    return;
                   
                 }
                 else
                 {
                     header("Location: /adminReports?message=User not found");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminReports?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1115,24 +1115,24 @@ class AdminController
 
                     $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Removed partner");
                     header("Location: /adminUsers?message=Partner removed successfully");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error removing partner");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1173,24 +1173,24 @@ class AdminController
 
                     $this->admin->logAdminAction($_SESSION['userId'], $_POST['user_id'], "Added partner");
                     header("Location: /adminUsers?message=Partner added successfully");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("Location: /adminUsers?message=Error adding partner");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminUsers?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1218,25 +1218,25 @@ class AdminController
                     }
 
                     header("Location: /adminReports?message=Requested the dismiss successfully");
-                    exit();
+                    return;
                   
                 }
                 else
                 {
                     header("Location: /adminReports?message=User not found");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("Location: /adminReports?message=Invalid request");
-                exit();
+                return;
             }
         } 
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1268,7 +1268,7 @@ class AdminController
             require "views/layoutAdmin.phtml";
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1283,7 +1283,7 @@ class AdminController
             require "views/layoutAdmin.phtml";
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1312,18 +1312,18 @@ class AdminController
                 if ($addItem) {
                     $this->admin->logAdminAction($_SESSION['userId'], $userId, "Added Item");
                     header("Location: /adminStore?message=Item added successfully");
-                    exit();
+                    return;
                 } else {
                     header("Location: /adminStore?message=Error adding item");
-                    exit();
+                    return;
                 }
             } else {
                 header("Location: /adminStore?message=Invalid input data");
-                exit();
+                return;
             }
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1339,18 +1339,18 @@ class AdminController
                 if ($removeItem) {
                     $this->admin->logAdminAction($_SESSION['userId'], $userId, "Removed Item");
                     header("Location: /adminStore?message=Item removed successfully");
-                    exit();
+                    return;
                 } else {
                     header("Location: /adminStore?message=Error removing item");
-                    exit();
+                    return;
                 }
             } else {
                 header("Location: /adminStore?message=Invalid input data");
-                exit();
+                return;
             }
         } else {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -1364,12 +1364,12 @@ class AdminController
         }
     
         if ($token !== $adminTokenSecret) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
         $result = \services\DiscordBotService::status();
         echo json_encode($result);
-        exit();
+        return;
     }
 
     public function discordBotControl()
@@ -1382,7 +1382,7 @@ class AdminController
         }
     
         if ($token !== $adminTokenSecret) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
         $action = $_POST['action'] ?? '';
@@ -1403,7 +1403,7 @@ class AdminController
         }
 
         echo json_encode($result);
-        exit();
+        return;
     }
 
     public function discordBotCommand()
@@ -1416,14 +1416,14 @@ class AdminController
         }
     
         if ($token !== $adminTokenSecret) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
         $command = $_POST['command'] ?? '';
         $result = DiscordBotService::sendCommand($command);
 
         echo json_encode($result);
-        exit();
+        return;
     }
 
     

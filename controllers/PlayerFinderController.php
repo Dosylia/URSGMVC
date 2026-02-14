@@ -6,6 +6,7 @@ use models\FriendRequest;
 use models\User;
 use models\GoogleUser;
 use models\PlayerFinder;
+use models\ChatMessage;
 
 use traits\SecurityController;
 use traits\Translatable;
@@ -19,6 +20,7 @@ class PlayerFinderController
     private User $user;
     private GoogleUser $googleUser;
     private PlayerFinder $playerFinder;
+    private ChatMessage $chatmessage;
 
     public function __construct()
     {
@@ -26,6 +28,7 @@ class PlayerFinderController
         $this -> user = new User();
         $this -> googleUser = new GoogleUser();
         $this -> playerFinder = new PlayerFinder();
+        $this->chatmessage = new ChatMessage();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -149,49 +152,37 @@ class PlayerFinderController
         if (!$token) {
             return;
         }
-    
-        // Decode raw JSON input
+
         $input = json_decode(file_get_contents('php://input'), true);
-    
         if (!isset($input['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
-    
         $userId = (int) $input['userId'];
         $voiceChat = $input['voiceChat'] ?? null;
         $role = $input['roleLookingFor'] ?? null;
         $rank = $input['rankLookingFor'] ?? null;
         $description = $input['description'] ?? null;
-
         if ($voiceChat == "true") {
             $voiceChat = 1;
         } else {
             $voiceChat = 0;
         }
-    
-        // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
-
         $user = $this->user->getUserById($userId);
         $oldTime = $user['user_requestIsLooking'];
-
         $setStatus = $this->user->userIsLookingForGame($userId);
-
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
-
         if ($getPlayerFinderPost) {
             $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($getPlayerFinderPost['pf_id']);
-
             if (!$deletePlayerFinderPost) {
-                echo json_encode(['success' => false, 'error' => 'Failed to delete existing Player Finder post']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_delete_post')]);
                 return;
             }
         }
-
         $addPlayerFinderPost = $this->playerFinder->addPlayerFinderPost(
             $role,
             $rank,
@@ -200,11 +191,10 @@ class PlayerFinderController
             $user['user_game'],
             $userId
         );
-
         if ($addPlayerFinderPost) {
-            echo json_encode(['success' => true, 'message' => 'Player Finder post added successfully', 'oldTime' => $oldTime]);
+            echo json_encode(['success' => true, 'message' => $this->_('messages.player_finder_post_added'), 'oldTime' => $oldTime]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to add Player Finder post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_add_post')]);
         }
     }
 
@@ -219,7 +209,7 @@ class PlayerFinderController
         $input = json_decode(file_get_contents('php://input'), true);
     
         if (!isset($input['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -228,28 +218,28 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_player_finder_posts_found')]);
             return;
         }
 
         if ($getPlayerFinderPost['user_id'] != $userId) {
-            echo json_encode(['success' => false, 'error' => 'You cannot delete this post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.cannot_delete_post')]);
             return;
         }
     
         $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($postId);
     
         if ($deletePlayerFinderPost) {
-            echo json_encode(['success' => true, 'message' => 'Player Finder post deleted successfully']);
+            echo json_encode(['success' => true, 'message' => $this->_('messages.post_deleted_successfully')]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to delete Player Finder post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_delete_post')]);
         }
     }
 
@@ -264,7 +254,7 @@ class PlayerFinderController
         $input = json_decode(file_get_contents('php://input'), true);
     
         if (!isset($input['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -273,19 +263,19 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_player_finder_posts_found')]);
             return;
         }
 
         if ($getPlayerFinderPost['user_id'] == $userId) {
-            echo json_encode(['success' => false, 'error' => 'You cannot play with yourself']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.you_cannot_play_with_yourself')]);
             return;
         }
 
@@ -309,23 +299,22 @@ class PlayerFinderController
         if ($playWithThem) {
             // Check if they are friends, if yes add isFriend yes, to redirect them to chat on front end
             $friendRequest = $this->friendrequest->getFriendStatus($userId, $getPlayerFinderPost['user_id']);
-
             if ($friendRequest === "accepted") {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Redirecting to friend chat',
+                    'message' => $this->_('messages.redirecting_to_friend_chat'),
                     'isFriend' => true,
                     'friendId' => $getPlayerFinderPost['user_id']
                 ]);
             } else {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'They will know you want to play with them',
+                    'message' => $this->_('messages.they_will_know_you_want_to_play'),
                     'isFriend' => false
                 ]);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to play with them']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_play_with_them')]);
         }
     }
     
@@ -338,20 +327,20 @@ class PlayerFinderController
         $userId = $_POST['userId'] ?? null;
     
         if (!isset($userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => 'No Player Finder post found']);
             return;
         }
 
@@ -396,7 +385,7 @@ class PlayerFinderController
         $input = json_decode(file_get_contents('php://input'), true);
     
         if (!isset($input['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -414,7 +403,7 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
@@ -429,7 +418,7 @@ class PlayerFinderController
             $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($getPlayerFinderPost['pf_id']);
 
             if (!$deletePlayerFinderPost) {
-                echo json_encode(['success' => false, 'error' => 'Failed to delete existing Player Finder post']);
+                echo json_encode(['success' => false, 'message' => 'Failed to delete existing Player Finder post']);
                 return;
             }
         }
@@ -446,7 +435,80 @@ class PlayerFinderController
         if ($addPlayerFinderPost) {
             echo json_encode(['success' => true, 'message' => 'Player Finder post added successfully', 'oldTime' => $oldTime]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to add Player Finder post']);
+            echo json_encode(['success' => false, 'message' => 'Failed to add Player Finder post']);
+        }
+    }
+
+    public function getRandomPlayerFinder() 
+    {
+        // Goal of that function, is to find a random player from the player finder posts, that is not the user himself fitting him with criterias sent
+        // Then redirect the user to that player's chat page, with a selection a ready messages (about gaming)
+        // They would not be friends yet, but can start chatting directly
+        // And somehow if they don't like the player, they can skip to another random one (limit to 5 skips per day ?)
+        // This chat should vanish if they don't become friends within 24 hours ?
+        // Should have clear option to add as friends
+
+        if (!isset($_POST['param'])) {
+            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            return;
+        }
+
+        $token = $this->getBearerTokenOrJsonError();
+        $data = json_decode($_POST['param']);
+
+        if (!$token) {
+            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
+            return;
+        }
+
+        if (!isset($data->userId)) {
+            echo json_encode(['success' => false, 'message' => 'Missing userId']);
+            return;
+        }
+
+        $userId = $data->userId;
+
+        if (!$this->validateTokenWebsite($token, $userId)) {
+            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
+            return;
+        }
+
+        $user = $this->user->getUserById($_SESSION['userId']);
+        if (!$user || $user['user_id'] != $userId) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        // Check preferences of user to filter players (default them to League of Legends, Any role, Any rank, voice chat yes/no)
+        $gamePref      = strtolower($data->gamePref ?? 'any') === 'any' ? null : $data->gamePref;
+        $voiceChatPref = strtolower($data->voiceChat ?? 'any') === 'any' ? null : $data->voiceChat;
+        $rolePref      = strtolower($data->roleLookingFor ?? 'any') === 'any' ? null : $data->roleLookingFor;
+        $rankPref      = strtolower($data->rankLookingFor ?? 'any') === 'any' ? null : $data->rankLookingFor;
+
+        $filters = [
+            'userId'    => $userId,
+            'game'      => $gamePref,
+            'voiceChat' => $voiceChatPref,
+            'role'      => $rolePref,
+            'rank'      => $rankPref
+        ];
+
+        // Do not take friends, this feature is to find new people
+        $randomPlayer = $this->playerFinder->getRandomPlayerFinderPost($filters);
+
+        if ($randomPlayer) {
+              $sessionId = $this->chatmessage->createRandomChatSession($data->userId, $randomPlayer['user_id']);
+            if ($sessionId) {
+                echo json_encode([
+                    'success' => true, 
+                    'randomUserId' => $randomPlayer['user_id'],
+                    'sessionId' => $sessionId
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_create_chat_session')]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_matching_player_found')]);
         }
     }
 
@@ -459,7 +521,7 @@ class PlayerFinderController
     
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -467,7 +529,7 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
@@ -476,7 +538,7 @@ class PlayerFinderController
         if ($playerFinderPosts) {
             echo json_encode(['success' => true, 'posts' => $playerFinderPosts]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder posts found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_player_finder_posts_found')]);
         }
     }
 
@@ -488,7 +550,7 @@ class PlayerFinderController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -497,28 +559,28 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_player_finder_posts_found')]);
             return;
         }
 
         if ($getPlayerFinderPost['user_id'] != $userId) {
-            echo json_encode(['success' => false, 'error' => 'You cannot delete this post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.cannot_delete_post')]);
             return;
         }
     
         $deletePlayerFinderPost = $this->playerFinder->deletePlayerFinderPost($postId);
     
         if ($deletePlayerFinderPost) {
-            echo json_encode(['success' => true, 'message' => 'Player Finder post deleted successfully']);
+            echo json_encode(['success' => true, 'message' => $this->_('messages.post_deleted_successfully')]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to delete Player Finder post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_delete_post')]);
         }
     }
 
@@ -530,7 +592,7 @@ class PlayerFinderController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -539,19 +601,19 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => 'No Player Finder post found']);
             return;
         }
 
         if ($getPlayerFinderPost['user_id'] == $userId) {
-            echo json_encode(['success' => false, 'error' => 'You cannot play with yourself']);
+            echo json_encode(['success' => false, 'message' => 'You cannot play with yourself']);
             return;
         }
 
@@ -591,7 +653,7 @@ class PlayerFinderController
                 ]);
             }
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to play with them']);
+            echo json_encode(['success' => false, 'message' => 'Failed to play with them']);
         }
     }
     
@@ -605,20 +667,20 @@ class PlayerFinderController
         $userId = $_POST['userId'] ?? null;
     
         if (!isset($userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPost($userId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => 'No Player Finder post found']);
             return;
         }
 
@@ -663,13 +725,13 @@ class PlayerFinderController
         $postId = $_POST['postId'] ?? null;
 
         if (!$userId || !$postId || !$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
 
         $post = $this->playerFinder->getPlayerFinderPostById($postId);
         if (!$post || $post['user_id'] != $userId) {
-            echo json_encode(['success' => false, 'error' => 'Access denied']);
+            echo json_encode(['success' => false, 'message' => 'Access denied']);
             return;
         }
 
@@ -696,7 +758,7 @@ class PlayerFinderController
         $userId = $_POST['userId'] ?? null;
     
         if (!isset($userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
             return;
         }
     
@@ -707,28 +769,28 @@ class PlayerFinderController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         $getPlayerFinderPost = $this->playerFinder->getPlayerFinderPostById($postId);
 
         if (!$getPlayerFinderPost) {
-            echo json_encode(['success' => false, 'error' => 'No Player Finder post found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_player_finder_posts_found')]);
             return;
         }
 
         if ($getPlayerFinderPost['user_id'] != $userId) {
-            echo json_encode(['success' => false, 'error' => 'You cannot update this post']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.cannot_update_post')]);
             return;
         }
     
         $updateDescPlayerFinder = $this->playerFinder->editPlayerPost($postId, $role, $rank, $description);
     
         if ($updateDescPlayerFinder) {
-            echo json_encode(['success' => true, 'message' => 'Description updated successfully']);
+            echo json_encode(['success' => true, 'message' => $this->_('messages.description_updated_successfully')]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to update description']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_update_description')]);
         }
     }
 }

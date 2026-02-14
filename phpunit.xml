@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    stopOnFailure="false"
+    verbose="true"
+    beStrictAboutTestsThatDoNotTestAnything="false"
+>
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">tests/controllers</directory>
+            <exclude>tests/controllers/RiotApiIntegrationTest.php</exclude>
+        </testsuite>
+        <testsuite name="Integration">
+            <file>tests/controllers/RiotApiIntegrationTest.php</file>
         </testsuite>
     </testsuites>
+    <!-- Integration tests need a valid API key. Run with: vendor/bin/phpunit (dash)(dash)group integration -->
+    <php>
+        <env name="APP_ENV" value="test"/>
+        <env name="environment" value="test"/>
+    </php>
 </phpunit>

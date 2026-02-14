@@ -53,12 +53,12 @@ class BlockController
 
             if ($user['user_id'] !== $this->getSenderId()) {
                 header("location:/userProfile?message=Unauthorized");
-                exit;
+                return;
             }
 
             if ($this->block->isBlocked($this->getSenderId(), $this->getReceiverId())) {
                 header("location:/friendlistPage?message=User already blocked");
-                exit();  
+                return;  
             }
 
             $blockPerson = $this->block->blockPerson($this->getSenderId(), $this->getReceiverId(), $date);
@@ -71,24 +71,24 @@ class BlockController
                 if ($updateFriend)
                 {
                     header("location:/friendlistPage?message=User blocked");
-                    exit();  
+                    return;  
                 }
                 else
                 {
                     header("location:/friendlistPage?message=Could not block user");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("location:/friendlistPage?message=Could not block user");
-                exit();
+                return;
             }
         }
         else
         {
             header("location:/friendlistPage?message=No form");
-            exit();    
+            return;    
         }
     }
 
@@ -99,7 +99,6 @@ class BlockController
             return;
         }
 
-        $response = array('message' => 'Error');
         if (isset($_POST['userData']))
         {
             $data = json_decode($_POST['userData']);
@@ -111,7 +110,7 @@ class BlockController
 
             // Validate token for user
             if (!$this->validateToken($token, $senderId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
                 
@@ -125,33 +124,25 @@ class BlockController
 
                 if ($updateFriend)
                 {
-                    $response = array('message' => 'Success');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit(); 
+                    echo json_encode(['message' => 'Success']);
+                    return; 
                 }
                 else
                 {
-                    $response = array('message' => 'Could not block user');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit(); 
+                    echo json_encode(['message' => 'Could not block user']);
+                    return; 
                 }
             }
             else
             {
-                $response = array('message' => 'Could not block user');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit(); 
+                echo json_encode(['message' => 'Could not block user']);
+                return; 
             }
         }
         else
         {
-            $response = array('message' => 'No form');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit(); 
+            echo json_encode(['message' => 'No form']);
+            return; 
         }
     }
 
@@ -167,18 +158,18 @@ class BlockController
             if ($unblockPerson)
             {
                 header("location:/friendlistPage?message=User unblocked");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/friendlistPage?message=Could not unblock user");
-                exit();
+                return;
             }
         }
         else
         {
             header("location:/friendlistPage?message=No form");
-            exit();    
+            return;    
         }
     }
 

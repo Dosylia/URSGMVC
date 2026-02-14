@@ -71,7 +71,7 @@ function switchPersonalColorWebsite(selectedColor, userId, removeColor) {
                 overlay.style.display = 'none'
                 favDialogPicture.style.display = 'none'
             } else {
-                console.error('Error:', data.error)
+                console.error('Error:', data.message)
             }
         })
         .catch((error) => {

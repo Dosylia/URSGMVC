@@ -17,16 +17,16 @@
                 <?php if ($anotherUser['user_id'] !== $user['user_id']): ?>
                     <?php if (!$checkIfFriend): ?>
                         <button id="add-friend-button-user" class="add-friend-button-profile-other" type="button" data-user-id="<?= $user['user_id'] ?>" data-other-user-id="<?= $anotherUser['user_id'] ?>">
-                            Add as friend
-                            <img src="public/images/friends.png" alt="add as friend">
+                            <?= $this->_('add_friend_button') ?>
+                            <img src="public/images/friends.png" alt="<?= $this->_('add_friend_alt') ?>">
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
             <?php else: ?>
             <!-- Prompt user to get online to add as friend -->
                 <button id="add-friend-button-no-user" class="add-friend-button-profile-other" type="button">
-                    Add as friend
-                    <img src="public/images/friends.png" alt="add as friend">
+                    <?= $this->_('add_friend_button') ?>
+                    <img src="public/images/friends.png" alt="<?= $this->_('add_friend_alt') ?>">
                 </button>
             <?php endif; ?>
         </div>
@@ -35,9 +35,9 @@
     <!-- Modal for offline users -->
     <div id="offlineModal" class="offline-modal hidden">
         <div class="offline-modal-content">
-            <h3>You need to be online to do this action</h3>
-            <a href="/?triggerSignUp=true">Go to Sign Up</a>
-            <button type="button" class="close-modal-btn" data-modal="offlineModal">Close</button>
+            <h3><?= $this->_('offline_required') ?></h3>
+            <a href="/?triggerSignUp=true"><?= $this->_('go_to_signup') ?></a>
+            <button type="button" class="close-modal-btn" data-modal="offlineModal"><?= $this->_('close') ?></button>
         </div>
     </div>
 
@@ -73,7 +73,7 @@
                     </div>
                     <div class="report-textarea">
                         <div class="label-container">
-                            <label for="report-description"><?= $this->_('report_description_title') ?><span class="low-opacity"><?= $this->_('report_optional') ?></span></label>
+                            <label for="report-description"><?= $this->_('report_description_title') ?> <span class="low-opacity"><?= $this->_('report_optional') ?></span></label>
                         </div>
                         <textarea id="report-description" placeholder="<?= $this->_('report_details') ?>"></textarea>
                     </div>
@@ -89,7 +89,7 @@
                         <div id="profile-banner" 
                             class="profile-banner" 
                             style="background-image: url('public/upload/<?= $anotherUser['user_banner'] ?>');"
-                            title="custom_banner">
+                            title="<?= $this->_('custom_banner') ?>">
                         </div>
                 <?php endif; ?>
             <?php endif; ?>
@@ -156,16 +156,16 @@
             <?php if  (($anotherUser['user_isGold']) || ($anotherUser['user_isPartner']) || ($anotherUser['user_isCertified'])) : ?>
             <span id="badge-container">
                 <?php if ($anotherUser['user_isGold']) : ?>
-                        <span class="gold-badge" title="Gold badge"><img src="/public/images/gold-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="<?= $this->_('gold_badge') ?>"><img src="/public/images/gold-badge.png" alt="<?= $this->_('gold') ?>"></span>
                 <?php endif; ?>
                 <?php if ($anotherUser['user_isPartner']) : ?>
-                        <span class="gold-badge" title="Partner badge"><img src="/public/images/partner-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="<?= $this->_('partner_badge') ?>"><img src="/public/images/partner-badge.png" alt="<?= $this->_('partner') ?>"></span>
                 <?php endif; ?>  
                 <?php if ($anotherUser['user_isCertified']) : ?>
-                        <span class="gold-badge" title="Certified badge"><img src="/public/images/certified-badge.png" alt="Gold"></span>
+                        <span class="gold-badge" title="<?= $this->_('certified_badge') ?>"><img src="/public/images/certified-badge.png" alt="<?= $this->_('certified') ?>"></span>
                 <?php endif; ?> 
                 <?php if ($anotherUser['user_isAscend']) : ?>
-                    <span class="gold-badge" title="Ascend badge"><img src="/public/images/ascend-badge.png" alt="Ascend"></span>
+                    <span class="gold-badge" title="<?= $this->_('ascend_badge') ?>"><img src="/public/images/ascend-badge.png" alt="<?= $this->_('ascend') ?>"></span>
                 <?php endif; ?> 
             </span>
         <?php endif; ?>
@@ -193,7 +193,7 @@
         </nav>
         <hr id="hr-user-bottom-nav">
         <div id="loading-indicator" style="display: none; text-align: center;">
-            <img src="public/images/loading.svg" alt="Loading..." />
+            <img src="public/images/loading.svg" alt="<?= $this->_('loading') ?>" />
         </div>
         <div id="aboutme-container"> <!--Flex row with -->
             <div class="side-global">

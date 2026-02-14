@@ -49,7 +49,7 @@ class LeagueOfLegendsController
             if (isset($_GET['user_id'])) {
                 if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
-                    exit();
+                    return;
                 }
             }
             $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
@@ -65,7 +65,7 @@ class LeagueOfLegendsController
             if (isset($_GET['user_id'])) {
                 if ($_GET['user_id'] != $_SESSION['userId']) {
                     header("Location: /?message=This is not your account");
-                    exit();
+                    return;
                 }
             }
 
@@ -88,7 +88,7 @@ class LeagueOfLegendsController
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -126,7 +126,7 @@ class LeagueOfLegendsController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -152,7 +152,7 @@ class LeagueOfLegendsController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -241,7 +241,7 @@ class LeagueOfLegendsController
             }
 
             if (!$this->validateToken($token, $this->getUserId())) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -308,7 +308,7 @@ class LeagueOfLegendsController
 
     public function getSummonerByNameAndTag($summonerName, $tagLine, $apiKey) {
         $region = "americas";
-        $url = "https://{$region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" . urlencode($summonerName) . "/{$tagLine}?api_key={$apiKey}";
+        $url = "https://{$region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" . rawurlencode($summonerName) . "/{$tagLine}?api_key={$apiKey}";
         $context = stream_context_create([
             'http' => [
                 'ignore_errors' => true
@@ -416,7 +416,7 @@ class LeagueOfLegendsController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
             
@@ -601,7 +601,7 @@ class LeagueOfLegendsController
 
         if (!isset($token) || $token !== $tokenRefresh) { 
             header("Location: /?message=Unauthorized");
-            exit();
+            return;
         }
 
         $allUsers = $this->user->getAllUsers();
@@ -740,7 +740,7 @@ class LeagueOfLegendsController
 
             if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                 header("location:/userProfile?message=Token not valid");
-                exit();
+                return;
             }
 
             $loLMain1 = $this->validateInput($_POST["main1"]);
@@ -765,26 +765,26 @@ class LeagueOfLegendsController
                 if ($this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
                 {
                     header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                    return;
                 }
             } else {
                 if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
                 {
                     header("location:/signup?message=Inputs cannot be empty");
-                    exit();
+                    return;
                 }
             }
 
             // if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3 && $statusChampion == "1") {
             //     header("location:/signup?message=Each champion must be unique");
-            //     exit();
+            //     return;
             // }
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lol_id'] !== null) {
                 header("location:/signup?message=League of legends user already exists");
-                exit();
+                return;
             }
 
             $createLoLUser = $this->leagueOfLegends->createLoLUser(
@@ -815,7 +815,7 @@ class LeagueOfLegendsController
                     if($testLeagueAccount['lf_id'] !== null)	
                     {
                         header("location:/updateLookingForGamePage");
-                        exit();
+                        return;
                     }
 
                     $user = $this->user->getUserById($this->getUserId());
@@ -891,18 +891,18 @@ class LeagueOfLegendsController
                             if ($bindAccount)
                             {
                                 header("location:/lookingforuserlol?message=Binded LoL account");
-                                exit();
+                                return;
                             }
                             else
                             {
                                 header("location:/lookingforuserlol?message=Couldnt Bind LoL account");
-                                exit();
+                                return;
                             }
                         }
                     }
 
                 header("location:/lookingforuserlol");
-                exit();
+                return;
             }
 
         }
@@ -911,7 +911,6 @@ class LeagueOfLegendsController
 
     public function createLeagueUserPhone()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['leagueData'])) 
         {
             $data = json_decode($_POST['leagueData']);
@@ -924,7 +923,7 @@ class LeagueOfLegendsController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -946,28 +945,22 @@ class LeagueOfLegendsController
             if ($statusChampion == 1) {
                 if ($this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit;  
+                    echo json_encode(['message' => 'Fill all fields']);
+                    return;  
                 }
             } else {
                 if ($this->emptyInputSignup($loLMain1) || $this->emptyInputSignup($loLMain2) || $this->emptyInputSignup($loLMain3) || $this->emptyInputSignup($loLRank) || $this->emptyInputSignup($loLRole) || $this->emptyInputSignup($loLServer))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit;  
+                    echo json_encode(['message' => 'Fill all fields']);
+                    return;  
                 }
             }
 
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lol_id'] !== null) {
-                $response = array('message' => 'User already exist');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'User already exist']);
+                return;  
             }
 
             $createLoLUser = $this->leagueOfLegends->createLoLUser(
@@ -985,27 +978,25 @@ class LeagueOfLegendsController
 
                 $lolUser = $this->leagueOfLegends->getLeageAccountByLeagueId($createLoLUser);
 
-                $lolUserData = array(
-                    'lolId' => $lolUser['lol_id'],
-                    'main1' => $lolUser['lol_main1'],
-                    'main2' => $lolUser['lol_main2'],
-                    'main3' => $lolUser['lol_main3'],
-                    'rank' => $lolUser['lol_rank'],
-                    'role' => $lolUser['lol_role'],
-                    'server' => $lolUser['lol_server']
-                );
-
-                $response = array(
+                echo json_encode([
                     'sessionId' => session_id(),
-                    'user' => $lolUserData,
+                    'user' => [
+                        'lolId' => $lolUser['lol_id'],
+                        'main1' => $lolUser['lol_main1'],
+                        'main2' => $lolUser['lol_main2'],
+                        'main3' => $lolUser['lol_main3'],
+                        'rank' => $lolUser['lol_rank'],
+                        'role' => $lolUser['lol_role'],
+                        'server' => $lolUser['lol_server']
+                    ],
                     'message' => 'Success'
-                );
+                ]);
+                return;
             }
 
         }
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit;  
+        echo json_encode(['message' => 'Error']);
+        return;  
     }
 
 
@@ -1018,7 +1009,7 @@ class LeagueOfLegendsController
 
             if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                 header("location:/userProfile?message=Token not valid");
-                exit();
+                return;
             }
 
             $this->setUserId($userId);
@@ -1043,7 +1034,7 @@ class LeagueOfLegendsController
             {
                 if ($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3) {
                     header("location:/userProfile?message=Each champion must be unique");
-                    exit();
+                    return;
                 }
 
             }
@@ -1061,12 +1052,12 @@ class LeagueOfLegendsController
             if ($updateLeague)
             {
                 header("location:/userProfile?message=Updated successfully");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/userProfile?message=Could not update");
-                exit();
+                return;
             }
 
         }
@@ -1081,7 +1072,7 @@ class LeagueOfLegendsController
 
             if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                 header("location:/userProfile?message=Token not valid");
-                exit();
+                return;
             }
 
             $this->setUserId($userId);
@@ -1091,12 +1082,12 @@ class LeagueOfLegendsController
             if ($unbindLoLAccount)
             {
                 header("location:/userProfile?message=Unbinded successfully");
-                exit();  
+                return;  
             }
             else
             {
                 header("location:/userProfile?message=Could not unbind");
-                exit();
+                return;
             }
         }
     }

@@ -45,6 +45,67 @@ class PlayerFinder extends DataBase
         }
     }
 
+    public function getRandomPlayerFinderPost($filters)
+    {
+        $sql = "
+            SELECT 
+                pf.*, 
+                u.user_username, u.user_picture, u.user_game, u.user_id,
+                lol.lol_rank, lol.lol_role, lol.lol_server,
+                val.valorant_rank, val.valorant_role, val.valorant_server
+            FROM playerfinder pf
+            JOIN user u ON pf.user_id = u.user_id
+            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
+            LEFT JOIN valorant val ON val.user_id = u.user_id
+            WHERE u.user_randomChatPermission = 1
+             AND pf.user_id != :userId
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM friendrequest fr
+                WHERE 
+                    (
+                        (fr.fr_senderId = :userId AND fr.fr_receiverId = u.user_id)
+                        OR
+                        (fr.fr_senderId = u.user_id AND fr.fr_receiverId = :userId)
+                    )
+                    AND fr.fr_status = 'accepted'
+            )
+        ";
+
+        $params = [
+            ':userId' => $filters['userId']
+        ];
+
+        // Apply only filters that are NOT null
+        if (!empty($filters['game'])) {
+            $sql .= " AND pf.pf_game = :game ";
+            $params[':game'] = $filters['game'];
+        }
+
+        if (!empty($filters['voiceChat'])) {
+            $sql .= " AND pf.pf_voiceChat = :voiceChat ";
+            $params[':voiceChat'] = $filters['voiceChat'];
+        }
+
+        if (!empty($filters['role'])) {
+            $sql .= " AND pf.pf_role = :role ";
+            $params[':role'] = $filters['role'];
+        }
+
+        if (!empty($filters['rank'])) {
+            $sql .= " AND pf.pf_rank = :rank ";
+            $params[':rank'] = $filters['rank'];
+        }
+
+        // Randomize result
+        $sql .= " ORDER BY RAND() LIMIT 1";
+
+        $query = $this->bdd->prepare($sql);
+        $query->execute($params);
+
+        return $query->fetch() ?: false;
+    }
+
     public function getAllPlayerFinderPost() 
     {
         $query = $this->bdd->prepare("

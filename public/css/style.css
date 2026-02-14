@@ -304,6 +304,10 @@ body > div[style*='position: fixed'] {
     display: flex;
     gap: 5px;
     margin-top: 30px;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
 }
 
 .aboutme-match .champions img {
@@ -326,6 +330,7 @@ body > div[style*='position: fixed'] {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    width: 100%;
 }
 
 .aboutme-match .champions .user-rating {
@@ -441,7 +446,8 @@ body > div[style*='position: fixed'] {
     height: 50px;
 }
 
-.error-message {
+.error-message,
+#error-message {
     color: var(--main--red);
     font-size: 0.85em;
     margin-top: 5px;
@@ -456,7 +462,9 @@ body > div[style*='position: fixed'] {
     text-align: center;
     max-width: 600px;
     margin: 2rem auto;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
     color: black;
 }
 
@@ -504,7 +512,9 @@ body > div[style*='position: fixed'] {
     font-weight: bold;
     text-decoration: none;
     border-radius: 50px;
-    transition: background 0.3s ease, transform 0.3s ease;
+    transition:
+        background 0.3s ease,
+        transform 0.3s ease;
 }
 
 #createURSGAccount a:hover {
@@ -930,7 +940,9 @@ section.siteMap tr:nth-child(even) {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
 }
 
 .server-btn.selected {
@@ -992,7 +1004,8 @@ section.siteMap tr:nth-child(even) {
     color: white;
 }
 
-span.form-error {
+span.form-error,
+#error-message {
     display: block;
     background-color: rgba(255, 100, 100, 1);
     color: white;
@@ -1490,7 +1503,9 @@ label[for='account_valorantt'] {
     cursor: pointer;
     border-radius: 50%;
     background-color: var(--light-grey);
-    transition: background-color 0.3s, transform 0.3s;
+    transition:
+        background-color 0.3s,
+        transform 0.3s;
     accent-color: var(--main--red);
 }
 
@@ -1636,7 +1651,9 @@ input:checked + .slider:before {
 
 #image_users {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.2s ease;
 }
 #image_users:hover {
     transform: scale(1.03);
@@ -2182,7 +2199,9 @@ input:checked + .slider:before {
     width: 30px;
     height: 30px;
     opacity: 0.3;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 
 .about-users-box .about-users-selected {
@@ -2528,7 +2547,9 @@ dialog .title_generalbox,
     background-color: white; /* Dark background to match Discord theme */
     border-radius: 5px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease;
 }
 
 .dark-mode .discord-link {
@@ -2705,7 +2726,9 @@ dialog .title_generalbox,
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     border-radius: 4px;
 }
 
@@ -3642,7 +3665,9 @@ nav i {
     margin: auto;
     gap: 12px;
     box-shadow: 0 2px 6px rgb(60 64 67 / 0.3);
-    transition: background-color 0.25s ease, box-shadow 0.25s ease,
+    transition:
+        background-color 0.25s ease,
+        box-shadow 0.25s ease,
         transform 0.15s ease;
 }
 
@@ -4033,7 +4058,9 @@ dialog .title_generalbox {
     color: var(--main--red);
     font-size: 1em;
     font-weight: 900;
-    text-shadow: 0 0 4px var(--main--red), 0 0 7px var(--main--red),
+    text-shadow:
+        0 0 4px var(--main--red),
+        0 0 7px var(--main--red),
         0 0 10px var(--main--red);
     background: rgba(0, 0, 0, 0.6);
     padding: 0.1em 0.8em;
@@ -4690,7 +4717,9 @@ dialog .title_generalbox {
     outline: none;
     color: var(--main--red);
     font-size: 30px;
-    transition: color 0.3s, transform 0.2s;
+    transition:
+        color 0.3s,
+        transform 0.2s;
     user-select: none;
     line-height: 1;
     z-index: 1;
@@ -4828,7 +4857,9 @@ dialog .title_generalbox {
     text-align: center;
     line-height: 52px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+    transition:
+        transform 0.2s,
+        background-color 0.3s;
     margin-bottom: 20px;
     white-space: nowrap;
     padding: 3px 10px;
@@ -4915,7 +4946,9 @@ dialog .title_generalbox {
     text-align: center;
     line-height: 52px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+    transition:
+        transform 0.2s,
+        background-color 0.3s;
     margin-bottom: 20px;
 }
 
@@ -5479,7 +5512,9 @@ dialog .title_generalbox {
     text-align: center;
     line-height: 52px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+    transition:
+        transform 0.2s,
+        background-color 0.3s;
     margin-bottom: 20px;
 }
 
@@ -5496,7 +5531,9 @@ dialog .title_generalbox {
     text-align: center;
     line-height: 52px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+    transition:
+        transform 0.2s,
+        background-color 0.3s;
     margin-bottom: 20px;
 }
 
@@ -5926,7 +5963,8 @@ dialog .title_generalbox {
 
 .toggle-container,
 .toggle-container-filter,
-.toggle-container-sound {
+.toggle-container-sound,
+.toggle-container-random-chat {
     width: 80px;
     height: 40px;
     background-color: #ccc;
@@ -5950,7 +5988,8 @@ dialog .title_generalbox {
 }
 
 .filter-button,
-#toggle-button-sound {
+#toggle-button-sound,
+#toggleRandomChatPermission {
     width: 40px;
     height: 40px;
     background-color: #fff;
@@ -5958,24 +5997,29 @@ dialog .title_generalbox {
     position: absolute;
     top: 0;
     left: 0;
-    transition: background-color 0.3s, transform 0.3s;
+    transition:
+        background-color 0.3s,
+        transform 0.3s;
 }
 
 .filter-button.active,
-#toggle-button-sound.active {
+#toggle-button-sound.active,
+#toggleRandomChatPermission.active {
     background-color: #ddd;
     transform: translateX(40px);
 }
 
 .toggle-container-filter.active,
 .toggle-container.active,
-.toggle-container-sound.active {
+.toggle-container-sound.active,
+.toggle-container-random-chat.active {
     background-color: rgb(128, 211, 128) !important;
 }
 
 .dark-mode .toggle-container,
 .dark-mode .toggle-container-filter,
-.dark-mode .toggle-container-sound {
+.dark-mode .toggle-container-sound,
+.dark-mode .toggle-container-random-chat {
     background-color: var(--ligher--grey);
 }
 
@@ -5985,13 +6029,15 @@ dialog .title_generalbox {
 }
 
 .dark-mode .filter-button,
-.dark-mode #toggle-button-sound {
+.dark-mode #toggle-button-sound,
+.dark-mode #toggleRandomChatPermission {
     background-color: #ddd;
 }
 
 .light-mode .toggle-container,
 .light-mode .toggle-container-filter,
-.light-mode .toggle-container-sound {
+.light-mode .toggle-container-sound,
+.light-mode .toggle-container-random-chat {
     background-color: #ccc; /* Couleur de fond pour le mode clair */
 }
 
@@ -6444,10 +6490,6 @@ dialog .title_generalbox {
         width: 80%;
     }
 
-    .friend-list {
-        width: 30%;
-    }
-
     .signup_button {
         padding: 10px;
         font-size: 25px !important;
@@ -6463,11 +6505,13 @@ dialog .title_generalbox {
     }
 
     .toggle-container,
-    .toggle-container-filter {
+    .toggle-container-filter,
+    .toggle-container-sound,
+    .toggle-container-random-chat {
         background-color: #ccc;
         border-radius: 25px;
         width: 40px;
-        height: 15px;
+        height: 20px;
         position: relative;
         cursor: pointer;
         display: flex;
@@ -6477,31 +6521,34 @@ dialog .title_generalbox {
 
     .toggle-button,
     .filter-button,
-    .toggle-button-sound {
+    #toggle-button-sound,
+    #toggleRandomChatPermission {
         width: 20px;
-        height: 15px;
+        height: 20px;
         background-color: #fff;
         border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
         transition: transform 0.3s;
-    }
-
-    .filter-button {
-        width: 20px;
-        height: 15px;
-        background-color: #fff;
-        border-radius: 50%;
     }
 
     .dark-mode .toggle-button {
         transform: translateX(20px);
     }
 
-    .toggle-container-filter.active .filter-button {
+    .toggle-container-filter.active .filter-button,
+    .toggle-container.active .toggle-button,
+    .toggle-container-sound.active #toggle-button-sound,
+    .toggle-container-random-chat.active #toggleRandomChatPermission {
         transform: translateX(20px);
     }
 
-    .toggle-container-filter .filter-button {
-        transform: translateX(unset);
+    .toggle-container-filter .filter-button,
+    .toggle-container .toggle-button,
+    .toggle-container-sound #toggle-button-sound,
+    .toggle-container-random-chat #toggleRandomChatPermission {
+        transform: translateX(0);
     }
 
     #open_menu_profile {
@@ -6861,7 +6908,9 @@ dialog .title_generalbox {
         width: 20px;
         height: 20px;
         opacity: 0.3;
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
     }
 
     .about-users-box .about-users-selected {
@@ -7120,7 +7169,6 @@ dialog .title_generalbox {
         font-size: 8px;
         padding: 2px 3px;
     }
-
 }
 
 @media only screen and (max-width: 500px) {
@@ -7147,7 +7195,6 @@ dialog .title_generalbox {
     .btn_updateProfile {
         top: 50px;
     }
-
 }
 
 @media only screen and (max-width: 400px) {

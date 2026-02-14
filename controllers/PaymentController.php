@@ -67,7 +67,7 @@ class PaymentController
             'success' => true,
             'stripeUrl' => $session->url
         ]);
-        exit;
+        return;
     }
 
     // 💰 Buy virtual currency
@@ -153,7 +153,7 @@ class PaymentController
 
         $user = $this->user->getUserById($_SESSION['userId']);
         if (!$user || $user['user_id'] !== (int)$userId) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return;
         }
 
@@ -214,7 +214,7 @@ class PaymentController
     public function paymentCancel(): void
     {
         header("Location: " . rtrim($_ENV['base_url'], '/') . '/store?message=Payment cancelled');
-        exit;
+        return;
     }
 
     public function handleWebhook()
@@ -227,7 +227,7 @@ class PaymentController
             $event = \Stripe\Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
         } catch (\Exception $e) {
             http_response_code(400);
-            exit;
+            return;
         }
 
         if ($event->type === 'checkout.session.completed') {

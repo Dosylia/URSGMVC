@@ -37,7 +37,7 @@
     <?php if (isset($_GET['firstFriend'])) : ?>
         <input id="firstFriend" type="hidden" name="firstFriend" value="yes">
     <?php endif; ?>
-    <?php if (empty($getFriendlist)) :?>
+    <?php if (empty($getFriendlist) && !isset($_GET['random_user_id'])) :?>
             <section class="google_needed"><br><br>
                 <img src="public/images/sadbee.webp" alt="jhinshrug">
                 <h2><?= $this->_('no_friends_yet') ?><h2>
@@ -205,10 +205,8 @@
                 </div>
             <script type="module" src="public/js/swiping/perso_chat.js?<?= time(); ?>"></script>
             <script type="module" src="public/js/swiping/get_friendlist.js?<?= time(); ?>"></script>
-            <script type="module" src="public/js/swiping/get_message_utils.js?<?= time(); ?>"></script>
-            <script type="module" src="public/js/swiping/get_message.js?<?= time(); ?>"></script>
+            <script type="module" src="public/js/swiping/message_main.js?<?= time(); ?>"></script>
             <script type="module" src="public/js/swiping/discord.js?<?= time(); ?>"></script>
-            <script type="module" src="public/js/swiping/send_messagephp.js?<?= time(); ?>"></script>
             <script type="module" src="public/js/swiping/get_lookingFor.js?<?= time(); ?>"></script>
         </div>
     <?php endif; ?>
