@@ -2,16 +2,16 @@
   <!-- Banner + CTA -->
   <div class="playerfinder-banner">
     <div class="playerfinder-banner-content">
-      <h2>Find your next <span style="color: var(--main--red);">teammate</span>!</h2>
+      <h2><?= $this->_('pf_find') ?> <span style="color: var(--main--red);"><?= $this->_('pf_teammate') ?></span>!</h2>
       <?php if (
         $this->isConnectGoogle() &&
         $this->isConnectWebsite() &&
         ($this->isConnectLeague() || $this->isConnectValorant()) && 
       $this->isConnectLf()) : ?>
-      <button type="button" id="createPostBtn">Create a Post</button>
-      <button type="button" id="findRandomPlayer">Find a random player</button>
+      <button type="button" id="createPostBtn"><?= $this->_('pf_create_post') ?></button>
+      <button type="button" id="findRandomPlayer"><?= $this->_('pf_find_random_player') ?></button>
       <?php else : ?>
-        <button type="button" class="offline-btn">Create a Post</button>
+        <button type="button" class="offline-btn"><?= $this->_('pf_create_post') ?></button>
       <?php endif; ?>
     </div>
     <img src="public/images/kaisa-lulu.png" alt="Player Finder Banner" class="playerfinder-banner-image">
@@ -20,9 +20,9 @@
   <!-- Modal for offline users -->
   <div id="offlineModal" class="offline-modal hidden">
     <div class="offline-modal-content">
-      <h3>You need to be online to do this action</h3>
-      <a href="/?triggerSignUp=true">Go to Sign Up</a>
-      <button type="button" class="close-modal-btn" data-modal="offlineModal">Close</button>
+      <h3><?= $this->_('offline_required') ?></h3>
+      <a href="/?triggerSignUp=true"><?= $this->_('go_to_signup') ?></a>
+      <button type="button" class="close-modal-btn" data-modal="offlineModal"><?= $this->_('close') ?></button>
     </div>
   </div>
 
@@ -30,7 +30,7 @@
   <!-- Modal for Showing Interested Users -->
   <div id="interestedModal-<?= $playerFinderPost['pf_id'] ?>" class="interested-modal hidden">
     <div class="interested-modal-content">
-      <h3>People Interested</h3>
+      <h3><?= $this->_('pf_people_interested') ?></h3>
       <div class="interested-users-list">
         <?php foreach ($interestedData as $userInterest): ?>
           <?php
@@ -59,20 +59,20 @@
             <?php if ($userInterest['is_friend']): ?>
               <a 
                 class="interested-accept-btn" 
-                href="/persoChat&friend_id=<?= $userInterest['user_id'] ?>">Chat</a>
+                href="/persoChat&friend_id=<?= $userInterest['user_id'] ?>"><?= $this->_('pf_chat') ?></a>
             <?php else : ?>
               <button 
                 class="interested-accept-btn add-and-chat-btn" 
                 data-friend-id="<?= $userInterest['user_id'] ?>"
                 data-user-id="<?= $user['user_id'] ?>"
               >
-                Add and Chat
+                <?= $this->_('pf_add_and_chat') ?>
               </button>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
       </div>
-      <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $playerFinderPost['pf_id'] ?>">Close</button>
+      <button type="button" class="close-modal-btn" data-modal="interestedModal-<?= $playerFinderPost['pf_id'] ?>"><?= $this->_('close') ?></button>
     </div>
   </div>
 <?php endif; ?>
@@ -82,12 +82,12 @@
 <?php if (isset($user) && $user['user_id'] !== null): ?>
   <div id="playerfinder-modal" class="playerfinder-modal hidden">
     <div class="playerfinder-modal-content">
-      <h3>Create a Post</h3>
+      <h3><?= $this->_('pf_create_post') ?></h3>
       <hr class="separators-hr">
       <div class="form-group">
         <label class="toggle-wrapper" for="voiceChat">
           <div class="voice-row">
-            <p>Want Voice Chat?</p>
+            <p><?= $this->_('pf_voice_chat_question') ?></p>
             <div class="switch">
               <input type="checkbox" id="voiceChat">
               <span class="slider"></span>
@@ -101,15 +101,15 @@
             $user['user_game'] === "Valorant"
         ) : ?>
         <div class="form-group">
-          <label for="lookingfor-account">Your LoL/Valorant account</label>
-          <input type="text" id="lookingfor-account" placeholder="Enter your account's name">
+          <label for="lookingfor-account"><?= $this->_('pf_account_label') ?></label>
+          <input type="text" id="lookingfor-account" placeholder="<?= $this->_('pf_account_placeholder') ?>">
         </div>
         <?php endif; ?>
 
       <div class="form-group">
-        <label for="eloLookingFor">Role Looking For</label>
+        <label for="eloLookingFor"><?= $this->_('pf_role_looking_for') ?></label>
         <select id="eloLookingFor">
-            <option value="Any">Any</option>
+          <option value="Any"><?= $this->_('any') ?></option>
           <?php foreach ($availableRolesCreate as $role): ?>
           <option value="<?= $role ?>"><?= $role ?></option>
           <?php endforeach; ?>
@@ -117,9 +117,9 @@
       </div>
 
       <div class="form-group">
-        <label for="rankLookingFor">Rank Looking For</label>
+        <label for="rankLookingFor"><?= $this->_('pf_rank_looking_for') ?></label>
         <select id="rankLookingFor">
-          <option value="Any">Any</option>
+          <option value="Any"><?= $this->_('any') ?></option>
           <?php foreach ($availableRanksCreate as $rank): ?>
           <option value="<?= $rank ?>"><?= $rank ?></option>
           <?php endforeach; ?>
@@ -127,16 +127,16 @@
       </div>
 
       <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description"><?= $this->_('pf_description_label') ?></label>
         <textarea id="description" required maxlength="130" rows="3"></textarea>
-        <p id="descError" class="error-message hidden">Please enter a description.</p>
+        <p id="descError" class="error-message hidden"><?= $this->_('pf_description_error') ?></p>
       </div>
 
       <hr class="separators-hr">
 
       <div class="form-actions">
-        <button type="button" id="submitPostBtn">Submit</button>
-        <button id="closeModalBtn" class="secondary">Close</button>
+        <button type="button" id="submitPostBtn"><?= $this->_('submit') ?></button>
+        <button id="closeModalBtn" class="secondary"><?= $this->_('close') ?></button>
       </div>
     </div>
   </div>
@@ -145,19 +145,19 @@
   <!-- Layout -->
   <div class="playerfinder-container">
     <!-- Filter Sidebar -->
-    <button id="toggleFilter" class="filter-toggle">☰ Filter</button>
+    <button id="toggleFilter" class="filter-toggle">☰ <?= $this->_('filter') ?></button>
     <aside class="playerfinder-filter hidden-on-mobile" id="filterPanel">
-      <h3>Filter</h3>
-      <label>Game
+      <h3><?= $this->_('filter') ?></h3>
+      <label><?= $this->_('game') ?>
         <select id="filterGame">
-          <option value="">Any</option>
+          <option value=""><?= $this->_('any') ?></option>
           <option value="League of Legends">League of Legends</option>
           <option value="Valorant">Valorant</option>
         </select>
       </label>      
-    <label>Role
+    <label><?= $this->_('role') ?>
         <select id="filterRole">
-              <option value="">Any</option>
+              <option value=""><?= $this->_('any') ?></option>
               <?php foreach ($availableRoles['League of Legends'] as $role): ?>
                   <?php if ($role !== 'Any'): ?>
                       <option value="<?= $role ?>" data-game="lol"><?= $role ?></option>
@@ -170,9 +170,9 @@
               <?php endforeach; ?>
         </select>
       </label>
-        <label>Rank
+        <label><?= $this->_('rank') ?>
         <select id="filterRank">
-              <option value="">Any</option>
+              <option value=""><?= $this->_('any') ?></option>
             <?php foreach ($availableRanks['League of Legends'] as $rank): ?>
                 <?php if ($rank !== 'Any'): ?>
                     <option value="<?= $rank ?>" data-game="lol"><?= $rank ?></option>
@@ -185,14 +185,14 @@
             <?php endforeach; ?>
         </select>
         </label>
-        <label>Voice Chat
+        <label><?= $this->_('voice_chat') ?>
         <select id="filterVoiceChat">
-            <option value="">Any</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
+            <option value=""><?= $this->_('any') ?></option>
+            <option value="1"><?= $this->_('form_yes') ?></option>
+            <option value="0"><?= $this->_('form_no') ?></option>
         </select>
         </label>
-      <button id="savePreferencesBtn">Save Preferences</button>
+      <button id="savePreferencesBtn"><?= $this->_('save_preferences') ?></button>
     </aside>
 
     <!-- Posts -->
@@ -200,7 +200,7 @@
         <?php if (count($interestedData) > 0) : ?>
           <div class="interested-button">
             <button type="button" class="interested-btn" id="interestedBtn-<?= $playerFinderPost['pf_id'] ?>">
-              <?= count($interestedData) ?> <i class="fa-solid fa-gamepad"></i> Teammate ready
+              <?= count($interestedData) ?> <i class="fa-solid fa-gamepad"></i> <?= $this->_('pf_teammate_ready') ?>
             </button>
           </div>
         <?php endif; ?>
@@ -268,7 +268,7 @@
                   <div class="playerfinder-card-body">
                     <div class="playerfinder-center">
                       <div class="about-user">
-                          <p class="card-title">About them</p>
+                          <p class="card-title"><?= $this->_('pf_about_them') ?></p>
                           <span>
                               <img src="public/images/<?= $roleFolder ?>/<?= $role ?>.<?= $roleExt ?>" alt="<?= htmlspecialchars($roleRaw) ?>">
                           </span>
@@ -277,7 +277,7 @@
                           </span>
                         </div>
                       <div class="looking-for">
-                          <p class="card-title">Looking for</p>
+                          <p class="card-title"><?= $this->_('pf_looking_for') ?></p>
                           <?php
                               $pfRole = strtolower(str_replace(' ', '', $post['pf_role']));
                               $pfRank = $post['pf_rank']; // capital kept for rank
@@ -298,8 +298,8 @@
                   <?php endif; ?>
                     <?php if (isset($_SESSION['userId']) && $post['user_id'] === $_SESSION['userId']): ?>
                       <div class="delete">
-                          <button type="button" class="submit-button" id="delete-post" data-postId="<?= $post['pf_id']?>">Delete</button>
-                          <button type="button" class="submit-button" id="edit-playerfinder" data-postId="<?= $post['pf_id']?>">Edit</button>
+                          <button type="button" class="submit-button" id="delete-post" data-postId="<?= $post['pf_id']?>"><?= $this->_('delete') ?></button>
+                          <button type="button" class="submit-button" id="edit-playerfinder" data-postId="<?= $post['pf_id']?>"><?= $this->_('edit') ?></button>
                       </div>
                   <?php else : ?>
                   <div class="submit">
@@ -313,7 +313,7 @@
                         class="submit-button playwith-btn" 
                         data-postid="<?= $post['pf_id'] ?>"
                       >
-                        Play with them
+                        <?= $this->_('pf_play_with_them') ?>
                       </button>
                     <?php else : ?>
                       <button 
@@ -321,7 +321,7 @@
                         class="offline-btn" 
                         data-postid="<?= $post['pf_id'] ?>"
                       >
-                        Play with them
+                        <?= $this->_('pf_play_with_them') ?>
                     </button>
                     <?php endif; ?>
                   </div>
@@ -330,7 +330,7 @@
               </div>
           <?php endforeach; ?>
         <?php else: ?>
-          <p class="no-posts">No one is looking for a game now.</p>
+          <p class="no-posts"><?= $this->_('pf_no_posts') ?></p>
         <?php endif; ?>
         <!-- Pagination -->
         <!-- <div class="pagination">

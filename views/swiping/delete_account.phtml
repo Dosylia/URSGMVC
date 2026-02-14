@@ -1,11 +1,11 @@
 <div class="form_container"> 
     <div class="deleteAccount_ctn">
-        <button id="closeButton" type="button">X</button>
-        <h1>Delete your account</h1>
-        <p>Choose the account you want to delete</p>
+        <button id="closeButton" type="button" aria-label="<?= $this->_('close') ?>">X</button>
+        <h1><?= $this->_('delete_account_title') ?></h1>
+        <p><?= $this->_('delete_account_choose') ?></p>
         <div class="delete_selecter">
-            <button class="btn_user_updates" id="deleteGoogle_btn"><i class="fa-brands fa-google"></i></i>Google account / Discord</button>
-            <button class="btn_user_updates" id="deleteRiot_btn"><i class="fa-solid fa-hand-fist"></i></i>Riot account</button>
+            <button class="btn_user_updates" id="deleteGoogle_btn"><i class="fa-brands fa-google"></i></i><?= $this->_('delete_account_google_discord') ?></button>
+            <button class="btn_user_updates" id="deleteRiot_btn"><i class="fa-solid fa-hand-fist"></i></i><?= $this->_('delete_account_riot') ?></button>
         </div>
         <div id="deleteGoogle_div">
             <form class="form_signup" method="post" action="/deleteGoogleAccount"> <!-- Delete Google account -->
@@ -14,11 +14,11 @@
                 <p class="errorsForm"><?= $_GET['error'] ?></p>
                 <?php endif; ?>
 
-                <label for="email">Google email (or email of Discord account) of the account you with registred with</label>
-                <p>You will receive an email to confirm your identity and your choice.</p>
+                <label for="email"><?= $this->_('delete_account_google_label') ?></label>
+                <p><?= $this->_('delete_account_google_info') ?></p>
                 <input type="email" id="email" name="email" placeholder="JohnDoe@gmail.com" required>
 
-                <input name="submit" id="send-button" type="submit" value="Send">
+                <input name="submit" id="send-button" type="submit" value="<?= $this->_('send') ?>">
             </form>
         </div>
         <div id="deleteRiot_div"> <!-- Delete Riot account -->
@@ -28,8 +28,8 @@
             <p class="errorsForm"><?= $_GET['error'] ?></p>
             <?php endif; ?>
 
-            <label>Confirm you want to delete your account</label>
-            <input name="submit" id="send-button" type="submit" value="Confirm">
+            <label><?= $this->_('delete_account_confirm_label') ?></label>
+            <input name="submit" id="send-button" type="submit" value="<?= $this->_('confirm') ?>">
             </form>
         </div>
         <img class="picture_with_form" src="public/images/Ahri.png" alt="Ahri from League of legends">

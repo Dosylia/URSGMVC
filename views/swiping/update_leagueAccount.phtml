@@ -1,5 +1,5 @@
 <div class="form_container"> 
-    <button id="closeButton" type="button">X</button>
+    <button id="closeButton" type="button" aria-label="<?= $this->_('close') ?>">X</button>
     <form class="form_signup" method="post">
 
         <?php if (isset($_GET['error'])) : ?>
@@ -8,10 +8,10 @@
 
             <div id="verification_code"></div>
 
-            <label for="account_lol">Link your League of Legends account, # is needed </label>
-            <input type="text" id="account_lol" name="account_lol" placeholder="Exemple : OTPYasuoEh#EUW">
+            <label for="account_lol"><?= $this->_('update_league_link_label') ?></label>
+            <input type="text" id="account_lol" name="account_lol" placeholder="<?= $this->_('update_league_link_placeholder') ?>">
 
-            <label for="server">Confirm your server</label>
+            <label for="server"><?= $this->_('update_league_confirm_server') ?></label>
             <select id="server" name="server">
                 <option value="<?= $lolUser['lol_server'] ?>" ><?= $lolUser['lol_server'] ?></option>
                 <?php foreach ($lol_servers as $server_key => $server_name) : ?>
@@ -25,7 +25,7 @@
             <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
         <?php endif ; ?>
 
-        <input name="submit" id="send-button" type="submit" value="Send">
+        <input name="submit" id="send-button" type="submit" value="<?= $this->_('send') ?>">
     </form>
     <img class="picture_with_form" src="public/images/Ahri.png" alt="Ahri from League of legends">
 </div>

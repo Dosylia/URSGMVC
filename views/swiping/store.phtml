@@ -1,27 +1,27 @@
 <div class="page-header">
-    <a href="/store" class="active">Store</a>
-    <a href="/leaderboard">Leaderboard</a>
+    <a href="/store" class="active"><?= $this->_('store_title') ?></a>
+    <a href="/leaderboard"><?= $this->_('store_leaderboard') ?></a>
     <p id="earnpoints">?</p>
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal store" id="modalEarnPoints">
-        <h2>Earn Points</h2>
-        <p>You can earn points by being online on the app. More options will be added later!</p>
-        <button id="closeModalEarnPoints">Close</button>
+        <h2><?= $this->_('store_earn_points_title') ?></h2>
+        <p><?= $this->_('store_earn_points_desc') ?></p>
+        <button id="closeModalEarnPoints"><?= $this->_('close') ?></button>
     </div>
 </div>
 
 <div class="filter-section">
-    <label for="category-filter">Filter by category:</label>
+    <label for="category-filter"><?= $this->_('store_filter_by_category') ?></label>
     <select id="category-filter">
-        <option value="all">All Categories</option>
+        <option value="all"><?= $this->_('store_all_categories') ?></option>
         <?php
         $categories = array_unique(array_column($items, 'items_category'));
         $categories = array_filter($categories, fn($c) => $c !== "badge");
         foreach($categories as $category) : ?>
-            <option value="<?= $category ?>"><?= ucfirst($category) ?></option>
+            <option value="<?= $category ?>"><?= ucfirst($this->_('store_category_' . strtolower($category))) ?></option>
         <?php endforeach; ?>
     </select>
 </div>
@@ -85,18 +85,18 @@
                     <?php if ($ownsRole || in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
                         <?php if ($item['items_category'] === 'role' && $ownsRole) : ?>
                             <button class="buy-button-owned getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">
-                                Get <?= strtolower($item['items_name']) ?> on Discord
+                                <?= $this->_('store_get_on_discord', [strtolower($item['items_name'])]) ?>
                             </button>
                         <?php else : ?>
-                             <button class="buy-button-owned" disabled>Owned</button>
+                             <button class="buy-button-owned" disabled><?= $this->_('store_owned') ?></button>
                         <?php endif; ?>
                     <?php else : ?>
                         <?php if ($item['items_category'] === 'Banner' && $user['user_isGold'] != 1) : ?>
                             <button class="buy-button-owned" disabled>
-                                Need to own Gold to buy
+                                <?= $this->_('store_need_gold') ?>
                             </button>
                         <?php else : ?>
-                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>">Buy</button>
+                            <button class="buy-button" data-item-id="<?= $item['items_id'] ?>"><?= $this->_('store_buy') ?></button>
                          <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -111,12 +111,12 @@
 
         <?php if ($item['items_id'] == 6) : ?>
             <div id="ahris-easter-egg" class="ahris-easter-egg">
-                <h3>🐱 Meow! You found a secret from <strong>Ahristochat</strong>!</h3>
-                <p>This Kitty Frame is in purrtnership with <strong>Ahristochat</strong>, our fabulous feline friend! 😸</p>
+                <h3>🐱 <?= $this->_('store_ahris_easter_egg_title') ?></h3>
+                <p><?= $this->_('store_ahris_easter_egg_desc') ?></p>
                 <img src="/public/images/ahris-cat.gif" alt="Ahristochat">
                 <br><br>
                 <button class="close-easter-egg" onclick="document.getElementById('ahris-easter-egg').style.display='none'">
-                    Close
+                    <?= $this->_('close') ?>
                 </button>
             </div>
         <?php endif; ?>

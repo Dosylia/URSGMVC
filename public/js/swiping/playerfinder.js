@@ -215,6 +215,26 @@ function findRandomPlayer(prefs) {
 
     const jsonData = JSON.stringify(dataToSend)
 
+    // Ensure error message element exists
+    let errorDiv = document.getElementById('random-player-error')
+    if (!errorDiv) {
+        errorDiv = document.createElement('div')
+        errorDiv.id = 'error-message'
+        errorDiv.style.color = 'white'
+        errorDiv.style.textAlign = 'center'
+        errorDiv.style.display = 'none'
+        const pfSection =
+            document.querySelector('.playerfinder') ||
+            document.querySelector('.playerfinder-container')
+        if (pfSection) {
+            pfSection.insertBefore(errorDiv, pfSection.firstChild)
+        } else {
+            document.body.prepend(errorDiv)
+        }
+    }
+    errorDiv.style.display = 'none'
+    errorDiv.textContent = ''
+
     fetch('/getRandomPlayerFinder', {
         method: 'POST',
         headers: {
@@ -231,10 +251,15 @@ function findRandomPlayer(prefs) {
                 const sessionId = data.sessionId
                 window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
             } else {
-                console.error('Error finding random player:', data.message)
+                // Show error message on the page
+                errorDiv.textContent =
+                    data.message || 'Error finding random player.'
+                errorDiv.style.display = 'block'
             }
         })
         .catch((error) => {
+            errorDiv.textContent = 'Request failed. Please try again.'
+            errorDiv.style.display = 'block'
             console.error('Request failed', error)
         })
 }

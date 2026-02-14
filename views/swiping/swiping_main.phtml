@@ -3,24 +3,24 @@
 
     <?php if ($user['user_game'] === 'League of Legends'): ?>
     <span id="restore-game-container">
-        <button id="restore-game-btn">Play game</button>
+        <button id="restore-game-btn"><?= $this->_('play_game') ?></button>
     </span>
     <?php endif; ?>
 
     <div class="minigame-window hidden" id="minigameWindow">
         <div class="minigame-inner">
             <div class="exit-button-container">
-                <button class="exit-button" aria-label="Close Minigame Window">X</button>
+                <button class="exit-button" aria-label="<?= $this->_('close_minigame_window') ?>">X</button>
             </div>
-            <h1 class="guess-text-title">Guess this Famous player</h1>
+            <h1 class="guess-text-title"><?= $this->_('guess_famous_player') ?></h1>
             <div class="guess-text-subtitle">
-                <p>Guess the player and earn extra</p>
+                <p><?= $this->_('guess_player_earn_extra') ?></p>
                 <img src="public/images/game/soulhard.png" alt="Soulhard Icon" class="subtitle-icon" />
             </div>
 
             <div class="rules-container">
-                <button class="rules-button">Rules</button>
-                <span class="rules-text" style="display: none;">You have up to 3 chances to find the right person. The faster you find, the more you earn. Hints might be how they got known, not necessarily how they got known. One new person per day.</span>
+                <button class="rules-button"><?= $this->_('rules') ?></button>
+                <span class="rules-text" style="display: none;"><?= $this->_('minigame_rules_text') ?></span>
             </div>
 
             <div class="player-container">
@@ -36,29 +36,29 @@
             <div class="hints-container">
                 <div class="top-hint">
                     <div class="affiliation-container">
-                        <div class="affiliation-header">Affiliation</div>
+                        <div class="affiliation-header"><?= $this->_('affiliation') ?></div>
                         <div class="affiliation-hint">???</div>
                     </div>
 
                     <div class="gender-container">
-                        <div class="gender-header">Gender</div>
+                        <div class="gender-header"><?= $this->_('gender') ?></div>
                         <div class="gender-hint">???</div>
                     </div>
                 </div>
 
                 <div class="bottom-hint">
                     <div class="guess-hint-container">
-                        <div class="guess-hint-header">Hint</div>
+                        <div class="guess-hint-header"><?= $this->_('hint') ?></div>
                         <div class="guess-hint">???</div>
                     </div>
                 </div>
             </div>
             <span id="ingame-result"></span>
-            <input type="text" class="name-input" placeholder="Enter Name" aria-label="Enter User Name" />
+            <input type="text" class="name-input" placeholder="<?= $this->_('enter_name') ?>" aria-label="<?= $this->_('enter_user_name') ?>" />
 
             <div class="button-game-container">
-                <button class="submit-button">Submit</button>
-                <button type="button" id="ignore-permanently-btn">Hide forever</button>
+                <button class="submit-button"><?= $this->_('submit') ?></button>
+                <button type="button" id="ignore-permanently-btn"><?= $this->_('hide_forever') ?></button>
             </div>
         </div>
     </div>
@@ -67,64 +67,64 @@
     <div id="report-modal" class="modal report-modal-hidden">
             <div class="modal-content">
                 <span id="close-modal" class="close">&times;</span>
-                <h2>Report User</h2>
-                <p class="report-modal-p">Please let us know why you are reporting this user</p>
+                <h2><?= $this->_('report_title') ?></h2>
+                <p class="report-modal-p"><?= $this->_('report_description') ?></p>
                 <div class="user-info">
                         <img id="image_users_modal" src="public/images/defaultprofilepicture.jpg" alt="defaultprofilepicture" />
                     <span id="report-username"></span>
                 </div>
                 <div class="report-textarea">
                     <div class="label-container">
-                        <label for="report-description">Description <span class="low-opacity">(optional)</span></label>
+                        <label for="report-description"><?= $this->_('report_description_title') ?> <span class="low-opacity"><?= $this->_('report_optional') ?></span></label>
                     </div>
-                    <textarea id="report-description" placeholder="Provide details here..."></textarea>
+                    <textarea id="report-description" placeholder="<?= $this->_('report_details') ?>"></textarea>
                 </div>
-                <button id="submit-report">Report</button>
+                <button id="submit-report"><?= $this->_('report_submit') ?></button>
             </div>
         </div>
         <div id="filter-modal" class="modal">
             <div class="modal-content" data-modal-type="filter">
                 <span id="close-modal-filter" class="close">&times;</span>
-                <h2>FILTER</h2>
+                <h2><?= $this->_('filter') ?></h2>
                 <hr class="separator-filters">
-                <h3>SERVER</h3>
+                <h3><?= $this->_('server') ?></h3>
                 <div class="filter-options" id="server-options">
-                    <button class="filter-btn" data-filter="server" data-value="Europe West">Europe West</button>
-                    <button class="filter-btn" data-filter="server" data-value="North America">North America</button>
-                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">Europe Nordic & East</button>
-                    <button class="filter-btn" data-filter="server" data-value="Brazil">Brazil</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America North">Latin America North</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America South">Latin America South</button>
-                    <button class="filter-btn" data-filter="server" data-value="Oceania">Oceania</button>
-                    <button class="filter-btn" data-filter="server" data-value="Russia">Russia</button>
-                    <button class="filter-btn" data-filter="server" data-value="Turkey">Turkey</button>
-                    <button class="filter-btn" data-filter="server" data-value="Japan">Japan</button>
-                    <button class="filter-btn" data-filter="server" data-value="Korea">Korea</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe West"><?= $this->_('server_euw') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="North America"><?= $this->_('server_na') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic"><?= $this->_('server_eune') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Brazil"><?= $this->_('server_br') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America North"><?= $this->_('server_lan') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America South"><?= $this->_('server_las') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Oceania"><?= $this->_('server_oce') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Russia"><?= $this->_('server_ru') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Turkey"><?= $this->_('server_tr') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Japan"><?= $this->_('server_jp') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Korea"><?= $this->_('server_kr') ?></button>
                 </div>
                 
-                <h3>GENDER</h3>
+                <h3><?= $this->_('gender') ?></h3>
                 <div class="filter-options" id="gender-options">
-                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> Male</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> Trans (FtM)</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> Trans (MtF)</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> Non binary</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> <?= $this->_('gender_male') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> <?= $this->_('gender_female') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> <?= $this->_('gender_trans_male') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> <?= $this->_('gender_trans_female') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> <?= $this->_('gender_non_binary') ?></button>
                 </div>
                 
-                <h3>GAMEMODE</h3>
+                <h3><?= $this->_('gamemode') ?></h3>
                 <div class="filter-options" id="gamemode-options">
                 <?php if ($user['user_game'] === 'League of Legends'): ?>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_aram') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_ranked') ?></button>
                 <?php else : ?>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode">
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode">Ranked</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> <?= $this->_('gamemode_ranked') ?></button>
                 <?php endif; ?>
                 </div>
                 
                 <hr class="separator-filters">
-                <button id="update-filter">Confirm</button>
+                <button id="update-filter"><?= $this->_('confirm') ?></button>
             </div>
         </div>
         <div class="swiping-top"> <!-- Display row -->
@@ -136,9 +136,9 @@
                 </div>
             <div class="swiping-user-info"> <!-- Display column -->
                 <div class="swiping-buttons"> <!-- Buttons (report, filter) Display row -->
-                    <button class="swiping-buttons-filter" id="open-filter-modal" type="button"><p>Filter</p><i class="fa-solid fa-filter"></i></button>
+                    <button class="swiping-buttons-filter" id="open-filter-modal" type="button"><p><?= $this->_('filter') ?></p><i class="fa-solid fa-filter"></i></button>
                     <button class="swiping-buttons-report" id="report-button" type="button">
-                        <img src="public/images/report.svg" alt="Report an user">
+                        <img src="public/images/report.svg" alt="<?= $this->_('report_an_user') ?>">
                     </button>
                 </div>
                 <div class="swiping-username-age"> <!-- Username age Display row -->
@@ -147,16 +147,16 @@
                 </div>
                 <div class="swiping-game-info"> <!-- Game info Display row -->
                     <div class="swiping-game-column"> <!-- Riot ID Display column -->
-                        <span class="swiping-grey">Riot ID</span>
+                        <span class="swiping-grey"><?= $this->_('riot_id') ?></span>
                         <span class="user-rating" id="user-rating-stars"></span>
                         <span id="lolsUsername" class="swiping-normal"></span>
                     </div>
                     <div class="swiping-game-column"> <!-- Rank Display column -->
-                        <span class="swiping-grey">Rank</span>
+                        <span class="swiping-grey"><?= $this->_('rank') ?></span>
                         <span id="lolRankP" class="swiping-normal"></span>
                     </div>
                     <div class="swiping-game-column"> <!-- Role Display column -->
-                        <span class="swiping-grey">Role</span>
+                        <span class="swiping-grey"><?= $this->_('role') ?></span>
                         <span id="lolRoleP" class="swiping-normal"></span>
                     </div>
                 </div>                
@@ -165,8 +165,8 @@
         <div class="swiping-middle"> <!-- Display column -->
         <span id="picture-selector">
             <div id="view-toggle" style="display: none;">
-                <button class="view-toggle-btn" data-view="champions">Champions</button>
-                <button class="view-toggle-btn active" data-view="pictures">Pictures</button>
+                <button class="view-toggle-btn" data-view="champions"><?= $this->_('champions') ?></button>
+                <button class="view-toggle-btn active" data-view="pictures"><?= $this->_('pictures') ?></button>
             </div>
         </span>
         <div id="bonus-picture-container">
@@ -203,61 +203,61 @@
 
     <section class="noUserToSee" style="display: none;">
         <img src="public/images/vayne_emote.png" alt="jhinshrug">
-        <h2 style="margin: 20px 0;">You have seen all available profiles.</h2>
+        <h2 style="margin: 20px 0;"><?= $this->_('seen_all_profiles') ?></h2>
         <div class="swiping-buttons"> <!-- Buttons (report, filter) Display row -->
         <button class="swiping-buttons-filter" id="open-filter-modal-no-users" type="button" style="margin-bottom: 20px;">
-            <p>Change filter</p><i class="fa-solid fa-filter"></i>
+            <p><?= $this->_('change_filter') ?></p><i class="fa-solid fa-filter"></i>
         </button>
         </div>
         <br>
         <a class="btn_user_updates" href="/updateProfilePage">
-            Switch game for more profiles
+            <?= $this->_('switch_game_for_more_profiles') ?>
         </a>
         <div id="filter-modal-no-users" class="modal">
             <div class="modal-content" data-modal-type="filter">
                 <span id="close-modal-filter-no-users" class="close">&times;</span>
-                <h2>FILTER</h2>
+                <h2><?= $this->_('filter') ?></h2>
                 <hr class="separator-filters">
                 
-                <h3>SERVER</h3>
+                <h3><?= $this->_('server') ?></h3>
                 <div class="filter-options" id="server-options">
-                    <button class="filter-btn" data-filter="server" data-value="Europe West">Europe West</button>
-                    <button class="filter-btn" data-filter="server" data-value="North America">North America</button>
-                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic">Europe Nordic & East</button>
-                    <button class="filter-btn" data-filter="server" data-value="Brazil">Brazil</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America North">Latin America North</button>
-                    <button class="filter-btn" data-filter="server" data-value="Latin America South">Latin America South</button>
-                    <button class="filter-btn" data-filter="server" data-value="Oceania">Oceania</button>
-                    <button class="filter-btn" data-filter="server" data-value="Russia">Russia</button>
-                    <button class="filter-btn" data-filter="server" data-value="Turkey">Turkey</button>
-                    <button class="filter-btn" data-filter="server" data-value="Japan">Japan</button>
-                    <button class="filter-btn" data-filter="server" data-value="Korea">Korea</button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe West"><?= $this->_('server_euw') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="North America"><?= $this->_('server_na') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Europe Nordic"><?= $this->_('server_eune') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Brazil"><?= $this->_('server_br') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America North"><?= $this->_('server_lan') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Latin America South"><?= $this->_('server_las') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Oceania"><?= $this->_('server_oce') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Russia"><?= $this->_('server_ru') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Turkey"><?= $this->_('server_tr') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Japan"><?= $this->_('server_jp') ?></button>
+                    <button class="filter-btn" data-filter="server" data-value="Korea"><?= $this->_('server_kr') ?></button>
                 </div>
                 
-                <h3>GENDER</h3>
+                <h3><?= $this->_('gender') ?></h3>
                 <div class="filter-options" id="gender-options">
-                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> Male</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> Female</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> Trans (FtM)</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> Trans (MtF)</button>
-                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> Non binary</button>
+                    <button class="filter-btn" data-filter="gender" data-value="Male"><i class="fa-solid fa-mars"></i> <?= $this->_('gender_male') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Female"><i class="fa-solid fa-venus"></i> <?= $this->_('gender_female') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Male"><i class="fa-solid fa-transgender"></i> <?= $this->_('gender_trans_male') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Trans Female"><i class="fa-solid fa-transgender"></i> <?= $this->_('gender_trans_female') ?></button>
+                    <button class="filter-btn" data-filter="gender" data-value="Non Binary"><i class="fa-solid fa-genderless"></i> <?= $this->_('gender_non_binary') ?></button>
                 </div>
                 
-                <h3>GAMEMODE</h3>
+                <h3><?= $this->_('gamemode') ?></h3>
                 <div class="filter-options" id="gamemode-options">
                 <?php if ($user['user_game'] === 'League of Legends'): ?>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> Normal Draft</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> Aram</button>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> Ranked</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_aram') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_ranked') ?></button>
                 <?php else : ?>
-                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode">
-                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode">Ranked</button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
+                    <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/valorant-icon.png" alt="Valorant game mode"> <?= $this->_('gamemode_ranked') ?></button>
                 <?php endif; ?>
                 </div>
 
                 <hr class="separator-filters">
                 
-                <button id="update-filter-no-users">Confirm</button>
+                <button id="update-filter-no-users"><?= $this->_('confirm') ?></button>
             </div>
         </div>
     </section>

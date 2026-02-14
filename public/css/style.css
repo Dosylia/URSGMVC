@@ -446,7 +446,8 @@ body > div[style*='position: fixed'] {
     height: 50px;
 }
 
-.error-message {
+.error-message,
+#error-message {
     color: var(--main--red);
     font-size: 0.85em;
     margin-top: 5px;
@@ -1003,7 +1004,8 @@ section.siteMap tr:nth-child(even) {
     color: white;
 }
 
-span.form-error {
+span.form-error,
+#error-message {
     display: block;
     background-color: rgba(255, 100, 100, 1);
     color: white;
