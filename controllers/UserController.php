@@ -94,7 +94,7 @@ class UserController
 
     public function getAllUsers()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['allUsers'])) 
         {
             $allUsers = $this->user->getAllUsers();
@@ -103,18 +103,18 @@ class UserController
             {
                 $response = array(
                     'allUsers' => $allUsers,
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 );
                 echo json_encode($response);
                 return;  
             } else {
-                $response = array('message' => 'Couldnt get all users');
+                $response = array('message' => $this->_('messages.couldnt_get_all_users'));
                 echo json_encode($response);
                 return;  
             }
 
         } else {
-            $response = array('message' => 'Cant access this');
+            $response = array('message' => $this->_('messages.cant_access_this'));
             echo json_encode($response);
             return;  
         }
@@ -123,7 +123,7 @@ class UserController
     public function getAllUsersPhone()
     {
         require 'keys.php';
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
     
         $token = $this->getBearerTokenOrJsonError();
         if (!$token) {
@@ -132,7 +132,7 @@ class UserController
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
             return;
         }
     
@@ -143,18 +143,18 @@ class UserController
             if ($allUsers) {
                 $response = array(
                     'allUsers' => $allUsers,
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 );
                 echo json_encode($response);
                 return;
             } else {
-                $response = array('message' => 'Could not get all users');
+                $response = array('message' => $this->_('messages.couldnt_get_all_users'));
                 echo json_encode($response);
                 return;
             }
     
         } else {
-            $response = array('message' => 'Cannot access this');
+            $response = array('message' => $this->_('messages.cant_access_this'));
             echo json_encode($response);
             return;
         }
@@ -163,7 +163,7 @@ class UserController
     public function getLeaderboardUsers()
     {
         require 'keys.php';
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
     
         $token = $this->getBearerTokenOrJsonError();
         if (!$token) {
@@ -172,7 +172,7 @@ class UserController
     
         // Check if the provided token matches the valid token
         if ($token !== $validToken) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
             return;
         }
     
@@ -183,18 +183,18 @@ class UserController
             if ($allUsers) {
                 $response = array(
                     'allUsers' => $allUsers,
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 );
                 echo json_encode($response);
                 return;
             } else {
-                $response = array('message' => 'Could not get all users');
+                $response = array('message' => $this->_('messages.couldnt_get_all_users'));
                 echo json_encode($response);
                 return;
             }
     
         } else {
-            $response = array('message' => 'Cannot access this');
+            $response = array('message' => $this->_('messages.cant_access_this'));
             echo json_encode($response);
             return;
         }        
@@ -239,13 +239,13 @@ class UserController
     public function createAccountSkipPreferences()
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameter']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
 
         $data = json_decode($_POST['param']);
         if (!isset($data->googleId)) {
-            echo json_encode(['success' => false, 'message' => 'Google ID is required']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_google_id')]);
             return;
         }
 
@@ -257,12 +257,12 @@ class UserController
         $authToken = $_COOKIE['auth_token'] ?? null;
 
         if (!$authToken || $token !== $authToken) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         if (!isset($data->username, $data->gender, $data->age, $data->kindOfGamer, $data->game, $data->shortBio)) {
-            echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_required_fields')]);
             return;
         }
 
@@ -282,40 +282,40 @@ class UserController
         $this->setShortBio($shortBio);
 
         if ($this->emptyInputSignup($username, $age, $shortBio)) {
-            echo json_encode(['success' => false, 'message' => 'Inputs cannot be empty']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.inputs_cannot_be_empty')]);
             return;
         }
 
         if ($this->user->getUserByUsername($username)) {
-            echo json_encode(['success' => false, 'message' => 'Username already exists']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.username_already_exists')]);
             return;
         }
 
         if ($this->invalidUid($username)) {
-            echo json_encode(['success' => false, 'message' => 'Username is not valid']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.username_is_not_valid')]);
             return;
         }
 
         if ($age < 13 || $age > 99) {
-            echo json_encode(['success' => false, 'message' => 'Age must be between 13 and 99']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.age_not_valid')]);
             return;
         }
 
         if (strlen($shortBio) > 200) {
-            echo json_encode(['success' => false, 'message' => 'Short bio exceeds 200 characters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.short_bio_too_long')]);
             return;
         }
 
         $createUser = $this->user->createUser($googleUserId, $username, $gender, $age, $kindofgamer, $shortBio, $game);
 
         if (!$createUser) {
-            echo json_encode(['success' => false, 'message' => 'Failed to create user']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_create_user')]);
             return;
         }
 
         $user = $this->user->getUserByUsername($username);
         if (!$user) {
-            echo json_encode(['success' => false, 'message' => 'User was created but cannot be fetched']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_user_after_creation')]);
             return;
         }
 
@@ -342,7 +342,7 @@ class UserController
             $createGameAccountLf = $this->userlookingfor->createLookingForUser($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
 
             if (!$createGameAccount || !$createGameAccountLf) {
-                echo json_encode(['success' => false, 'message' => 'Could not create League of Legends account or preferences']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_create_lol_account')]);
                 return;
             }
 
@@ -350,7 +350,7 @@ class UserController
             $lolLookingFor = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
             if (!$lolUser || !$lolLookingFor) {
-                echo json_encode(['success' => false, 'message' => 'Could not retrieve League of Legends account or preferences']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_lol_account')]);
                 return;
             }
 
@@ -365,7 +365,7 @@ class UserController
             $createGameAccountLf = $this->userlookingfor->createLookingForUserValorant($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
 
             if (!$createGameAccount || !$createGameAccountLf) {
-                echo json_encode(['success' => false, 'message' => 'Could not create Valorant account or preferences']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_create_valorant_account')]);
                 return;
             }
 
@@ -373,7 +373,7 @@ class UserController
             $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
             if (!$valorantUser || !$valorantLookingFor) {
-                echo json_encode(['success' => false, 'message' => 'Could not retrieve Valorant account or preferences']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_valorant_account')]);
                 return;
             }
 
@@ -384,14 +384,14 @@ class UserController
         }
 
         // Fallback catch if game is unknown
-        echo json_encode(['success' => false, 'message' => 'Unsupported game']);
+        echo json_encode(['success' => false, 'message' => $this->_('messages.unsupported_game')]);
         return;
     }
 
 
     public function createUserPhone()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['userData'])) // DATA SENT BY AJAX
         {
             $data = json_decode($_POST['userData']);
@@ -418,37 +418,37 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenGoogleUserId($token, $googleUserId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
             // Perform validation and user creation logic
             if ($this->emptyInputSignup($this->getUsername(), $this->getAge(), $this->getShortBio()) !== false) {
-                $response = array('message' => 'Inputs cannot be empty');
+                $response = array('message' => $this->_('messages.inputs_cannot_be_empty'));
                 echo json_encode($response);
                 return;
             }
 
             if ($this->user->getUserByUsername($this->getUsername())) {
-                $response = array('message' => 'Username already exists');
+                $response = array('message' => $this->_('messages.username_already_exists'));
                 echo json_encode($response);
                 return;
             }
 
             if ($this->invalidUid($this->getUsername()) !== false) {
-                $response = array('message' => 'Username is not valid');
+                $response = array('message' => $this->_('messages.username_is_not_valid'));
                 echo json_encode($response);
                 return;
             }
 
             if ($age < 13 || $age > 99) {
-                $response = array('message' => 'Age is not valid');
+                $response = array('message' => $this->_('messages.age_not_valid'));
                 echo json_encode($response);
                 return;
             }
 
             if (strlen($this->getShortBio()) > 200) {
-                $response = array('message' => 'Short bio is too long');
+                $response = array('message' => $this->_('messages.short_bio_too_long'));
                 echo json_encode($response);
                 return;
             }
@@ -474,7 +474,7 @@ class UserController
                 $response = array(
                     'sessionId' => session_id(),
                     'user' => $userData,
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 );
             }
         }
@@ -589,7 +589,7 @@ class UserController
 
     public function updateSocial()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['submit']))
         {
             $username = $this->validateInput($_GET["username"]);
@@ -658,7 +658,7 @@ class UserController
 
     public function updateSocialsWebsite()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['param']))
         {
             $data = json_decode($_POST['param']);
@@ -687,7 +687,7 @@ class UserController
             
                 // Validate Token for User
                 if (!$this->validateTokenWebsite($token, $this->getUserId())) {
-                    echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                     return;
                 }
 
@@ -696,18 +696,19 @@ class UserController
 
                 if ($updateSocial)
                 {
-                    $response = array('message' => 'Success');
+                    $response = array('message' => $this->_('messages.success'));
+
                     echo json_encode($response);
                     return;  
                 }
                 else
                 {
-                    $response = array('message' => 'Token not valid');
+                    $response = array('message' => $this->_('messages.invalid_token'));
                     echo json_encode($response);
                     return;
                 }
             } else {
-                $response = array('message' => 'Could not update user');
+                $response = array('message' => $this->_('messages.couldnt_update_user'));
                 echo json_encode($response);
                 return;
             }
@@ -731,7 +732,7 @@ class UserController
             }
  
              if (!$this->validateToken($token, $user['user_id'])) {
-                 echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                 echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                  return;
              }
 
@@ -749,18 +750,18 @@ class UserController
 
             if ($updateSocial)
             {
-                $response = array('message' => 'Success');
+                $response = array('message' => $this->_('messages.success'));
                 echo json_encode($response);
                 return;  
             }
             else
             {
-                $response = array('message' => 'Couldnt update user');
+                $response = array('message' => $this->_('messages.couldnt_update_user'));
                 echo json_encode($response);
                 return;
             }
         } else {
-            $response = array('message' => 'Couldnt update user');
+            $response = array('message' => $this->_('messages.couldnt_update_user'));
             echo json_encode($response);
             return;
         }
@@ -1033,7 +1034,7 @@ class UserController
 
     public function deleteBonusPicture()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
 
         if (isset($_POST['fileName']) && isset($_POST['userId'])) 
         {
@@ -1050,7 +1051,7 @@ class UserController
             }
         
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
                 return;
             }
         
@@ -1058,7 +1059,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -1070,7 +1071,7 @@ class UserController
             }
 
             if (!in_array($this->getFileName(), $bonusPictures)) {
-                echo json_encode(['success' => false, 'message' => 'Picture not found in user\'s collection']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.picture_not_found_in_collection')]);
                 return;
             }
 
@@ -1082,7 +1083,7 @@ class UserController
             }
 
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
-                $response = array('message' => 'Could not delete picture');
+                $response = array('message' => $this->_('messages.couldnt_delete_picture'));
                 echo json_encode($response);
                 return;
             }
@@ -1092,11 +1093,11 @@ class UserController
                 unlink($filePath);
             }
 
-            $response = array('message' => 'Success');
+            $response = array('message' => $this->_('messages.success'));
             echo json_encode($response);
             return;
         } else {
-            $response = array('message' => 'Could not delete picture');
+            $response = array('message' => $this->_('messages.couldnt_delete_picture'));
             echo json_encode($response);
             return;
         }
@@ -1104,7 +1105,7 @@ class UserController
 
     public function deleteBonusPicturePhone()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
 
         if (isset($_POST['fileName']) && isset($_POST['userId'])) 
         {
@@ -1121,7 +1122,7 @@ class UserController
             }
         
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
                 return;
             }
         
@@ -1129,7 +1130,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -1141,7 +1142,7 @@ class UserController
             }
 
             if (!in_array($this->getFileName(), $bonusPictures)) {
-                echo json_encode(['success' => false, 'message' => 'Picture not found in user\'s collection']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.picture_not_found_in_collection')]);
                 return;
             }
 
@@ -1153,7 +1154,7 @@ class UserController
             }
 
             if (!$this->user->updateBonusPictures($user['user_username'], $bonusPictures)) {
-                $response = array('message' => 'Could not delete picture');
+                $response = array('message' => $this->_('messages.couldnt_delete_picture'));
                 echo json_encode($response);
                 return;
             }
@@ -1163,11 +1164,11 @@ class UserController
                 unlink($filePath);
             }
 
-            $response = array('message' => 'Success', 'bonusPictures' => $bonusPictures);
+            $response = array('message' => $this->_('messages.success'), 'bonusPictures' => $bonusPictures);
             echo json_encode($response);
             return;
         } else {
-            $response = array('message' => 'Could not delete picture, invalid data sent');
+            $response = array('message' => $this->_('messages.couldnt_delete_picture_invalid_data'));
             echo json_encode($response);
             return;
         }
@@ -1176,7 +1177,7 @@ class UserController
     public function getUserData()
     {
         // require 'keys.php';
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
     
         if (isset($_POST['userId'])) {
 
@@ -1204,13 +1205,13 @@ class UserController
             if ($user) {
                 $response = array(
                     'user' => $user,
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 );
             } else {
-                $response = array('message' => 'Could not get user');
+                $response = array('message' => $this->_('messages.could_not_get_user'));
             }
         } else {
-            $response = array('message' => 'Proper data not sent');
+            $response = array('message' => $this->_('messages.proper_data_not_sent'));
         }
     
         echo json_encode($response); // Make sure to output the JSON response
@@ -1219,7 +1220,7 @@ class UserController
     public function registerToken()
     {
         require 'keys.php';
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
     
         if (isset($_POST['userId']) && isset($_POST['token'])) {
 
@@ -1230,7 +1231,7 @@ class UserController
         
             // Check if the provided token matches the valid token
             if ($token !== $validToken) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
                 return;
             }
 
@@ -1240,12 +1241,12 @@ class UserController
             $registerToken = $this->user->registerToken($userId, $token);
     
             if ($registerToken) {
-                $response = array('message' => 'Success');
+                $response = array('message' => $this->_('messages.success'));
             } else {
-                $response = array('message' => 'Could not register token');
+                $response = array('message' => $this->_('messages.could_not_register_token'));
             }
         } else {
-            $response = array('message' => 'Proper data not sent');
+            $response = array('message' => $this->_('messages.proper_data_not_sent'));
         }
     
         echo json_encode($response);
@@ -1253,7 +1254,7 @@ class UserController
 
     public function updateUserPhone()
     {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         
         if (isset($_POST['userData'])) // Check if data is sent via AJAX
         {
@@ -1273,7 +1274,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -1313,7 +1314,7 @@ class UserController
             if (!empty($filteredServer)) {
                 foreach ($filteredServer as $serverTest) {
                     if (!in_array($serverTest, $validRegions)) {
-                        echo json_encode(['success' => false, 'message' => 'Filtered region not valid']);
+                        echo json_encode(['success' => false, 'message' => $this->_('messages.filtered_region_not_valid')]);
                         return;
                     }
                 }
@@ -1348,7 +1349,7 @@ class UserController
 
             if ($this->getAge() > 99)
             {
-                $response = array('message' => 'Age is not valid');
+                $response = array('message' => $this->_('messages.age_not_valid'));
                 echo json_encode($response);
                 return;
             }
@@ -1402,11 +1403,11 @@ class UserController
 
                 if(($updateLeague || $createLoLUser) && $updateUser && $updateLookingFor)
                 {
-                    $response = array('message' => 'Success');
+                    $response = array('message' => $this->_('messages.success'));
                 }
                 else
                 {
-                    $response = array('message' => 'Could not update');
+                    $response = array('message' => $this->_('messages.could_not_update'));
                 }
             } 
             else
@@ -1444,7 +1445,7 @@ class UserController
             if (!empty($filteredServer)) {
                 foreach ($filteredServer as $serverTest) {
                     if (!in_array($serverTest, $validRegions)) {
-                        echo json_encode(['success' => false, 'message' => 'Filtered region not valid']);
+                        echo json_encode(['success' => false, 'message' => $this->_('messages.filtered_region_not_valid')]);
                         return;
                     }
                 }
@@ -1479,7 +1480,7 @@ class UserController
 
             if ($this->getAge() > 99)
             {
-                $response = array('message' => 'Age is not valid');
+                $response = array('message' => $this->_('messages.age_not_valid'));
                 echo json_encode($response);
                 return;
             }
@@ -1534,11 +1535,11 @@ class UserController
 
                 if(($updateValorant || $createValorantUser) && $updateUser && $updateLookingFor)
                 {
-                    $response = array('message' => 'Success');
+                    $response = array('message' => $this->_('messages.success'));
                 }
                 else
                 {
-                    $response = array('message' => 'Could not update');
+                    $response = array('message' => $this->_('messages.could_not_update'));
                 }
             }
 
@@ -1651,7 +1652,7 @@ class UserController
         }
     
         if (!isset($_POST['username'])) {
-            echo json_encode(['message' => 'Invalid request']);
+            echo json_encode(['message' => $this->_('messages.invalid_request')]);
             return;
         }
 
@@ -1659,7 +1660,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateToken($token, $user['user_id'])) {
-            echo json_encode(['message' => 'Invalid token']);
+            echo json_encode(['message' => $this->_('messages.invalid_token')]);
             return;
         }
 
@@ -1680,7 +1681,7 @@ class UserController
                 if (move_uploaded_file($_FILES["picture"]["tmp_name"], $targetFilePath)) {
                     // Check for animated GIFs
                     if ($fileType === 'gif' && $this->isAnimatedGif($targetFilePath)) {
-                        echo json_encode(['message' => 'Animated GIFs are not allowed']);
+                        echo json_encode(['message' => $this->_('messages.animated_gifs_not_allowed')]);
                         return;
                     }
     
@@ -1715,24 +1716,24 @@ class UserController
                                         unlink($oldResizedPicture);
                                     }
                                 }
-                                echo json_encode(['message' => 'Success']);
+                                echo json_encode(['message' => $this->_('messages.success')]);
                             } else {
-                                echo json_encode(['message' => 'Database update failed']);
+                                echo json_encode(['message' => $this->_('messages.database_update_failed')]);
                             }
                         } else {
-                            echo json_encode(['message' => 'User ID is missing']);
+                            echo json_encode(['message' => $this->_('messages.missing_user_id')]);
                         }
                     } else {
-                        echo json_encode(['message' => 'Error resizing image']);
+                        echo json_encode(['message' => $this->_('messages.error_resizing_image')]);
                     }
                 } else {
-                    echo json_encode(['message' => 'Error uploading file']);
+                    echo json_encode(['message' => $this->_('messages.error_uploading_file')]);
                 }
             } else {
-                echo json_encode(['message' => 'Invalid file type']);
+                echo json_encode(['message' => $this->_('messages.invalid_file_type')]);
             }
         } else {
-            echo json_encode(['message' => 'No file uploaded']);
+            echo json_encode(['message' => $this->_('messages.no_file_uploaded')]);
         }
     }   
 
@@ -1743,7 +1744,7 @@ class UserController
         }
     
         if (!isset($_POST['username'])) {
-            echo json_encode(['message' => 'Invalid request']);
+            echo json_encode(['message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -1751,7 +1752,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateToken($token, $user['user_id'])) {
-            echo json_encode(['message' => 'Invalid token']);
+            echo json_encode(['message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -1759,7 +1760,7 @@ class UserController
     
         // Validate if the file is received
         if (!isset($_FILES["picture"]) || empty($_FILES["picture"]["name"])) {
-            echo json_encode(['message' => 'No file uploaded']);
+            echo json_encode(['message' => $this->_('messages.no_file_uploaded')]);
             return;
         }
     
@@ -1774,20 +1775,20 @@ class UserController
         $allowTypes = array('jpg', 'jpeg', 'png', 'gif');
     
         if (!in_array($fileExtension, $allowTypes)) {
-            echo json_encode(['message' => 'Invalid file type']);
+            echo json_encode(['message' => $this->_('messages.invalid_file_type')]);
             return;
         }
     
         // Move uploaded file
         if (!move_uploaded_file($_FILES["picture"]["tmp_name"], $targetFilePath)) {
-            echo json_encode(['message' => 'Error uploading file. Picture might be too big.']);
+            echo json_encode(['message' => $this->_('messages.error_uploading_file_size')]);
             return;
         }
     
         // Check for animated GIFs
         if ($fileExtension === 'gif' && $this->isAnimatedGif($targetFilePath)) {
             unlink($targetFilePath); // Delete the uploaded GIF immediately
-            echo json_encode(['message' => 'Animated GIFs are not allowed']);
+            echo json_encode(['message' => $this->_('messages.animated_gifs_not_allowed')]);
             return;
         }
     
@@ -1795,7 +1796,7 @@ class UserController
         $resizedFilePath = $targetDir . 'resized_' . $uniqueFileName;
         if (!$this->resizeImage($targetFilePath, $resizedFilePath, 500, 500)) {
             unlink($targetFilePath); // Clean up original if resize fails
-            echo json_encode(['message' => 'Error resizing image']);
+            echo json_encode(['message' => $this->_('messages.error_resizing_image')]);
             return;
         }
     
@@ -1810,7 +1811,7 @@ class UserController
         // Enforce max 10 bonus pictures
         if (count($bonusPictures) >= 10) {
             unlink($targetFilePath); // Delete new file if limit exceeded
-            echo json_encode(['message' => 'You cannot upload more than 10 pictures.']);
+            echo json_encode(['message' => $this->_('messages.max_bonus_pictures_limit')]);
             return;
         }
     
@@ -1819,14 +1820,14 @@ class UserController
     
         // Update bonus pictures in the database
         if (!$this->user->updateBonusPictures($_POST['username'], $bonusPictures)) {
-            echo json_encode(['message' => 'Database update failed']);
+            echo json_encode(['message' => $this->_('messages.database_update_failed')]);
             return;
         }
     
         // Delete original uploaded file after resizing
         unlink($targetFilePath);
     
-        echo json_encode(['message' => 'Success', 'bonusPictures' => $bonusPictures]);
+        echo json_encode(['message' => $this->_('messages.success'), 'bonusPictures' => $bonusPictures]);
     }    
 
     public function resizeImage($sourcePath, $destPath, $newWidth, $newHeight) {
@@ -1892,7 +1893,7 @@ class UserController
             }
     
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
                 return;
             }
         
@@ -1900,7 +1901,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -1909,11 +1910,11 @@ class UserController
             if ($updatePermission) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Could not update preferences']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.could_not_update_preferences')]);
             }
     
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
         }
     }
 
@@ -1930,20 +1931,20 @@ class UserController
         $userId = $_POST['userId'] ?? null;
     
         if (!$param || !$userId) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
     
         // Step 3: Decode subscription data
         $subscriptionData = json_decode($param, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_JSON')]);
             return;
         }
     
         // Step 4: Validate subscription structure
         if (!isset($subscriptionData['endpoint'], $subscriptionData['keys']['p256dh'], $subscriptionData['keys']['auth'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid subscription data']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_subscription_structure')]);
             return;
         }
     
@@ -1954,7 +1955,7 @@ class UserController
     
         // Step 6: Validate token
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token', 'userId' => $userId]);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token'), 'userId' => $userId]);
             return;
         }
     
@@ -1964,7 +1965,7 @@ class UserController
         if ($saveSubscription) {
             echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to save subscription']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_save_subscription')]);
         }
     }
 
@@ -1978,13 +1979,13 @@ class UserController
         // Step 2: Retrieve and validate userId
         $userId = $_POST['userId'] ?? null;
         if (!$userId) {
-            echo json_encode(['success' => false, 'message' => 'Missing userId']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_user_id')]);
             return;
         }
     
         // Step 3: Validate token
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -1994,7 +1995,7 @@ class UserController
         if ($subscriptionEndpoint) {
             echo json_encode(['success' => true, 'endpoint' => $subscriptionEndpoint]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to fetch subscription endpoint']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_fetch_subscription_endpoint')]);
         }
     }
 
@@ -2143,7 +2144,7 @@ class UserController
                 $gameModeCondition
             );
                 
-            $data = ['success' => false, 'message' => 'No matching users found.', 'matching' => $usersAfterMatching];
+            $data = ['success' => false, 'message' => $this->_('messages.no_matching_users_found'), 'matching' => $usersAfterMatching];
             if ($usersAfterMatching) {
                 foreach ($usersAfterMatching as $match) {
                     $matchedUserId = $match['user_id'];
@@ -2160,7 +2161,7 @@ class UserController
                                 $data = [
                                     'success' => true,
                                     'user' => [
-                                        'message' => 'No error',
+                                        'message' => $this->_('messages.no_error'),
                                         'user_id' => $userMatched['user_id'],
                                         'user_username' => $userMatched['user_username'],
                                         'user_picture' => $userMatched['user_picture'],
@@ -2194,7 +2195,7 @@ class UserController
                                 $data = [
                                     'success' => true,
                                     'user' => [
-                                        'message' => 'No error',
+                                        'message' => $this->_('messages.no_error'),
                                         'user_id' => $userMatched['user_id'],
                                         'user_username' => $userMatched['user_username'],
                                         'user_picture' => $userMatched['user_picture'],
@@ -2219,17 +2220,17 @@ class UserController
                                 break;
                             }
                         } else {
-                            $data = ['success' => false, 'message' => 'No matching users found..', 'matching2' => $usersAfterMatching];
+                            $data = ['success' => false, 'message' => $this->_('messages.no_matching_users_found'), 'matching2' => $usersAfterMatching];
                         }
                     }
                 }
                 echo json_encode($data);
             } else {
-                echo json_encode(['success' => false, 'message' => 'No matching users found...', 'matching3' => $usersAfterMatching]);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.no_matching_users_found'), 'matching3' => $usersAfterMatching]);
             }
             
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
         }
     }
     
@@ -2474,7 +2475,7 @@ class UserController
             }
 
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -2483,7 +2484,7 @@ class UserController
 
                 if ($user['user_id'] != $userId)
                 {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.request_not_allowed')]);
                     return;
                 }
             }
@@ -2492,11 +2493,11 @@ class UserController
             $updatePermission = $this->user->updateRandomChatPermission($userId, $status);
 
             if ($updatePermission) {
-                $response = array('message' => 'Success');
+                $response = array('message' => $this->_('messages.success'));
                 echo json_encode($response);
                 return;
             } else {
-                $response = array('message' => 'Couldnt update status');
+                $response = array('message' => $this->_('messages.could_not_update_status'));
                 echo json_encode($response);
                 return;
             }
@@ -2516,18 +2517,18 @@ class UserController
             }
 
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
             $getPermission = $this->user->getRandomChatPermission($userId);
 
             if ($getPermission !== null) {
-                $response = array('message' => 'Success', 'permission' => $getPermission);
+                $response = array('message' => $this->_('messages.success'), 'permission' => $getPermission);
                 echo json_encode($response);
                 return;
             } else {
-                $response = array('message' => 'Couldnt fetch status');
+                $response = array('message' => $this->_('messages.could_not_fetch_status'));
                 echo json_encode($response);
                 return;
             }
@@ -2581,18 +2582,18 @@ class UserController
             }
 
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
             $updateFilter = $this->user->updateFilter($status, $userId);
 
             if ($updateFilter) {
-                $response = array('message' => 'Success');
+                $response = array('message' => $this->_('messages.success'));
                 echo json_encode($response);
                 return;
             } else {
-                $response = array('message' => 'Couldnt update status');
+                $response = array('message' => $this->_('messages.could_not_update_status'));
                 echo json_encode($response);
                 return;
             }
@@ -2614,7 +2615,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -2623,7 +2624,7 @@ class UserController
 
                 if ($user['user_id'] != $userId)
                 {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.request_not_allowed')]);
                     return;
                 }
             }
@@ -2632,11 +2633,11 @@ class UserController
                 $updateFilter = $this->user->updateFilter($status, $userId);
 
                 if ($updateFilter) {
-                    $response = array('message' => 'Success');
+                    $response = array('message' => $this->_('messages.success'));
                     echo json_encode($response);
                     return;
                 } else {
-                    $response = array('message' => 'Couldnt update status');
+                    $response = array('message' => $this->_('messages.could_not_update_status'));
                     echo json_encode($response);
                     return;
                 }
@@ -2659,7 +2660,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Piltover');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.could_not_update_side'));
                     }
                     echo json_encode($response);
                     return;
@@ -2672,7 +2673,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Zaun');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.no_side_picked'));
                     }
                     echo json_encode($response);
                     return;
@@ -2685,7 +2686,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Ignored');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.no_side_picked'));
                     }
                     echo json_encode($response);
                     return;
@@ -2706,7 +2707,7 @@ class UserController
 
                     if ($user['user_id'] != $userId)
                     {
-                        echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                        echo json_encode(['success' => false, 'message' => $this->_('messages.request_not_allowed')]);
                         return;
                     }
                 }
@@ -2720,7 +2721,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Piltover');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.no_side_picked'));
                     }
                     echo json_encode($response);
                     return;
@@ -2733,7 +2734,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Zaun');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.no_side_picked'));
                     }
                     echo json_encode($response);
                     return;
@@ -2746,7 +2747,7 @@ class UserController
                     if ($updateSide) {
                         $response = array('success' => true, 'side' => 'Ignored');
                     } else {
-                        $response = array('success' => false, 'message' => 'No side could be picked');
+                        $response = array('success' => false, 'message' => $this->_('messages.no_side_picked'));
                     }
                     echo json_encode($response);
                     return;
@@ -2756,7 +2757,7 @@ class UserController
     }
 
     public function getCurrencyWebsite() {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
 
@@ -2766,7 +2767,7 @@ class UserController
             }
 
             if (!isset($_POST['userId'])) {
-                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
                 return;
             }
         
@@ -2774,7 +2775,7 @@ class UserController
         
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -2784,28 +2785,28 @@ class UserController
             if ($currencyData) {
                 $response = array('message' => 'Success', 'currency' => $currencyData);
             } else {
-                $response = array('message' => 'Could not get currency');
+                $response = array('message' => $this->_('messages.could_not_get_currency'));
             }
         } else {
-            $response = array('message' => 'Proper data not sent');
+            $response = array('message' => $this->_('messages.proper_data_not_sent'));
         }
         echo json_encode($response);
     }
 
     public function getCurrency() {
-        $response = array('message' => 'Error');
+        $response = array('message' => $this->_('messages.error'));
         if (isset($_POST['userId'])) {
             $userId = $_POST['userId'];
             $this->setUserId((int)$userId);
 
             $currencyData = $this->user->getCurrencyByUserId($this->getUserId());
             if ($currencyData) {
-                $response = array('message' => 'Success', 'currency' => $currencyData);
+                $response = array('message' => $this->_('messages.success'), 'currency' => $currencyData);
             } else {
-                $response = array('message' => 'Could not get currency');
+                $response = array('message' => $this->_('messages.could_not_get_currency'));
             }
         } else {
-            $response = array('message' => 'Proper data not sent');
+            $response = array('message' => $this->_('messages.proper_data_not_sent'));
         }
         echo json_encode($response);
     }
@@ -2827,7 +2828,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -2836,7 +2837,7 @@ class UserController
 
                 if ($user['user_id'] != $userId)
                 {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.request_not_allowed')]);
                     return;
                 }
             }
@@ -2844,9 +2845,9 @@ class UserController
             $reportUser = $this->report->reportUser($userId, $reportedId, $content, $status, $reason);
 
             if ($reportUser) {
-                $response = array('success' => true, 'message' => 'Reported successfully');
+                $response = array('success' => true, 'message' => $this->_('messages.report_successfully'));
             } else {
-                $response = array('success' => false, 'message' => 'Could not report user');
+                $response = array('success' => false, 'message' => $this->_('messages.failed_to_report_user'));
             }
             echo json_encode($response);
         }
@@ -2869,7 +2870,7 @@ class UserController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -2878,7 +2879,7 @@ class UserController
 
                 if ($user['user_id'] != $userId)
                 {
-                    echo json_encode(['success' => false, 'message' => 'Request not allowed']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.request_not_allowed')]);
                     return;
                 }
             }
@@ -2886,9 +2887,9 @@ class UserController
             $reportUser = $this->report->reportUser($userId, $reportedId, $content, $status, $reason);
 
             if ($reportUser) {
-                $response = array('success' => true, 'message' => 'Reported successfully');
+                $response = array('success' => true, 'message' => $this->_('messages.report_successfully'));
             } else {
-                $response = array('success' => false, 'message' => 'Could not report user');
+                $response = array('success' => false, 'message' => $this->_('messages.failed_to_report_user'));
             }
             echo json_encode($response);
         }
@@ -2901,7 +2902,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -2909,7 +2910,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -2920,9 +2921,9 @@ class UserController
         $setStatus = $this->user->userIsLookingForGame($this->getUserId());
 
         if($setStatus) {
-            $response = array('success' => true, 'message' => 'Status updated', 'oldTime' => $oldTime);
+            $response = array('success' => true, 'message' => $this->_('messages.status_updated'), 'oldTime' => $oldTime);
         } else {
-            $response = array('success' => false, 'message' => 'Could not update status');
+            $response = array('success' => false, 'message' => $this->_('messages.could_not_update_status'));
         }
 
         echo json_encode($response);
@@ -2935,7 +2936,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -2943,7 +2944,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateToken($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -2952,9 +2953,9 @@ class UserController
         $setStatus = $this->user->userIsLookingForGame($this->getUserId());
 
         if($setStatus) {
-            $response = array('success' => true, 'message' => 'Status updated');
+            $response = array('success' => true, 'message' => $this->_('messages.status_updated'));
         } else {
-            $response = array('success' => false, 'message' => 'Could not update status');
+            $response = array('success' => false, 'message' => $this->_('messages.could_not_update_status'));
         }
 
         echo json_encode($response);
@@ -2967,7 +2968,7 @@ class UserController
         }
     
         if (!isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -2975,7 +2976,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -2987,7 +2988,7 @@ class UserController
     
             echo json_encode(['success' => true, 'result' => $decodedResult]);
         } else {
-            echo json_encode(['success' => true, 'message' => 'Could not get personality test result', 'result' => false]);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_personality_test_result'), 'result' => false]);
         }
     }
 
@@ -3001,7 +3002,7 @@ class UserController
         $input = json_decode(file_get_contents('php://input'), true);
     
         if (!isset($input['userId']) || !isset($input['result'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -3010,7 +3011,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -3020,7 +3021,7 @@ class UserController
         if ($savePersonalityTestResult) {
             echo json_encode(['success' => true, 'userFitting' => $savePersonalityTestResult]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Database save failed']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.database_save_failed')]);
         }
     }
 
@@ -3032,7 +3033,7 @@ class UserController
         }
     
         if (!isset($_POST['userId']) || !isset($_POST['personalityType'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
             return;
         }
     
@@ -3041,7 +3042,7 @@ class UserController
     
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
     
@@ -3050,7 +3051,7 @@ class UserController
         if ($matchingPersonalityUser !== false) {
             echo json_encode(['success' => true, 'result' => $matchingPersonalityUser]);
         } else {
-            echo json_encode(['success' => true, 'message' => 'Could not get matching personality user', 'result' => false]);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.no_matching_personality_user_found'), 'result' => false]);
         }
     }
 
@@ -3058,7 +3059,7 @@ class UserController
     {
         // Check POST parameters
         if (!isset($_POST['friendId'], $_POST['matchId'], $_POST['rating'], $_POST['userId'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
 
@@ -3068,7 +3069,7 @@ class UserController
 
         // Validate rating range (e.g. 1 to 5)
         if ($rating < 1 || $rating > 5) {
-            echo json_encode(['success' => false, 'message' => 'Invalid rating value']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_rating')]);
             return;
         }
 
@@ -3080,20 +3081,20 @@ class UserController
         // Validate token and get rater's userId
         $userId = intval($_POST['userId']);
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         // Prevent rating yourself
         if ($userId === $friendId) {
-            echo json_encode(['success' => false, 'message' => 'Cannot rate yourself']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.cant_rate_yourself')]);
             return;
         }
 
         // Check friend exists
         $friend = $this->user->getUserById($friendId);
         if (!$friend) {
-            echo json_encode(['success' => false, 'message' => 'Friend not found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.friend_not_found')]);
             return;
         }
 
@@ -3105,14 +3106,14 @@ class UserController
             // Update existing rating
             $result = $this->rating->updateRating($userId, $friendId, $matchId, $rating);
             if (!$result) {
-                echo json_encode(['success' => false, 'message' => 'Database error']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.database_error')]);
                 return;
             }
         } else {
             // Insert new rating
             $result = $this->rating->insertFirstRating($userId, $friendId, $matchId, $rating);
             if (!$result) {
-                echo json_encode(['success' => false, 'message' => 'Database error']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.database_error')]);
                 return;
             }
         }
@@ -3124,14 +3125,14 @@ class UserController
                 'success' => true,
             ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Database error']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.database_error')]);
         }
     }
 
     public function switchPersonalColorWebsite()
     {
         if (!isset($_POST['color']) || !isset($_POST['userId'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
 
@@ -3145,17 +3146,17 @@ class UserController
 
         // Validate Token for User
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
             return;
         }
 
         $updateColor = $this->user->updatePersonalColor($color, $userId);
 
         if ($updateColor) {
-            echo json_encode(['success' => true, 'message' => 'Color updated successfully']);
+            echo json_encode(['success' => true, 'message' => $this->_('messages.color_updated_successfully')]);
             return;
         } else {
-            echo json_encode(['success' => false, 'message' => 'Could not update color']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.could_not_update_color')]);
             return;
         }
     }
@@ -3170,10 +3171,10 @@ class UserController
             $_SESSION['mode'] = $mode;
           
             $darkMode = ($mode === 'dark');
-            $response = array('status' => 'success', 'message' => 'Mode preference saved successfully.');
+            $response = array('status' => 'success', 'message' => $this->_('messages.mode_preference_saved_successfully'));
             echo json_encode($response);
           } else {
-            $response = array('status' => 'error', 'message' => 'Invalid request method.');
+            $response = array('status' => 'error', 'message' => $this->_('messages.invalid_request_method'));
             echo json_encode($response);
           }
           
