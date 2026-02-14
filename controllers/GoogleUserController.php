@@ -198,10 +198,12 @@ class GoogleUserController
             $lang = $_POST['lang'];
 
             setcookie('lang', $lang, time() + (7 * 24 * 60 * 60), "/");
-
             $_SESSION['lang'] = $lang;
 
-            header("Location: /?message=Switched to $lang");
+            // Load the new language immediately
+            $this->loadLanguage($lang);
+            $message = $this->_('switched_language', ['lang' => $lang]);
+            header("Location: /?message=" . urlencode($message));
             return;
         }
     }
@@ -295,7 +297,7 @@ class GoogleUserController
         if (isset($_SESSION['email'])) {
             $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
         } else {
-            header("Location: /?message=No email");
+            header("Location: /?message=" . urlencode($this->_('messages.no_email')));
             return;
         }
 
@@ -344,18 +346,18 @@ class GoogleUserController
             if (isset($data->email)) {
                 $googleUser = $this-> googleUser -> getGoogleUserByEmail($data->email);
             } else {
-                echo json_encode(['message' => 'No email']);
+                echo json_encode(['message' => $this->_('messages.no_email')]);
                 return;
             }
 
             if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
             {
-                echo json_encode(['message' => 'Success']);
+                echo json_encode(['message' => $this->_('messages.success_email_confirmed')]);
                 return;
             }
             else
             {
-                echo json_encode(['message' => 'Email is not confirmed']);
+                echo json_encode(['message' => $this->_('messages.email_not_confirmed')]);
                 return;
             }
         }
@@ -644,7 +646,8 @@ class GoogleUserController
 
     public function getGoogleData() 
     {
-        $response = array('message' => 'Contact an administator');
+        $this->initializeLanguage();
+        $response = array('message' => $this->_('messages.contact_admin'));
     
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
@@ -660,12 +663,12 @@ class GoogleUserController
                 }
 
                 if (!$verificationResult) {
-                    $response = array('message' => 'Invalid token');
+                    $response = array('message' => $this->_('messages.invalid_token'));
                     echo json_encode($response);
                     return;
                 }
             } else {
-                $response = array('message' => 'No token');
+                $response = array('message' => $this->_('messages.no_token'));
                 echo json_encode($response);
                 return;
             }
@@ -695,7 +698,7 @@ class GoogleUserController
             $testBan = $this->bannedusers->checkBan($this->getGoogleEmail());
 
             if ($testBan) {
-                $response = array('message' => 'Account is banned');
+                $response = array('message' => $this->_('messages.account_banned'));
                 echo json_encode($response);
                 return;
             }
@@ -905,7 +908,7 @@ class GoogleUserController
                 if ($testGoogleUserEmail)
                 {
                     $response = array(
-                        'message' => 'Email already used.',
+                        'message' => $this->_('messages.email_used'),
                     );
                     echo json_encode($response);
                     return;
@@ -1030,7 +1033,7 @@ class GoogleUserController
         else
         {
             $response = array(
-                'message' => 'Contact an administrator',
+                'message' => $this->_('messages.contact_admin'),
             );
         }
         echo json_encode($response);
@@ -1300,7 +1303,7 @@ class GoogleUserController
                 if ($testGoogleUserEmail)
                 {
                     $response = array(
-                        'message' => 'Email already used.',
+                        'message' => 'Email is already used.',
                     );
                     echo json_encode($response);
                     return;

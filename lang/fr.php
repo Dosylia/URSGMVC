@@ -1,5 +1,6 @@
 <?php
 return [
+    'switched_language' => 'Passé à {lang}',
     // 404 Page Not Found
     '404_title' => '404 Page non trouvée',
     '404_message' => 'Vous ne trouverez pas votre âme sœur ici,',

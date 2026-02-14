@@ -45,14 +45,14 @@ abstract class BaseControllerTestCase extends TestCase
         // Reset them
         $_POST = [];
         $_GET = [];
-        $_SESSION = [];
         $_SERVER = array_merge($_SERVER, [
             'REQUEST_METHOD' => 'GET',
             'REQUEST_URI' => '/',
             'REMOTE_ADDR' => '127.0.0.1',
         ]);
-        $_COOKIE = [];
+        $_COOKIE['lang'] = 'en';
         $_FILES = [];
+        $_SESSION['lang'] = 'en';    
     }
 
     protected function tearDown(): void

@@ -195,7 +195,7 @@ class GoogleUserControllerTest extends BaseControllerTestCase
         $result = $this->captureJsonOutput($controller, 'getGoogleData');
         $_ENV['environment'] = $originalEnv ?? 'test';
         $this->assertNotNull($result);
-        $this->assertEquals('Email already used.', $result['message'] ?? '');
+        $this->assertEquals('Email is already used', $result['message'] ?? '');
     }
 
     // ─── getGoogleDataPhone ─────────────────────────────────────

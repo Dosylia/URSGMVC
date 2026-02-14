@@ -195,26 +195,16 @@ function deletePost(postId, token) {
                 console.log(data.message)
                 location.reload()
             } else {
-                console.log('Error: ' + data.message)
+                displayErrors(data.message)
             }
         })
         .catch((error) => {
             console.error('Request failed', error)
+            displayErrors('Error connecting to server.')
         })
 }
 
-function findRandomPlayer(prefs) {
-    const token = localStorage.getItem('masterTokenWebsite')
-    const dataToSend = {
-        voiceChat: prefs.voice !== undefined ? prefs.voice : null,
-        roleLookingFor: prefs.role || null,
-        rankLookingFor: prefs.rank || null,
-        description: prefs.description || null,
-        userId: userId,
-    }
-
-    const jsonData = JSON.stringify(dataToSend)
-
+function displayErrors(errorMessage) {
     // Ensure error message element exists
     let errorDiv = document.getElementById('random-player-error')
     if (!errorDiv) {
@@ -232,8 +222,22 @@ function findRandomPlayer(prefs) {
             document.body.prepend(errorDiv)
         }
     }
-    errorDiv.style.display = 'none'
-    errorDiv.textContent = ''
+
+    errorDiv.textContent = errorMessage || 'Error finding random player.'
+    errorDiv.style.display = 'block'
+}
+
+function findRandomPlayer(prefs) {
+    const token = localStorage.getItem('masterTokenWebsite')
+    const dataToSend = {
+        voiceChat: prefs.voice !== undefined ? prefs.voice : null,
+        roleLookingFor: prefs.role || null,
+        rankLookingFor: prefs.rank || null,
+        description: prefs.description || null,
+        userId: userId,
+    }
+
+    const jsonData = JSON.stringify(dataToSend)
 
     fetch('/getRandomPlayerFinder', {
         method: 'POST',
@@ -252,14 +256,11 @@ function findRandomPlayer(prefs) {
                 window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
             } else {
                 // Show error message on the page
-                errorDiv.textContent =
-                    data.message || 'Error finding random player.'
-                errorDiv.style.display = 'block'
+                displayErrors(data.message)
             }
         })
         .catch((error) => {
-            errorDiv.textContent = 'Request failed. Please try again.'
-            errorDiv.style.display = 'block'
+            displayErrors('Error connecting to server.')
             console.error('Request failed', error)
         })
 }
@@ -281,11 +282,11 @@ function addFriendAndChat(friendId, userId) {
             if (data.success) {
                 window.location.href = `persoChat&friend_id=${friendId}`
             } else {
-                console.error('Error adding as friend', data.message)
+                displayErrors(data.message)
             }
         })
         .catch((error) => {
-            console.error('Fetch error:', error)
+            displayErrors('Error connecting to server.')
         })
 }
 

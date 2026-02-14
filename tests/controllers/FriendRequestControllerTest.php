@@ -478,7 +478,7 @@ class FriendRequestControllerTest extends BaseControllerTestCase
         $result = $this->captureJsonOutput($controller, 'updateNotificationFriendRequestAcceptedWebsite');
         $this->assertNotNull($result);
         $this->assertTrue($result['success']);
-        $this->assertEquals('Accepted notification updated', $result['message']);
+        $this->assertEquals('Accepted friend request notification updated', $result['message']);
     }
 
     // ─── updateNotificationFriendRequestPendingWebsite ──────────

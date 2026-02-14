@@ -1,5 +1,6 @@
 <?php
 return [
+    'switched_language' => 'Switched to {lang}',
     // 404 Page Not Found
     '404_title' => '404 Page not found',
     '404_message' => 'You\'re not finding your soulmate there,',

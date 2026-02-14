@@ -828,8 +828,9 @@ class UserController
                 $username = $this->validateInput($_POST["username"]);
                 // Check if username is taken by another user
                 $this->setUsername($username);
-                $existingUser = $this->uidExists($this->getUsername());
+                $existingUser = $this->user->checkUserExists($this->getUsername());
 
+                // Only trigger this safety is username actually changed 
                 if ($existingUser && $existingUser['user_id'] != $this->getUserId()) {
                     header("location:/userProfile?message=Username already exists");
                     return;

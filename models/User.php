@@ -1418,4 +1418,21 @@ class User extends DataBase
             return false;
         }
     }
+
+    public function checkUserExists($username)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `user_id`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            `user_username` = ?
+        ");
+
+        $query->execute([$username]);
+        $user = $query->fetch();
+
+        return $user ? $user : false;
+    }
 }
