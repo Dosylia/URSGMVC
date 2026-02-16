@@ -12,12 +12,14 @@ use models\RatingGames;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
+use traits\Translatable;
 
 require 'vendor/autoload.php';
 
 class RiotController
 {
     use SecurityController;
+    use Translatable;
     private LeagueOfLegends $leagueOfLegends;
     private User $user;
     private Valorant $valorant;

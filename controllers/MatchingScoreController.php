@@ -4,10 +4,12 @@ namespace controllers;
 
 use models\MatchingScore;
 use traits\SecurityController;
+use traits\Translatable;
 
 class MatchingScoreController
 {
     use SecurityController;
+    use Translatable;
 
     private MatchingScore $matchingscore;
     private ?int $userMatching = null;
