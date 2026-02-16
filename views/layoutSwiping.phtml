@@ -72,6 +72,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
     <main>
         <div id="overlay"></div>
+        <span class="form-error-front" id="front-end-error"></span>
         <?php if (isset($_GET['message'])) : ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>

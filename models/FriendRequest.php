@@ -566,7 +566,7 @@ class FriendRequest extends DataBase
     public function checkStatus($receiverId, $senderId)
     {
         $query = $this->bdd->prepare("
-                                        SELECT `fr_status` 
+                                        SELECT * 
                                         FROM friendrequest 
                                         WHERE (
                                             (fr_senderId = ? AND fr_receiverId = ?) 
@@ -578,7 +578,7 @@ class FriendRequest extends DataBase
         $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
         $checkStatusTest = $query->fetch();
         
-        return $checkStatusTest['fr_status'] ?? false;
+        return $checkStatusTest ?? false;
     }
     
 
