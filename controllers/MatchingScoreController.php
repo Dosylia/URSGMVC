@@ -35,7 +35,7 @@ class MatchingScoreController
     
                 if ($result) {
                     $messages[] = [
-                        'message' => 'Success', 
+                        'message' => $this->_('messages.success'), 
                         'Action' => 'Inserted/Updated', 
                         'score' => $score, 
                         'userMatching' => $userMatching, 
@@ -43,7 +43,7 @@ class MatchingScoreController
                     ];
                 } else {
                     $messages[] = [
-                        'message' => 'Error', 
+                        'message' => $this->_('messages.error'), 
                         'Action' => 'Insertion/Update failed', 
                         'userMatching' => $userMatching, 
                         'userMatched' => $userMatched
@@ -54,7 +54,7 @@ class MatchingScoreController
             echo json_encode($messages);
             return;
         } else {
-            echo json_encode(['message' => 'Invalid request']);
+            echo json_encode(['message' => $this->_('messages.invalid_request')]);
         }
     }
     

@@ -74,7 +74,7 @@ class PaymentController
     public function buyCurrencyWebsite(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
 
@@ -82,12 +82,12 @@ class PaymentController
         $data = json_decode($_POST['param']);
 
         if (!$token) {
-            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_or_invalid_token')]);
             return;
         }
 
         if (!isset($data->userId, $data->itemId)) {
-            echo json_encode(['success' => false, 'message' => 'Missing userId or itemId']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_user_or_item_id')]);
             return;
         }
 
@@ -95,19 +95,19 @@ class PaymentController
         $itemId = $this->validateInput($data->itemId);
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.token_validation_failed')]);
             return;
         }
 
         $user = $this->user->getUserById($_SESSION['userId']);
         if (!$user || $user['user_id'] !== (int)$userId) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
             return;
         }
 
         $itemData = $this->items->getItemById($itemId);
         if (!$itemData) {
-            echo json_encode(['success' => false, 'message' => 'Item not found']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.item_not_found')]);
             return;
         }
 
@@ -127,7 +127,7 @@ class PaymentController
     public function buyAscendWebsite(): void
     {
         if (!isset($_POST['param'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
 
@@ -135,25 +135,25 @@ class PaymentController
         $data = json_decode($_POST['param']);
 
         if (!$token) {
-            echo json_encode(['success' => false, 'message' => 'Missing or invalid token']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_or_invalid_token')]);
             return;
         }
 
         if (!isset($data->userId)) {
-            echo json_encode(['success' => false, 'message' => 'Missing userId']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_user_id')]);
             return;
         }
 
         $userId = $this->validateInput($data->userId);
 
         if (!$this->validateTokenWebsite($token, $userId)) {
-            echo json_encode(['success' => false, 'message' => 'Token validation failed']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.token_validation_failed')]);
             return;
         }
 
         $user = $this->user->getUserById($_SESSION['userId']);
         if (!$user || $user['user_id'] !== (int)$userId) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
             return;
         }
 
@@ -175,18 +175,18 @@ class PaymentController
             $transaction = $this->payment->getTransactionBySessionId($sessionId);
 
             if (!$transaction) {
-                echo json_encode(['success' => false, 'message' => 'Transaction not found']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.transaction_not_found')]);
                 return;
             }
 
             if ($transaction['status'] === 'paid') {
-                echo json_encode(['success' => false, 'message' => 'Transaction already processed']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.transaction_already_processed')]);
                 return;
             }
 
             $user = $this->user->getUserById($_SESSION['userId']);
             if ($user['user_id'] !== (int)$transaction['user_id']) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
                 return;
             }
 
@@ -206,7 +206,7 @@ class PaymentController
                 return;
             }
         } else {
-            echo json_encode(['success' => false, 'message' => "Missing parameters"]);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_parameters')]);
             return;
         }
     }
