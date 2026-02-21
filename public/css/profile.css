@@ -1153,6 +1153,10 @@
         height: 145px;
         top: 100px;
     }
+
+    .user-rating-outside {
+        bottom: 70px !important;
+    }
 }
 
 @media only screen and (max-width: 500px) {

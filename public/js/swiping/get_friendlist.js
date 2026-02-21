@@ -41,7 +41,7 @@ function getFriendList(userId, page = 1) {
                     renderFriendList(filteredFriends, page)
                 }
             } else {
-                console.error('Error fetching friends:', data.error)
+                console.error('Error fetching friends:', data.message)
             }
         })
         .catch((error) => {

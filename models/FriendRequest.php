@@ -543,6 +543,43 @@ class FriendRequest extends DataBase
         
         return $checkPendingTest ?: false;
     }
+
+    public function checkifRefused($receiverId, $senderId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT * 
+                                        FROM friendrequest 
+                                        WHERE (
+                                            (fr_senderId = ? AND fr_receiverId = ?) 
+                                            OR 
+                                            (fr_senderId = ? AND fr_receiverId = ?)
+                                        )
+                                        AND fr_status = 'rejected'
+        ");
+    
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
+        $checkRefusedTest = $query->fetch();
+        
+        return $checkRefusedTest ?: false;
+    }
+
+    public function checkStatus($receiverId, $senderId)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT * 
+                                        FROM friendrequest 
+                                        WHERE (
+                                            (fr_senderId = ? AND fr_receiverId = ?) 
+                                            OR 
+                                            (fr_senderId = ? AND fr_receiverId = ?)
+                                        )
+        ");
+    
+        $query->execute([$senderId, $receiverId, $receiverId, $senderId]);
+        $checkStatusTest = $query->fetch();
+        
+        return $checkStatusTest ?? false;
+    }
     
 
     public function updateFriendRequest($receiverId, $senderId, $status) 

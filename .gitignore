@@ -1,4 +1,5 @@
 keys.php
+tests/test_keys.php
 /vendor/
 vendor/
 serviceAccountKey.json

@@ -28,13 +28,13 @@ function createChannel() {
                 const message = `You have been invited to a new discord channel! Use this link to join: ${link}`
                 const replyToChatId = null // Optional: If you have a specific message to reply to, set it here.
 
-                // Call the sendMessageToPhp function from send_messagephp.js
+                // Call the sendMessageToPhp function from message_sender.js
                 sendMessageToPhp(senderId, message, replyToChatId)
 
                 // Open the link to the newly created channel
                 window.open(link, '_blank')
             } else {
-                console.error('Error creating temporary channel:', data.error)
+                console.error('Error creating temporary channel:', data.message)
             }
         })
         .catch((error) => {

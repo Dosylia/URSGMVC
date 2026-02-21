@@ -28,6 +28,13 @@
     font-family: 'Libre Franklin', sans-serif;
 }
 
+.setting-option .toggle-container,
+.setting-option .toggle-container-filter,
+.setting-option .toggle-container-sound,
+.setting-option .toggle-container-random-chat {
+    flex-shrink: 0;
+}
+
 .dark-mode .setting-option i,
 .dark-mode .setting-option span {
     color: white;
@@ -63,6 +70,7 @@
     .setting-option i {
         font-size: 1.5em;
         width: 30px;
+        flex-shrink: 0;
     }
 
     .setting-option .fa-comment-slash {
@@ -78,5 +86,13 @@
 
     .setting-option span {
         font-size: 1em;
+    }
+
+    .setting-option .toggle-container,
+    .setting-option .toggle-container-filter,
+    .setting-option .toggle-container-sound,
+    .setting-option .toggle-container-random-chat {
+        flex-shrink: 0;
+        min-width: 40px;
     }
 }

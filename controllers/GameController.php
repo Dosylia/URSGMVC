@@ -33,8 +33,6 @@ class GameController
     
     public function getGameUser() 
     {
-        $response = array('message' => 'Error');
-        
         if (isset($_POST['userId']) && isset($_POST['game'])) 
         {
             $gameData = $_POST['game'];
@@ -48,7 +46,7 @@ class GameController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
 
@@ -57,18 +55,14 @@ class GameController
 
             if ($user['user_game'] !== $gameData)
             {
-                $response = array('message' => 'Game not available, switch to League of Legends.');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+                echo json_encode(['message' => 'Game not available, switch to League of Legends.']);
+                return;
             }
 
             if ($user['user_lastCompletedGame'] == $date)
             {
-                $response = array('message' => 'Already played');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+                echo json_encode(['message' => 'Already played']);
+                return;
             }
             
             $this->setGamePlayedByUser($gameData);
@@ -101,37 +95,29 @@ class GameController
                         break;
                 }
                 
-                $response = array(
+                echo json_encode([
                     'message' => 'Success',
                     'hints' => $hints,
                     'tryCount' => $tryCount
-                );
-    
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                ]);
+                return;  
             } 
             else 
             {
-                $response = array('message' => 'No game today');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;  
+                echo json_encode(['message' => 'No game today']);
+                return;  
             }
     
         } 
         else 
         {
-            $response = array('message' => 'Cant access this');
-            header('Content-Type: application/json');
-            echo json_encode($response);
-            exit;  
+            echo json_encode(['message' => 'Cant access this']);
+            return;  
         }
     }
 
     public function submitGuess() 
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['param'])) {
             $data = json_decode($_POST['param']);
             $gameData = $data->game;
@@ -146,7 +132,7 @@ class GameController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => 'Invalid token']);
                 return;
             }
             
@@ -157,10 +143,8 @@ class GameController
 
             if ($user['user_lastCompletedGame'] == $date)
             {
-                $response = array('message' => 'Already played');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+                echo json_encode(['message' => 'Already played']);
+                return;
             }
             
             $gameUser = $this->game->getGameUser($date, $gameData);
@@ -218,47 +202,47 @@ class GameController
                     $markAsPlayed = $this->user->markGameAsPlayed($userId, $date);
 
                     if ($markAsPlayed && $updatedStatus) {
-                        $response = array(
+                        echo json_encode([
                             'message' => 'Correct',
                             'gameUser' => $gameUser,
                             'reward' => $currencyReward
-                        );
+                        ]);
+                        return;
                     } else {
-                        $response = array('message' => 'Contact an administrator');
+                        echo json_encode(['message' => 'Contact an administrator']);
+                        return;
                     }
                 } else {
                     if ($tryCount >= 4) {
                         $markAsPlayed = $this->user->markGameAsPlayed($userId, $date);
                         $this->game->updateTotalCompletedGame($userId);
-                        $response = array(
+                        echo json_encode([
                             'message' => 'Game Over',
                             'gameUser' => $gameUser
-                        );
+                        ]);
+                        return;
                     } else {
                         $hint = $this->getHint($gameUser, $tryCount);
                         if ($close) {
-                            $response = [
+                            echo json_encode([
                                 'message' => 'Close',
                                 'hint' => $hint
-                            ];
+                            ]);
+                            return;
                         } else {
-                            $response = [
+                            echo json_encode([
                                 'message' => 'Incorrect',
                                 'hint' => $hint
-                            ];
+                            ]);
+                            return;
                         }
                     }
                 }
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
             }
         }
     
-        $response = array('message' => 'Invalid request');
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit;
+        echo json_encode(['message' => 'Invalid request']);
+        return;
     }
     
 

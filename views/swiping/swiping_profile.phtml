@@ -115,7 +115,7 @@
                         <h4><?= $this->_('upload_new_banner') ?></h4>
                         <img 
                                 id="currentBanner"
-                                src="public/upload/<?= $user['user_banner'] ?>" 
+                                src="public/upload/<?php echo empty($user['user_banner']) ? '' : $user['user_banner']; ?>" 
                                 alt=""  
                                 <?php if (empty($user['user_banner'] )): ?>hidden<?php endif; ?>
                         ><br>
@@ -850,17 +850,19 @@
                     <?php 
                         $owned = false;
                         $active = false;
+                        $userItemId = null;
                         if (is_array($ownedItems)) {
                             foreach ($ownedItems as $item) {
                                 if ($item['items_id'] == $badge['items_id'] && $item['items_category'] == 'badge') {
                                     $owned = true;
+                                    $userItemId = $item['userItems_id'];
                                     if (!empty($item['userItems_isUsed'])) $active = true;
                                     break;
                                 }
                             }
                         }
                     ?>
-                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $item['userItems_id'] ?>" data-badge-name="<?= htmlspecialchars($badge['items_name']) ?>" data-badge-picture="<?= $badge['items_picture'] ?>">
+                    <div class="badge-item <?= !$owned ? 'badge-locked' : '' ?>" data-badge-id="<?= $userItemId ?? $badge['items_id'] ?>" data-badge-name="<?= htmlspecialchars($badge['items_name']) ?>" data-badge-picture="<?= $badge['items_picture'] ?>">
                         <img 
                             src="public/images/store/<?= $badge['items_picture'] ?>" 
                             alt="<?= $badge['items_name'] ?>"
@@ -884,7 +886,7 @@
 
 <script src="public/js/swiping/profile_nav.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/dialog_picture_social.js?<?= time(); ?>"></script>
-<script src="public/js/swiping/friendrequest.js?<?= time(); ?>"></script>
+<script type="module" src="public/js/swiping/friendrequest.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/bonusPictures.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/socialLinks.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/show_banner.js?<?= time(); ?>"></script>

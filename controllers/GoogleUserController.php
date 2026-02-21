@@ -72,10 +72,10 @@ class GoogleUserController
             if (isset($_GET['message'])) {
                 $message = $_GET['message'];
                 header("location:/swiping"."?message=$message");
-                exit();
+                return;
             } else {
                 header("location:/swiping");
-                exit();
+                return;
             }
         } else {
             if($this->isConnectGoogle())
@@ -92,7 +92,7 @@ class GoogleUserController
 
             if ($reconnectUser) {
                 header("location:/swiping");
-                exit();
+                return;
             }
 
             $this->initializeLanguage();
@@ -198,11 +198,13 @@ class GoogleUserController
             $lang = $_POST['lang'];
 
             setcookie('lang', $lang, time() + (7 * 24 * 60 * 60), "/");
-
             $_SESSION['lang'] = $lang;
 
-            header("Location: /?message=Switched to $lang");
-            exit();
+            // Load the new language immediately
+            $this->loadLanguage($lang);
+            $message = $this->_('switched_language', ['lang' => $lang]);
+            header("Location: /?message=" . urlencode($message));
+            return;
         }
     }
 
@@ -295,8 +297,8 @@ class GoogleUserController
         if (isset($_SESSION['email'])) {
             $googleUser = $this-> googleUser -> getGoogleUserByEmail($_SESSION['email']);
         } else {
-            header("Location: /?message=No email");
-            exit();
+            header("Location: /?message=" . urlencode($this->_('messages.no_email')));
+            return;
         }
 
         if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
@@ -312,19 +314,19 @@ class GoogleUserController
         {
             ob_start();
             header("Location: /signup");
-            exit();
+            return;
         }
         else if($googleUser['google_confirmEmail'] == 1 && $this->isConnectWebsite())
         {
             ob_start();
             header("Location: /signup");
-            exit();
+            return;
         }
         else
         {
             ob_start();
             header("Location: /swiping");
-            exit();
+            return;
         }
     }
 
@@ -344,19 +346,19 @@ class GoogleUserController
             if (isset($data->email)) {
                 $googleUser = $this-> googleUser -> getGoogleUserByEmail($data->email);
             } else {
-                echo json_encode(['message' => 'No email']);
-                exit();
+                echo json_encode(['message' => $this->_('messages.no_email')]);
+                return;
             }
 
             if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
             {
-                echo json_encode(['message' => 'Success']);
-                exit();
+                echo json_encode(['message' => $this->_('messages.success_email_confirmed')]);
+                return;
             }
             else
             {
-                echo json_encode(['message' => 'Email is not confirmed']);
-                exit();
+                echo json_encode(['message' => $this->_('messages.email_not_confirmed')]);
+                return;
             }
         }
     }
@@ -505,7 +507,7 @@ class GoogleUserController
         } else {
             // Code block 9: Redirect to / if none of the above conditions are met
             header("Location: /?message=Failed sign up process, contact an administrator");
-            exit();
+            return;
         }
     }  
 
@@ -635,16 +637,17 @@ class GoogleUserController
                     'verified' => true
                 ];
             } else {
-                return ['verified' => false, 'error' => 'Invalid token'];
+                return ['verified' => false, 'message' => 'Invalid token'];
             }
         } catch (Exception $e) {
-            return ['verified' => false, 'error' => $e->getMessage()];
+            return ['verified' => false, 'message' => $e->getMessage()];
         }
     }
 
     public function getGoogleData() 
     {
-        $response = array('message' => 'Contact an administator');
+        $this->initializeLanguage();
+        $response = array('message' => $this->_('messages.contact_admin'));
     
         if (isset($_POST['googleData'])) // DATA SENT BY AJAX
         {
@@ -660,14 +663,14 @@ class GoogleUserController
                 }
 
                 if (!$verificationResult) {
-                    $response = array('message' => 'Invalid token');
+                    $response = array('message' => $this->_('messages.invalid_token'));
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
             } else {
-                $response = array('message' => 'No token');
+                $response = array('message' => $this->_('messages.no_token'));
                 echo json_encode($response);
-                exit;
+                return;
             }
 
 
@@ -695,9 +698,9 @@ class GoogleUserController
             $testBan = $this->bannedusers->checkBan($this->getGoogleEmail());
 
             if ($testBan) {
-                $response = array('message' => 'Account is banned');
+                $response = array('message' => $this->_('messages.account_banned'));
                 echo json_encode($response);
-                exit;
+                return;
             }
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
@@ -896,10 +899,8 @@ class GoogleUserController
                         );
                     }
                 }
-    
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;  
+                return;  
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
@@ -907,11 +908,10 @@ class GoogleUserController
                 if ($testGoogleUserEmail)
                 {
                     $response = array(
-                        'message' => 'Email already used.',
+                        'message' => $this->_('messages.email_used'),
                     );
-                    header('Content-Type: application/json');
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
                 $RSO = 0;
                 $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
@@ -1033,13 +1033,11 @@ class GoogleUserController
         else
         {
             $response = array(
-                'message' => 'Contact an administrator',
+                'message' => $this->_('messages.contact_admin'),
             );
         }
-    
-        header('Content-Type: application/json');
         echo json_encode($response);
-        exit;
+        return;
     }
 
     public function getGoogleDataPhone() 
@@ -1075,7 +1073,7 @@ class GoogleUserController
             if ($testBan) {
                 $response = array('message' => 'Account is banned');
                 echo json_encode($response);
-                exit;
+                return;
             }
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
@@ -1296,10 +1294,8 @@ class GoogleUserController
                         'userExists' => false
                     );
                 }
-    
-                header('Content-Type: application/json');
                 echo json_encode($response);
-                exit;  
+                return;  
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
@@ -1307,11 +1303,10 @@ class GoogleUserController
                 if ($testGoogleUserEmail)
                 {
                     $response = array(
-                        'message' => 'Email already used.',
+                        'message' => 'Email is already used.',
                     );
-                    header('Content-Type: application/json');
                     echo json_encode($response);
-                    exit;
+                    return;
                 }
 
                 $RSO = 0;
@@ -1347,10 +1342,8 @@ class GoogleUserController
                 'message' => 'Contact an administrator', // No google data
             );
         }
-    
-        header('Content-Type: application/json');
         echo json_encode($response);
-        exit;
+        return;
     }
     
 
@@ -1371,7 +1364,7 @@ class GoogleUserController
             session_destroy();
     
             header("location:/?message=You are now offline&clearToken=true");
-            exit();
+            return;
         } else {
             if (isset($_COOKIE['googleId'])) {
                 setcookie('googleId', "", time() - 42000, COOKIEPATH);
@@ -1383,7 +1376,7 @@ class GoogleUserController
                 unset($_COOKIE['auth_token']);
             }
             header("location:/?message=You are now offline&clearToken=true");
-            exit();
+            return;
         }
     }
 
@@ -1401,18 +1394,18 @@ class GoogleUserController
                 if($confirmEmail)
                 {
                     header("location:/signup?message=Email confirmed");
-                    exit();                   
+                    return;                   
                 }
                 else 
                 {
                     header("location:/?message=Couldnt confirm email");
-                    exit();                    
+                    return;                    
                 }
             }
             else
             {
                 header("location:/?message=Email does not exists");
-                exit();
+                return;
             }
 
         }
@@ -1428,7 +1421,7 @@ class GoogleUserController
     
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 header("Location: /signup?message=Invalid email address");
-                exit();
+                return;
             }
     
             $mail = new PHPMailer;
@@ -1500,7 +1493,7 @@ class GoogleUserController
                 $this->confirmMailPage($mail);
             } else {
                 header("Location: /signup?message=Could not send mail");
-                exit();
+                return;
             }
         } 
     }
@@ -1588,10 +1581,10 @@ class GoogleUserController
 
             if ($mail->send()) {
                 echo json_encode(['message' => 'Mail sent']);
-                exit();
+                return;
             } else {
                 echo json_encode(['message' => "Mail couldn't be sent"]);
-                exit();
+                return;
 
             }
         } 
@@ -1626,7 +1619,7 @@ class GoogleUserController
     
             if (!$user) {
                 header("location:/?message=Invalid email address");
-                exit();
+                return;
             }
     
             // Generate a secure random token
@@ -1667,11 +1660,11 @@ class GoogleUserController
     
             if (!$mail->send()) {
                 header("location:/?message=Could not send mail");
-                exit();
+                return;
             }
     
             header("location:/?message=You received a mail to confirm your choice");
-            exit();
+            return;
         }
     }
 
@@ -1686,12 +1679,12 @@ class GoogleUserController
 
             if (!$deletionData) {
                 header("location:/?message=Invalid token");
-                exit();
+                return;
             }
 
             if (!strtotime($deletionData['user_deletionTokenExpiry']) > strtotime('+30 minutes')) {
                 header("location:/?message=Expired token");
-                exit();
+                return;
             }
     
             $email = $deletionData['google_email'];
@@ -1711,14 +1704,14 @@ class GoogleUserController
                 }
     
                 header("location:/?message=Account deleted, Email: ".$deletionData['google_email']."&deleted=true");
-                exit();
+                return;
             } else {
                 header("location:/?message=Account not found");
-                exit();
+                return;
             }
         } else {
             header("location:/?message=Invalid request");
-            exit();
+            return;
         }
     }
 
@@ -1745,24 +1738,24 @@ class GoogleUserController
                         unset($_COOKIE['googleId']);
                     }
                     header("location:/?message=Account deleted");
-                    exit();
+                    return;
                 }
                 else
                 {
                     header("location:/deleteAccount?message=Could not delete account");
-                    exit();
+                    return;
                 }
             }
             else
             {
                 header("location:/deleteAccount?message=This account is not a Riot account");
-                exit(); 
+                return; 
             }
         }
         else 
         {
             header("location:/deleteAccount?message=You need to be online to delete a Riot account");
-            exit(); 
+            return; 
         }
     }
 
@@ -1826,10 +1819,10 @@ class GoogleUserController
     
             if (!$mail->send()) {
                 header("location:/hiring?message=Could not send mail");
-                exit();
+                return;
             } else {
                 header("location:/hiring?message=We got your candidature and will answer soon!");
-                exit();
+                return;
             }
         }
     }
@@ -1845,20 +1838,20 @@ class GoogleUserController
 
             if ($user['google_userId'] != $googleUserId) {
                 header("location:/termsOfService?message=Invalid request");
-                exit();
+                return;
             }
 
             $unsubscribe = $this->googleUser->unsubscribeMails($email);
             if ($unsubscribe) {
                 header("location:/termsOfService?message=Unsubscribed from mails");
-                exit();
+                return;
             } else {
                 header("location:/termsOfService?message=Could not unsubscribe");
-                exit();
+                return;
             }
         } else {
             header("location:/termsOfService?message=Invalid request");
-            exit();
+            return;
         }
     }
 
@@ -1869,14 +1862,14 @@ class GoogleUserController
         if (!isset($tokenAdmin) || $tokenAdmin !== $tokenRefresh) { 
             http_response_code(401);
             echo "❌ Unauthorized.\n";
-            exit();
+            return;
         }
 
         // Use a batched query rather than all users
         $users = $this->googleUser->getGoogleUsersMailingCronJob();
         if (!$users) {
             echo "No users to notify.\n";
-            exit();
+            return;
         }
 
         foreach ($users as $user) {
@@ -2074,17 +2067,14 @@ class GoogleUserController
                     'message' => 'You are using the latest version.'
                 ];
             }
-
-            header('Content-Type: application/json');
             echo json_encode($response);
-            exit();
+            return;
         } else {
             $response = [
-                'error' => 'Current version not provided.'
+                'message' => 'Current version not provided.'
             ];
-            header('Content-Type: application/json');
             echo json_encode($response);
-            exit();
+            return;
         }
     }
 

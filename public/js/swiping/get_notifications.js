@@ -24,7 +24,7 @@ function fetchFriendRequest(userId) {
         )
         return
     }
-    fetch('index.php?action=getFriendRequestWebsite', {
+    fetch('/getFriendRequestWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -624,7 +624,7 @@ function fetchUnreadMessage(userId) {
     const servedSenderIds =
         JSON.parse(localStorage.getItem('servedSenderIds')) || []
 
-    fetch('index.php?action=getUnreadMessageWebsite', {
+    fetch('/getUnreadMessageWebsite', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -832,7 +832,10 @@ function addNotificationPermission(userId) {
                             // Step 2: Register service worker and subscribe to push notifications
                             return registerServiceWorker(userId) // Pass userId to sendSubscriptionToBackend inside registerServiceWorker
                         } else {
-                            console.error('Error updating status:', data.error)
+                            console.error(
+                                'Error updating status:',
+                                data.message
+                            )
                             throw new Error(
                                 'Failed to update notification permission.'
                             )
@@ -1080,7 +1083,7 @@ window.addEventListener('load', async function () {
         const data = await res.json()
 
         if (!data.success) {
-            console.error('Error fetching server endpoint:', data.error)
+            console.error('Error fetching server endpoint:', data.message)
             return
         }
 

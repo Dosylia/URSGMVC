@@ -7,7 +7,7 @@
         <?php endif; ?>
 
 
-        <label for="gender">Gender you are looking for</label>
+        <label for="gender"><?= $this->_('update_lookingfor_gender_label') ?></label>
         <select id="gender" name="gender" required>
             <option value="<?= $lfUser['lf_gender'] ?>" ><?= $lfUser['lf_gender'] ?></option>
             <?php foreach ($genders as $value => $label) : ?>
@@ -17,7 +17,7 @@
             <?php endforeach; ?>
         </select>
 
-        <label for="kindofgamer">What kind of gamer are you looking for?</label>
+        <label for="kindofgamer"><?= $this->_('update_lookingfor_kindofgamer_label') ?></label>
         <select id="kindofgamer" name="kindofgamer" required>
             <option value="<?= $lfUser['lf_kindofgamer'] ?>" ><?= $lfUser['lf_kindofgamer'] ?></option>
             <?php foreach ($kindofgamers as $value => $label) : ?>
@@ -43,7 +43,7 @@
                     <p id="main3-name"><?= $lolMain3 ?></p>
                 </div>
                 <div class="champions-picker-column">
-                    <button id="skipSelection-btn">Skip</button>
+                    <button id="skipSelection-btn"><?= $this->_('skip') ?></button>
                 </div>
                 <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_lolmain1'] ?>" class="notranslate champion-picker-input">
                 <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_lolmain2'] ?>" class="notranslate champion-picker-input">

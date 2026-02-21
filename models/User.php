@@ -1377,4 +1377,62 @@ class User extends DataBase
             return false;
         }
     }
+
+    public function updateRandomChatPermission($userId, $permission)
+    {
+        $query = $this -> bdd -> prepare("
+                                            UPDATE
+                                                `user`
+                                            SET
+                                                `user_randomChatPermission` = ?
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $updateRandomChatPermissionTest = $query -> execute([$permission, $userId]);
+
+        if ($updateRandomChatPermissionTest) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getRandomChatPermission($userId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                `user_randomChatPermission`
+                                            FROM
+                                                `user`
+                                            WHERE
+                                                `user_id` = ?
+        ");
+
+        $query->execute([$userId]);
+        $permission = $query->fetch();
+
+        if ($permission) {
+            return $permission['user_randomChatPermission'];
+        } else {
+            return false;
+        }
+    }
+
+    public function checkUserExists($username)
+    {
+        $query = $this->bdd->prepare("
+                                        SELECT
+                                            `user_id`
+                                        FROM
+                                            `user`
+                                        WHERE
+                                            `user_username` = ?
+        ");
+
+        $query->execute([$username]);
+        $user = $query->fetch();
+
+        return $user ? $user : false;
+    }
 }

@@ -16,7 +16,7 @@ trait SecurityController
             && ($this->isModerator() || $this->isAdmin() || $this->isMarketing())
         )) {
             header("Location: $redirectUrl");
-            exit();
+            return;
         }
     }
 
@@ -31,7 +31,7 @@ trait SecurityController
             && $this->isConnectLf()
         )) {
             header("Location: $redirectUrl");
-            exit();
+            return;
         }
     }
 
@@ -177,7 +177,7 @@ trait SecurityController
     {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
         if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             return null;
         }
         return $matches[1];

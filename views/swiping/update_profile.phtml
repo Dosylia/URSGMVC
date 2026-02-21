@@ -16,13 +16,13 @@
             )
         ) :
         ?>
-            <label for="username">Username</label>
+            <label for="username"><?= $this->_('update_profile_username_label') ?></label>
             <input type="text" id="username" name="username"
                 value="<?= htmlspecialchars_decode($user['user_username'], ENT_QUOTES) ?>"
                 maxlength="20" required>
         <?php endif; ?>
 
-        <label for="gender">Gender</label>
+        <label for="gender"><?= $this->_('update_profile_gender_label') ?></label>
         <select id="gender" name="gender" required>
             <option value="<?= $user['user_gender'] ?>" ><?= $user['user_gender'] ?></option>
             <?php foreach ($genders as $value => $label) : ?>
@@ -32,10 +32,10 @@
             <?php endforeach; ?>
         </select>  
 
-        <label for="age">Age</label>
+        <label for="age"><?= $this->_('update_profile_age_label') ?></label>
         <input type="text" id="age" name="age" value="<?= $user['user_age'] ?>" maxlength="2" required>
 
-        <label for="kindofgamer">What kind of gamer are you?</label>
+        <label for="kindofgamer"><?= $this->_('update_profile_kindofgamer_label') ?></label>
         <select id="kindofgamer" name="kindofgamer" required>
             <option value="<?= $user['user_kindOfGamer'] ?>" ><?= $user['user_kindOfGamer'] ?></option>
             <?php foreach ($kindofgamers as $value => $label) : ?>
@@ -45,7 +45,7 @@
             <?php endforeach; ?>
         </select>
 
-        <label for="game">Game</label>
+        <label for="game"><?= $this->_('update_profile_game_label') ?></label>
         <select id="game" name="game" required>
             <option value="<?= $user['user_game']?>" ><?= $user['user_game']?></option>
             <?php if ($user['user_game'] !== 'League of Legends') : ?>
@@ -55,7 +55,7 @@
             <?php endif; ?>
         </select>
 
-        <label for="short_bio">Short bio about you</label>
+        <label for="short_bio"><?= $this->_('update_profile_shortbio_label') ?></label>
         <textarea id="short_bio" name="short_bio" required><?= htmlspecialchars_decode($user['user_shortBio'], ENT_QUOTES) ?></textarea>
 
         <?php if($this->isConnectWebsite()) : ?>

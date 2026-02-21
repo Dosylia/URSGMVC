@@ -3,7 +3,7 @@
     <a href="#"><?= $this->_('settings') ?></a>
 </div>
 
-    <div id="userInfo" data-user-id="<?= $user['user_id']; ?>" data-chat-filter="<?= $user['user_hasChatFilter']; ?>"></div>
+    <div id="userInfo" data-user-id="<?= $user['user_id']; ?>" data-chat-filter="<?= $user['user_hasChatFilter']; ?>" data-random-chat-permission="<?= $user['user_randomChatPermission']; ?>"></div>
 
     <div class="setting-option">
         <span>
@@ -35,6 +35,16 @@
         </div>
     </div>
 
+    <div class="setting-option">
+        <span>
+            <i class="fa-solid fa-people-group"></i> 
+            <span><?= $this->_('random_chat_permission') ?></span>
+        </span>
+        <div class="toggle-container-random-chat">
+            <div id="toggleRandomChatPermission" class="filter-button"></div>
+        </div>
+    </div>
+
     <form method="POST" action="/changeLanguage" class="language-switcher">
         <div class="setting-option">
             <span>
@@ -62,3 +72,4 @@
 
 <script src="public/js/swiping/switchChatFilter.js?<?= time(); ?>"></script>
 <script src="public/js/swiping/switchSoundNotification.js?<?= time(); ?>"></script>
+<script src="public/js/swiping/settings.js?<?= time(); ?>"></script>

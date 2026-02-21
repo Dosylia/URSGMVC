@@ -1,7 +1,7 @@
 <section class="lol-quiz">
-  <h1>QUIZ</h1>
+  <h1><?= $this->_('quiz_title') ?></h1>
     <hr class="separators-hr" />
-    <h2>What Kind of <span class="gold-text">League of Legends</span> Player Are You</h2>
+    <h2><?= $this->_('quiz_subtitle_what_kind') ?> <span class="gold-text">League of Legends</span> <?= $this->_('quiz_subtitle_player_are_you') ?></h2>
   <div id="quiz-container"></div>
 
     <div id="progressBarContainer" class="hidden">
@@ -12,15 +12,15 @@
     <hr class="separators-hr" />
   <!-- Navigation -->
   <div id="navigation" class="navigation" style="display: none;">
-    <button id="backBtn">Back</button>
-    <button id="nextBtn">Next</button>
-    <button id="confirmBtn" class="hidden">Confirm</button>
+    <button id="backBtn"><?= $this->_('quiz_back') ?></button>
+    <button id="nextBtn"><?= $this->_('quiz_next') ?></button>
+    <button id="confirmBtn" class="hidden"><?= $this->_('quiz_confirm') ?></button>
   </div>
 
   <!-- Result -->
   <div id="result" class="hidden">
     <button id="resetBtn" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hidden">
-      Restart Quiz
+      <?= $this->_('quiz_restart') ?>
     </button>
     <h2 id="result-title"></h2>
     <div class="result-row">
@@ -31,7 +31,7 @@
       <svg id="result-chart"></svg>
     </div>
     <div id="showMatchingUser">
-      <h3>User made for you</h3>
+      <h3><?= $this->_('quiz_user_made_for_you') ?></h3>
         <p id="matchingPersonality">
           <img class="avatar" id="matchingUserAvatar" src="" alt="">
           <a class="username_matchingPersonality" id="matchingUserName" target="_blank" href=""><strong class="strong_text"></strong></a>
@@ -40,9 +40,9 @@
   </div>
 
   <div id="createURSGAccount" class="hidden">
-    <h2 >Create a URSG Account</h2>
-    <p id="create-account-desc">To save your results, please create an account with us.</p>
-    <a href="/?triggerSignUp=true">Go to Sign Up</a>
+    <h2 ><?= $this->_('quiz_create_account_title') ?></h2>
+    <p id="create-account-desc"><?= $this->_('quiz_create_account_desc') ?></p>
+    <a href="/?triggerSignUp=true"><?= $this->_('quiz_go_to_signup') ?></a>
   </div>
 </section>
   <script src="https://d3js.org/d3.v6.min.js"></script>

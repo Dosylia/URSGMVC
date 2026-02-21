@@ -9,7 +9,7 @@
 <?php 
     if (!isset($_COOKIE['auth_token'])) {
         header("Location: /logout");
-        exit();
+        return;
     }
 ?>
 
@@ -72,6 +72,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
     <main>
         <div id="overlay"></div>
+        <span class="form-error-front" id="front-end-error"></span>
         <?php if (isset($_GET['message'])) : ?>
             <span class="form-error"><?= $_GET['message'] ?></span>
         <?php endif; ?>
@@ -92,7 +93,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script src="public/js/swiping/swiping_menu.js?<?= time(); ?>"></script>
     <script src="public/js/swiping/get_notifications.js?<?= time(); ?>"></script>  
     <script src="public/js/swiping/get_currency.js?<?= time(); ?>"></script>
-    <script src="public/js/swiping/tournament_modal.js?<?= time(); ?>"></script>
+    <!-- <script src="public/js/swiping/tournament_modal.js?<?= time(); ?>"></script> -->
     <!-- Triggers for tracking scritps -->
     <script>
         window.addEventListener('DOMContentLoaded', function () {

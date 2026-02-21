@@ -86,7 +86,7 @@ class UserLookingForController
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -124,7 +124,7 @@ class UserLookingForController
         } else {
             // Code block 4: Redirect to / if none of the above conditions are met
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -236,7 +236,7 @@ class UserLookingForController
         else
         {
             header("Location: /");
-            exit();
+            return;
         }
     }
 
@@ -251,7 +251,7 @@ class UserLookingForController
 
                 if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                     header("location:/userProfile?message=Token not valid");
-                    exit();
+                    return;
                 }
 
                 $lfGender = $this->validateInput($_POST["gender"]);
@@ -277,7 +277,7 @@ class UserLookingForController
                 // if ($user['user_id'] != $this->getUserId())
                 // {
                 //     header("location:/userProfile?message=Could not update");
-                //     exit();
+                //     return;
                 // }
 
                 if (isset($_POST["skipSelection"])) {
@@ -288,17 +288,17 @@ class UserLookingForController
                     if (empty($loLRank) || empty($loLRole))
                     {
                         header("location:/signup?message=Inputs cannot be empty");
-                        exit();
+                        return;
                     }
                 } else {
                     if (($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3)) {
                         header("location:/signup?message=Each champion must be unique");
-                        exit();
+                        return;
                     }
                     if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
                     {
                         header("location:/signup?message=Inputs cannot be empty");
-                        exit();
+                        return;
                     }
                 }
                 
@@ -326,12 +326,12 @@ class UserLookingForController
                                 $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
                         }
                         header("location:/userProfile?message=Updated successfully");
-                        exit();  
+                        return;  
                     }
                     else
                     {
                         header("location:/userProfile?message=Could not update");
-                        exit();  
+                        return;  
                     }
                 }
 
@@ -363,7 +363,7 @@ class UserLookingForController
                             $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
         
                         header("location:/swiping?createdUser=true");
-                        exit();
+                        return;
                     }
 
             } else {
@@ -372,7 +372,7 @@ class UserLookingForController
 
                 if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                     header("location:/userProfile?message=Token not valid");
-                    exit();
+                    return;
                 }
 
                 $this->setUserId($userId);
@@ -398,7 +398,7 @@ class UserLookingForController
                 // if ($user['user_id'] != $this->getUserId())
                 // {
                 //     header("location:/userProfile?message=Could not update");
-                //     exit();
+                //     return;
                 // }
 
                 $statusChampion = 0;
@@ -410,19 +410,19 @@ class UserLookingForController
                     if (empty($valorantRank) || empty($valotantRole))
                     {
                         header("location:/signup?message=Inputs cannot be empty");
-                        exit();
+                        return;
                     }
                 } else {
 
                     if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
                         header("location:/userProfile?message=Each agents must be unique");
-                        exit();
+                        return;
                     }
 
                     if ((empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole)) || $statusChampion == "1")
                     {
                         header("location:/signup?message=Inputs cannot be empty");
-                        exit();
+                        return;
                     }
                 }
 
@@ -452,12 +452,12 @@ class UserLookingForController
                                 $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
                         }
                         header("location:/userProfile?message=Updated successfully");
-                        exit();  
+                        return;  
                     }
                     else
                     {
                         header("location:/userProfile?message=Could not update");
-                        exit();  
+                        return;  
                     }
                 }
     
@@ -488,10 +488,10 @@ class UserLookingForController
                             $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
         
                         header("location:/swiping?createdUser=true");
-                        exit();
+                        return;
                     } else {
                         header("location:/signup?message=Could not create looking for user");
-                        exit();
+                        return;
                     }
 
             }
@@ -501,7 +501,6 @@ class UserLookingForController
 
     public function createLookingForUserPhone()
     {
-        $response = array('message' => 'Error');
         if (isset($_POST['lookingforData'])) 
         {
             $data = json_decode($_POST['lookingforData']);
@@ -517,7 +516,7 @@ class UserLookingForController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -542,28 +541,22 @@ class UserLookingForController
             if ($statusChampion == 1) {
                 if (empty($loLRank) || empty($loLRole))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit();  
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                    return;  
                 }
             } else {
                 if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit();  
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                    return;  
                 }
             }
       
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
-                $response = array('message' => 'User already exist');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit();  
+                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
+                return;  
             }
 
             $createLookingFor = $this->userlookingfor->createLookingForUser(
@@ -595,12 +588,8 @@ class UserLookingForController
                         'roleLf' => $lolLookingFor['lf_lolrole']
                     );
     
-                    $response = array(
-                        'sessionId' => session_id(),
-                        'user' => $lookingforUserData,
-                        'message' => 'Success'
-                    );
-    
+                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
+                    return;
                 }
 
             } else {
@@ -614,7 +603,7 @@ class UserLookingForController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'error' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
             
@@ -640,18 +629,14 @@ class UserLookingForController
             if ($statusChampion == 1) {
                 if (empty($valorantRank) || empty($valorantRole))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit();  
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                    return;  
                 }
             } else {
                 if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
                 {
-                    $response = array('message' => 'Fill all fields');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit();  
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                    return;  
                 }
             }
 
@@ -659,10 +644,8 @@ class UserLookingForController
             $testValorantAccount = $this->user->getUserById($this->getUserId());
 
             if ($testValorantAccount && $testValorantAccount['lf_id'] !== null) {
-                $response = array('message' => 'User already exist');
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit();  
+                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
+                return;  
             }
 
             $createLookingFor = $this->userlookingfor->createLookingForUserValorant(
@@ -694,21 +677,16 @@ class UserLookingForController
                         'valroleLf' => $valorantLookingFor['lf_valrole']
                     );
     
-                    $response = array(
-                        'sessionId' => session_id(),
-                        'user' => $lookingforUserData,
-                        'message' => 'Success'
-                    );
-    
+                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
+                    return;
                 }
 
 
             }
 
         }
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit();  
+        echo json_encode(['message' => $this->_('messages.error')]);
+        return;  
 
     }
 
@@ -721,7 +699,7 @@ class UserLookingForController
 
                 if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                     header("location:/userProfile?message=Token not valid");
-                    exit();
+                    return;
                 }
 
                 $this->setUserId($userId);
@@ -753,7 +731,7 @@ class UserLookingForController
                     foreach ($filteredServer as $server) {
                         if (!in_array($server, $validRegions)) {
                             header("Location: /userProfile?message=Filtered region not valid");
-                            exit();
+                            return;
                         }
                     }
 
@@ -767,7 +745,7 @@ class UserLookingForController
                 if ($user['user_id'] != $this->getUserId())
                 {
                     header("location:/userProfile?message=Could not update");
-                    exit();
+                    return;
                 }
 
                 $statusChampion = 0;
@@ -782,10 +760,10 @@ class UserLookingForController
                     {
                         if ($user['lf_lolrole']) {
                             header("location:/signup?message=Inputs cannot be empty");
-                            exit();
+                            return;
                         } else {
                             header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                            exit();
+                            return;
                         }
                     }
                 } else {
@@ -793,10 +771,10 @@ class UserLookingForController
                     {
                         if ($user['lf_lolrole']) {
                             header("location:/signup?message=Inputs cannot be empty");
-                            exit();
+                            return;
                         } else {
                             header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                            exit();
+                            return;
                         }
                     }
                 }
@@ -823,12 +801,12 @@ class UserLookingForController
                             $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
                     }
                     header("location:/userProfile?message=Updated successfully");
-                    exit();  
+                    return;  
                 }
                 else
                 {
                     header("location:/userProfile?message=Could not update");
-                    exit();  
+                    return;  
                 }
 
                 } else {
@@ -837,7 +815,7 @@ class UserLookingForController
 
                     if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
                         header("location:/userProfile?message=Token not valid");
-                        exit();
+                        return;
                     }
                     
                     $this->setUserId($userId);
@@ -866,7 +844,7 @@ class UserLookingForController
                     if ($user['user_id'] != $this->getUserId())
                     {
                         header("location:/userProfile?message=Could not update");
-                        exit();
+                        return;
                     }
                     $statusChampion = 0;
                     if (isset($_POST["skipSelection"])) {
@@ -878,10 +856,10 @@ class UserLookingForController
                         {
                             if ($user['lf_valrole']) {
                                 header("location:/signup?message=Inputs cannot be empty");
-                                exit();
+                                return;
                             } else {
                                 header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                                exit();
+                                return;
                             }
                         }
                     } else {
@@ -889,10 +867,10 @@ class UserLookingForController
                         {
                             if ($user['lf_valrole']) {
                                 header("location:/signup?message=Inputs cannot be empty");
-                                exit();
+                                return;
                             } else {
                                 header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                                exit();
+                                return;
                             }
                         }
                     }
@@ -919,12 +897,12 @@ class UserLookingForController
                                 $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
                         }
                         header("location:/userProfile?message=Updated successfully");
-                        exit();  
+                        return;  
                     }
                     else
                     {
                         header("location:/userProfile?message=Could not update");
-                        exit();  
+                        return;  
                     }
                     
                 }
