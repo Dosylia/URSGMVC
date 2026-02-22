@@ -332,12 +332,32 @@ class FriendRequestController
     
         $this->setUserId($userId);
     
+        // Also add random chats
         $getFriendlist = $this->friendrequest->getFriendlist($this->getUserId());
-    
+
+        //Fetch random chats and convert them to the same format as friend list
+        $randomChatSessions = $this->chatmessage->getRandomChatsSessions($this->getUserId());
+        $randomChatList = $this->convertToFriendListFormat($randomChatSessions, $userId);
+
+        // Merge friend list and random chat list
+        $mergedList = [];
+
+        if ($randomChatList) {
+            foreach ($randomChatList ?: [] as $item) {
+                $mergedList[] = $this->filterAssocKeys($item);
+            }
+        }
+
         if ($getFriendlist) {
+             foreach ($getFriendlist as $item) {
+                $mergedList[] = $this->filterAssocKeys($item);
+            }
+        }
+    
+        if ($mergedList) {
             $formattedFriendList = [];
     
-            foreach ($getFriendlist as $friend) {
+            foreach ($mergedList as $friend) {
                 if ($userId == $friend['sender_id']) {
                     $friendId = $friend['receiver_id'];
                     $friendUsername = $friend['receiver_username'];
@@ -368,6 +388,7 @@ class FriendRequestController
                         'friend_isLookingGame' => $friendIsLookingGame,
                         'friend_isLookingGameUser' => $friendIsLookingGameUser,
                         'latest_message_date' => $friend['latest_message_date'],
+                        'is_random_chat' => isset($friend['is_random_chat']) ? $friend['is_random_chat'] : false
                     ];
                 }
             }
@@ -385,6 +406,53 @@ class FriendRequestController
         } else {
             echo json_encode(['success' => false, 'message' => $this->_('messages.no_friends_found')]);
         }
+    }
+
+    private function convertToFriendListFormat($randomChatSessions, $userId) {
+        $formattedList = [];
+    
+        foreach ($randomChatSessions as $session) {
+            $initiator = $this->user->getUserById($session['initiator_user_id']);
+            $target = $this->user->getUserById($session['target_user_id']);
+
+            $isSender = ($userId == $session['initiator_user_id']);
+            $sender = $isSender ? $initiator : $target;
+            $receiver = $isSender ? $target : $initiator;
+            $formattedList[] = [
+                'fr_id' => null,
+                'fr_senderId' => $sender['user_id'],
+                'fr_receiverId' => $receiver['user_id'],
+                'fr_date' => null,
+                'fr_status' => 'random_chat',
+                'fr_acceptedAt' => null,
+                'sender_id' => $sender['user_id'],
+                'sender_username' => $sender['user_username'],
+                'sender_picture' => $sender['user_picture'],
+                'sender_game' => $sender['user_game'],
+                'sender_lastRequestTime' => $sender['user_lastRequestTime'],
+                'receiver_id' => $receiver['user_id'],
+                'receiver_username' => $receiver['user_username'],
+                'receiver_picture' => $receiver['user_picture'],
+                'receiver_game' => $receiver['user_game'],
+                'receiver_lastRequestTime' => $receiver['user_lastRequestTime'],
+                'latest_message_date' => null,
+                'sender_isOnline' => $sender['user_isOnline'],
+                'receiver_isOnline' => $receiver['user_isOnline'],
+                'sender_lastSeen' => $sender['user_lastSeen'],
+                'receiver_lastSeen' => $receiver['user_lastSeen'],
+                'sender_isLookingGame' => $sender['user_requestIsLooking'] ? 1 : 0,
+                'receiver_isLookingGame' => $receiver['user_requestIsLooking'] ? 1 : 0,
+                'is_random_chat' => true
+            ];
+        }
+    
+        return $formattedList;
+    }
+
+    private function filterAssocKeys($array) {
+        return array_filter($array, function($key) {
+            return !is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     public function getFriendlist()
@@ -1245,7 +1313,7 @@ class FriendRequestController
 
             $user = $this->user->getUserById($_SESSION['userId']);
 
-            if ($user['user_id'] !== $this->getSenderId()) {
+            if ((int)$user['user_id'] !== (int)$this->getSenderId()) {
                 header("location:/userProfile?message=Unauthorized");
                 return;
             }

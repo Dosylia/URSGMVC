@@ -519,6 +519,33 @@ class ChatMessage extends DataBase
         }
     }
 
+        public function getRandomChatsSessions($userId)
+    {
+        $query = $this->bdd->prepare("
+            SELECT 
+                session_id, 
+                initiator_user_id, 
+                target_user_id, 
+                session_status
+            FROM 
+                random_chat_sessions 
+            WHERE 
+                (initiator_user_id = ? OR target_user_id = ?)
+                AND session_status = 'active'
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ");
+        
+        $query->execute([$userId, $userId]);
+        $result = $query->fetchAll();
+        
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
     public function updateRandomChatSession($sessionId, $newStatus)
     {
         $query = $this->bdd->prepare("

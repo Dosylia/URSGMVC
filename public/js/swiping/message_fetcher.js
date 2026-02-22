@@ -16,7 +16,7 @@ import {
     setCurrentMessages,
 } from './message_utils.js'
 
-export async function fetchMessages(userId, friendId) {
+export async function fetchMessages(userId, friendId, isRandomChat = false) {
     if (numberofFail >= 5) {
         console.error('Too many failed attempts. Stopping fetch loop.')
         return
@@ -25,7 +25,10 @@ export async function fetchMessages(userId, friendId) {
     // Check if this is a random chat session
     // This check might seem too light
     const randomSession = localStorage.getItem('randomChatSession')
-    const isRandomChat = randomSession !== null
+
+    if (!isRandomChat) {
+        isRandomChat = randomSession !== null
+    }
 
     const firstFriendInput = document.getElementById('firstFriend')
     let firstFriend = firstFriendInput ? firstFriendInput.value : null

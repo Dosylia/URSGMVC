@@ -7,7 +7,11 @@ import {
 } from './message_api.js'
 import { fetchMessages } from './message_fetcher.js'
 import { closeRatingModal, sendRating } from './message_friends.js'
-import { showLoadingIndicator } from './message_renderer.js'
+import {
+    showLoadingIndicator,
+    removeRandomChatControls,
+} from './message_renderer.js'
+import { initRandomChatUI } from './message_main.js'
 import {
     userId,
     friendId,
@@ -120,6 +124,8 @@ export function initChatEvents() {
 
         event.preventDefault() // Prevent the default behavior for non-navigational links
 
+        let isRandomChat = false
+
         let newFriendId = link.getAttribute('data-friend-id')
 
         if (newFriendId !== getActualFriendId()) {
@@ -132,6 +138,24 @@ export function initChatEvents() {
 
             setActualFriendId(newFriendId)
             setFriendId(newFriendId)
+
+            if (link.dataset.randomChat === 'true') {
+                // It's a random chat, we want to show random chat UI
+                isRandomChat = true
+
+                localStorage.setItem(
+                    'randomChatSession',
+                    JSON.stringify({
+                        targetUserId: newFriendId,
+                        initiatedAt: Date.now(),
+                    })
+                )
+
+                await initRandomChatUI(newFriendId)
+            } else {
+                // If last chat was random, reset to normal chat UI
+                removeRandomChatControls()
+            }
 
             replyPreviewContainer.style.display = 'none'
             closeRatingModal()
@@ -150,7 +174,7 @@ export function initChatEvents() {
                 messageInput.placeholder = 'Talk to @' + username
             }
 
-            await fetchMessages(userId, newFriendId)
+            await fetchMessages(userId, newFriendId, isRandomChat)
 
             clearImageTrue()
 
@@ -214,6 +238,7 @@ function findRandomPlayer(prefs) {
                 const randomUserId = data.randomUserId
                 const sessionId = data.sessionId
                 window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
+                return
             } else {
                 alert(
                     'No random players found. Try adjusting your preferences.'
@@ -222,7 +247,6 @@ function findRandomPlayer(prefs) {
         })
         .catch((error) => {
             console.error('Request failed', error)
-            alert('Error finding random player. Please try again.')
         })
 }
 
@@ -264,12 +288,17 @@ export function initRandomChatControlEvents(validateSessionFn) {
     if (skipUserBtn) {
         skipUserBtn.addEventListener('click', async () => {
             if (await validateSessionFn()) {
-                // Close current session and find new player
                 const randomSession = JSON.parse(
                     localStorage.getItem('randomChatSession')
                 )
                 if (randomSession) {
-                    await closeRandomChatApi(randomSession.targetUserId)
+                    try {
+                        results = await closeRandomChatApi(
+                            randomSession.targetUserId
+                        )
+                    } catch (error) {
+                        console.error('Error closing random chat:', error)
+                    }
                     localStorage.removeItem('randomChatSession')
                     // Add loading indicator while finding new player
                     showLoadingIndicator()

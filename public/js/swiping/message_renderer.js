@@ -20,10 +20,6 @@ export function renderRandomChatControls() {
     if (!controlsContainer) {
         controlsContainer = document.createElement('div')
         controlsContainer.id = 'random-chat-controls-container'
-        controlsContainer.style.cssText = `
-            position: relative;
-            z-index: 1000;
-        `
 
         // Insert before the messages container
         if (messagesContainer && messagesContainer.parentNode) {
@@ -42,8 +38,8 @@ export function renderRandomChatControls() {
         color: white;
         padding: 10px;
         text-align: center;
-        border-radius: 5px;
         margin-bottom: 10px;
+        border-radius: 5px;
     `
     randomChatHeader.innerHTML = `
         <p>🎲 Random Chat Session</p>
@@ -90,6 +86,15 @@ export function renderRandomChatControls() {
     // Append to persistent container
     controlsContainer.appendChild(randomChatHeader)
     controlsContainer.appendChild(actionButtons)
+}
+
+export function removeRandomChatControls() {
+    const controlsContainer = document.getElementById(
+        'random-chat-controls-container'
+    )
+    if (controlsContainer) {
+        controlsContainer.remove()
+    }
 }
 
 export function showLoadingIndicator() {
@@ -817,14 +822,6 @@ export function updateMessageContainer(messages, friend, user) {
 function addRandomChatOpeners(messagesContainer, userGame) {
     const openersContainer = document.createElement('div')
     openersContainer.id = 'random-chat-openers'
-    openersContainer.style.cssText = `
-        padding: 20px;
-        text-align: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 10px;
-        margin: 20px 0;
-        color: white;
-    `
 
     openersContainer.innerHTML = `
         <h3 style="margin-bottom: 15px; color: white;">🎮 Start the conversation!</h3>
