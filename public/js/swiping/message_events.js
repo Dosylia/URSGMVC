@@ -238,6 +238,7 @@ function findRandomPlayer(prefs) {
                 const randomUserId = data.randomUserId
                 const sessionId = data.sessionId
                 window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
+                return
             } else {
                 alert(
                     'No random players found. Try adjusting your preferences.'
@@ -246,7 +247,6 @@ function findRandomPlayer(prefs) {
         })
         .catch((error) => {
             console.error('Request failed', error)
-            alert('Error finding random player. Please try again.')
         })
 }
 
@@ -288,12 +288,17 @@ export function initRandomChatControlEvents(validateSessionFn) {
     if (skipUserBtn) {
         skipUserBtn.addEventListener('click', async () => {
             if (await validateSessionFn()) {
-                // Close current session and find new player
                 const randomSession = JSON.parse(
                     localStorage.getItem('randomChatSession')
                 )
                 if (randomSession) {
-                    await closeRandomChatApi(randomSession.targetUserId)
+                    try {
+                        results = await closeRandomChatApi(
+                            randomSession.targetUserId
+                        )
+                    } catch (error) {
+                        console.error('Error closing random chat:', error)
+                    }
                     localStorage.removeItem('randomChatSession')
                     // Add loading indicator while finding new player
                     showLoadingIndicator()

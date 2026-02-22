@@ -23,8 +23,8 @@
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <script src="public/js/swiping/notifications_system.js?<?= time(); ?>"></script>
-<input id="userUsername" type="hidden" name="userId" value="<?= $_SESSION['username']; ?>">
-<input id="userId" type="hidden" name="userId" value="<?= $_SESSION['userId']; ?>">
+<input id="userUsername" type="hidden" name="userId" value="<?= isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>">
+<input id="userId" type="hidden" name="userId" value="<?= isset($_SESSION['userId']) ? $_SESSION['userId'] : ''; ?>">
 
 <header>
     <nav>
