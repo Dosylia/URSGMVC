@@ -444,7 +444,8 @@ return [
     'pf_role_looking_for' => 'Role you are looking for',
     'pf_rank_looking_for' => 'Rank you are looking for',
     'pf_description_label' => 'Description',
-    'save_preférences' => 'Save preferences',
+    'save_preferences' => 'Save preferences',
+    'pf_teammate_ready' => 'Teammate(s) ready to play!',
 
     // Ranks
     "ranks" => [
