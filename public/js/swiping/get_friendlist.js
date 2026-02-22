@@ -120,6 +120,11 @@ async function renderFriendList(friendList, page) {
             friendElement.href = '#'
             friendElement.dataset.friendId = friend.friend_id
 
+            if (friend.is_random_chat) {
+                // Add data-random-chat to true if it's a random chat
+                friendElement.dataset.randomChat = 'true'
+            }
+
             const friendDiv = document.createElement('div')
             friendDiv.className = 'friend'
             friendDiv.dataset.senderId = friend.friend_id
@@ -134,6 +139,14 @@ async function renderFriendList(friendList, page) {
             img.alt = `Avatar ${friend.friend_username}`
             img.loading = 'lazy'
             avatarDiv.appendChild(img)
+
+            // Add question mark if random chat (on side of profile picture)
+            if (friend.is_random_chat) {
+                const randomChatBadge = document.createElement('span')
+                randomChatBadge.className = 'random-chat-badge'
+                randomChatBadge.textContent = '?'
+                avatarDiv.appendChild(randomChatBadge)
+            }
 
             const detailsDiv = document.createElement('div')
             detailsDiv.className = 'friend-details'

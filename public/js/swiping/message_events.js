@@ -7,7 +7,11 @@ import {
 } from './message_api.js'
 import { fetchMessages } from './message_fetcher.js'
 import { closeRatingModal, sendRating } from './message_friends.js'
-import { showLoadingIndicator } from './message_renderer.js'
+import {
+    showLoadingIndicator,
+    removeRandomChatControls,
+} from './message_renderer.js'
+import { initRandomChatUI } from './message_main.js'
 import {
     userId,
     friendId,
@@ -120,6 +124,8 @@ export function initChatEvents() {
 
         event.preventDefault() // Prevent the default behavior for non-navigational links
 
+        let isRandomChat = false
+
         let newFriendId = link.getAttribute('data-friend-id')
 
         if (newFriendId !== getActualFriendId()) {
@@ -132,6 +138,24 @@ export function initChatEvents() {
 
             setActualFriendId(newFriendId)
             setFriendId(newFriendId)
+
+            if (link.dataset.randomChat === 'true') {
+                // It's a random chat, we want to show random chat UI
+                isRandomChat = true
+
+                localStorage.setItem(
+                    'randomChatSession',
+                    JSON.stringify({
+                        targetUserId: newFriendId,
+                        initiatedAt: Date.now(),
+                    })
+                )
+
+                await initRandomChatUI(newFriendId)
+            } else {
+                // If last chat was random, reset to normal chat UI
+                removeRandomChatControls()
+            }
 
             replyPreviewContainer.style.display = 'none'
             closeRatingModal()
@@ -150,7 +174,7 @@ export function initChatEvents() {
                 messageInput.placeholder = 'Talk to @' + username
             }
 
-            await fetchMessages(userId, newFriendId)
+            await fetchMessages(userId, newFriendId, isRandomChat)
 
             clearImageTrue()
 

@@ -84,9 +84,18 @@ async function validateRandomChatSession() {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-    const randomUserId = getRandomUserId()
+    // Detect if we are on randomChat
+    // Check closest username_chat_friend link for data-random-chat attribute
+    const firstChatLink = document.querySelector('.username_chat_friend')
+    const isRandomChat =
+        firstChatLink && firstChatLink.dataset.randomChat === 'true'
+    let randomUserId = getRandomUserId()
 
-    if (randomUserId) {
+    if (randomUserId || isRandomChat) {
+        if (isRandomChat) {
+            // Get user_id using data-friend-id
+            randomUserId = firstChatLink.dataset.friendId
+        }
         // Store random chat session
         localStorage.setItem(
             'randomChatSession',
@@ -147,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 })
 
 // Initialize random chat UI
-async function initRandomChatUI(randomUserId) {
+export async function initRandomChatUI(randomUserId) {
     // Hide friend list on mobile for random chat
     const isMax1018px = window.matchMedia('(max-width: 1018px)').matches
     if (isMax1018px && chatInterface) {

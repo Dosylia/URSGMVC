@@ -90,7 +90,6 @@ span.chat-name span.friendlist-name {
 
 .chat_page {
     display: flex;
-    gap: 20px;
     min-height: 90vh;
 }
 
@@ -132,12 +131,35 @@ span.chat-name span.friendlist-name {
 
 .chat-link-relative {
     right: 40px;
-    border-radius: 20px;
 }
 
 .chat-link {
     position: fixed;
     right: 40px;
+}
+
+#random-chat-controls-container {
+    position: absolute;
+    z-index: 1000;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#random-chat-openers {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(
+        135deg,
+        rgb(102, 126, 234) 0%,
+        rgb(118, 75, 162) 100%
+    );
+    border-radius: 10px;
+    margin: 20px 0px;
+    color: white;
+    position: absolute;
+    top: 160px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .chat-link a {
@@ -229,7 +251,9 @@ span.chat-name span.friendlist-name {
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
+    transition:
+        opacity 0.3s,
+        visibility 0.3s;
 }
 
 .drop-zone-overlay.active {
@@ -252,6 +276,22 @@ span.chat-name span.friendlist-name {
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
+    font-weight: bold;
+}
+
+.random-chat-badge {
+    position: absolute;
+    top: 10px;
+    left: -2px;
+    background-color: #e74057;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -308,11 +348,24 @@ span.chat-name span.friendlist-name {
     }
 }
 
+@media only screen and (max-width: 800px) {
+    #random-chat-openers {
+        top: 180px;
+        width: 90%;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     .chat-image {
         width: 200px;
         height: auto;
         cursor: pointer;
+    }
+
+    #random-chat-openers {
+        top: 190px;
+        width: 95%;
+        padding: 10px;
     }
 }
 
