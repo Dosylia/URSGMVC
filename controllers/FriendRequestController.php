@@ -1245,7 +1245,7 @@ class FriendRequestController
 
             $user = $this->user->getUserById($_SESSION['userId']);
 
-            if ($user['user_id'] !== $this->getSenderId()) {
+            if ((int)$user['user_id'] !== (int)$this->getSenderId()) {
                 header("location:/userProfile?message=Unauthorized");
                 return;
             }
