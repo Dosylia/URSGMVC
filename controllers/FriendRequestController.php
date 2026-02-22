@@ -337,8 +337,11 @@ class FriendRequestController
 
         //Fetch random chats and convert them to the same format as friend list
         $randomChatSessions = $this->chatmessage->getRandomChatsSessions($this->getUserId());
-        $randomChatList = $this->convertToFriendListFormat($randomChatSessions, $userId);
-
+        $randomChatList = null;
+        
+        if ($randomChatSessions) {
+            $randomChatList = $this->convertToFriendListFormat($randomChatSessions, $userId);
+        }
         // Merge friend list and random chat list
         $mergedList = [];
 
@@ -411,6 +414,9 @@ class FriendRequestController
     private function convertToFriendListFormat($randomChatSessions, $userId) {
         $formattedList = [];
     
+        if (!$randomChatSessions) {
+            return $formattedList;
+        }
         foreach ($randomChatSessions as $session) {
             $initiator = $this->user->getUserById($session['initiator_user_id']);
             $target = $this->user->getUserById($session['target_user_id']);
