@@ -516,7 +516,7 @@ class UserLookingForController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -541,13 +541,13 @@ class UserLookingForController
             if ($statusChampion == 1) {
                 if (empty($loLRank) || empty($loLRole))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             } else {
                 if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             }
@@ -555,7 +555,7 @@ class UserLookingForController
             $testLeagueAccount = $this->user->getUserById($this->getUserId());
 
             if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
-                echo json_encode(['message' => 'User already exist']);
+                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
                 return;  
             }
 
@@ -588,7 +588,7 @@ class UserLookingForController
                         'roleLf' => $lolLookingFor['lf_lolrole']
                     );
     
-                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => 'Success']);
+                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
                     return;
                 }
 
@@ -603,7 +603,7 @@ class UserLookingForController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
             
@@ -629,13 +629,13 @@ class UserLookingForController
             if ($statusChampion == 1) {
                 if (empty($valorantRank) || empty($valorantRole))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             } else {
                 if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             }
@@ -644,7 +644,7 @@ class UserLookingForController
             $testValorantAccount = $this->user->getUserById($this->getUserId());
 
             if ($testValorantAccount && $testValorantAccount['lf_id'] !== null) {
-                echo json_encode(['message' => 'User already exist']);
+                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
                 return;  
             }
 
@@ -677,7 +677,7 @@ class UserLookingForController
                         'valroleLf' => $valorantLookingFor['lf_valrole']
                     );
     
-                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => 'Success']);
+                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
                     return;
                 }
 
@@ -685,7 +685,7 @@ class UserLookingForController
             }
 
         }
-        echo json_encode(['message' => 'Error']);
+        echo json_encode(['message' => $this->_('messages.error')]);
         return;  
 
     }

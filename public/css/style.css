@@ -1015,6 +1015,14 @@ span.form-error,
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+span.form-error-front {
+    display: block;
+    color: white;
+    border: 5px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
 .form-error-message {
     display: none;
     background-color: rgba(255, 100, 100, 1);

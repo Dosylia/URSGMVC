@@ -282,7 +282,7 @@ class ValorantController
 
             // Validate Token for User
             if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -305,13 +305,13 @@ class ValorantController
             if ($statusChampion == 1) {
                 if ($this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             } else {
                 if ($this->emptyInputSignup($valorantMain1) || $this->emptyInputSignup($valorantMain2) || $this->emptyInputSignup($valorantMain3) || $this->emptyInputSignup($valorantRank) || $this->emptyInputSignup($valorantRole) || $this->emptyInputSignup($valorantServer))
                 {
-                    echo json_encode(['message' => 'Fill all fields']);
+                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
                     return;  
                 }
             }
@@ -319,7 +319,7 @@ class ValorantController
             $testValorantAccount = $this->user->getUserById($this->getUserId());
 
             if ($testValorantAccount && $testValorantAccount['valorant_id'] !== null) {
-                echo json_encode(['message' => 'User already exist']);
+                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
                 return;  
             }
 
@@ -349,13 +349,13 @@ class ValorantController
                         'role' => $valorantUser['valorant_role'],
                         'server' => $valorantUser['valorant_server']
                     ],
-                    'message' => 'Success'
+                    'message' => $this->_('messages.success')
                 ]);
                 return;
             }
 
         }
-        echo json_encode(['message' => 'Error']);
+        echo json_encode(['message' => $this->_('messages.error')]);
         return;  
     }
 

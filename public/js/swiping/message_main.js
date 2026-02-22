@@ -13,11 +13,10 @@ import {
 } from './message_api.js'
 import {
     userId,
-    friendId,
-    actualFriendId,
     chatInterface,
     messageContainer,
     setActualFriendId,
+    getActualFriendId,
 } from './message_utils.js'
 
 // Check for random user chat
@@ -104,9 +103,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         await initRandomChatUI(randomUserId)
     }
     if (typeof userId !== 'undefined' && userId !== null) {
-        const targetFriendId = randomUserId || actualFriendId
+        const targetFriendId = randomUserId || getActualFriendId()
         fetchMessages(userId, targetFriendId)
-        setInterval(() => fetchMessages(userId, targetFriendId), 5000)
+        setInterval(() => {
+            const currentFriendId = randomUserId || getActualFriendId()
+            fetchMessages(userId, currentFriendId)
+        }, 5000)
     }
 
     setVhVariable()

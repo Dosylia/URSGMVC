@@ -12,12 +12,14 @@ use models\RatingGames;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
+use traits\Translatable;
 
 require 'vendor/autoload.php';
 
 class RiotController
 {
     use SecurityController;
+    use Translatable;
     private LeagueOfLegends $leagueOfLegends;
     private User $user;
     private Valorant $valorant;
@@ -492,14 +494,14 @@ class RiotController
                     ]);
                     return;
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'No active game found']);
+                    echo json_encode(['success' => false, 'message' => $this->_('messages.no_active_game_found')]);
                     return;
                 }
             }
         }
         else
         {
-            echo json_encode(['success' => false, 'message' => 'Wrong request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.wrong_request')]);
             return;
         }
     }
@@ -616,10 +618,10 @@ class RiotController
     public function riotAccountPhone()
     {
         if (!isset($_GET['code'])) {
-            echo json_encode(['message' => 'Error']);
+            echo json_encode(['message' => $this->_('messages.error')]);
             return;
         } else {
-            echo json_encode(['message' => 'Success', 'code' => $_GET['code']]);
+            echo json_encode(['message' => $this->_('messages.success'), 'code' => $_GET['code']]);
             return;
         }
     }
@@ -718,15 +720,15 @@ class RiotController
                             }
                         }
 
-                        echo json_encode(['message' => 'Success']);
+                        echo json_encode(['message' => $this->_('messages.success')]);
                         return;
                     } else {
-                        echo json_encode(['message' => 'Couldnt find Puuid']);
+                        echo json_encode(['message' => $this->_('messages.could_not_find_puuid')]);
                         return;
                     }
                 } else {
                     // Handle case where puuid is empty
-                    echo json_encode(['message' => 'No Puuid received']);
+                    echo json_encode(['message' => $this->_('messages.no_puuid_received')]);
                     return;
                 }
             }
@@ -734,7 +736,7 @@ class RiotController
         }
         else
         {
-            echo json_encode(['message' => 'Error']);
+            echo json_encode(['message' => $this->_('messages.error')]);
             return;
         }
     }
@@ -833,7 +835,7 @@ class RiotController
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
             if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-                echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.unauthorized')]);
                 return;
             }
 
@@ -841,7 +843,7 @@ class RiotController
 
             // Validate Token for User
             if (!$this->validateTokenWebsite($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid token']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
                 return;
             }
 
@@ -849,13 +851,13 @@ class RiotController
             $user = $this->user->getUserById($userId);
             $friend = $this->user->getUserById($friendId);
             if (!$user || !$friend) {
-                echo json_encode(['success' => false, 'message' => 'User or friend not found']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.user_or_friend_not_found')]);
                 return;
             }
 
             // Check if both have LoL accounts
             if (!$user['lol_verified'] || !$friend['lol_verified']) {
-                echo json_encode(['success' => false, 'message' => 'One or both users do not have a verified League of Legends account']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.no_verified_lol_account')]);
                 return;
             }
 
@@ -877,7 +879,7 @@ class RiotController
             $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
 
             if (!$selectedRegionValue) {
-                echo json_encode(['success' => false, 'message' => 'Invalid region']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_region')]);
                 return;
             }
 
@@ -886,7 +888,7 @@ class RiotController
             $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue, $apiKey);
 
             if (!$userMatches || !$friendMatches) {
-                echo json_encode(['success' => false, 'message' => 'Could not retrieve match history']);
+                echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_match_history')]);
                 return;
             }
 
@@ -910,7 +912,7 @@ class RiotController
                 'commonMatches' => array_values($commonMatches) // optional, useful for debugging
             ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_request')]);
         }
     }
 
@@ -934,7 +936,7 @@ class RiotController
     public function connectRiotMobile()
     {
         if (!isset($_GET['phoneData'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing phone data']);
+            echo json_encode(['success' => false, 'message' => $this->_('messages.missing_phone_data')]);
             header("Location: /?error=Incorrect phone data");
             return;
         }
@@ -1076,7 +1078,7 @@ class RiotController
                                     );
 
                                     $response = array(
-                                        'message' => 'Success',
+                                        'message' => $this->_('messages.success'),
                                         'newUser' => false,
                                         'userExists' => true,
                                         'leagueUserExists' => true,
@@ -1092,7 +1094,7 @@ class RiotController
                                 else 
                                 {
                                     $response = array(
-                                        'message' => 'Success',
+                                        'message' => $this->_('messages.success'),
                                         'newUser' => false,
                                         'userExists' => true,
                                         'leagueUserExists' => true,
@@ -1108,7 +1110,7 @@ class RiotController
                             else 
                             {
                                 $response = array(
-                                    'message' => 'Success',
+                                    'message' => $this->_('messages.success'),
                                     'newUser' => false,
                                     'googleUser' => $googleUserData,
                                     'user' => $userData,
@@ -1155,7 +1157,7 @@ class RiotController
                                     );
 
                                     $response = array(
-                                        'message' => 'Success',
+                                        'message' => $this->_('messages.success'),
                                         'newUser' => false,
                                         'userExists' => true,
                                         'leagueUserExists' => false,
@@ -1173,7 +1175,7 @@ class RiotController
                                 else 
                                 {
                                     $response = array(
-                                        'message' => 'Success',
+                                        'message' => $this->_('messages.success'),
                                         'newUser' => false,
                                         'userExists' => true,
                                         'leagueUserExists' => false,
@@ -1191,7 +1193,7 @@ class RiotController
                             else 
                             {
                                 $response = array(
-                                    'message' => 'Success',
+                                    'message' => $this->_('messages.success'),
                                     'newUser' => false,
                                     'googleUser' => $googleUserData,
                                     'user' => $userData,
@@ -1210,7 +1212,7 @@ class RiotController
                     else 
                     {
                         $response = array(
-                            'message' => 'Success',
+                            'message' => $this->_('messages.success'),
                             'newUser' => false,
                             'googleUser' => $googleUserData,
                             'userExists' => false
@@ -1222,7 +1224,7 @@ class RiotController
                 else 
                 {
                     $response = array(
-                            'message' => 'Success',
+                            'message' => $this->_('messages.success'),
                             'newUser' => false,
                             'googleUser' => $googleUserData,
                             'userExists' => false
@@ -1274,7 +1276,7 @@ class RiotController
                 );
 
                 $response = array(
-                    'message' => 'Success',
+                    'message' => $this->_('messages.success'),
                     'newUser' => true,
                     'googleUser' => $googleData,
                 );
