@@ -1,7 +1,7 @@
 import { renderEmotes, chatfilter } from './message_emotes.js'
 import { replyToMessage, deleteMessage } from './message_events.js'
 import { handleSendMessage } from './message_sender.js'
-import { userId, messageContainer } from './message_utils.js'
+import { userId } from './message_utils.js'
 
 // Render random chat control elements (UI only)
 export function renderRandomChatControls() {

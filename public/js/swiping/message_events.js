@@ -1,17 +1,7 @@
-import {
-    deleteMessageApi,
-    markMessageAsReadApi,
-    sendFriendRequestApi,
-    closeRandomChatApi,
-    findRandomPlayerApi,
-} from './message_api.js'
+import { deleteMessageApi, markMessageAsReadApi } from './message_api.js'
 import { fetchMessages } from './message_fetcher.js'
 import { closeRatingModal, sendRating } from './message_friends.js'
-import {
-    showLoadingIndicator,
-    removeRandomChatControls,
-} from './message_renderer.js'
-import { initRandomChatUI } from './message_main.js'
+import { removeRandomChatControls } from './message_renderer.js'
 import {
     userId,
     friendId,
@@ -31,6 +21,7 @@ import {
     messageContainer,
     clearImageTrue,
 } from './message_utils.js'
+import { addRandomChatControls } from './message_random_chat.js'
 
 export function replyToMessage(chatId, messageText, senderName) {
     replyPreviewContainer.style.display = 'block'
@@ -95,6 +86,19 @@ export function deleteMessage(chatId, userId) {
     } catch (error) {
         console.error('Fetch error (delete message):', error)
     }
+}
+
+// Initialize random chat UI
+export async function initRandomChatUI(randomUserId) {
+    // Hide friend list on mobile for random chat
+    const isMax1018px = window.matchMedia('(max-width: 1018px)').matches
+    if (isMax1018px && chatInterface) {
+        chatInterface.style.display = 'none'
+        messageContainer.style.display = 'block'
+    }
+
+    // Add random chat controls
+    await addRandomChatControls()
 }
 
 export function initChatEvents() {
@@ -228,107 +232,4 @@ function handleFormSubmit(event) {
     import('./message_sender.js').then((module) => {
         module.handleSendMessage(event)
     })
-}
-
-// Find random player function (moved from player finder)
-function findRandomPlayer(prefs) {
-    findRandomPlayerApi(prefs, userId)
-        .then((data) => {
-            if (data.success) {
-                const randomUserId = data.randomUserId
-                const sessionId = data.sessionId
-                window.location.href = `persoChat?random_user_id=${randomUserId}&session_id=${sessionId}`
-                return
-            } else {
-                alert(
-                    'No random players found. Try adjusting your preferences.'
-                )
-            }
-        })
-        .catch((error) => {
-            console.error('Request failed', error)
-        })
-}
-
-// Initialize random chat control event listeners
-export function initRandomChatControlEvents(validateSessionFn) {
-    const addFriendBtn = document.getElementById('add-friend-btn')
-    const skipUserBtn = document.getElementById('skip-user-btn')
-    const closeChatBtn = document.getElementById('close-chat-btn')
-
-    if (addFriendBtn) {
-        addFriendBtn.addEventListener('click', async () => {
-            // Validate session before allowing friend request
-            if (await validateSessionFn()) {
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    try {
-                        await sendFriendRequestApi(
-                            userId,
-                            randomSession.targetUserId
-                        )
-                        addFriendBtn.textContent = 'Request Sent!'
-                        addFriendBtn.style.background = '#28a745'
-                        addFriendBtn.disabled = true
-                    } catch (error) {
-                        console.error('Error sending friend request:', error)
-                        addFriendBtn.textContent = 'Error'
-                        addFriendBtn.style.background = '#dc3545'
-                    }
-                }
-            } else {
-                alert('This chat session has expired. Please start a new one.')
-                window.location.href = '/persoChat'
-            }
-        })
-    }
-
-    if (skipUserBtn) {
-        skipUserBtn.addEventListener('click', async () => {
-            if (await validateSessionFn()) {
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    try {
-                        results = await closeRandomChatApi(
-                            randomSession.targetUserId
-                        )
-                    } catch (error) {
-                        console.error('Error closing random chat:', error)
-                    }
-                    localStorage.removeItem('randomChatSession')
-                    // Add loading indicator while finding new player
-                    showLoadingIndicator()
-                    const prefs =
-                        JSON.parse(
-                            localStorage.getItem('playerfinder_filters')
-                        ) || {}
-
-                    findRandomPlayer(prefs)
-                } else {
-                    window.location.href = '/persoChat'
-                }
-            } else {
-                window.location.href = '/persoChat'
-            }
-        })
-    }
-
-    if (closeChatBtn) {
-        closeChatBtn.addEventListener('click', async () => {
-            if (await validateSessionFn()) {
-                const randomSession = JSON.parse(
-                    localStorage.getItem('randomChatSession')
-                )
-                if (randomSession) {
-                    await closeRandomChatApi(randomSession.targetUserId)
-                }
-            }
-            localStorage.removeItem('randomChatSession')
-            window.location.href = '/persoChat'
-        })
-    }
 }

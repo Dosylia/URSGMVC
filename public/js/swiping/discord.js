@@ -1,3 +1,4 @@
+import { sendMessageToPhp } from './message_sender.js' // Import the function to send messages
 let isChannelCreationInProgress = false // Flag to prevent duplicate execution
 
 function createChannel() {

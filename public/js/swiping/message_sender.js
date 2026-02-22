@@ -112,9 +112,6 @@ export async function sendMessageToPhp(senderId, message, replyToChatId) {
     }
 }
 
-// Make sendMessageToPhp available globally for other scripts like discord.js
-window.sendMessageToPhp = sendMessageToPhp
-
 function clearMessageInput() {
     messageInput.value = ''
 }
