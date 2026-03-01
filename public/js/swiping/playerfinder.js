@@ -206,7 +206,7 @@ function deletePost(postId, token) {
 
 function displayErrors(errorMessage) {
     // Ensure error message element exists
-    let errorDiv = document.getElementById('random-player-error')
+    let errorDiv = document.getElementById('error-message')
     if (!errorDiv) {
         errorDiv = document.createElement('div')
         errorDiv.id = 'error-message'
