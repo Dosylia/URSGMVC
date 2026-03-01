@@ -59,6 +59,8 @@ class PlayerFinder extends DataBase
             LEFT JOIN valorant val ON val.user_id = u.user_id
             WHERE u.user_randomChatPermission = 1
              AND pf.user_id != :userId
+             AND u.user_isOnline = 1 
+            AND TIMESTAMPDIFF(SECOND, u.user_lastSeen, NOW()) < 300
             AND NOT EXISTS (
                 SELECT 1 
                 FROM friendrequest fr
