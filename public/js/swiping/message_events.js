@@ -79,7 +79,8 @@ export function deleteMessage(chatId, userId) {
         const data = deleteMessageApi(chatId, userId)
 
         if (data.success) {
-            fetchMessages(userId, friendId) // Reload messages after deletion
+            const currentFriendId = getActualFriendId() || friendId
+            fetchMessages(userId, currentFriendId) // Reload messages after deletion
         } else {
             console.error('Error deleting message:', data.message)
         }
@@ -201,7 +202,8 @@ export function initChatEvents() {
 export function initMessageInputEvents() {
     if (messageInput) {
         messageInput.addEventListener('focus', function () {
-            markMessageAsRead(senderId, receiverId)
+            const currentReceiverId = getActualFriendId() || receiverId
+            markMessageAsRead(senderId, currentReceiverId)
             setTimeout(function () {
                 messageInput.scrollIntoView({
                     behavior: 'smooth',
