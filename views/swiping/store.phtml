@@ -85,7 +85,7 @@
                     <?php if ($ownsRole || in_array($item['items_id'], array_column($ownedItems, 'items_id'))) : ?>
                         <?php if ($item['items_category'] === 'role' && $ownsRole) : ?>
                             <button class="buy-button-owned getRoleDiscord" data-item-id="<?= $item['items_id'] ?>">
-                                <?= $this->_('store_get_on_discord', [strtolower($item['items_name'])]) ?>
+                                <?= $this->_('store_get_on_discord', ['role' => strtolower($item['items_name'])]) ?>
                             </button>
                         <?php else : ?>
                              <button class="buy-button-owned" disabled><?= $this->_('store_owned') ?></button>

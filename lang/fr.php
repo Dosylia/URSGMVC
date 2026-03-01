@@ -70,7 +70,7 @@ return [
     'store_owned' => 'Déjà possédé',
     'store_need_gold' => 'Vous devez posséder Gold pour acheter',
     'store_buy' => 'Acheter',
-    'store_get_on_discord' => 'Obtenir %s sur Discord',
+    'store_get_on_discord' => 'Obtenir {role} sur Discord',
     'store_ahris_easter_egg_title' => 'Miaou ! Vous avez trouvé un secret de <strong>Ahristochat</strong> !',
     'store_ahris_easter_egg_desc' => 'Ce cadre Kitty est en partenariat avec <strong>Ahristochat</strong>, notre fabuleux ami félin ! 😸',
     // Playerfinder missing keys

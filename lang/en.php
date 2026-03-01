@@ -70,7 +70,7 @@ return [
     'store_owned' => 'Owned',
     'store_need_gold' => 'Need to own Gold to buy',
     'store_buy' => 'Buy',
-    'store_get_on_discord' => 'Get %s on Discord',
+    'store_get_on_discord' => 'Get {role} on Discord',
     'store_ahris_easter_egg_title' => 'Meow! You found a secret from <strong>Ahristochat</strong>!',
     'store_ahris_easter_egg_desc' => 'This Kitty Frame is in purrtnership with <strong>Ahristochat</strong>, our fabulous feline friend! 😸',
     // Playerfinder missing keys
