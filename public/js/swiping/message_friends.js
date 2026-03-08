@@ -57,7 +57,6 @@ export async function showFriendInfo(friend) {
     if (friend.lol_verified === 1) {
         checkIfUsersPlayedTogether(friend.user_id, userId)
         friendLeagueStatus = await getGameStatusLoL(friend.user_id)
-        console.log('[DEV] Friend League Status:', friendLeagueStatus)
         if (friendLeagueStatus.success) {
             friendGameStatus = true
             gamemode =
@@ -131,7 +130,6 @@ export async function showFriendInfo(friend) {
 
     // Game status
     if (friendGameStatus) {
-        console.log('[DEV] Friend is in game, displaying status')
         const status = document.createElement('span')
         status.className = 'ingame-status'
         status.innerText = `🎮 Playing ${friendLeagueStatus.champion} (${gamemode})`

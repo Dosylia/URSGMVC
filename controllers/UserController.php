@@ -866,7 +866,9 @@ class UserController
 
             if ($updateUser)
             {
-                if (isset($_POST['username']) && $user['user_isAscend'] == 1)
+                // Only go into this if username if different
+                $isDifferentUsername = isset($_POST['username']) && $user['user_username'] !== $this->getUsername();
+                if ($isDifferentUsername && $user['user_isAscend'] == 1)
                 {
                     $currentMonth = date('Y-m');
                     if ($user['user_usernameChangeMonth'] !== $currentMonth) {
