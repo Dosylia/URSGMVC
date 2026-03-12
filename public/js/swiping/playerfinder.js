@@ -90,6 +90,7 @@ function addPlayerFinderPost({ voice, role, rank, desc, account }) {
 }
 
 function editPlayerPost(postId, desc, newRole, newRank) {
+    const token = localStorage.getItem('masterTokenWebsite')
     fetch('/editPlayerPost', {
         method: 'POST',
         headers: {
