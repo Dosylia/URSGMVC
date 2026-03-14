@@ -58,6 +58,11 @@ return [
     'cookie_about_text' => 'Les cookies sont de petits fichiers texte stockés sur votre appareil par votre navigateur web. Ils permettent aux sites de se souvenir d\'informations sur votre visite, comme les identifiants de connexion ou vos préférences, afin d\'améliorer votre expérience.',
     'cookie_btn_save' => 'Sauvegarder',
 
+// layout.phtml
+    'layout_description' => 'Trouvez votre partenaire de jeu idéal sur URSG. Rencontrez des joueurs de League of Legends, de Valorant ou d\'autres jeux. Discutez, jouez et gagnez ensemble !',
+    'layout_keywords' => 'Partenaire idéal pour League of Legends, joueurs de Valorant, trouver un partenaire de jeu, rencontres entre gamers, LoL duo, application URSG, jouer ensemble',
+    'layout_og_description' => 'Il est temps de trouver l\'âme sœur. Et il n\'y a pas de meilleur endroit que celui-ci. Rencontrez-vous et jouez ensemble à League of Legends, Valorant ou à d\'autres jeux.',
+
 // layoutHome.phtml
     'log_out' => 'Se déconnecter',
     'swipe_now' => 'Swipe maintenant',

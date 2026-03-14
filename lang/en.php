@@ -57,6 +57,11 @@ return [
     'cookie_always_active' => 'Always active',
     'cookie_about_text' => 'Cookies are small text files stored on your device by your web browser. They help websites remember information about your visit, such as login details or preferences, to improve your browsing experience.',
     'cookie_btn_save' => 'Save',
+    
+// layout.phtml
+    'layout_description' => 'Find your perfect gaming soulmate on URSG. Match with League of Legends, Valorant, or other gamers. Chat, play, and win together!',
+    'layout_keywords' => 'League of Legends soulmate, Valorant gamers, find gaming partner, gamer dating, LoL duo, URSG app, play games together',
+    'layout_og_description' => 'It is time to find your soulmate. And there is no better place than here. Meet and play together League of Legends, Valorant or more.',
 
 // layoutHome.phtml
     'log_out' => 'Log out',
