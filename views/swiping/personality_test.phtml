@@ -19,13 +19,15 @@
 
   <!-- Result -->
   <div id="result" class="hidden">
-    <button id="resetBtn" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hidden">
-      <?= $this->_('quiz_restart') ?>
-    </button>
-    <h2 id="result-title"></h2>
-    <div class="result-row">
-      <img id="result-image" src="" alt="Result Image" />
-      <p id="result-description"></p>
+    <img id="result-image" src="" alt="Result Image" />
+    <div class="result-image-alignated">
+      <button id="resetBtn" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hidden">
+        <?= $this->_('quiz_restart') ?>
+      </button>
+      <h2 id="result-title"></h2>
+      <div class="result-row">
+        <p id="result-description"></p>
+      </div>
     </div>
     <div id="canvas-container" class="w-full" style="position: relative;">
       <svg id="result-chart"></svg>

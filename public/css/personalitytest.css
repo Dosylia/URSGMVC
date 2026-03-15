@@ -81,7 +81,9 @@
     font-size: 1rem;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease;
     text-align: center;
     border: 1px solid var(--main--red);
 }
@@ -120,7 +122,9 @@
     font-weight: 500;
     cursor: pointer;
     border: 1px solid var(--main--red);
-    transition: background 0.3s ease, transform 0.2s ease;
+    transition:
+        background 0.3s ease,
+        transform 0.2s ease;
     width: 45%;
 }
 
@@ -161,8 +165,8 @@
 
 /* Result Section */
 .lol-quiz #result {
+    position: relative;
     text-align: center;
-    padding-top: 2rem;
 }
 
 .lol-quiz .color-red {
@@ -173,10 +177,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 50px;
     width: 100%;
-    padding: 0 10%;
     box-sizing: border-box;
+}
+
+.lol-quiz .result-image-alignated {
+    margin-left: 20%;
 }
 
 .lol-quiz #result-title {
@@ -188,12 +194,15 @@
 .lol-quiz #result-image {
     width: auto;
     height: 300px;
+    position: absolute;
+    left: 10px;
 }
 
 .lol-quiz #result-description {
     font-size: 1.25rem;
     margin-bottom: 1.5rem;
     color: black;
+    margin-left: 10%;
 }
 
 .dark-mode .lol-quiz #result-description {
@@ -285,7 +294,9 @@
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.3s ease;
+    transition:
+        transform 0.2s ease,
+        background 0.3s ease;
     margin-bottom: 20px;
 }
 
@@ -321,5 +332,13 @@
 
     .lol-quiz #result-image {
         display: none;
+    }
+
+    .lol-quiz #result-description {
+        margin-left: unset;
+    }
+
+    .lol-quiz .result-image-alignated {
+        margin-left: unset;
     }
 }

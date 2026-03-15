@@ -4989,6 +4989,7 @@ dialog .title_generalbox {
     text-align: center;
     outline: none;
     box-sizing: border-box;
+    line-height: 30px;
 }
 
 .dark-mode .minigame-window .name-input {
