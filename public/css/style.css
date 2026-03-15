@@ -4684,7 +4684,6 @@ dialog .title_generalbox {
     border-radius: 25px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 20%;
     left: 50%;
     transform: translate(-50%);
     z-index: 1000;
@@ -4698,7 +4697,7 @@ dialog .title_generalbox {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     padding: 20px;
     box-sizing: border-box;
     max-height: 130%;
@@ -4861,7 +4860,6 @@ dialog .title_generalbox {
     font-weight: normal;
     color: #ffffff;
     text-align: center;
-    line-height: 52px;
     cursor: pointer;
     transition:
         transform 0.2s,
@@ -4878,6 +4876,7 @@ dialog .title_generalbox {
     width: 100%;
     gap: 20px;
     flex-wrap: wrap;
+    margin-top: 20px;
 }
 
 .minigame-window #ignore-permanently-btn:hover {
@@ -4950,7 +4949,6 @@ dialog .title_generalbox {
     font-weight: normal;
     color: #ffffff;
     text-align: center;
-    line-height: 52px;
     cursor: pointer;
     transition:
         transform 0.2s,
@@ -4959,7 +4957,7 @@ dialog .title_generalbox {
 }
 
 .dark-mode .minigame-window .submit-button {
-    box-shadow: 0 0 0 4px #2d2d2d;
+    box-shadow: 0 0 0 2px #2d2d2d;
     color: #ffffff;
 }
 
@@ -4985,13 +4983,10 @@ dialog .title_generalbox {
     box-shadow: 0 0 0 1px #2d2d2d;
     border: none;
     border-radius: 25px;
-    padding: 0 16px;
-    font-family: Arial, sans-serif;
     font-size: 20px;
     font-weight: bold;
     color: black;
     text-align: center;
-    line-height: 58px;
     outline: none;
     box-sizing: border-box;
 }
@@ -5041,7 +5036,7 @@ dialog .title_generalbox {
 
 .rules-button {
     background-color: var(--main--red);
-    font-size: 2em;
+    font-size: 1em;
     color: white;
     font-weight: bold;
     border: none;
@@ -6255,13 +6250,11 @@ dialog .title_generalbox {
 
     .minigame-window .submit-button {
         font-size: 28px;
-        line-height: 40px;
         width: 60%;
     }
 
     .minigame-window .name-input {
         font-size: 18px;
-        line-height: 50px;
     }
 
     .minigame-window .player-img {
@@ -6786,13 +6779,11 @@ dialog .title_generalbox {
 
     .minigame-window .submit-button {
         font-size: 20px;
-        line-height: 36px;
         width: 80%;
     }
 
     .minigame-window .name-input {
         font-size: 16px;
-        line-height: 40px;
     }
 
     .minigame-window .player-img {
