@@ -7,7 +7,7 @@ return [
     '404_come_back' => 'vuelve',
     // Legal Notice
     'legalnotice_title' => 'Aviso legal y política de privacidad',
-    'legalnotice_last_updated' => 'Última actualización: %s',
+    'legalnotice_last_updated' => 'Última actualización: {time}',
     'legalnotice_intro_1' => 'Este Aviso Legal/Política de Privacidad describe nuestras políticas y procedimientos sobre la recopilación, uso y divulgación de su información cuando utiliza el Servicio y le informa sobre sus derechos de privacidad y cómo la ley lo protege.',
     'legalnotice_intro_2' => 'Utilizamos sus datos personales para proporcionar y mejorar el Servicio. Al utilizar el Servicio, acepta la recopilación y el uso de información de acuerdo con esta Política de Privacidad. Esta Política de Privacidad ha sido creada con la ayuda de',
     'legalnotice_who_responsible_title' => '¿Quién es responsable de la gestión de sus datos?',

@@ -7,7 +7,7 @@ return [
     '404_come_back' => 'revenez',
     // Legal Notice
     'legalnotice_title' => 'Mentions légales et politique de confidentialité',
-    'legalnotice_last_updated' => 'Dernière mise à jour : %s',
+    'legalnotice_last_updated' => 'Dernière mise à jour : {time}',
     'legalnotice_intro_1' => 'Cette mention légale/politique de confidentialité décrit nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations lorsque vous utilisez le service et vous informe de vos droits en matière de confidentialité et de la façon dont la loi vous protège.',
     'legalnotice_intro_2' => 'Nous utilisons vos données personnelles pour fournir et améliorer le service. En utilisant le service, vous acceptez la collecte et l’utilisation des informations conformément à cette politique de confidentialité. Cette politique de confidentialité a été créée avec l’aide de',
     'legalnotice_who_responsible_title' => 'Qui est responsable de la gestion de vos données ?',

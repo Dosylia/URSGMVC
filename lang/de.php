@@ -7,7 +7,7 @@ return [
     '404_come_back' => 'komm zurück',
     // Legal Notice
     'legalnotice_title' => 'Impressum und Datenschutzrichtlinie',
-    'legalnotice_last_updated' => 'Zuletzt aktualisiert: %s',
+    'legalnotice_last_updated' => 'Zuletzt aktualisiert: {time}',
     'legalnotice_intro_1' => 'Dieses Impressum/Datenschutzerklärung beschreibt unsere Richtlinien und Verfahren zur Erhebung, Nutzung und Offenlegung Ihrer Informationen, wenn Sie den Service nutzen, und informiert Sie über Ihre Datenschutzrechte und wie das Gesetz Sie schützt.',
     'legalnotice_intro_2' => 'Wir verwenden Ihre personenbezogenen Daten, um den Service bereitzustellen und zu verbessern. Durch die Nutzung des Service stimmen Sie der Erhebung und Verwendung von Informationen gemäß dieser Datenschutzerklärung zu. Diese Datenschutzerklärung wurde mit Hilfe von',
     'legalnotice_who_responsible_title' => 'Wer ist für die Verwaltung Ihrer Daten verantwortlich?',

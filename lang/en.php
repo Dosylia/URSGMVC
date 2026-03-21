@@ -7,7 +7,7 @@ return [
     '404_come_back' => 'come back',
     // Legal Notice
     'legalnotice_title' => 'Legal notice and privacy policy',
-    'legalnotice_last_updated' => 'Last updated: %s',
+    'legalnotice_last_updated' => 'Last updated: {time}',
     'legalnotice_intro_1' => 'This Legal Notice/Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.',
     'legalnotice_intro_2' => 'We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the',
     'legalnotice_who_responsible_title' => 'Who is responsible for the management of your data?',
