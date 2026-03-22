@@ -507,7 +507,7 @@ function getMatchingPersonality(userId) {
             const matchingUserName = document.getElementById('matchingUserName')
             matchingUserAvatar.src = `public/upload/${data.result.user_picture}`
             matchingUserAvatar.alt = `Avatar ${data.result.user_username}`
-            matchingUserName.href = `/anotherUser&username=${encodeURIComponent(data.result.user_username)}`
+            matchingUserName.href = `/user/${encodeURIComponent(data.result.user_username)}`
             matchingUserName.querySelector('.strong_text').textContent =
                 data.result.user_username
         })

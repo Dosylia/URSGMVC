@@ -294,6 +294,11 @@ $actionMap = [
 
 ];
 
+// Friendly URL prefixes: '/prefix/value' → action + $_GET param
+$friendlyRoutes = [
+    'user' => ['action' => 'anotherUser', 'param' => 'username'],
+];
+
 $action = "home";
 
 if (isset($_GET['action'])) {
@@ -304,17 +309,31 @@ if (isset($_GET['action'])) {
     $parsedURL = parse_url($URL);
     $path = $parsedURL['path'] ?? '';
     $query = $parsedURL['query'] ?? '';
-    
-    if ($path == '/' || $path == '') {
-    } else {
-        if (strpos($path, $delimiter) === false) {
-            $result = str_replace(['/', '?'], '', $path);
-            $action = htmlspecialchars($result);
+
+    // Check for friendly routes like /user/Username
+    $pathTrimmed = trim($path, '/');
+    $segments = explode('/', $pathTrimmed);
+    $matchedFriendly = false;
+
+    if (count($segments) === 2 && isset($friendlyRoutes[$segments[0]])) {
+        $route = $friendlyRoutes[$segments[0]];
+        $action = $route['action'];
+        $_GET[$route['param']] = htmlspecialchars($segments[1], ENT_QUOTES, 'UTF-8');
+        $matchedFriendly = true;
+    }
+
+    if (!$matchedFriendly) {
+        if ($path == '/' || $path == '') {
         } else {
-            $pos = strpos($path, $delimiter);
-            $action = substr($path, 0, $pos);
-            $action = str_replace(['/', '?'], '', $action);
-            $action = htmlspecialchars($action);
+            if (strpos($path, $delimiter) === false) {
+                $result = str_replace(['/', '?'], '', $path);
+                $action = htmlspecialchars($result);
+            } else {
+                $pos = strpos($path, $delimiter);
+                $action = substr($path, 0, $pos);
+                $action = str_replace(['/', '?'], '', $action);
+                $action = htmlspecialchars($action);
+            }
         }
     }
 }

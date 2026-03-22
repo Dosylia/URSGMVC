@@ -30,11 +30,11 @@
                 ?>
                 <div class="friend-entry" data-sender-id="<?= $friendId ?>">
                     <div class="friend-avatar">
-                        <a href="/anotherUser&username=<?= $friendUsername ?>">
+                        <a href="/user/<?= urlencode($friendUsername) ?>">
                             <img src="<?= $friendPicture ? 'public/upload/'.$friendPicture : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $friendUsername ?>" loading="lazy">
                         </a>
                         <div class="friend-info">
-                        <a class="friend-name" href="/anotherUser&username=<?= $friendUsername ?>"><?= $friendUsername ?></a>
+                        <a class="friend-name" href="/user/<?= urlencode($friendUsername) ?>"><?= $friendUsername ?></a>
                         <?php if ($isOnline): ?>
                             <span class="online-status"></span>
                         <?php endif; ?>
@@ -105,11 +105,11 @@
                     <?php if ($isOnline): ?>
                         <div class="friend-entry" data-sender-id="<?= $friendId ?>">
                             <div class="friend-avatar">
-                                <a href="/anotherUser&username=<?= $friendUsername ?>">
+                                <a href="/user/<?= urlencode($friendUsername) ?>">
                                     <img src="<?= $friendPicture ? 'public/upload/'.$friendPicture : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $friendUsername ?>" loading="lazy">
                                 </a>
                                 <div class="friend-info">
-                                <a class="friend-name" href="/anotherUser&username=<?= $friendUsername ?>"><?= $friendUsername ?></a>
+                                <a class="friend-name" href="/user/<?= urlencode($friendUsername) ?>"><?= $friendUsername ?></a>
                                 <span class="online-status"></span>
                                 </div>
                             </div>
@@ -133,12 +133,12 @@
             <?php foreach($getBlocklist as $blocked) :?>
                 <div class="friend-entry">
                     <div class="friend-avatar">
-                        <a href="/anotherUser&username=<?= $blocked['user_username'] ?>">
+                        <a href="/user/<?= urlencode($blocked['user_username']) ?>">
                             <img src="<?= $blocked['user_picture'] ? 'public/upload/'.$blocked['user_picture'] : 'public/images/defaultprofilepicture.jpg' ?>" alt="<?= $blocked['user_username'] ?>">
                         </a>
                     </div>
                     <div class="friend-info">
-                        <a class="friend-name" href="/anotherUser&username=<?= $blocked['user_username'] ?>"><?= $blocked['user_username'] ?></a>
+                        <a class="friend-name" href="/user/<?= urlencode($blocked['user_username']) ?>"><?= $blocked['user_username'] ?></a>
                         <button class="unblock_user" onclick="openConfirmationPopup2('confirmationPopup2_<?= $blocked['block_id'] ?>', '<?= $blocked['user_username'] ?>')"><?= $this->_('form_unblock') ?></button>
                     </div>
                 </div>

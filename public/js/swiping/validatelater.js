@@ -1,55 +1,59 @@
-let friendRequests = []; // Array to hold all friend requests
-const usersPerPage = 3; // Number of friend requests to display per page
-let currentPage = 1; // Start with the first page
+let friendRequests = [] // Array to hold all friend requests
+const usersPerPage = 3 // Number of friend requests to display per page
+let currentPage = 1 // Start with the first page
 
 function updateFriend(frId, userId, status) {
     const dataToSend = {
         frId: frId,
         userId: userId,
-        status: status
-    };
+        status: status,
+    }
 
-    const jsonData = JSON.stringify(dataToSend);
+    const jsonData = JSON.stringify(dataToSend)
 
     fetch('index.php?action=updateFriendWebsite', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: "param=" + encodeURIComponent(jsonData)
+        body: 'param=' + encodeURIComponent(jsonData),
     })
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok')
             }
-            return response.json();
+            return response.json()
         })
-        .then(data => {
+        .then((data) => {
             // Re-select the span after DOM updates
-            const friendRequestSpan = document.getElementById('friendrequest-backend');
-            friendRequestSpan.style.display = 'block';
-            friendRequestSpan.innerText = '';
+            const friendRequestSpan = document.getElementById(
+                'friendrequest-backend'
+            )
+            friendRequestSpan.style.display = 'block'
+            friendRequestSpan.innerText = ''
             if (data.success) {
-                friendRequestSpan.innerText = data.message;
+                friendRequestSpan.innerText = data.message
 
                 // Update the friendRequests array and re-render
-                friendRequests = friendRequests.filter(request => request.fr_id !== frId);
-                renderFriendRequests();
+                friendRequests = friendRequests.filter(
+                    (request) => request.fr_id !== frId
+                )
+                renderFriendRequests()
             } else {
-                friendRequestSpan.innerText = data.message;
+                friendRequestSpan.innerText = data.message
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        .catch((error) => {
+            console.error('Error:', error)
+        })
 }
 
 // Render friend requests for the current page
 function renderFriendRequests() {
-    const friendRequestBox = document.querySelector('.friendrequest_box');
-    const startIndex = (currentPage - 1) * usersPerPage;
-    const endIndex = startIndex + usersPerPage;
-    const requestsToDisplay = friendRequests.slice(startIndex, endIndex);
+    const friendRequestBox = document.querySelector('.friendrequest_box')
+    const startIndex = (currentPage - 1) * usersPerPage
+    const endIndex = startIndex + usersPerPage
+    const requestsToDisplay = friendRequests.slice(startIndex, endIndex)
 
     // Render the friend requests with buttons
     friendRequestBox.innerHTML = `
@@ -57,10 +61,10 @@ function renderFriendRequests() {
         <span id="friendrequest-backend"></span>
         ${requestsToDisplay
             .map(
-                request => `
+                (request) => `
             <div class="friend_request_ctn" data-fr-id="${request.fr_id}">
                 <p>
-                    <a target="_blank" href="/anotherUser&username=${encodeURIComponent(request.user_username)}">
+                    <a target="_blank" href="/user/${encodeURIComponent(request.user_username)}">
                         <img id="image_users_small" src="${request.user_picture ? `public/upload/${request.user_picture}` : 'public/images/defaultprofilepicture.jpg'}" alt="Picture of ${request.user_username}" />
                         <span class="clickable">${request.user_username}, ${request.user_age}, ${request.user_gender}</span>
                     </a>
@@ -80,63 +84,63 @@ function renderFriendRequests() {
             ${currentPage > 1 ? `<button id="prevPage">&laquo; Previous</button>` : ''}
             ${currentPage < Math.ceil(friendRequests.length / usersPerPage) ? `<button id="nextPage">Next &raquo;</button>` : ''}
         </div>
-    `;
+    `
 
     // Re-attach listeners after rendering
-    addPaginationListeners();
-    addActionListeners();
+    addPaginationListeners()
+    addActionListeners()
 }
 
 // Add click listeners for pagination buttons
 function addPaginationListeners() {
-    const prevButton = document.getElementById('prevPage');
-    const nextButton = document.getElementById('nextPage');
+    const prevButton = document.getElementById('prevPage')
+    const nextButton = document.getElementById('nextPage')
 
     if (prevButton) {
         prevButton.addEventListener('click', () => {
-            currentPage--;
-            renderFriendRequests();
-        });
+            currentPage--
+            renderFriendRequests()
+        })
     }
 
     if (nextButton) {
         nextButton.addEventListener('click', () => {
-            currentPage++;
-            renderFriendRequests();
-        });
+            currentPage++
+            renderFriendRequests()
+        })
     }
 }
 
 // Add click listeners for accept/refuse buttons
 function addActionListeners() {
-    const acceptButtons = document.querySelectorAll('.accept_friend_button');
-    const refuseButtons = document.querySelectorAll('.refuse_friend_button');
+    const acceptButtons = document.querySelectorAll('.accept_friend_button')
+    const refuseButtons = document.querySelectorAll('.refuse_friend_button')
 
-    acceptButtons.forEach(button => {
+    acceptButtons.forEach((button) => {
         button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const frId = button.getAttribute('data-fr-id');
-            let userId = document.getElementById('userId').value;
-            const status = button.getAttribute('data-status');
-            updateFriend(frId, userId, status);
-        });
-    });
+            event.preventDefault()
+            const frId = button.getAttribute('data-fr-id')
+            let userId = document.getElementById('userId').value
+            const status = button.getAttribute('data-status')
+            updateFriend(frId, userId, status)
+        })
+    })
 
-    refuseButtons.forEach(button => {
+    refuseButtons.forEach((button) => {
         button.addEventListener('click', function (event) {
-            event.preventDefault();
-            const frId = button.getAttribute('data-fr-id');
-            let userId = document.getElementById('userId').value;
-            const status = button.getAttribute('data-status');
-            updateFriend(frId, userId, status);
-        });
-    });
+            event.preventDefault()
+            const frId = button.getAttribute('data-fr-id')
+            let userId = document.getElementById('userId').value
+            const status = button.getAttribute('data-status')
+            updateFriend(frId, userId, status)
+        })
+    })
 }
 
 // Initialize friend requests and render the first page
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Populate friendRequests from the server (e.g., as a JSON array)
-    const requestData = document.getElementById('friendRequestData').textContent;
-    friendRequests = JSON.parse(requestData);
-    renderFriendRequests();
-});
+    const requestData = document.getElementById('friendRequestData').textContent
+    friendRequests = JSON.parse(requestData)
+    renderFriendRequests()
+})

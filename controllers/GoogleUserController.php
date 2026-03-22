@@ -1796,7 +1796,7 @@ class GoogleUserController
 
             if (isset($_POST['ursg_username'])) {
                 $username = $_POST['ursg_username'];
-                $linkToURSGAccount = 'https://ur-sg.com/anotherUser&username='.$username;
+                $linkToURSGAccount = 'https://ur-sg.com/user/'.urlencode($username);
             }
 
             $mail->Body = "
@@ -1906,9 +1906,9 @@ class GoogleUserController
             $unreadCount = false;
         } else {
             if ($unreadCount == 1) {
-                $messageTextMessage = "You have <strong>1 unread message</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender}'>{$latestSender}</a>)";
+                $messageTextMessage = "You have <strong>1 unread message</strong> (latest from <a href='https://ur-sg.com/user/{$latestSender}'>{$latestSender}</a>)";
             } else {
-                $messageTextMessage = "You have <strong>{$unreadCount} unread messages</strong> (latest from <a href='https://ur-sg.com/anotherUser&username={$latestSender}'>{$latestSender}</a>)";
+                $messageTextMessage = "You have <strong>{$unreadCount} unread messages</strong> (latest from <a href='https://ur-sg.com/user/{$latestSender}'>{$latestSender}</a>)";
             }
         }
 

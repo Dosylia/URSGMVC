@@ -86,7 +86,7 @@ function renderFriendRequests() {
                 (request) => `
             <div class="friend_request_ctn" data-fr-id="${request.fr_id}">
                 <p>
-                    <a target="_blank" href="/anotherUser&username=${encodeURIComponent(request.user_username)}">
+                    <a target="_blank" href="/user/${encodeURIComponent(request.user_username)}">
                         <img id="image_users_small" src="${request.user_picture ? `public/upload/${request.user_picture}` : 'public/images/defaultprofilepicture.jpg'}" alt="Picture of ${request.user_username}" />
                         <span class="clickable">${request.user_username}, ${request.user_age}, ${request.user_gender}</span>
                     </a>

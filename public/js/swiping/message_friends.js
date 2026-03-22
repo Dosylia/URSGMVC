@@ -84,7 +84,7 @@ export async function showFriendInfo(friend) {
             <img class="avatar" src="public/${pictureLink}" alt="Avatar ${
                 friend.user_username
             }">
-            <a class="username_chat_friend" target="_blank" href="/anotherUser&username=${encodeURIComponent(
+            <a class="username_chat_friend" target="_blank" href="/user/${encodeURIComponent(
                 friend.user_username
             )}">
                 <strong class="strong_text">${friend.user_username}</strong>

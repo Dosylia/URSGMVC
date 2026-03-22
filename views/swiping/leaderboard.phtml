@@ -37,7 +37,7 @@
                     <tr>
                         <td><?= $rank++ ?></td>
                         <td><a
-                                href="/anotherUser&username=<?= $user['user_username'] ?>"><?= htmlspecialchars($user['user_username']) ?>
+                                href="/user/<?= urlencode($user['user_username']) ?>"><?= htmlspecialchars($user['user_username']) ?>
                                 <?php if ($user['user_isPartner']): ?>
                                     <span class="gold-badge"><img src="/public/images/partner-badge.png" alt="Partner badge"></span>
                                 <?php endif; ?>

@@ -2251,7 +2251,7 @@ class UserController
                 if($_GET['username'] !== $_SESSION['username']) 
                 {
                     $username = $_GET['username'];
-                    header("Location: /anotherUser&username=" . $username);
+                    header("Location: /user/" . urlencode($username));
                     return;                    
                 }
             }
@@ -2316,7 +2316,7 @@ class UserController
             if (isset($_GET['username']))
             {
                 $username = $_GET['username'];
-                header("Location: /anotherUser&username=" . $username);
+                header("Location: /user/" . urlencode($username));
                 return;                    
             }
             else 

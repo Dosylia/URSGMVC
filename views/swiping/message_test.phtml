@@ -104,7 +104,7 @@
             <?php foreach ($friendRequest as $request) :?>
                 <div class="friend_request_ctn" data-fr-id="<?= $request['fr_id'] ?>">
                     <p>
-                        <a target="_blank" href="/anotherUser&username=<?= urlencode($request['user_username']) ?>">
+                        <a target="_blank" href="/user/<?= urlencode($request['user_username']) ?>">
                         <?php if (isset($request['user_picture']) && $request['user_picture'] !== null): ?>
                             <img id="image_users_small" src="public/upload/<?= $request['user_picture'] ?>" alt="Picture of <?= $request['user_username'] ?>" />  
                         <?php else :?>
