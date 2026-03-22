@@ -1329,7 +1329,7 @@ class FriendRequestController
 
             if ($updateFriend)
             {
-                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->forceMarkAsReadMessage($this->getSenderId(), $this->getReceiverId());
                 header("location:/friendlistPage?message=User unfriended");
                 return;  
             }
@@ -1375,7 +1375,7 @@ class FriendRequestController
 
             if ($updateFriend)
             {
-                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->forceMarkAsReadMessage($this->getSenderId(), $this->getReceiverId());
                 echo json_encode(['message' => 'Success']);
                 return; 
             }

@@ -309,11 +309,13 @@ class ChatMessage extends DataBase
         }
     }
 
-    public function deleteMessageUnfriend($userId, $friendId)
+    public function forceMarkAsReadMessage($userId, $friendId)
     {
         $query = $this -> bdd -> prepare("
-                                        DELETE FROM
+                                        UPDATE
                                             `chatmessage`
+                                        SET
+                                            chat_status = 'read'
                                         WHERE
                                             (chat_receiverId = ? AND chat_senderId = ?)
                                             OR

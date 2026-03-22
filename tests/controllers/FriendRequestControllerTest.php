@@ -591,7 +591,7 @@ class FriendRequestControllerTest extends BaseControllerTestCase
         $frMock->method('updateFriend')->willReturn(true);
 
         $chatMock = $this->createMock(ChatMessage::class);
-        $chatMock->method('deleteMessageUnfriend')->willReturn(true);
+        $chatMock->method('forceMarkAsReadMessage')->willReturn(true);
 
         $controller = $this->createController([
             'friendrequest' => $frMock,
@@ -630,7 +630,7 @@ class FriendRequestControllerTest extends BaseControllerTestCase
         $frMock->method('updateFriend')->willReturn(true);
 
         $chatMock = $this->createMock(ChatMessage::class);
-        $chatMock->method('deleteMessageUnfriend')->willReturn(true);
+        $chatMock->method('forceMarkAsReadMessage')->willReturn(true);
 
         $controller = $this->createController([
             'googleUser' => $googleUserMock,

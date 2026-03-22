@@ -66,7 +66,7 @@ class BlockController
             if ($blockPerson)
             {
                 $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
-                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->forceMarkAsReadMessage($this->getSenderId(), $this->getReceiverId());
 
                 if ($updateFriend)
                 {
@@ -120,7 +120,7 @@ class BlockController
             if ($blockPerson)
             {
                 $updateFriend = $this->friendrequest->updateFriend($this->getSenderId(), $this->getReceiverId());
-                $deleteMessage = $this->chatmessage->deleteMessageUnfriend($this->getSenderId(), $this->getReceiverId());
+                $deleteMessage = $this->chatmessage->forceMarkAsReadMessage($this->getSenderId(), $this->getReceiverId());
 
                 if ($updateFriend)
                 {
