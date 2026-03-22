@@ -2457,7 +2457,7 @@ class UserController
             }
             else 
             {
-                header("Location: /No user found");
+                header("Location: /?message=No user found");
                 return;
             }
         }
