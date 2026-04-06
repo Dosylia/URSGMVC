@@ -619,7 +619,7 @@ class GoogleUserController
 
     public function verifyGoogleToken($idToken) {
         $client = new Google_Client();
-        $client->setClientId('666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com'); 
+        $client->setClientId($_ENV['google_client_id']); 
     
         try {
             $payload = $client->verifyIdToken($idToken);
@@ -662,7 +662,7 @@ class GoogleUserController
                     $verificationResult = $this->verifyGoogleToken($idToken);
                 }
 
-                if (!$verificationResult) {
+                if (!$verificationResult || (is_array($verificationResult) && isset($verificationResult['verified']) && !$verificationResult['verified'])) {
                     $response = array('message' => $this->_('messages.invalid_token'));
                     echo json_encode($response);
                     return;
@@ -673,27 +673,32 @@ class GoogleUserController
                 return;
             }
 
-
-            $googleId = $googleData->googleId;
-            $this->setGoogleId($googleId); 
-            if (isset($googleData->fullName))
-            {
-                $googleFullName = $googleData->fullName;
-                $this->setGoogleFullName($googleFullName);              
-            }
-            if (isset($googleData->givenName))
-            {
-                $googleFirstName = $googleData->givenName;
-                $this->setGoogleFirstName($googleFirstName);  
-            }
-    
-            if (isset($googleData->familyName))
-            {
-                $googleFamilyName = $googleData->familyName;
-                $this->setGoogleFamilyName($googleFamilyName);  
-            }
-            $googleEmail = $googleData->email;
-            $this->setGoogleEmail($googleEmail);  
+            // Use server-verified data from the token instead of client-sent data
+            if (is_array($verificationResult) && isset($verificationResult['userId'])) {
+                $this->setGoogleId($verificationResult['userId']);
+                $this->setGoogleEmail($verificationResult['email']);
+                $this->setGoogleFullName($verificationResult['name'] ?? '');
+                // Given/family name not available from token verification, use client data as supplement
+                if (isset($googleData->givenName)) {
+                    $this->setGoogleFirstName($googleData->givenName);
+                }
+                if (isset($googleData->familyName)) {
+                    $this->setGoogleFamilyName($googleData->familyName);
+                }
+            } else {
+                // Local environment fallback - uses client data
+                $this->setGoogleId($googleData->googleId);
+                $this->setGoogleEmail($googleData->email);
+                if (isset($googleData->fullName)) {
+                    $this->setGoogleFullName($googleData->fullName);
+                }
+                if (isset($googleData->givenName)) {
+                    $this->setGoogleFirstName($googleData->givenName);
+                }
+                if (isset($googleData->familyName)) {
+                    $this->setGoogleFamilyName($googleData->familyName);
+                }
+            }  
 
             $testBan = $this->bannedusers->checkBan($this->getGoogleEmail());
 

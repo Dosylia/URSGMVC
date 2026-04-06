@@ -3748,6 +3748,44 @@ nav i {
     align-items: center;
 }
 
+/* Google button overlay technique */
+.google-btn-wrapper {
+    position: relative;
+    min-width: 280px;
+    max-width: 320px;
+    height: 44px;
+    margin: auto;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.google-overlay {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+#google-signin-real {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.0001;
+    z-index: 2;
+}
+
+#google-signin-real iframe {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .social-button_dialog:hover {
     background-color: #d1cccc;
 }
