@@ -619,7 +619,7 @@ class GoogleUserController
 
     public function verifyGoogleToken($idToken) {
         $client = new Google_Client();
-        $client->setClientId($_ENV['google_client_id']); 
+        $client->setClientId('666369513537-r75otamfu9qqsnaklgqiromr7bhiehft.apps.googleusercontent.com'); 
     
         try {
             $payload = $client->verifyIdToken($idToken);
