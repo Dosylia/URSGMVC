@@ -13,10 +13,17 @@
         <p><?= $this->_('when_clicking_on_sign_in') ?><br> <?= $this->_('you_agree_to') ?> <a href="/legalNotice"><?= $this->_('our_terms_of_use') ?></a>.</p>
         <script src="public/js/ajaxGoogle.js?<?= time(); ?>"></script>
         <div class="signUpButtons">
+            <?php if ($_ENV['environment'] === 'local'): ?>
+            <a href="/riotAccount?code=local-mock-code" class="signup_buttonPopup"><img src="public/images/riot_icon.png"><?= $this->_('sign_up_with_riot_account') ?>
+            </a>
+            <a href="/discordData?code=local-mock-code" class="signup_buttonPopup"><img src="public/images/discord_user.png"><?= $this->_('sign_up_with_discord') ?>
+            </a>
+            <?php else: ?>
             <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="signup_buttonPopup"><img src="public/images/riot_icon.png"><?= $this->_('sign_up_with_riot_account') ?>
             </a>
             <a href="https://discord.com/oauth2/authorize?client_id=1354386306746159235&response_type=code&redirect_uri=https%3A%2F%2Fur-sg.com%2FdiscordData&scope=email+identify+guilds+connections" class="signup_buttonPopup"><img src="public/images/discord_user.png"><?= $this->_('sign_up_with_discord') ?>
             </a>
+            <?php endif; ?>
 
             <!-- Dynamic Google Button Container -->
             <div id="google-auth-container">
@@ -98,7 +105,41 @@
                 }
             </script>
 
+            <?php if ($_ENV['environment'] === 'local'): ?>
+            <script nonce="TAJKETR">
+                function buildMockCredential() {
+                    const params = new URLSearchParams(window.location.search);
+                    const payload = {
+                        sub: params.get('mockGoogleId') || 'mock-google-1',
+                        email: params.get('mockEmail') || 'mockuser@local.test',
+                        name: params.get('mockName') || 'Mock User',
+                        given_name: 'Mock',
+                        family_name: 'User',
+                        picture: ''
+                    };
+                    const b64url = s => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+                    return b64url('{"alg":"none","typ":"JWT"}') + '.' + b64url(JSON.stringify(payload)) + '.mock';
+                }
+                window.google = { accounts: { id: {
+                    initialize: function(config) { window.__mockGoogleCallback = config.callback; },
+                    prompt: function(momentListenerCb) {
+                        if (momentListenerCb) {
+                            momentListenerCb({ isNotDisplayed: () => true, isSkippedMoment: () => true });
+                        }
+                    }
+                } } };
+                window.addEventListener('DOMContentLoaded', function() {
+                    initGoogleSignIn();
+                    document.getElementById('google-signin').addEventListener('click', function() {
+                        if (window.__mockGoogleCallback) {
+                            window.__mockGoogleCallback({ credential: buildMockCredential() });
+                        }
+                    });
+                });
+            </script>
+            <?php else: ?>
             <script src="https://accounts.google.com/gsi/client" onload="initGoogleSignIn()" async defer></script>
+            <?php endif; ?>
         </div>
     </div>
 </div>

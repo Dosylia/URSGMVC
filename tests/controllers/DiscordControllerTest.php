@@ -11,21 +11,38 @@ use models\GoogleUser;
 use models\UserLookingFor;
 use models\Discord;
 use models\Items;
+use models\BannedUsers;
+use services\LogInService;
+use services\SignUpService;
+use services\MasterTokenService;
+use services\DiscordOAuthClientInterface;
 
 class DiscordControllerTest extends BaseControllerTestCase
 {
     private function createController(array $mockOverrides = []): DiscordController
     {
         $defaults = [
-            'leagueOfLegends' => $this->createMock(LeagueOfLegends::class),
-            'user'            => $this->createMock(User::class),
-            'valorant'        => $this->createMock(Valorant::class),
-            'googleUser'      => $this->createMock(GoogleUser::class),
-            'userlookingfor'  => $this->createMock(UserLookingFor::class),
-            'discord'         => $this->createMock(Discord::class),
-            'items'           => $this->createMock(Items::class),
+            'leagueOfLegends'    => $this->createMock(LeagueOfLegends::class),
+            'user'               => $this->createMock(User::class),
+            'valorant'           => $this->createMock(Valorant::class),
+            'googleUser'         => $this->createMock(GoogleUser::class),
+            'userlookingfor'     => $this->createMock(UserLookingFor::class),
+            'discord'            => $this->createMock(Discord::class),
+            'items'              => $this->createMock(Items::class),
+            'bannedusers'        => $this->createMock(BannedUsers::class),
+            'discordOAuthClient' => $this->createMock(DiscordOAuthClientInterface::class),
         ];
         $mocks = array_merge($defaults, $mockOverrides);
+
+        $masterTokenService = new MasterTokenService($mocks['googleUser']);
+        $mocks['logInService'] = new LogInService(
+            $masterTokenService,
+            $mocks['user'],
+            $mocks['leagueOfLegends'],
+            $mocks['valorant'],
+            $mocks['userlookingfor']
+        );
+        $mocks['signUpService'] = new SignUpService($mocks['googleUser'], $masterTokenService);
 
         return $this->createControllerWithMocks(DiscordController::class, $mocks);
     }
@@ -214,5 +231,147 @@ class DiscordControllerTest extends BaseControllerTestCase
         $controller = $this->createController(['googleUser' => $googleUserMock]);
         $result = $controller->getGoogleUserModel();
         $this->assertInstanceOf(GoogleUser::class, $result);
+    }
+
+    // ─── discordData ─────────────────────────────────────────────
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDiscordDataBannedUserStopsBeforeIdentityLookup(): void
+    {
+        // Must run in a separate process because the controller uses require_once 'keys.php'.
+        require_once __DIR__ . '/../../vendor/autoload.php';
+
+        $_GET['code'] = 'test-code';
+
+        $oauthMock = $this->createMock(DiscordOAuthClientInterface::class);
+        $oauthMock->method('getAccessToken')->willReturn(['access_token' => 'tok']);
+        $oauthMock->method('getUserInfo')->willReturn([
+            'id' => 'discord-1',
+            'username' => 'BannedUser',
+            'email' => 'banned@test.com',
+            'avatar' => null,
+        ]);
+
+        $bannedMock = $this->createMock(BannedUsers::class);
+        $bannedMock->method('checkBan')->willReturn(true);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->expects($this->never())->method('getUserByDiscordId');
+
+        $controller = $this->createController([
+            'discordOAuthClient' => $oauthMock,
+            'bannedusers'        => $bannedMock,
+            'googleUser'         => $googleUserMock,
+        ]);
+
+        $this->captureOutput($controller, 'discordData');
+        unset($_GET['code']);
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDiscordDataExistingUserOnboarded(): void
+    {
+        require_once __DIR__ . '/../../vendor/autoload.php';
+
+        $_GET['code'] = 'test-code';
+
+        $oauthMock = $this->createMock(DiscordOAuthClientInterface::class);
+        $oauthMock->method('getAccessToken')->willReturn(['access_token' => 'tok']);
+        $oauthMock->method('getUserInfo')->willReturn([
+            'id' => 'discord-1',
+            'username' => 'ExistingUser',
+            'email' => 'existing@test.com',
+            'avatar' => null,
+        ]);
+
+        $bannedMock = $this->createMock(BannedUsers::class);
+        $bannedMock->method('checkBan')->willReturn(false);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getUserByDiscordId')->willReturn([
+            'google_userId' => 1,
+            'google_id' => 'discord-1',
+            'google_fullName' => 'Existing User',
+            'google_firstName' => 'Existing',
+            'google_lastName' => 'User',
+            'google_email' => 'existing@test.com',
+            'google_masterTokenWebsite' => 'existing_token',
+        ]);
+
+        $userMock = $this->createMock(User::class);
+        $userMock->method('getUserByGoogleUserId')->willReturn($this->fakeUser(['user_game' => 'League of Legends']));
+
+        $lolMock = $this->createMock(LeagueOfLegends::class);
+        $lolMock->method('getLeageUserByUserId')->willReturn($this->fakeLoLProfile());
+
+        $lfMock = $this->createMock(UserLookingFor::class);
+        $lfMock->method('getLookingForUserByUserId')->willReturn($this->fakeLookingFor());
+
+        $discordMock = $this->createMock(Discord::class);
+        $discordMock->method('getDiscordAccount')->willReturn(['user_id' => 1]);
+        $discordMock->expects($this->never())->method('saveDiscordData');
+
+        $controller = $this->createController([
+            'discordOAuthClient' => $oauthMock,
+            'bannedusers'        => $bannedMock,
+            'googleUser'         => $googleUserMock,
+            'user'               => $userMock,
+            'leagueOfLegends'    => $lolMock,
+            'userlookingfor'     => $lfMock,
+            'discord'            => $discordMock,
+        ]);
+
+        $this->captureOutput($controller, 'discordData');
+
+        $this->assertEquals(1, $_SESSION['userId']);
+        $this->assertEquals(1, $_SESSION['lol_id'] ?? null);
+        unset($_GET['code']);
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDiscordDataNewUserSuccess(): void
+    {
+        require_once __DIR__ . '/../../vendor/autoload.php';
+
+        $_GET['code'] = 'test-code';
+
+        $oauthMock = $this->createMock(DiscordOAuthClientInterface::class);
+        $oauthMock->method('getAccessToken')->willReturn(['access_token' => 'tok']);
+        $oauthMock->method('getUserInfo')->willReturn([
+            'id' => 'discord-new-1',
+            'username' => 'NewUser',
+            'email' => 'newdiscord@test.com',
+            'avatar' => null,
+        ]);
+
+        $bannedMock = $this->createMock(BannedUsers::class);
+        $bannedMock->method('checkBan')->willReturn(false);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('getUserByDiscordId')->willReturn(false);
+        $googleUserMock->method('getGoogleUserByEmail')->willReturn(false);
+        $googleUserMock->method('createGoogleUser')->willReturn(88);
+        $googleUserMock->method('storeMasterTokenWebsite')->willReturn(true);
+
+        $controller = $this->createController([
+            'discordOAuthClient' => $oauthMock,
+            'bannedusers'        => $bannedMock,
+            'googleUser'         => $googleUserMock,
+        ]);
+
+        $this->captureOutput($controller, 'discordData');
+
+        $this->assertEquals(88, $_SESSION['google_userId'] ?? null);
+        $this->assertEquals('discord-new-1', $_SESSION['google_id'] ?? null);
+        unset($_GET['code']);
     }
 }

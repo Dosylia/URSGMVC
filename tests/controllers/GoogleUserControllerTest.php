@@ -15,6 +15,9 @@ use models\BannedUsers;
 use models\PlayerFinder;
 use models\ChatMessage;
 use models\FriendRequest;
+use services\LogInService;
+use services\SignUpService;
+use services\MasterTokenService;
 
 class GoogleUserControllerTest extends BaseControllerTestCase
 {
@@ -34,6 +37,16 @@ class GoogleUserControllerTest extends BaseControllerTestCase
             'friendrequest'  => $this->createMock(FriendRequest::class),
         ];
         $mocks = array_merge($defaults, $mockOverrides);
+
+        $masterTokenService = new MasterTokenService($mocks['googleUser']);
+        $mocks['logInService'] = new LogInService(
+            $masterTokenService,
+            $mocks['user'],
+            $mocks['leagueoflegends'],
+            $mocks['valorant'],
+            $mocks['userlookingfor']
+        );
+        $mocks['signUpService'] = new SignUpService($mocks['googleUser'], $masterTokenService);
 
         return $this->createControllerWithMocks(GoogleUserController::class, $mocks);
     }
@@ -118,11 +131,7 @@ class GoogleUserControllerTest extends BaseControllerTestCase
         $googleUserMock->method('storeMasterTokenWebsite')->willReturn(true);
 
         $userMock = $this->createMock(User::class);
-        $userMock->method('getUserDataByGoogleUserId')->willReturn([
-            'user_id' => 1,
-            'user_username' => 'testuser',
-        ]);
-        $userMock->method('getUserByUsername')->willReturn($this->fakeUser());
+        $userMock->method('getUserByGoogleUserId')->willReturn($this->fakeUser());
 
         $lolMock = $this->createMock(LeagueOfLegends::class);
         $lolMock->method('getLeageUserByUserId')->willReturn($this->fakeLoLProfile());
@@ -198,6 +207,43 @@ class GoogleUserControllerTest extends BaseControllerTestCase
         $this->assertEquals('Email is already used', $result['message'] ?? '');
     }
 
+    public function testGetGoogleDataNewUserSuccess(): void
+    {
+        $originalEnv = $_ENV['environment'] ?? null;
+        $_ENV['environment'] = 'local';
+
+        $bannedMock = $this->createMock(BannedUsers::class);
+        $bannedMock->method('checkBan')->willReturn(false);
+
+        $googleUserMock = $this->createMock(GoogleUser::class);
+        $googleUserMock->method('userExist')->willReturn(false);
+        $googleUserMock->method('getGoogleUserByEmail')->willReturn(false);
+        $googleUserMock->method('createGoogleUser')->willReturn(42);
+        $googleUserMock->method('storeMasterTokenWebsite')->willReturn(true);
+
+        $controller = $this->createController([
+            'bannedusers' => $bannedMock,
+            'googleUser'  => $googleUserMock,
+        ]);
+
+        $_POST['googleData'] = json_encode([
+            'googleId'   => 'g999',
+            'fullName'   => 'New User',
+            'givenName'  => 'New',
+            'familyName' => 'User',
+            'email'      => 'newuser@test.com',
+            'idToken'    => 'fake_token',
+        ]);
+
+        $result = $this->captureJsonOutput($controller, 'getGoogleData');
+        $_ENV['environment'] = $originalEnv ?? 'test';
+        $this->assertNotNull($result);
+        $this->assertEquals('Success', $result['message']);
+        $this->assertTrue($result['newUser']);
+        $this->assertEquals(42, $result['googleUser']);
+        $this->assertNotEmpty($result['masterTokenWebsite']);
+    }
+
     // ─── getGoogleDataPhone ─────────────────────────────────────
 
     public function testGetGoogleDataPhoneNoPost(): void
@@ -247,11 +293,7 @@ class GoogleUserControllerTest extends BaseControllerTestCase
         ]);
 
         $userMock = $this->createMock(User::class);
-        $userMock->method('getUserDataByGoogleUserId')->willReturn([
-            'user_id' => 1,
-            'user_username' => 'testuser',
-        ]);
-        $userMock->method('getUserByUsername')->willReturn($this->fakeUser());
+        $userMock->method('getUserByGoogleUserId')->willReturn($this->fakeUser());
 
         $lolMock = $this->createMock(LeagueOfLegends::class);
         $lolMock->method('getLeageUserByUserId')->willReturn($this->fakeLoLProfile());

@@ -314,6 +314,7 @@ CREATE TABLE `user` (
   `user_shortBio` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_picture` varchar(200) DEFAULT NULL,
   `user_bonusPicture` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`user_bonusPicture`)),
+  `user_banner` varchar(200) DEFAULT NULL,
   `user_discord` varchar(200) DEFAULT NULL,
   `user_instagram` varchar(200) DEFAULT NULL,
   `user_twitter` varchar(200) DEFAULT NULL,
@@ -324,9 +325,12 @@ CREATE TABLE `user` (
   `user_deletionToken` varchar(128) DEFAULT NULL,
   `user_deletionTokenExpiry` timestamp NULL DEFAULT NULL,
   `user_currency` int(10) DEFAULT 0,
-  `user_isVip` tinyint(1) NOT NULL DEFAULT 0,
+  `user_isGold` tinyint(4) NOT NULL DEFAULT 0,
   `user_isPartner` tinyint(4) NOT NULL DEFAULT 0,
   `user_isCertified` tinyint(4) NOT NULL DEFAULT 0,
+  `user_isAscend` tinyint(4) NOT NULL DEFAULT 0,
+  `user_numberChangedUsername` tinyint(4) NOT NULL DEFAULT 0,
+  `user_usernameChangeMonth` char(7) DEFAULT NULL,
   `user_hasChatFilter` tinyint(1) DEFAULT 0,
   `user_lastRequestTime` timestamp NULL DEFAULT NULL,
   `user_lastReward` timestamp NULL DEFAULT NULL,
@@ -337,7 +341,7 @@ CREATE TABLE `user` (
   `user_ignore` tinyint(4) NOT NULL DEFAULT 0,
   `arcane_snapshot` int(10) DEFAULT NULL,
   `user_isLooking` tinyint(4) NOT NULL DEFAULT 0,
-  `user_requestIsLooking` timestamp NOT NULL,
+  `user_requestIsLooking` timestamp NULL DEFAULT NULL,
   `user_lastCompletedGame` date DEFAULT NULL,
   `user_totalCompletedGame` int(11) NOT NULL DEFAULT 0,
   `user_friendsInvited` int(5) DEFAULT 0,
@@ -345,7 +349,9 @@ CREATE TABLE `user` (
   `user_notificationEndPoint` text DEFAULT NULL,
   `user_notificationP256dh` text DEFAULT NULL,
   `user_notificationAuth` text DEFAULT NULL,
-  `user_personalityTestResult` text DEFAULT NULL
+  `user_personalityTestResult` text DEFAULT NULL,
+  `user_randomChatPermission` tinyint(1) NOT NULL DEFAULT 1,
+  `user_personalColor` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
@@ -799,7 +805,7 @@ VALUES
   (3, 'g789012', 'Charlie Lee', 'Charlie', 'Lee', 'charlie@example.com', 1);
 
 -- Insert users
-INSERT INTO user (user_id, google_userId, user_username, user_gender, user_age, user_kindOfGamer, user_shortBio, user_game, user_isVip, user_isOnline, user_lastRequestTime, user_lastReward)
+INSERT INTO user (user_id, google_userId, user_username, user_gender, user_age, user_kindOfGamer, user_shortBio, user_game, user_isGold, user_isOnline, user_lastRequestTime, user_lastReward)
 VALUES
   (1, 1, 'AliceGamer', 'Female', 25, 'Casual', 'Love cozy games and chill vibes.', 'Valorant', 1, 1, NOW(), NOW()),
   (2, 2, 'BobThePro', 'Male', 28, 'Competitive', 'FPS enthusiast, always up for a challenge.', 'League of Legends', 0, 1, NOW(), NOW()),

@@ -9,10 +9,16 @@ use models\GoogleUser;
 use models\UserLookingFor;
 use models\Items;
 use models\RatingGames;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\MobileDeepLinkResponder;
+use services\LogInService;
+use services\SignUpService;
+use services\MasterTokenService;
+use services\LoginDestination;
+use services\RiotOAuthClientInterface;
+use services\RiotOAuthClient;
+use services\FakeRiotOAuthClient;
 
 require 'vendor/autoload.php';
 
@@ -20,6 +26,7 @@ class RiotController
 {
     use SecurityController;
     use Translatable;
+    use MobileDeepLinkResponder;
     private LeagueOfLegends $leagueOfLegends;
     private User $user;
     private Valorant $valorant;
@@ -27,7 +34,9 @@ class RiotController
     private UserLookingFor $userlookingfor;
     private Items $items;
     private RatingGames $rating;
-    private $tokenEndpoint = 'https://auth.riotgames.com/token';
+    private LogInService $logInService;
+    private SignUpService $signUpService;
+    private RiotOAuthClientInterface $riotOAuthClient;
     private $authorizeUrl = 'https://auth.riotgames.com/oauth2/authorize';
 
     public function __construct()
@@ -40,6 +49,18 @@ class RiotController
         $this -> userlookingfor = new userLookingFor();
         $this->items = new Items();
         $this -> rating = new RatingGames();
+        $masterTokenService = new MasterTokenService($this->googleUser);
+        $this->logInService = new LogInService(
+            $masterTokenService,
+            $this->user,
+            $this->leagueOfLegends,
+            $this->valorant,
+            $this->userlookingfor
+        );
+        $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
+        $this->riotOAuthClient = (($_ENV['environment'] ?? null) === 'local')
+            ? new FakeRiotOAuthClient()
+            : new RiotOAuthClient();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -77,11 +98,11 @@ class RiotController
         {
 
             // Step 3: Exchange the authorization code for an access token
-            $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+            $accessToken = $this->riotOAuthClient->getAccessToken($authCode, $riotClientId, $riotClientSecret);
 
             // Step 4: Fetch user data using the access token
             if ($accessToken) {
-                $userData = $this->getUserData($accessToken);
+                $userData = $this->riotOAuthClient->getUserData($accessToken);
                 $user = $this->user->getUserById($_SESSION['userId']);
                 $addPuuidLeague = false;
                 $addPuuidValorant = false;
@@ -232,11 +253,11 @@ class RiotController
             }
         } else {
             // Step 3: Exchange the authorization code for an access token
-            $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+            $accessToken = $this->riotOAuthClient->getAccessToken($authCode, $riotClientId, $riotClientSecret);
 
             // Step 4: Fetch user data using the access token
             if ($accessToken) {
-                $userData = $this->getUserData($accessToken);
+                $userData = $this->riotOAuthClient->getUserData($accessToken);
                 $addPuuidLeague = false;
                 $addPuuidValorant = false;
                 $puuid = $userData['puuid'];
@@ -251,115 +272,33 @@ class RiotController
                     {
                         if ($existingUser['google_createdWithRSO'] === 1)
                         {
-                            if (isset($existingUser['google_masterTokenWebsite']) && $existingUser['google_masterTokenWebsite'] !== null && !empty($existingUser['google_masterTokenWebsite'])) {
-                                $token = $existingUser['google_masterTokenWebsite'];
-                            } else {
-                                $token = bin2hex(random_bytes(32));
-                                $createToken = $this->googleUser->storeMasterTokenWebsite($existingUser['google_userId'], $token);
-                            }
-
-                            setcookie("auth_token", $token, [
-                                'expires' => time() + 60 * 60 * 24 * 60,
-                                'path' => '/',
-                                'secure' => true,
-                                'httponly' => true,
-                                'samesite' => 'Strict',
-                            ]);
-
-                            $_SESSION['google_userId'] = $existingUser['google_userId'];
-                            $_SESSION['google_id'] = $puuid;
-                            $_SESSION['email'] = $existingUser['google_email'];
-                            $_SESSION['full_name'] = $existingUser['google_fullName'];
-                            $_SESSION['google_firstName'] = $existingUser['google_firstName'];
-                            $_SESSION['masterTokenWebsite'] = $token;
+                            $outcome = $this->logInService->resumeWebSession($existingUser);
                             $_SESSION['tagLine'] = $userData['tagLine'];
                             $_SESSION['full_name'] = $userData['gameName'];
 
-                            $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
+                            $user = $outcome->userRow;
 
-                            if ($googleUser)
-                            {
-                                $user = $this->user->getUserByUsername($googleUser['user_username']);
-
-                                if ($user) 
-                                {
-                                    $_SESSION['userId'] = $user['user_id'];
-                                    $_SESSION['username'] = $user['user_username'];
-                                    $_SESSION['gender'] = $user['user_gender'];
-                                    $_SESSION['age'] = $user['user_age'];
-                                    $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
-                                    $_SESSION['game'] = $user['user_game'];
-
-                                    if ($user['user_game'] == 'League of Legends') {
-                                        $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-
-                                        if ($lolUser)
-                                        {
-                                            $_SESSION['lol_id'] = $lolUser['lol_id'];
-                                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
-                                            if ($lfUser)
-                                            {
-                                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                                header('Location: /swiping?message=Connected successfully.');
-                                                return;
-                                            }
-                                            else 
-                                            {
-                                                header('Location: /signup?message=Create your Looking for account.');
-                                                return;
-                                            }
-                                        }
-                                        else 
-                                        {
-                                            header('Location: /signup?message=Create your LoL account.');
-                                            return;
-                                        }
-                                    }
-                                    else 
-                                    {
-                                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-
-                                        if ($valorantUser)
-                                        {
-
-                                            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
-                            
-                                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                                            if ($lfUser)
-                                            {
-                                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                                header('Location: /swiping?message=Connected successfully.');
-                                                return;
-                                            }
-                                            else 
-                                            {
-                                                header('Location: /signup?message=Create your Looking for account.');
-                                                return;
-                                            }
-
-                                        }
-                                        else 
-                                        {
-                                            header('Location: /signup?message=Create your Valorant account.');
-                                            return;
-                                        }
-
-                                    }
-
-                                }
-                                else 
-                                {
-                                    header('Location: /signup?message=Create your account.');
-                                    return;
-                                }
-                            }
-                            else 
-                            {
+                            if (!$user) {
                                 header('Location: /signup?message=Create your account.');
                                 return;
                             }
 
+                            if ($outcome->destination === LoginDestination::ONBOARDED) {
+                                header('Location: /swiping?message=Connected successfully.');
+                                return;
+                            }
+
+                            if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                                header('Location: /signup?message=Create your Looking for account.');
+                                return;
+                            }
+
+                            if ($outcome->game === 'League of Legends') {
+                                header('Location: /signup?message=Create your LoL account.');
+                            } else {
+                                header('Location: /signup?message=Create your Valorant account.');
+                            }
+                            return;
                         }
                         else
                         {
@@ -368,57 +307,21 @@ class RiotController
                         }
 
                     }
-                    else 
+                    else
                     {
-                        $_SESSION['riot_id'] = $puuid;
                         $fakeEmail = "riot_{$puuid}@fake.riot";
                         // Create a new account
                         $RSO = 1;
                         $fullName = $userData['gameName'];
                         $firstName = $userData['gameName'];
                         $googleFamilyName = $userData['gameName'];
-                        $createGoogleUserRiot = $this->googleUser->createGoogleUser($puuid, $fullName, $firstName, $googleFamilyName,  $RSO, $fakeEmail);
 
-                        if ($createGoogleUserRiot)
-                        {
-            
-                            $lifetime = 7 * 24 * 60 * 60;
-            
-                            session_destroy();
-            
-                            session_set_cookie_params($lifetime);
-            
-                            if (session_status() == PHP_SESSION_NONE) {
-                                session_start();
-                            }
-        
-                            // MASTER TOKEN SYSTEM
-                            $token = bin2hex(random_bytes(32));
-                            $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserRiot, $token);
+                        $outcome = $this->signUpService->createWebIdentity($puuid, $fullName, $firstName, $googleFamilyName, $fakeEmail, $RSO);
 
-                            setcookie("auth_token", $token, [
-                                'expires' => time() + 60 * 60 * 24 * 60,
-                                'path' => '/',
-                                'secure' => true,
-                                'httponly' => true,
-                                'samesite' => 'Strict',
-                            ]);
-        
-                            if ($createToken) {
-                                $_SESSION['masterTokenWebsite'] = $token;
-                            }
-                            
-                            if (!isset($_SESSION['googleId'])) {
-                                $_SESSION['google_userId'] = $createGoogleUserRiot;
-                                $_SESSION['google_id'] = $puuid;
-                                $_SESSION['email'] = $fakeEmail;
-                                $_SESSION['tagLine'] = $userData['tagLine'];
-                                $_SESSION['full_name'] = $fullName;
-                            }
-
+                        if ($outcome) {
+                            $_SESSION['tagLine'] = $userData['tagLine'];
                             header('Location: /signup?message=Account created');
                             return;
-
                         }
 
                     }
@@ -637,10 +540,10 @@ class RiotController
 
             require_once 'keys.php';
 
-            $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+            $accessToken = $this->riotOAuthClient->getAccessToken($authCode, $riotClientId, $riotClientSecret);
 
             if ($accessToken) {
-                $userData = $this->getUserData($accessToken);
+                $userData = $this->riotOAuthClient->getUserData($accessToken);
                 $user = $this->user->getUserById($userId);
                 $addPuuidLeague = false;
                 $addPuuidValorant = false;
@@ -773,58 +676,6 @@ class RiotController
     
     //     return null;
     // }
-
-    // Exchange the authorization code for an access token
-    public function getAccessToken($authCode, $clientId, $clientSecret)
-    {
-        $client = new Client();
-
-        try {
-            $response = $client->post($this->tokenEndpoint, [
-                'form_params' => [
-                'client_id' => $clientId,
-                'client_secret' => $clientSecret,
-                'grant_type' => 'authorization_code',
-                'code' => $authCode, 
-                'redirect_uri' => 'https://ur-sg.com/riotAccount', 
-                ]
-            ]);
-
-            // Handle response
-            $responseBody = json_decode($response->getBody()->getContents(), true);
-
-            if (isset($responseBody['access_token'])) {
-                return $responseBody['access_token'];
-            }
-
-            return null;
-        } catch (RequestException $e) {
-            // Log the error message for debugging
-            error_log('RequestException: ' . $e->getMessage());
-            if ($e->hasResponse()) {
-                error_log('Response: ' . $e->getResponse()->getBody()->getContents());
-            }
-            return null;
-        }
-    }
-
-    // Fetch user data from Riot API using the access token
-    public function getUserData($accessToken)
-    {
-        $url = 'https://europe.api.riotgames.com/riot/account/v1/accounts/me'; 
-        $headers = [
-            'Authorization: Bearer ' . $accessToken
-        ];
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        return json_decode($response, true);
-    }
 
     public function checkIfUsersPlayedTogether()
     {
@@ -962,285 +813,139 @@ class RiotController
 
     public function handleMobileFlow($authCode, $riotClientId, $riotClientSecret, $apiKey)
     {
-        $accessToken = $this->getAccessToken($authCode, $riotClientId, $riotClientSecret);
+        $accessToken = $this->riotOAuthClient->getAccessToken($authCode, $riotClientId, $riotClientSecret);
 
         if (!$accessToken) {
             $this->handleMobileFlowFailure('Failed to obtain access token');
             return;
         }
 
-        $userData = $this->getUserData($accessToken);
+        $userData = $this->riotOAuthClient->getUserData($accessToken);
         $puuid = $userData['puuid'];
 
         $existingUser = $this->googleUser->getUserByPuuid($puuid);
 
+        $cookieOptions = [
+            'expires' => time() + 60 * 60 * 24 * 60,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ];
+
         // If user exists, allow connection on mobile, otherwise create account
         if ($existingUser)
         {
-            if ($existingUser['google_createdWithRSO'] === 1)
-            {
-                $step = '';
-                if (isset($existingUser['google_masterToken']) && $existingUser['google_masterToken'] !== null && !empty($existingUser['google_masterToken'])) {
-                    $token = $existingUser['google_masterToken'];
-                } else {
-                    $token = bin2hex(random_bytes(32));
-                    $createToken = $this->googleUser->storeMasterToken($existingUser['google_userId'], $token);
-                }
-
-                $googleUserData = array(
-                    'googleId' => $existingUser['google_id'],
-                    'fullName' => $existingUser['google_fullName'],
-                    'firstName' => $existingUser['google_firstName'],
-                    'lastName' => $existingUser['google_lastName'],
-                    'email' => $existingUser['google_email'],
-                    'googleUserId' => $existingUser['google_userId'],
-                    'token' => $token
-                );
-
-                setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 60,
-                    'path' => '/',
-                    'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Strict',
-                ]);
-
-
-                $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
-
-                if ($googleUser)
-                {
-                    $user = $this->user->getUserByUsername($googleUser['user_username']);
-
-                    if ($user) 
-                    {
-                        $userData = array(
-                            'userId' => $user['user_id'],
-                            'username' => $user['user_username'],
-                            'gender' => $user['user_gender'],
-                            'age' => $user['user_age'],
-                            'kindOfGamer' => $user['user_kindOfGamer'],
-                            'game' => $user['user_game'],
-                            'shortBio' => $user['user_shortBio'],
-                            'picture' => $user['user_picture'] ?? null,
-                            'bonusPicture' => $user['user_bonusPicture'] ?? null,
-                            'discord' => $user['user_discord'] ?? null,
-                            'twitch' => $user['user_twitch'] ?? null,
-                            'instagram' => $user['user_instagram'] ?? null,
-                            'twitter' => $user['user_twitter'] ?? null,
-                            'bluesky' => $user['user_bluesky'] ?? null,
-                            'currency' => $user['user_currency'] ?? null,
-                            'isGold' => $user['user_isGold'] ?? null,
-                            'isPartner'=> $user['user_isPartner'] ?? null,
-                            'isCertified' => $user['user_isCertified'] ?? null,
-                            'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
-                            'arcane' => $user['user_arcane'] ?? null,
-                            'arcaneIgnore' => $user['user_ignore'] ?? null
-                        );
-
-                        if ($user['user_game'] == 'League of Legends') {
-                            $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-
-                            if ($lolUser)
-                            {
-                                $lolUserData = array(
-                                    'lolId' => $lolUser['lol_id'],
-                                    'main1' => $lolUser['lol_main1'],
-                                    'main2' => $lolUser['lol_main2'],
-                                    'main3' => $lolUser['lol_main3'],
-                                    'rank' => $lolUser['lol_rank'],
-                                    'role' => $lolUser['lol_role'],
-                                    'server' => $lolUser['lol_server'],
-                                    'account' => $lolUser['lol_account'],
-                                    'sUsername' => $lolUser['lol_sUsername'],
-                                    'sLevel' => $lolUser['lol_sLevel'],
-                                    'sRank' => $lolUser['lol_sRank'],
-                                    'sProfileIcon' => $lolUser['lol_sProfileIcon'],
-                                    'skipSelectionLol' => $lolUser['lol_noChamp']
-                                );
-
-                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
-                                if ($lfUser)
-                                {
-                                    $lookingforUserData = array(
-                                        'lfId' => $lfUser['lf_id'],
-                                        'lfGender' => $lfUser['lf_gender'],
-                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                        'lfGame' => $lfUser['lf_game'],
-                                        'main1Lf' => $lfUser['lf_lolmain1'],
-                                        'main2Lf' => $lfUser['lf_lolmain2'],
-                                        'main3Lf' => $lfUser['lf_lolmain3'],
-                                        'rankLf' => $lfUser['lf_lolrank'],
-                                        'roleLf' => $lfUser['lf_lolrole'],
-                                        'skipSelectionLf' => $lfUser['lf_lolNoChamp'],
-                                        'filteredServerLf' => $lfUser['lf_filteredServer']
-                                    );
-
-                                    $response = array(
-                                        'message' => $this->_('messages.success'),
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => true,
-                                        'lookingForUserExists' => true,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'leagueUser' => $lolUserData,
-                                        'lookingForUser' => $lookingforUserData
-                                    );     
-                                    $step = 'ConnectLeague';
-                                    $this->handleMobileFlowSuccess('Account connected', $response);
-                                }
-                                else 
-                                {
-                                    $response = array(
-                                        'message' => $this->_('messages.success'),
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => true,
-                                        'lookingForUserExists' => false,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'leagueUser' => $lolUserData
-                                    );
-                                    $step = 'lookingForAccount';
-                                    $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
-                                }
-                            }
-                            else 
-                            {
-                                $response = array(
-                                    'message' => $this->_('messages.success'),
-                                    'newUser' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false
-                                );
-                                $step = 'LeagueAccount';
-                                $this->handleMobileFlowSuccess('Create your League account.', $response);
-                            }
-                        }
-                        else 
-                        {
-                            $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-
-                            if ($valorantUser)
-                            {
-
-                                $valorantUserData = array(
-                                    'valorantId' => $valorantUser['valorant_id'],
-                                    'main1' => $valorantUser['valorant_main1'],
-                                    'main2' => $valorantUser['valorant_main2'],
-                                    'main3' => $valorantUser['valorant_main3'],
-                                    'rank' => $valorantUser['valorant_rank'],
-                                    'role' => $valorantUser['valorant_role'],
-                                    'server' => $valorantUser['valorant_server'],
-                                    'skipSelectionVal' => $valorantUser['valorant_noChamp']
-                                );
-
-                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                                if ($lfUser)
-                                {
-                                    $lookingforUserData = array(
-                                        'lfId' => $lfUser['lf_id'],
-                                        'lfGender' => $lfUser['lf_gender'],
-                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                        'lfGame' => $lfUser['lf_game'],
-                                        'valmain1Lf' => $lfUser['lf_valmain1'],
-                                        'valmain2Lf' => $lfUser['lf_valmain2'],
-                                        'valmain3Lf' => $lfUser['lf_valmain3'],
-                                        'valrankLf' => $lfUser['lf_valrank'],
-                                        'valroleLf' => $lfUser['lf_valrole'],
-                                        'skipSelectionLf' => $lfUser['lf_valNoChamp'],
-                                        'filteredServerLf' => $lfUser['lf_filteredServer']
-                                    );
-
-                                    $response = array(
-                                        'message' => $this->_('messages.success'),
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'lookingForUserExists' => true,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'valorantUser' => $valorantUserData,
-                                        'lookingForUser' => $lookingforUserData,
-                                        'valorantUserExists' => true
-                                    );  
-
-                                    $step = 'ConnectValorant';
-                                    $this->handleMobileFlowSuccess('Account connected', $response);
-                                }
-                                else 
-                                {
-                                    $response = array(
-                                        'message' => $this->_('messages.success'),
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'lookingForUserExists' => false,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'valorantUser' => $valorantUserData,
-                                        'valorantUserExists' => true
-                                    );
-                                    $step = 'lookingForAccount';
-                                    $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
-                                }
-
-                            }
-                            else 
-                            {
-                                $response = array(
-                                    'message' => $this->_('messages.success'),
-                                    'newUser' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false,
-                                    'valorantUserExists' => false
-                                );
-
-                                $step = 'valorantAccount';
-                                $this->handleMobileFlowSuccess('Create your Valorant account.', $response);
-                            }
-
-                        }
-
-                    }
-                    else 
-                    {
-                        $response = array(
-                            'message' => $this->_('messages.success'),
-                            'newUser' => false,
-                            'googleUser' => $googleUserData,
-                            'userExists' => false
-                        );
-                        $step = 'basicInfo';
-                        $this->handleMobileFlowSuccess('Create your account.', $response);
-                    }
-                }
-                else 
-                {
-                    $response = array(
-                            'message' => $this->_('messages.success'),
-                            'newUser' => false,
-                            'googleUser' => $googleUserData,
-                            'userExists' => false
-                    );
-                    $step = 'basicInfo';
-                    $this->handleMobileFlowSuccess('Create your account.', $response);
-                }
-
-            }
-            else
+            if ($existingUser['google_createdWithRSO'] !== 1)
             {
                 $this->handleMobileFlowFailure('This League of Legends account is already used on URSG.');
+                return;
             }
 
+            $outcome = $this->logInService->resumeMobileProfile($existingUser);
+            setcookie("auth_token", $outcome->masterToken, $cookieOptions);
+
+            if (!$outcome->userExists) {
+                $response = array(
+                    'message' => $this->_('messages.success'),
+                    'newUser' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'userExists' => false
+                );
+                $this->handleMobileFlowSuccess('Create your account.', $response);
+                return;
+            }
+
+            if ($outcome->game === 'League of Legends') {
+                if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                    $response = array(
+                        'message' => $this->_('messages.success'),
+                        'newUser' => false,
+                        'googleUser' => $outcome->identityRow,
+                        'user' => $outcome->userRow,
+                        'userExists' => true,
+                        'leagueUserExists' => false
+                    );
+                    $this->handleMobileFlowSuccess('Create your League account.', $response);
+                    return;
+                }
+
+                if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                    $response = array(
+                        'message' => $this->_('messages.success'),
+                        'newUser' => false,
+                        'userExists' => true,
+                        'leagueUserExists' => true,
+                        'lookingForUserExists' => false,
+                        'googleUser' => $outcome->identityRow,
+                        'user' => $outcome->userRow,
+                        'leagueUser' => $outcome->gameProfile
+                    );
+                    $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
+                    return;
+                }
+
+                $response = array(
+                    'message' => $this->_('messages.success'),
+                    'newUser' => false,
+                    'userExists' => true,
+                    'leagueUserExists' => true,
+                    'lookingForUserExists' => true,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'leagueUser' => $outcome->gameProfile,
+                    'lookingForUser' => $outcome->lookingForRow
+                );
+                $this->handleMobileFlowSuccess('Account connected', $response);
+                return;
+            }
+
+            if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                $response = array(
+                    'message' => $this->_('messages.success'),
+                    'newUser' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'userExists' => true,
+                    'leagueUserExists' => false,
+                    'valorantUserExists' => false
+                );
+                $this->handleMobileFlowSuccess('Create your Valorant account.', $response);
+                return;
+            }
+
+            if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                $response = array(
+                    'message' => $this->_('messages.success'),
+                    'newUser' => false,
+                    'userExists' => true,
+                    'leagueUserExists' => false,
+                    'lookingForUserExists' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'valorantUser' => $outcome->gameProfile,
+                    'valorantUserExists' => true
+                );
+                $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
+                return;
+            }
+
+            $response = array(
+                'message' => $this->_('messages.success'),
+                'newUser' => false,
+                'userExists' => true,
+                'leagueUserExists' => false,
+                'lookingForUserExists' => true,
+                'googleUser' => $outcome->identityRow,
+                'user' => $outcome->userRow,
+                'valorantUser' => $outcome->gameProfile,
+                'lookingForUser' => $outcome->lookingForRow,
+                'valorantUserExists' => true
+            );
+            $this->handleMobileFlowSuccess('Account connected', $response);
+            return;
         }
-        else 
+        else
         {
             $fakeEmail = "riot_{$puuid}@fake.riot";
             // Create a new account
@@ -1248,116 +953,32 @@ class RiotController
             $fullName = $userData['gameName'];
             $firstName = $userData['gameName'];
             $googleFamilyName = $userData['gameName'];
-            $createGoogleUserRiot = $this->googleUser->createGoogleUser($puuid, $fullName, $firstName, $googleFamilyName,  $RSO, $fakeEmail);
 
-            if ($createGoogleUserRiot)
-            {
+            $outcome = $this->signUpService->createMobileIdentity($puuid, $fullName, $firstName, $googleFamilyName, $fakeEmail, $RSO);
 
-                // MASTER TOKEN SYSTEM
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterToken($createGoogleUserRiot, $token);
-
-                setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 60,
-                    'path' => '/',
-                    'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Strict',
-                ]);
-
-                $googleData = array(
-                    'googleId' => $puuid,
-                    'fullName' => $fullName,
-                    'firstName' => $firstName,
-                    'lastName' => $googleFamilyName,
-                    'email' => $fakeEmail,
-                    'googleUserId' => $createGoogleUser,
-                    'token' => $token
-                );
+            if ($outcome) {
+                setcookie("auth_token", $outcome->masterToken, $cookieOptions);
 
                 $response = array(
                     'message' => $this->_('messages.success'),
                     'newUser' => true,
-                    'googleUser' => $googleData,
+                    'googleUser' => $outcome->identityRow,
                 );
 
-
-                $step = 'basicInfo';
-                $this->handleMobileFlowSuccess('Create your account.', $step, $puuid, $token, $createGoogleUserRiot, $response);
+                $this->handleMobileFlowSuccess('Create your account.', $response);
             }
 
         }
     }
 
 
-    public function handleMobileFlowFailure($error)
+    protected function mobileFlowSessionKey(): string
     {
-        unset($_SESSION['phoneData']);
-        unset($_SESSION['riotConnectMobile']);
-
-        $response = array(
-            'status' => 'failure',
-            'message' => $error
-        );
-        $responseJson = json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        error_log(print_r('Error ' . $error, true));
-        $redirectUrl = "intent://riotCallback?response=" . rawurlencode($responseJson) . "#Intent;scheme=com.dosylia.URSG;package=com.dosylia.URSG;end;";
-        error_log(print_r('Redirecting to ' . $redirectUrl, true));
-        $this->outputMobileFlowHtml($redirectUrl, false);
+        return 'riotConnectMobile';
     }
 
-    public function handleMobileFlowSuccess($message, $response)
+    protected function mobileDeepLinkCallback(): string
     {
-        unset($_SESSION['phoneData']);
-        unset($_SESSION['riotConnectMobile']);
-
-        $responseJson = json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $redirectUrl = "intent://riotCallback?response=" . rawurlencode($responseJson) . "#Intent;scheme=com.dosylia.URSG;package=com.dosylia.URSG;end;";
-        $this->outputMobileFlowHtml($redirectUrl, true);
-    }
-
-    private function outputMobileFlowHtml($redirectUrl, $success = true)
-    {
-        $title = $success ? 'Authentication Successful' : 'Authentication Failed';
-        $message = $success ? 'Redirecting you back to the URSG app...' : 'There was a problem. Redirecting you back to the URSG app...';
-        echo '<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Return to URSG App</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <script>
-                function openApp() {
-                    window.location.href = "' . $redirectUrl . '";
-                    setTimeout(function() {
-                        if (!document.webkitHidden && !document.hidden) {
-                            document.getElementById("fallbackButton").style.display = "block";
-                            document.getElementById("appStoreButton").style.display = "block";
-                        }
-                    }, 1000);
-                }
-                window.onload = function() { openApp(); };
-            </script>
-        </head>
-        <body style="font-family: Arial, sans-serif; text-align: center; padding: 40px;">
-            <h2>' . $title . '</h2>
-            <p>' . $message . '</p>
-            <div id="fallbackButton" style="display: none;">
-                <p>If you werent redirected automatically, click below:</p>
-                <a href="' . htmlspecialchars($redirectUrl) . '" style="padding: 15px 30px; background: #e74057; color: white; text-decoration: none; border-radius: 8px; margin-top: 20px; display: inline-block;">
-                    Open URSG App
-                </a>
-            </div>
-            <div id="appStoreButton" style="display: none; margin-top: 20px;">
-                <p>Dont have the app?</p>
-                <a href="https://play.google.com/store/apps/details?id=com.dosylia.URSG" style="padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
-                    Get on Google Play
-                </a>
-                <a href="https://apps.apple.com/app/" style="padding: 10px 20px; background: #007AFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
-                    Get on App Store
-                </a>
-            </div>
-        </body>
-        </html>';
-        return;
+        return 'riotCallback';
     }
 }

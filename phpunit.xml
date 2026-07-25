@@ -9,6 +9,7 @@
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">tests/controllers</directory>
+            <directory suffix="Test.php">tests/services</directory>
             <exclude>tests/controllers/RiotApiIntegrationTest.php</exclude>
         </testsuite>
         <testsuite name="Integration">

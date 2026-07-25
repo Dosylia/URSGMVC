@@ -10,12 +10,22 @@ use models\GoogleUser;
 use models\ChatMessage;
 use models\Discord;
 use models\Items;
+use models\BannedUsers;
 use traits\SecurityController;
+use traits\MobileDeepLinkResponder;
 use services\DiscordBotService;
+use services\LogInService;
+use services\SignUpService;
+use services\MasterTokenService;
+use services\LoginDestination;
+use services\DiscordOAuthClientInterface;
+use services\DiscordOAuthClient;
+use services\FakeDiscordOAuthClient;
 
 class DiscordController
 {
     use SecurityController;
+    use MobileDeepLinkResponder;
     private LeagueOfLegends $leagueOfLegends;
     private User $user;
     private Valorant $valorant;
@@ -23,6 +33,10 @@ class DiscordController
     private UserLookingFor $userlookingfor;
     private Discord $discord;
     private Items $items;
+    private BannedUsers $bannedusers;
+    private LogInService $logInService;
+    private SignUpService $signUpService;
+    private DiscordOAuthClientInterface $discordOAuthClient;
     private $botToken;
     private $guildId;
     private $redirectUri;
@@ -36,6 +50,19 @@ class DiscordController
         $this -> discord = new Discord();
         $this -> userlookingfor = new userLookingFor();
         $this->items = new Items();
+        $this->bannedusers = new BannedUsers();
+        $masterTokenService = new MasterTokenService($this->googleUser);
+        $this->logInService = new LogInService(
+            $masterTokenService,
+            $this->user,
+            $this->leagueOfLegends,
+            $this->valorant,
+            $this->userlookingfor
+        );
+        $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
+        $this->discordOAuthClient = (($_ENV['environment'] ?? null) === 'local')
+            ? new FakeDiscordOAuthClient()
+            : new DiscordOAuthClient();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -252,53 +279,23 @@ class DiscordController
         $redirectUri = "https://ur-sg.com/discordData";
 
         $code = $_GET['code'] ?? null;
-    
+
         if (!$code) {
             die("Authorization code missing.");
         }
-        
-        $tokenUrl = "https://discord.com/api/oauth2/token";
-        $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
-            "grant_type" => "authorization_code",
-            "code" => $code,
-            "redirect_uri" => $redirectUri,
-        ];
-    
-        $options = [
-            "http" => [
-                "header" => "Content-Type: application/x-www-form-urlencoded",
-                "method" => "POST",
-                "content" => http_build_query($data),
-            ],
-        ];
-    
-        $context = stream_context_create($options);
-        $response = file_get_contents($tokenUrl, false, $context);
-        $tokenInfo = json_decode($response, true);
-    
-        if (!isset($tokenInfo['access_token'])) {
+
+        $tokenInfo = $this->discordOAuthClient->getAccessToken($code, $clientId, $clientSecret, $redirectUri);
+
+        if (!$tokenInfo) {
             die("Failed to get access token.");
         }
-    
-        // Use the access token to get user info
-        $userInfoUrl = "https://discord.com/api/users/@me";
-        $options = [
-            "http" => [
-                "header" => "Authorization: Bearer " . $tokenInfo['access_token'],
-                "method" => "GET",
-            ],
-        ];
-    
-        $context = stream_context_create($options);
-        $response = file_get_contents($userInfoUrl, false, $context);
-        $userInfo = json_decode($response, true);
-    
-        if (!isset($userInfo['id'])) {
+
+        $userInfo = $this->discordOAuthClient->getUserInfo($tokenInfo['access_token']);
+
+        if (!$userInfo) {
             die("Failed to fetch Discord user data.");
         }
-    
+
         // Store user info in session
         $_SESSION['discord_user'] = $userInfo;
     
@@ -312,6 +309,11 @@ class DiscordController
         $refreshToken = $tokenInfo['refresh_token'] ?? null;
         $expiresIn = $tokenInfo['expires_in'] ?? null;
 
+        if ($this->bannedusers->checkBan($discordEmail)) {
+            header('Location: /?message=Your account has been banned.');
+            return;
+        }
+
         if ($isMobile) {
             $this->handleMobileFlow($discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken, $expiresIn);
             return;
@@ -321,118 +323,36 @@ class DiscordController
 
         if ($existingUser) {
 
-            // MASTER TOKEN SYSTEM
-            if (isset($existingUser['google_masterTokenWebsite']) && $existingUser['google_masterTokenWebsite'] !== null && !empty($existingUser['google_masterTokenWebsite'])) {
-                $token = $existingUser['google_masterTokenWebsite'];
-            } else {
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterTokenWebsite($existingUser['google_userId'], $token);
-            }
+            $outcome = $this->logInService->resumeWebSession($existingUser);
+            $user = $outcome->userRow;
 
-            $_SESSION['google_userId'] = $existingUser['google_userId'];
-            $_SESSION['google_id'] = $discordId;
-            $_SESSION['email'] = $existingUser['google_email'];
-            $_SESSION['full_name'] = $existingUser['google_fullName'];
-            $_SESSION['google_firstName'] = $existingUser['google_firstName'];
-            $_SESSION['masterTokenWebsite'] = $token;
-
-            setcookie("auth_token", $token, [
-                'expires' => time() + 60 * 60 * 24 * 60,
-                'path' => '/',
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Strict',
-            ]);
-
-            $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
-
-            if ($googleUser)
-            {
-                $user = $this->user->getUserByUsername($googleUser['user_username']);
-
-                if ($user) 
-                {
-                    $_SESSION['userId'] = $user['user_id'];
-                    $_SESSION['username'] = $user['user_username'];
-                    $_SESSION['gender'] = $user['user_gender'];
-                    $_SESSION['age'] = $user['user_age'];
-                    $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
-                    $_SESSION['game'] = $user['user_game'];
-
-                    $discordUser = $this->discord->getDiscordAccount($user['user_id']);
-
-                    if (!$discordUser) {
-                        $this->discord->saveDiscordData($user['user_id'], $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
-                    }
-
-                    if ($user['user_game'] == 'League of Legends') {
-                        $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-
-                        if ($lolUser)
-                        {
-                            $_SESSION['lol_id'] = $lolUser['lol_id'];
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            if ($lfUser)
-                            {
-                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                header('Location: /swiping?message=Connected successfully.');
-                                return;
-                            }
-                            else 
-                            {
-                                header('Location: /signup?message=Create your Looking for account.');
-                                return;
-                            }
-                        }
-                        else 
-                        {
-                            header('Location: /signup?message=Create your LoL account.');
-                            return;
-                        }
-                    }
-                    else 
-                    {
-                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-
-                        if ($valorantUser)
-                        {
-
-                            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
-            
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            if ($lfUser)
-                            {
-                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                header('Location: /swiping?message=Connected successfully.');
-                                return;
-                            }
-                            else 
-                            {
-                                header('Location: /signup?message=Create your Looking for account.');
-                                return;
-                            }
-
-                        }
-                        else 
-                        {
-                            header('Location: /signup?message=Create your Valorant account.');
-                            return;
-                        }
-
-                    }
-
-                }
-                else 
-                {
-                    header('Location: /signup?message=Create your account.');
-                    return;
-                }
-            }
-            else 
-            {
+            if (!$user) {
                 header('Location: /signup?message=Create your account.');
                 return;
             }
+
+            $discordUser = $this->discord->getDiscordAccount($user['user_id']);
+
+            if (!$discordUser) {
+                $this->discord->saveDiscordData($user['user_id'], $discordId, $discordUsername, $discordEmail, $discordAvatar, $accessToken, $refreshToken);
+            }
+
+            if ($outcome->destination === LoginDestination::ONBOARDED) {
+                header('Location: /swiping?message=Connected successfully.');
+                return;
+            }
+
+            if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                header('Location: /signup?message=Create your Looking for account.');
+                return;
+            }
+
+            if ($outcome->game === 'League of Legends') {
+                header('Location: /signup?message=Create your LoL account.');
+            } else {
+                header('Location: /signup?message=Create your Valorant account.');
+            }
+            return;
         } else {
 
             $googleUser = $this->googleUser->getGoogleUserByEmail($discordEmail);
@@ -446,48 +366,12 @@ class DiscordController
             $firstName = $discordUsername;
             $googleFamilyName = $discordUsername;
             $RSO = 0;
-            $createGoogleUserDiscord = $this->googleUser->createGoogleUser($discordId, $fullName, $firstName, $googleFamilyName,  $RSO, $discordEmail);
 
-            if ($createGoogleUserDiscord)
-            {
-                require 'keys.php';
+            $outcome = $this->signUpService->createWebIdentity($discordId, $fullName, $firstName, $googleFamilyName, $discordEmail, $RSO);
 
-                $lifetime = 7 * 24 * 60 * 60;
-
-                session_destroy();
-
-                session_set_cookie_params($lifetime);
-
-                if (session_status() == PHP_SESSION_NONE) {
-                    session_start();
-                }
-
-                // MASTER TOKEN SYSTEM
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterTokenWebsite($createGoogleUserDiscord, $token);
-
-                setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 60,
-                    'path' => '/',
-                    'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Strict',
-                ]);
-
-                if ($createToken) {
-                    $_SESSION['masterTokenWebsite'] = $token;
-                }
-                
-                if (!isset($_SESSION['googleId'])) {
-                    $_SESSION['google_userId'] = $createGoogleUserDiscord;
-                    $_SESSION['google_id'] = $discordId;
-                    $_SESSION['email'] = $discordEmail;
-                    $_SESSION['full_name'] = $fullName;
-                }
-
+            if ($outcome) {
                 header('Location: /signup?message=Account created');
                 return;
-
             }
         }
     }
@@ -1075,378 +959,151 @@ class DiscordController
     {
         $existingUser = $this->googleUser->getUserByDiscordId($discordId);
 
+        $cookieOptions = [
+            'expires' => time() + 60 * 60 * 24 * 60,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ];
+
         // If user exists, allow connection on mobile, otherwise create account
         if ($existingUser)
         {
-            $step = '';
-            if (isset($existingUser['google_masterToken']) && $existingUser['google_masterToken'] !== null && !empty($existingUser['google_masterToken'])) {
-                $token = $existingUser['google_masterToken'];
-            } else {
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterToken($existingUser['google_userId'], $token);
+            $outcome = $this->logInService->resumeMobileProfile($existingUser);
+            setcookie("auth_token", $outcome->masterToken, $cookieOptions);
+
+            if (!$outcome->userExists) {
+                $response = array(
+                    'message' => 'Success',
+                    'newUser' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'userExists' => false
+                );
+                $this->handleMobileFlowSuccess('Create your account.', $response);
+                return;
             }
 
-            $googleUserData = array(
-                'googleId' => $discordId,
-                'fullName' => $existingUser['google_fullName'],
-                'firstName' => $existingUser['google_firstName'],
-                'lastName' => $existingUser['google_lastName'],
-                'email' => $existingUser['google_email'],
-                'googleUserId' => $existingUser['google_userId'],
-                'token' => $token
-            );
-
-            setcookie("auth_token", $token, [
-                'expires' => time() + 60 * 60 * 24 * 60,
-                'path' => '/',
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Strict',
-            ]);
-
-
-            $googleUser = $this->user->getUserDataByGoogleUserId($existingUser['google_userId']);
-
-            if ($googleUser)
-            {
-                $user = $this->user->getUserByUsername($googleUser['user_username']);
-
-                if ($user) 
-                {
-                    $userData = array(
-                        'userId' => $user['user_id'],
-                        'username' => $user['user_username'],
-                        'gender' => $user['user_gender'],
-                        'age' => $user['user_age'],
-                        'kindOfGamer' => $user['user_kindOfGamer'],
-                        'game' => $user['user_game'],
-                        'shortBio' => $user['user_shortBio'],
-                        'picture' => $user['user_picture'] ?? null,
-                        'bonusPicture' => $user['user_bonusPicture'] ?? null,
-                        'discord' => $user['user_discord'] ?? null,
-                        'twitch' => $user['user_twitch'] ?? null,
-                        'instagram' => $user['user_instagram'] ?? null,
-                        'twitter' => $user['user_twitter'] ?? null,
-                        'bluesky' => $user['user_bluesky'] ?? null,
-                        'currency' => $user['user_currency'] ?? null,
-                        'isGold' => $user['user_isGold'] ?? null,
-                        'isPartner'=> $user['user_isPartner'] ?? null,
-                        'isCertified' => $user['user_isCertified'] ?? null,
-                        'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
-                        'arcane' => $user['user_arcane'] ?? null,
-                        'arcaneIgnore' => $user['user_ignore'] ?? null
-                    );
-
-                    if ($user['user_game'] == 'League of Legends') {
-                        $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-
-                        if ($lolUser)
-                        {
-                            $lolUserData = array(
-                                'lolId' => $lolUser['lol_id'],
-                                'main1' => $lolUser['lol_main1'],
-                                'main2' => $lolUser['lol_main2'],
-                                'main3' => $lolUser['lol_main3'],
-                                'rank' => $lolUser['lol_rank'],
-                                'role' => $lolUser['lol_role'],
-                                'server' => $lolUser['lol_server'],
-                                'account' => $lolUser['lol_account'],
-                                'sUsername' => $lolUser['lol_sUsername'],
-                                'sLevel' => $lolUser['lol_sLevel'],
-                                'sRank' => $lolUser['lol_sRank'],
-                                'sProfileIcon' => $lolUser['lol_sProfileIcon'],
-                                'skipSelectionLol' => $lolUser['lol_noChamp']
-                            );
-
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-
-                            if ($lfUser)
-                            {
-                                $lookingforUserData = array(
-                                    'lfId' => $lfUser['lf_id'],
-                                    'lfGender' => $lfUser['lf_gender'],
-                                    'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                    'lfGame' => $lfUser['lf_game'],
-                                    'main1Lf' => $lfUser['lf_lolmain1'],
-                                    'main2Lf' => $lfUser['lf_lolmain2'],
-                                    'main3Lf' => $lfUser['lf_lolmain3'],
-                                    'rankLf' => $lfUser['lf_lolrank'],
-                                    'roleLf' => $lfUser['lf_lolrole'],
-                                    'skipSelectionLf' => $lfUser['lf_lolNoChamp'],
-                                    'filteredServerLf' => $lfUser['lf_filteredServer']
-                                );
-
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => true,
-                                    'lookingForUserExists' => true,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'leagueUser' => $lolUserData,
-                                    'lookingForUser' => $lookingforUserData
-                                );     
-                                $step = 'ConnectLeague';
-                                $this->handleMobileFlowSuccess('Account connected', $response);
-                            }
-                            else 
-                            {
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => true,
-                                    'lookingForUserExists' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'leagueUser' => $lolUserData
-                                );
-                                $step = 'lookingForAccount';
-                                $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
-                            }
-                        }
-                        else 
-                        {
-                            $response = array(
-                                'message' => 'Success',
-                                'newUser' => false,
-                                'googleUser' => $googleUserData,
-                                'user' => $userData,
-                                'userExists' => true,
-                                'leagueUserExists' => false
-                            );
-                            $step = 'LeagueAccount';
-                            $this->handleMobileFlowSuccess('Create your League account.', $response);
-                        }
-                    }
-                    else 
-                    {
-                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-
-                        if ($valorantUser)
-                        {
-
-                            $valorantUserData = array(
-                                'valorantId' => $valorantUser['valorant_id'],
-                                'main1' => $valorantUser['valorant_main1'],
-                                'main2' => $valorantUser['valorant_main2'],
-                                'main3' => $valorantUser['valorant_main3'],
-                                'rank' => $valorantUser['valorant_rank'],
-                                'role' => $valorantUser['valorant_role'],
-                                'server' => $valorantUser['valorant_server'],
-                                'skipSelectionVal' => $valorantUser['valorant_noChamp']
-                            );
-
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            if ($lfUser)
-                            {
-                                $lookingforUserData = array(
-                                    'lfId' => $lfUser['lf_id'],
-                                    'lfGender' => $lfUser['lf_gender'],
-                                    'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                    'lfGame' => $lfUser['lf_game'],
-                                    'valmain1Lf' => $lfUser['lf_valmain1'],
-                                    'valmain2Lf' => $lfUser['lf_valmain2'],
-                                    'valmain3Lf' => $lfUser['lf_valmain3'],
-                                    'valrankLf' => $lfUser['lf_valrank'],
-                                    'valroleLf' => $lfUser['lf_valrole'],
-                                    'skipSelectionLf' => $lfUser['lf_valNoChamp'],
-                                    'filteredServerLf' => $lfUser['lf_filteredServer']
-                                );
-
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false,
-                                    'lookingForUserExists' => true,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'valorantUser' => $valorantUserData,
-                                    'lookingForUser' => $lookingforUserData,
-                                    'valorantUserExists' => true
-                                );  
-
-                                $step = 'ConnectValorant';
-                                $this->handleMobileFlowSuccess('Account connected', $response);
-                            }
-                            else 
-                            {
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false,
-                                    'lookingForUserExists' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'valorantUser' => $valorantUserData,
-                                    'valorantUserExists' => true
-                                );
-                                $step = 'lookingForAccount';
-                                $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
-                            }
-
-                        }
-                        else 
-                        {
-                            $response = array(
-                                'message' => 'Success',
-                                'newUser' => false,
-                                'googleUser' => $googleUserData,
-                                'user' => $userData,
-                                'userExists' => true,
-                                'leagueUserExists' => false,
-                                'valorantUserExists' => false
-                            );
-
-                            $step = 'valorantAccount';
-                            $this->handleMobileFlowSuccess('Create your Valorant account.', $response);
-                        }
-
-                    }
-
-                }
-                else 
-                {
+            if ($outcome->game === 'League of Legends') {
+                if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
                     $response = array(
                         'message' => 'Success',
                         'newUser' => false,
-                        'googleUser' => $googleUserData,
-                        'userExists' => false
+                        'googleUser' => $outcome->identityRow,
+                        'user' => $outcome->userRow,
+                        'userExists' => true,
+                        'leagueUserExists' => false
                     );
-                    $step = 'basicInfo';
-                    $this->handleMobileFlowSuccess('Create your account.', $response);
+                    $this->handleMobileFlowSuccess('Create your League account.', $response);
+                    return;
                 }
-            }
-            else 
-            {
-                $response = array(
+
+                if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                    $response = array(
                         'message' => 'Success',
                         'newUser' => false,
-                        'googleUser' => $googleUserData,
-                        'userExists' => false
+                        'userExists' => true,
+                        'leagueUserExists' => true,
+                        'lookingForUserExists' => false,
+                        'googleUser' => $outcome->identityRow,
+                        'user' => $outcome->userRow,
+                        'leagueUser' => $outcome->gameProfile
+                    );
+                    $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
+                    return;
+                }
+
+                $response = array(
+                    'message' => 'Success',
+                    'newUser' => false,
+                    'userExists' => true,
+                    'leagueUserExists' => true,
+                    'lookingForUserExists' => true,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'leagueUser' => $outcome->gameProfile,
+                    'lookingForUser' => $outcome->lookingForRow
                 );
-                $step = 'basicInfo';
-                $this->handleMobileFlowSuccess('Create your account.', $response);
+                $this->handleMobileFlowSuccess('Account connected', $response);
+                return;
             }
+
+            if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                $response = array(
+                    'message' => 'Success',
+                    'newUser' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'userExists' => true,
+                    'leagueUserExists' => false,
+                    'valorantUserExists' => false
+                );
+                $this->handleMobileFlowSuccess('Create your Valorant account.', $response);
+                return;
+            }
+
+            if ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                $response = array(
+                    'message' => 'Success',
+                    'newUser' => false,
+                    'userExists' => true,
+                    'leagueUserExists' => false,
+                    'lookingForUserExists' => false,
+                    'googleUser' => $outcome->identityRow,
+                    'user' => $outcome->userRow,
+                    'valorantUser' => $outcome->gameProfile,
+                    'valorantUserExists' => true
+                );
+                $this->handleMobileFlowSuccess('Create your Looking for account.', $response);
+                return;
+            }
+
+            $response = array(
+                'message' => 'Success',
+                'newUser' => false,
+                'userExists' => true,
+                'leagueUserExists' => false,
+                'lookingForUserExists' => true,
+                'googleUser' => $outcome->identityRow,
+                'user' => $outcome->userRow,
+                'valorantUser' => $outcome->gameProfile,
+                'lookingForUser' => $outcome->lookingForRow,
+                'valorantUserExists' => true
+            );
+            $this->handleMobileFlowSuccess('Account connected', $response);
+            return;
         }
-        else 
+        else
         {
             $fullName = $discordUsername;
             $firstName = $discordUsername;
             $googleFamilyName = $discordUsername;
             $RSO = 0;
-            $createGoogleUserDiscord = $this->googleUser->createGoogleUser($discordId, $fullName, $firstName, $googleFamilyName,  $RSO, $discordEmail);
 
-            if ($createGoogleUserDiscord)
-            {
+            $outcome = $this->signUpService->createMobileIdentity($discordId, $fullName, $firstName, $googleFamilyName, $discordEmail, $RSO);
 
-                // MASTER TOKEN SYSTEM
-                $token = bin2hex(random_bytes(32));
-                $createToken = $this->googleUser->storeMasterToken($createGoogleUserDiscord, $token);
-
-                setcookie("auth_token", $token, [
-                    'expires' => time() + 60 * 60 * 24 * 60,
-                    'path' => '/',
-                    'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Strict',
-                ]);
-
-                $googleData = array(
-                    'googleId' => $discordId,
-                    'fullName' => $fullName,
-                    'firstName' => $firstName,
-                    'lastName' => $googleFamilyName,
-                    'email' => $discordEmail,
-                    'googleUserId' => $createGoogleUserDiscord,
-                    'token' => $token
-                );
+            if ($outcome) {
+                setcookie("auth_token", $outcome->masterToken, $cookieOptions);
 
                 $response = array(
                     'message' => 'Success',
                     'newUser' => true,
-                    'googleUser' => $googleData,
+                    'googleUser' => $outcome->identityRow,
                 );
-
-
-                $step = 'basicInfo';
                 $this->handleMobileFlowSuccess('Create your account.', $response);
             }
 
         }
     }
 
-    public function handleMobileFlowFailure($error)
+    protected function mobileFlowSessionKey(): string
     {
-        unset($_SESSION['phoneData']);
-        unset($_SESSION['riotConnectMobile']);
-
-        $response = array(
-            'status' => 'failure',
-            'message' => $error
-        );
-        error_log(print_r('Error ' . $error, true));
-        $responseJson = json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $redirectUrl = "intent://discordCallback?response=" . rawurlencode($responseJson) . "#Intent;scheme=com.dosylia.URSG;package=com.dosylia.URSG;end;";
-        $this->outputMobileFlowHtml($redirectUrl, false);
+        return 'discordConnectMobile';
     }
 
-    public function handleMobileFlowSuccess($message, $response)
+    protected function mobileDeepLinkCallback(): string
     {
-        unset($_SESSION['phoneData']);
-        unset($_SESSION['riotConnectMobile']);
-
-        $responseJson = json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $redirectUrl = "intent://discordCallback?response=" . rawurlencode($responseJson) . "#Intent;scheme=com.dosylia.URSG;package=com.dosylia.URSG;end;";
-        $this->outputMobileFlowHtml($redirectUrl, true);
-    }
-
-    private function outputMobileFlowHtml($redirectUrl, $success = true)
-    {
-        $title = $success ? 'Authentication Successful' : 'Authentication Failed';
-        $message = $success ? 'Redirecting you back to the URSG app...' : 'There was a problem. Redirecting you back to the URSG app...';
-        echo '<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Return to URSG App</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <script>
-                function openApp() {
-                    window.location.href = "' . $redirectUrl . '";
-                    setTimeout(function() {
-                        if (!document.webkitHidden && !document.hidden) {
-                            document.getElementById("fallbackButton").style.display = "block";
-                            document.getElementById("appStoreButton").style.display = "block";
-                        }
-                    }, 1000);
-                }
-                window.onload = function() { openApp(); };
-            </script>
-        </head>
-        <body style="font-family: Arial, sans-serif; text-align: center; padding: 40px;">
-            <h2>' . $title . '</h2>
-            <p>' . $message . '</p>
-            <div id="fallbackButton" style="display: none;">
-                <p>If you werent redirected automatically, click below:</p>
-                <a href="' . htmlspecialchars($redirectUrl) . '" style="padding: 15px 30px; background: #e74057; color: white; text-decoration: none; border-radius: 8px; margin-top: 20px; display: inline-block;">
-                    Open URSG App
-                </a>
-            </div>
-            <div id="appStoreButton" style="display: none; margin-top: 20px;">
-                <p>Dont have the app?</p>
-                <a href="https://play.google.com/store/apps/details?id=com.dosylia.URSG" style="padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
-                    Get on Google Play
-                </a>
-                <a href="https://apps.apple.com/app/" style="padding: 10px 20px; background: #007AFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
-                    Get on App Store
-                </a>
-            </div>
-        </body>
-        </html>';
-        return;
+        return 'discordCallback';
     }
 }
 

@@ -4,6 +4,7 @@
             "config\\": "config/",
             "controllers\\": "controllers/",
             "models\\": "models/",
+            "services\\": "services/",
             "traits\\": "traits/"
         }
     },

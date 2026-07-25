@@ -242,7 +242,6 @@ abstract class BaseControllerTestCase extends TestCase
             'user_game' => 'League of Legends',
             'user_token' => null,
             'user_currency' => 500,
-            'user_isVip' => 0,
             'user_isPartner' => 0,
             'user_isCertified' => 0,
             'user_hasChatFilter' => 0,

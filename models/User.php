@@ -559,7 +559,8 @@ class User extends DataBase
                                                 `user_age`,
                                                 `user_kindOfGamer`,
                                                 `user_shortBio`,
-                                                `user_game`
+                                                `user_game`,
+                                                `user_requestIsLooking`
                                             )
                                             VALUES (
                                                 ?,
@@ -568,7 +569,8 @@ class User extends DataBase
                                                 ?,
                                                 ?,
                                                 ?,
-                                                ?
+                                                ?,
+                                                NOW()
                                             )
                                         ");
 
@@ -915,6 +917,30 @@ class User extends DataBase
         }
     }
 
+
+    public function getUserByGoogleUserId($googleUserId)
+    {
+        $query = $this -> bdd -> prepare("
+                                            SELECT
+                                                *
+                                            FROM
+                                                `user`
+                                            WHERE
+                                                `google_userId` = ?
+        ");
+
+        $query -> execute([$googleUserId]);
+        $user = $query -> fetch();
+
+        if ($user)
+        {
+            return $user;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     public function getUserDataByGoogleUserId($googleUserId)
     {

@@ -18,6 +18,10 @@ use traits\Translatable;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Google_Client;
+use services\LogInService;
+use services\SignUpService;
+use services\MasterTokenService;
+use services\LoginDestination;
 
 require 'vendor/autoload.php';
 
@@ -37,6 +41,8 @@ class GoogleUserController
     private PlayerFinder $playerFinder;
     private ChatMessage $chatmessage;
     private FriendRequest $friendrequest;
+    private LogInService $logInService;
+    private SignUpService $signUpService;
     private $googleId;
     private $googleUserId;
     private $googleFullName;
@@ -59,6 +65,15 @@ class GoogleUserController
         $this -> playerFinder = new PlayerFinder();
         $this->chatmessage = new ChatMessage();
         $this->friendrequest = new FriendRequest();
+        $masterTokenService = new MasterTokenService($this->googleUser);
+        $this->logInService = new LogInService(
+            $masterTokenService,
+            $this->user,
+            $this->leagueoflegends,
+            $this->valorant,
+            $this->userlookingfor
+        );
+        $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
     }
 
     public function homePage() 
@@ -705,9 +720,9 @@ class GoogleUserController
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
 
-            if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
+            if($testGoogleUser) //CREATING SESSION IF USER EXISTS
             {
-                if ($this->isConnectGoogle()) 
+                if ($this->isConnectGoogle())
                 {
                     if (isset($_COOKIE['googleId'])) {
                         setcookie('googleId', "", time() - 42000, COOKIEPATH);
@@ -724,183 +739,116 @@ class GoogleUserController
                     session_start();
                 }
 
-                if (!isset($_SESSION['googleId'])) 
-                {
-                    // MASTER TOKEN SYSTEM
-                    if (isset($testGoogleUser['google_masterTokenWebsite']) && $testGoogleUser['google_masterTokenWebsite'] !== null && !empty($testGoogleUser['google_masterTokenWebsite'])) {
-                        $token = $testGoogleUser['google_masterTokenWebsite'];
-                    } else {
-                        $token = bin2hex(random_bytes(32));
-                        $createToken = $this->googleUser->storeMasterTokenWebsite($testGoogleUser['google_userId'], $token);
-                    }
+                $outcome = $this->logInService->resumeWebSession($testGoogleUser);
+                $adminToken = '';
 
-                    $adminToken = '';
-                    $_SESSION['google_userId'] = $testGoogleUser['google_userId'];
-                    $_SESSION['full_name'] = $this->getGoogleFullName();
-                    $_SESSION['google_id'] = $this->getGoogleId();
-                    $_SESSION['email'] = $this->getGoogleEmail();
-                    $_SESSION['google_firstName'] = $this->getGoogleFirstName();
-                    $_SESSION['masterTokenWebsite'] = $token;
+                if (!$outcome->userExists) {
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => false,
+                        'googleUser' => $testGoogleUser,
+                        'userExists' => false,
+                        'masterTokenWebsite' => $outcome->masterToken,
+                        'adminToken' => $adminToken
+                    );
+                    echo json_encode($response);
+                    return;
+                }
 
-                    setcookie("auth_token", $token, [
-                        'expires' => time() + 60 * 60 * 24 * 60,
-                        'path' => '/',
-                        'secure' => true,
-                        'httponly' => true,
-                        'samesite' => 'Strict',
-                    ]);
+                $user = $outcome->userRow;
 
-                    $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
-                    if ($googleUser) {
-                        $user = $this->user->getUserByUsername($googleUser['user_username']);
-                        if ($user)
-                        {
-                            if ($user['user_id'] === 157 || $user['user_id'] === 158) {
-                                require 'keys.php';
-                                $adminToken = $adminTokenSecret;
-                            }
+                if ($user['user_id'] === 157 || $user['user_id'] === 158) {
+                    require 'keys.php';
+                    $adminToken = $adminTokenSecret;
+                }
 
-                            $_SESSION['userId'] = $user['user_id'];
-                            $_SESSION['username'] = $user['user_username'];
-                            $_SESSION['gender'] = $user['user_gender'];
-                            $_SESSION['age'] = $user['user_age'];
-                            $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
-                            $_SESSION['game'] = $user['user_game'];
-
-                            if ($user['user_game'] == 'League of Legends') {
-                                $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-
-                                $response = array(
-                                    'message' => 'Success',
-                                    'LolUser' => $lolUser,
-                                );                    
-                                
-                                if ($lolUser)
-                                {
-                                    $_SESSION['lol_id'] = $lolUser['lol_id'];
-    
-                                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-    
-                                    if ($lfUser)
-                                    {
-                                        $_SESSION['lf_id'] = $lfUser['lf_id']; 
-                                        $response = array(
-                                            'message' => 'Success',
-                                            'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => true,
-                                            'lookingForUserExists' => true,
-                                            'googleUser' => $testGoogleUser,
-                                            'user' => $user,
-                                            'leagueUser' => $lolUser,
-                                            'lookingForUser' => $lfUser,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                            'adminToken' => $adminToken
-                                        );
-                                    } else {
-                                        $response = array(
-                                            'message' => 'Success',
-                                            'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => true,
-                                            'lookingForUserExists' => false,
-                                            'googleUser' => $testGoogleUser,
-                                            'user' => $user,
-                                            'leagueUser' => $lolUser,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                            'adminToken' => $adminToken
-                                        );
-                                    }
-                                } else {
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'googleUser' => $testGoogleUser,
-                                        'user' => $user,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                        'adminToken' => $adminToken
-                                    );
-                                }
-                            } else {
-                                $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-                                
-                                if ($valorantUser)
-                                {
-                                    $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
-                            
-                                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            
-                                    if ($lfUser)
-                                    {
-                                        $_SESSION['lf_id'] = $lfUser['lf_id']; 
-                                        $response = array(
-                                            'message' => 'Success',
-                                            'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => false,
-                                            'lookingForUserExists' => true,
-                                            'googleUser' => $testGoogleUser,
-                                            'user' => $user,
-                                            'valorantUser' => $valorantUser,
-                                            'lookingForUser' => $lfUser,
-                                            'valorantUserExists' => true,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                            'adminToken' => $adminToken
-                                        );                                
-                                    } else {
-                                        $response = array(
-                                            'message' => 'Success',
-                                            'newUser' => false,
-                                            'userExists' => true,
-                                            'leagueUserExists' => true,
-                                            'lookingForUserExists' => false,
-                                            'googleUser' => $testGoogleUser,
-                                            'user' => $user,
-                                            'valorantUser' => $valorantUser,
-                                            'valorantUserExists' => true,
-                                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                            'adminToken' => $adminToken
-                                        );
-                                    }
-                                } else {
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'googleUser' => $testGoogleUser,
-                                        'user' => $user,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'valorantUserExists' => false,
-                                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                        'adminToken' => $adminToken
-                                    );
-                                }
-                            }
-                        } else {
-                            $response = array(
-                                'message' => 'Success',
-                                'newUser' => false,
-                                'googleUser' => $testGoogleUser,
-                                'userExists' => false,
-                                'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
-                                'adminToken' => $adminToken
-                            );
-                        }
-                    } else {
+                if ($outcome->game === 'League of Legends') {
+                    if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
                         $response = array(
                             'message' => 'Success',
                             'newUser' => false,
                             'googleUser' => $testGoogleUser,
-                            'userExists' => false,
-                            'masterTokenWebsite' => $_SESSION['masterTokenWebsite'],
+                            'user' => $user,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'masterTokenWebsite' => $outcome->masterToken,
+                            'adminToken' => $adminToken
+                        );
+                    } elseif ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => true,
+                            'lookingForUserExists' => false,
+                            'googleUser' => $testGoogleUser,
+                            'user' => $user,
+                            'leagueUser' => $outcome->gameProfile,
+                            'masterTokenWebsite' => $outcome->masterToken,
+                            'adminToken' => $adminToken
+                        );
+                    } else {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => true,
+                            'lookingForUserExists' => true,
+                            'googleUser' => $testGoogleUser,
+                            'user' => $user,
+                            'leagueUser' => $outcome->gameProfile,
+                            'lookingForUser' => $outcome->lookingForRow,
+                            'masterTokenWebsite' => $outcome->masterToken,
+                            'adminToken' => $adminToken
+                        );
+                    }
+                } else {
+                    if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'googleUser' => $testGoogleUser,
+                            'user' => $user,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'valorantUserExists' => false,
+                            'masterTokenWebsite' => $outcome->masterToken,
+                            'adminToken' => $adminToken
+                        );
+                    } elseif ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => true, // preserved: pre-existing mislabel in the original response, out of scope for this refactor
+                            'lookingForUserExists' => false,
+                            'googleUser' => $testGoogleUser,
+                            'user' => $user,
+                            'valorantUser' => $outcome->gameProfile,
+                            'valorantUserExists' => true,
+                            'masterTokenWebsite' => $outcome->masterToken,
+                            'adminToken' => $adminToken
+                        );
+                    } else {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'lookingForUserExists' => true,
+                            'googleUser' => $testGoogleUser,
+                            'user' => $user,
+                            'valorantUser' => $outcome->gameProfile,
+                            'lookingForUser' => $outcome->lookingForRow,
+                            'valorantUserExists' => true,
+                            'masterTokenWebsite' => $outcome->masterToken,
                             'adminToken' => $adminToken
                         );
                     }
                 }
+
                 echo json_encode($response);
-                return;  
+                return;
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
@@ -914,118 +862,23 @@ class GoogleUserController
                     return;
                 }
                 $RSO = 0;
-                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
-    
-                if($createGoogleUser) 
-                {
-                    require 'keys.php';
-                    $this->setGoogleUserId($createGoogleUser);
-    
-                    $lifetime = 7 * 24 * 60 * 60;
-    
-                    session_destroy();
-    
-                    session_set_cookie_params($lifetime);
-    
-                    if (session_status() == PHP_SESSION_NONE) {
-                        session_start();
-                    }
+                $outcome = $this->signUpService->createWebIdentity(
+                    $this->getGoogleId(),
+                    $this->getGoogleFullName(),
+                    $this->getGoogleFirstName(),
+                    $this->getGoogleFamilyName(),
+                    $this->getGoogleEmail(),
+                    $RSO
+                );
 
-                    // MASTER TOKEN SYSTEM
-                    $token = bin2hex(random_bytes(32));
-                    $createToken = $this->googleUser->storeMasterTokenWebsite($this->getGoogleUserId(), $token);
+                if ($outcome) {
+                    $this->setGoogleUserId($outcome->identityRow['google_userId']);
 
-                    if ($createToken) {
-                        $_SESSION['masterTokenWebsite'] = $token;
-                        setcookie("auth_token", $token, [
-                            'expires' => time() + 60 * 60 * 24 * 60,
-                            'path' => '/',
-                            'secure' => true,
-                            'httponly' => true,
-                            'samesite' => 'Strict',
-                        ]);
-                    }
-                    
-                    if (!isset($_SESSION['googleId'])) {
-                        $_SESSION['google_userId'] = $this->getGoogleUserId();
-                        $_SESSION['full_name'] = $this->getGoogleFullName();
-                        $_SESSION['google_id'] = $this->getGoogleId();
-                        $_SESSION['email'] = $this->getGoogleEmail();
-                        $_SESSION['google_firstName'] = $this->getGoogleFirstName();
-                    }
-
-                    // $email = $this->getGoogleEmail();
-    
-                    // $mail = new PHPMailer;
-                    // $mail->isSMTP();
-                    // $mail->Host = 'smtp.ionos.de';
-                    // $mail->SMTPAuth = true;
-                    // $mail->Username = 'contact@ur-sg.com';
-                    // $mail->Password = $password_gmail;
-                    // $mail->SMTPSecure = 'tls';
-                    // $mail->Port = 587;
-                    
-                    // $mail->setFrom('contact@ur-sg.com', 'UR-SG.com');
-                    // $mail->addAddress($this->getGoogleEmail());
-                    // $mail->Subject = 'Confirm your email for UR-SG.com';
-                    // $mail->isHTML(true);
-                    
-                    // $mail->CharSet = 'UTF-8'; 
-                    // $mail->Encoding = 'quoted-printable'; 
-                    
-                    // $mail->Body = "
-                    // <html>
-                    // <head>
-                    //     <style>
-                    //         body {
-                    //             font-family: Arial, sans-serif;
-                    //             background-color: #f4f4f4;
-                    //             padding: 20px;
-                    //         }
-                    //         .container {
-                    //             background-color: #ffffff;
-                    //             padding: 20px;
-                    //             border-radius: 10px;
-                    //             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                    //         }
-                    //         .header {
-                    //             color: #333;
-                    //             font-size: 24px;
-                    //             margin-bottom: 20px;
-                    //         }
-                    //         .button {
-                    //             display: inline-block;
-                    //             padding: 10px 20px;
-                    //             color: #fff !important;
-                    //             background-color: #e74057;
-                    //             text-decoration: none;
-                    //             border-radius: 5px;
-                    //         }
-                    //         .footer {
-                    //             margin-top: 20px;
-                    //             font-size: 12px;
-                    //             color: #999;
-                    //         }
-                    //     </style>
-                    // </head>
-                    // <body>
-                    //     <div class='container'>
-                    //         <div class='header'>Confirm Your Email for UR-SG.com</div>
-                    //         <p>Thank you for registering on UR-SG.com!</p>
-                    //         <p>Your email: {$email}</p>
-                    //         <p>To confirm your email, please click the button below:</p>
-                    //         <a href='https://ur-sg.com/acceptConfirm?mail={$email}' class='button'>Confirm Email</a>
-                    //     </div>
-                    //     <div class='footer'>If you didn't request this, please ignore this email.</div>
-                    // </body>
-                    // </html>
-                    // ";
-    
                     $response = array(
                         'message' => 'Success',
                         'newUser' => true,
-                        'googleUser' => $createGoogleUser,
-                        'masterTokenWebsite' => $_SESSION['masterTokenWebsite']
+                        'googleUser' => $outcome->identityRow['google_userId'],
+                        'masterTokenWebsite' => $outcome->masterToken
                     );
                 }
             }
@@ -1078,224 +931,96 @@ class GoogleUserController
             
             $testGoogleUser = $this->googleUser->userExist($this->getGoogleId());
 
-            if($testGoogleUser) //CREATING SESSION IF USER EXISTS 
+            if($testGoogleUser) //CREATING SESSION IF USER EXISTS
             {
+                $outcome = $this->logInService->resumeMobileProfile($testGoogleUser);
 
-     
-                if (isset($testGoogleUser['google_masterToken']) && $testGoogleUser['google_masterToken'] !== null && !empty($testGoogleUser['google_masterToken'])) {
-                    $token = $testGoogleUser['google_masterToken'];
-                } else {
-                    $token = bin2hex(random_bytes(32));
-                    $createToken = $this->googleUser->storeMasterToken($testGoogleUser['google_userId'], $token);
+                if (!$outcome->userExists) {
+                    $response = array(
+                        'message' => 'Success',
+                        'newUser' => false,
+                        'googleUser' => $outcome->identityRow,
+                        'userExists' => false
+                    );
+                    echo json_encode($response);
+                    return;
                 }
 
-            
-                $googleUserData = array(
-                    'googleId' => $testGoogleUser['google_id'],
-                    'fullName' => $testGoogleUser['google_fullName'],
-                    'firstName' => $testGoogleUser['google_firstName'],
-                    'lastName' => $testGoogleUser['google_lastName'],
-                    'email' => $testGoogleUser['google_email'],
-                    'googleUserId' => $testGoogleUser['google_userId'],
-                    'token' => $token
-                );
-
-                $googleUser = $this->user->getUserDataByGoogleUserId($testGoogleUser['google_userId']);
-                if ($googleUser) {
-
-                    $user = $this->user->getUserByUsername($googleUser['user_username']);
-                    if ($user)
-                    {
-                        $userData = array(
-                            'userId' => $user['user_id'],
-                            'username' => $user['user_username'],
-                            'gender' => $user['user_gender'],
-                            'age' => $user['user_age'],
-                            'kindOfGamer' => $user['user_kindOfGamer'],
-                            'game' => $user['user_game'],
-                            'shortBio' => $user['user_shortBio'],
-                            'picture' => $user['user_picture'] ?? null,
-                            'bonusPicture' => $user['user_bonusPicture'] ?? null,
-                            'discord' => $user['user_discord'] ?? null,
-                            'twitch' => $user['user_twitch'] ?? null,
-                            'instagram' => $user['user_instagram'] ?? null,
-                            'twitter' => $user['user_twitter'] ?? null,
-                            'bluesky' => $user['user_bluesky'] ?? null,
-                            'currency' => $user['user_currency'] ?? null,
-                            'isGold' => $user['user_isGold'] ?? null,
-                            'isPartner'=> $user['user_isPartner'] ?? null,
-                            'isCertified' => $user['user_isCertified'] ?? null,
-                            'hasChatFilter' => $user['user_hasChatFilter'] ?? null,
-                            'arcane' => $user['user_arcane'] ?? null,
-                            'arcaneIgnore' => $user['user_ignore'] ?? null
+                if ($outcome->game === 'League of Legends') {
+                    if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'userExists' => true,
+                            'leagueUserExists' => false
                         );
-
-                        if ($user['user_game'] == 'League of Legends') {
-                            $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-                        
-                            if ($lolUser)
-                            {
-                                $lolUserData = array(
-                                    'lolId' => $lolUser['lol_id'],
-                                    'main1' => $lolUser['lol_main1'],
-                                    'main2' => $lolUser['lol_main2'],
-                                    'main3' => $lolUser['lol_main3'],
-                                    'rank' => $lolUser['lol_rank'],
-                                    'role' => $lolUser['lol_role'],
-                                    'server' => $lolUser['lol_server'],
-                                    'account' => $lolUser['lol_account'],
-                                    'sUsername' => $lolUser['lol_sUsername'],
-                                    'sLevel' => $lolUser['lol_sLevel'],
-                                    'sRank' => $lolUser['lol_sRank'],
-                                    'sProfileIcon' => $lolUser['lol_sProfileIcon'],
-                                    'skipSelectionLol' => $lolUser['lol_noChamp']
-                                );
-                        
-                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                        
-                                if ($lfUser)
-                                {
-                                    $lookingforUserData = array(
-                                        'lfId' => $lfUser['lf_id'],
-                                        'lfGender' => $lfUser['lf_gender'],
-                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                        'lfGame' => $lfUser['lf_game'],
-                                        'main1Lf' => $lfUser['lf_lolmain1'],
-                                        'main2Lf' => $lfUser['lf_lolmain2'],
-                                        'main3Lf' => $lfUser['lf_lolmain3'],
-                                        'rankLf' => $lfUser['lf_lolrank'],
-                                        'roleLf' => $lfUser['lf_lolrole'],
-                                        'skipSelectionLf' => $lfUser['lf_lolNoChamp'],
-                                        'filteredServerLf' => $lfUser['lf_filteredServer']
-                                    );
-                        
-                                    
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => true,
-                                        'lookingForUserExists' => true,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'leagueUser' => $lolUserData,
-                                        'lookingForUser' => $lookingforUserData
-                                    );                                
-                                } else {
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => true,
-                                        'lookingForUserExists' => false,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'leagueUser' => $lolUserData
-                                    );
-                                }
-                            } else {
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false
-                                );
-                            }
-                        } else {
-                            $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-                        
-                            if ($valorantUser)
-                            {
-                                $valorantUserData = array(
-                                    'valorantId' => $valorantUser['valorant_id'],
-                                    'main1' => $valorantUser['valorant_main1'],
-                                    'main2' => $valorantUser['valorant_main2'],
-                                    'main3' => $valorantUser['valorant_main3'],
-                                    'rank' => $valorantUser['valorant_rank'],
-                                    'role' => $valorantUser['valorant_role'],
-                                    'server' => $valorantUser['valorant_server'],
-                                    'skipSelectionVal' => $valorantUser['valorant_noChamp']
-                                );
-                        
-                                $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                        
-                                if ($lfUser)
-                                {
-                                    $lookingforUserData = array(
-                                        'lfId' => $lfUser['lf_id'],
-                                        'lfGender' => $lfUser['lf_gender'],
-                                        'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                                        'lfGame' => $lfUser['lf_game'],
-                                        'valmain1Lf' => $lfUser['lf_valmain1'],
-                                        'valmain2Lf' => $lfUser['lf_valmain2'],
-                                        'valmain3Lf' => $lfUser['lf_valmain3'],
-                                        'valrankLf' => $lfUser['lf_valrank'],
-                                        'valroleLf' => $lfUser['lf_valrole'],
-                                        'skipSelectionLf' => $lfUser['lf_valNoChamp'],
-                                        'filteredServerLf' => $lfUser['lf_filteredServer']
-                                    );
-                        
-                                    
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'lookingForUserExists' => true,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'valorantUser' => $valorantUserData,
-                                        'lookingForUser' => $lookingforUserData,
-                                        'valorantUserExists' => true
-                                    );                                
-                                } else {
-                                    $response = array(
-                                        'message' => 'Success',
-                                        'newUser' => false,
-                                        'userExists' => true,
-                                        'leagueUserExists' => false,
-                                        'lookingForUserExists' => false,
-                                        'googleUser' => $googleUserData,
-                                        'user' => $userData,
-                                        'valorantUser' => $valorantUserData,
-                                        'valorantUserExists' => true
-                                    );
-                                }
-                            } else {
-                                $response = array(
-                                    'message' => 'Success',
-                                    'newUser' => false,
-                                    'googleUser' => $googleUserData,
-                                    'user' => $userData,
-                                    'userExists' => true,
-                                    'leagueUserExists' => false,
-                                    'valorantUserExists' => false
-                                );
-                            }
-                        }
-
-                        
+                    } elseif ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => true,
+                            'lookingForUserExists' => false,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'leagueUser' => $outcome->gameProfile
+                        );
                     } else {
                         $response = array(
                             'message' => 'Success',
                             'newUser' => false,
-                            'googleUser' => $googleUserData,
-                            'userExists' => false
+                            'userExists' => true,
+                            'leagueUserExists' => true,
+                            'lookingForUserExists' => true,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'leagueUser' => $outcome->gameProfile,
+                            'lookingForUser' => $outcome->lookingForRow
                         );
                     }
                 } else {
-                    
-                    $response = array(
-                        'message' => 'Success',
-                        'newUser' => false,
-                        'googleUser' => $googleUserData,
-                        'userExists' => false
-                    );
+                    if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'valorantUserExists' => false
+                        );
+                    } elseif ($outcome->destination === LoginDestination::NEEDS_LOOKING_FOR) {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'lookingForUserExists' => false,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'valorantUser' => $outcome->gameProfile,
+                            'valorantUserExists' => true
+                        );
+                    } else {
+                        $response = array(
+                            'message' => 'Success',
+                            'newUser' => false,
+                            'userExists' => true,
+                            'leagueUserExists' => false,
+                            'lookingForUserExists' => true,
+                            'googleUser' => $outcome->identityRow,
+                            'user' => $outcome->userRow,
+                            'valorantUser' => $outcome->gameProfile,
+                            'lookingForUser' => $outcome->lookingForRow,
+                            'valorantUserExists' => true
+                        );
+                    }
                 }
+
                 echo json_encode($response);
-                return;  
+                return;
             }
             else // IF USER DOES NOT EXIST, INSERT IT INTO DATABASE
             {
@@ -1310,28 +1035,22 @@ class GoogleUserController
                 }
 
                 $RSO = 0;
-                $createGoogleUser = $this->googleUser->createGoogleUser($this->getGoogleId(),$this->getGoogleFullName(),$this->getGoogleFirstName(),$this->getGoogleFamilyName(),$RSO,$this->getGoogleEmail());
-    
-                if($createGoogleUser) 
-                {
-                    $this->setGoogleUserId($createGoogleUser);
-                    $token = bin2hex(random_bytes(32));
-                    $createToken = $this->googleUser->storeMasterToken($this->getGoogleUserId(), $token);
+                $outcome = $this->signUpService->createMobileIdentity(
+                    $this->getGoogleId(),
+                    $this->getGoogleFullName(),
+                    $this->getGoogleFirstName(),
+                    $this->getGoogleFamilyName(),
+                    $this->getGoogleEmail(),
+                    $RSO
+                );
 
-                    $googleData = array(
-                        'googleId' => $this->getGoogleId(),
-                        'fullName' => $this->getGoogleFullName(),
-                        'firstName' => $this->getGoogleFirstName(),
-                        'lastName' => $this->getGoogleFamilyName(),
-                        'email' => $this->getGoogleEmail(),
-                        'googleUserId' => $createGoogleUser,
-                        'token' => $token
-                    );
-    
+                if ($outcome) {
+                    $this->setGoogleUserId($outcome->identityRow['googleUserId']);
+
                     $response = array(
                         'message' => 'Success',
                         'newUser' => true,
-                        'googleUser' => $googleData,
+                        'googleUser' => $outcome->identityRow,
                     );
                 }
             }
