@@ -224,7 +224,7 @@ class UserController
         $offset = ($page - 1) * $usersPerPage;
 
         usort($allUsers, function($a, $b) {
-            return $b['user_currency'] - $a['user_currency'];
+            return $b['total_value'] - $a['total_value'];
         });
         
         $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);

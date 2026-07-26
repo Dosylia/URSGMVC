@@ -328,18 +328,25 @@ class User extends DataBase
     {
         $query = $this->bdd->prepare("
                                         SELECT
-                                            `user_id`,
-                                            `user_username`,    
-                                            `user_picture`,
-                                            `user_isGold`,
-                                            `user_isPartner`,
-                                            `user_isCertified`,
-                                            `user_isAscend`,
-                                            `user_currency`
+                                            u.`user_currency` + COALESCE(SUM(`items_price`), 0) AS total_value,
+                                            u.`user_id`,
+                                            u.`user_username`,    
+                                            u.`user_picture`,
+                                            u.`user_isGold`,
+                                            u.`user_isPartner`,
+                                            u.`user_isCertified`,
+                                            u.`user_isAscend`,
+                                            u.`user_currency`
                                         FROM
-                                            `user`
+                                            `user` AS u
+                                        LEFT JOIN
+                                            `user_items` AS ui ON u.user_id = ui.userItems_userId
+                                        LEFT JOIN
+                                            `items` AS i ON ui.userItems_itemId = i.items_id
+                                        GROUP BY
+                                            u.`user_id`
                                         ORDER BY
-                                            `user_currency` DESC
+                                            `total_value` DESC
                                         LIMIT
                                             100;
         ");
