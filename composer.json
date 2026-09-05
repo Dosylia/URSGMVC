@@ -3,6 +3,7 @@
         "psr-4": {
             "config\\": "config/",
             "controllers\\": "controllers/",
+            "database\\": "database/",
             "models\\": "models/",
             "services\\": "services/",
             "traits\\": "traits/"
