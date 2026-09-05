@@ -375,6 +375,36 @@ CREATE TABLE `user` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_games`
+--
+
+CREATE TABLE `user_games` (
+  `user_games_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `ug_rank` varchar(20) NOT NULL,
+  `ug_role` varchar(20) NOT NULL,
+  `ug_server` varchar(20) NOT NULL,
+  `ug_account` varchar(20) DEFAULT NULL,
+  `ug_noMains` smallint(6) NOT NULL DEFAULT 0,
+  `ug_main1` varchar(20) DEFAULT NULL,
+  `ug_main2` varchar(20) DEFAULT NULL,
+  `ug_main3` varchar(20) DEFAULT NULL,
+  `ug_verified` tinyint(1) NOT NULL DEFAULT 0,
+  `ug_verificationCode` varchar(15) DEFAULT NULL,
+  `ug_sUsername` varchar(40) DEFAULT NULL,
+  `ug_sUsernameId` varchar(200) DEFAULT NULL,
+  `ug_sPuuid` varchar(100) DEFAULT NULL,
+  `ug_sLevel` int(11) DEFAULT NULL,
+  `ug_sRank` varchar(30) DEFAULT NULL,
+  `ug_sProfileIcon` varchar(30) DEFAULT NULL,
+  `ug_createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ug_updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `userlookingfor`
 --
 
@@ -604,6 +634,14 @@ ALTER TABLE `user`
   ADD KEY `user_gameId` (`user_gameId`);
 
 --
+-- Indexes for table `user_games`
+--
+ALTER TABLE `user_games`
+  ADD PRIMARY KEY (`user_games_id`),
+  ADD UNIQUE KEY `uq_user_games_user_game` (`user_id`,`game_id`),
+  ADD KEY `user_games_game_id` (`game_id`);
+
+--
 -- Indexes for table `userlookingfor`
 --
 ALTER TABLE `userlookingfor`
@@ -748,6 +786,12 @@ ALTER TABLE `user`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `user_games`
+--
+ALTER TABLE `user_games`
+  MODIFY `user_games_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `userlookingfor`
 --
 ALTER TABLE `userlookingfor`
@@ -820,6 +864,13 @@ ALTER TABLE `friendrequest`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `fk_user_gameId` FOREIGN KEY (`user_gameId`) REFERENCES `games` (`game_id`);
+
+--
+-- Constraints for table `user_games`
+--
+ALTER TABLE `user_games`
+  ADD CONSTRAINT `fk_user_games_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_user_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`game_id`);
 
 --
 -- Constraints for table `user_ratings`
@@ -899,6 +950,16 @@ INSERT INTO valorant (valorant_id, user_id, valorant_noChamp, valorant_main1, va
 VALUES
   (1, 1, 0, 'Sage', 'Gold', 'Support', 'EU'),
   (2, 3, 0, 'Jett', 'Silver', 'Flex', 'NA');
+
+-- Same profiles mirrored into user_games (game_id 1 = League of Legends, 2 = Valorant),
+-- kept in sync with the leagueoflegends/valorant rows above until those tables are dropped.
+INSERT INTO user_games (user_games_id, user_id, game_id, ug_noMains, ug_main1, ug_main2, ug_main3, ug_rank, ug_role, ug_server)
+VALUES
+  (1, 1, 1, 0, 'Lux', 'Janna', 'Sona', 'Gold', 'Support', 'Europe West'),
+  (2, 2, 1, 0, 'Ezreal', 'Jhin', 'Caitlyn', 'Platinum', 'ADC', 'Europe West'),
+  (3, 3, 1, 0, 'Thresh', 'Leona', 'Nautilus', 'Silver', 'Support', 'Europe West'),
+  (4, 1, 2, 0, 'Sage', NULL, NULL, 'Gold', 'Support', 'EU'),
+  (5, 3, 2, 0, 'Jett', NULL, NULL, 'Silver', 'Flex', 'NA');
 
 -- Insert a few activity logs
 INSERT INTO user_activity_log (id, user_id, activity_time)

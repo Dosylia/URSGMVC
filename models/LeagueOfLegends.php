@@ -3,6 +3,10 @@ namespace models;
 
 use config\DataBase;
 
+// TODO: user_games (see database/migrations/20260905_000005_create_user_games_table.php)
+// is meant to replace this model and models/Valorant.php with a single UserGames model.
+// Until the dual-write phase starts, this class keeps writing to leagueoflegends only,
+// user_games stays a read-only mirror backfilled by migration.
 class LeagueOfLegends extends DataBase
 {
     private \PDO $bdd;
