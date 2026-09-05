@@ -7,6 +7,7 @@ use models\User;
 use models\LeagueOfLegends;
 use models\FriendRequest;
 use models\GoogleUser;
+use enums\GameSlug;
 use traits\SecurityController;
 use traits\Translatable;
 
@@ -136,7 +137,7 @@ class UserLookingForController
         $user = $this-> user -> getUserByUsername($_SESSION['username']);
         $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
 
-        if($user['user_game'] === "League of Legends") {
+        if($user['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value) {
             $defaultChampions = [
                 'lf_lolmain1' => 'KaiSa',
                 'lf_lolmain2' => 'Ezreal',

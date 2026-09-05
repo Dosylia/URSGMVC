@@ -169,7 +169,7 @@
                 <?php endif; ?> 
             </span>
         <?php endif; ?>
-            <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+            <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                 <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_verified'] === 1): ?>
                     <div class="user-rating-outside">
                         <p>
@@ -199,7 +199,7 @@
             <div class="side-global">
                 <div class="side-column">
                     <div class="aboutme-match">
-                    <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                    <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                         <div class="profile">
                             <?php if ($lolUser['lol_verified'] === 1): ?>
                                 <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
@@ -339,7 +339,7 @@
                                 </div>
                                 <div class="servers about-users-containers">
                                 <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
-                                <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                                <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                                     <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
                                 <?php else : ?>
                                     <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
@@ -355,7 +355,7 @@
                     </div>
                 </div>
                 <div class="side-column">
-                    <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                    <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                         <div class="aboutme-match">
                         <!-- Right Player -->
                             <div class="icons mate">
@@ -465,7 +465,7 @@
                                 </div>
                                     <div class="servers about-users-containers">
                                     <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
-                                    <?php if ($anotherUser['user_game'] == 'League of Legends'): ?> 
+                                    <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                                         <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
                                     <?php else : ?>
                                         <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   

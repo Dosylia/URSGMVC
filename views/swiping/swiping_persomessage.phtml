@@ -5,8 +5,8 @@
             <h2><?= $this->_('looking_for_title') ?></h2>
             <button id="bind-discord-looking"><?= $this->_('bind_discord_looking') ?></button>
             <?php if (
-                ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
-                $user['user_game'] === "Valorant"
+                ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value && $user['lol_verified'] !== 1) ||
+                $user['game_slug'] === \enums\GameSlug::VALORANT->value
             ) : ?>
             <p class="lookingfor-modal-p"><?= $this->_('looking_for_account') ?></p>
             <input type="text" id="lookingfor-account" placeholder="Enter your account's name">

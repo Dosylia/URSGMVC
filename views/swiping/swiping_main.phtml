@@ -1,7 +1,7 @@
 <?php if ($user): ?>
     <script type="module" src="public/js/swiping/get_userMatching.js?<?= time(); ?>"></script>
 
-    <?php if ($user['user_game'] === 'League of Legends'): ?>
+    <?php if ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?>
     <span id="restore-game-container">
         <button id="restore-game-btn"><?= $this->_('play_game') ?></button>
     </span>
@@ -113,7 +113,7 @@
                 
                 <h3><?= $this->_('gamemode') ?></h3>
                 <div class="filter-options" id="gamemode-options">
-                <?php if ($user['user_game'] === 'League of Legends'): ?>
+                <?php if ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?>
                     <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
                     <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_aram') ?></button>
                     <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_ranked') ?></button>
@@ -245,7 +245,7 @@
                 
                 <h3><?= $this->_('gamemode') ?></h3>
                 <div class="filter-options" id="gamemode-options">
-                <?php if ($user['user_game'] === 'League of Legends'): ?>
+                <?php if ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?>
                     <button class="filter-btn" data-filter="gamemode" data-value="Normal Draft"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_normal_draft') ?></button>
                     <button class="filter-btn" data-filter="gamemode" data-value="Aram"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_aram') ?></button>
                     <button class="filter-btn" data-filter="gamemode" data-value="Ranked"><img src="public/images/league-icon.png" alt="League of legends game mode"> <?= $this->_('gamemode_ranked') ?></button>

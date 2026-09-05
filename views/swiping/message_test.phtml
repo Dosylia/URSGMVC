@@ -42,13 +42,13 @@
                         <span id="user_page_username"><?= ucfirst($user['user_username']) ?></span>, <span id="age_user"><?= ucfirst($user['user_age']) ?></span>  
                         <div class="user_page_update_row_buttons">
                             <a href="/updateProfilePage" class="btn_user_updates"><i class="fa-solid fa-info"></i>UPDATE PROFILE</a> 
-                            <?php if ($user['user_game'] !== 'Valorant'): ?> 
+                            <?php if ($user['game_slug'] !== \enums\GameSlug::VALORANT->value): ?>
                                 <a href="/updateLeaguePage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE LEAGUE OF LEGENDS</a>
                             <?php else : ?>
                                 <a href="/updateValorantPage" class="btn_user_updates"><i class="fa-solid fa-gamepad"></i>UPDATE VALORANT</a> 
                             <?php endif; ?>
                             <a href="/updateLookingForPage" class="btn_user_updates"><i class="fa-solid fa-heart"></i>UPDATE INTERESTS</a>
-                            <?php if ($user['user_game'] !== 'Valorant'): ?>
+                            <?php if ($user['game_slug'] !== \enums\GameSlug::VALORANT->value): ?>
                                 <a href="https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccount&client_id=<?= $riotClientId ?>&response_type=code&scope=openid" class="btn_user_updates">
                                 <i class="fa-solid fa-link"></i>BIND LEAGUE ACCOUNT</a>
                             <?php endif; ?>
@@ -135,7 +135,7 @@
     <div class="user_page_main_content">
         <div class="user_box">
             <br><h2 class="title_generalbox">About you</h2><br>
-            <?php if ($user['user_game'] == 'League of Legends'): ?> 
+            <?php if ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                 <?php if (!empty($lolUser['lol_sUsername']) && $lolUser['lol_verified'] === 1): ?>
                     <div class="box_league_account">
                         <div class="box_league_account_main_row">
@@ -233,7 +233,7 @@
                     </div>
                     <div class="servers about-users-containers">
                     <p class="about-users-title"><strong>Server</strong></p>
-                    <?php if ($user['user_game'] == 'League of Legends'): ?> 
+                    <?php if ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                         <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
                     <?php else : ?>
                         <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
@@ -290,7 +290,7 @@
 
         <div class="user_box">
             <br><h2 class="title_generalbox">Looking for</h2><br>
-                    <?php if ($user['user_game'] !== 'Valorant'): ?>
+                    <?php if ($user['game_slug'] !== \enums\GameSlug::VALORANT->value): ?>
                         <?php include 'views/swiping/lol_lf_champions.phtml' ?><br>
                     <?php else : ?>
                         <?php include 'views/swiping/valorant_lf_champions.phtml' ?><br>

@@ -2,6 +2,7 @@
 namespace models;
 
 use config\DataBase;
+use enums\GameSlug;
 
 class User extends DataBase
 {
@@ -17,11 +18,14 @@ class User extends DataBase
 
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                *
+                                                u.*,
+                                                g.game_slug
                                             FROM
-                                                `user`
+                                                `user` AS u
+                                            LEFT JOIN
+                                                `games` AS g ON g.game_id = u.user_gameId
                                             WHERE
-                                                `user_username` = ?
+                                                u.user_username = ?
         ");
 
         $query -> execute([$username]);
@@ -189,6 +193,7 @@ class User extends DataBase
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
                                             g.google_email,
                                             g.google_createdWithRSO,
+                                            gm.game_slug,
                                             (
                                                 SELECT ROUND(AVG(rating), 0)
                                                 FROM user_ratings
@@ -209,6 +214,8 @@ class User extends DataBase
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
                                         LEFT JOIN
                                             `googleuser` AS g ON u.google_userId = g.google_userId
+                                        LEFT JOIN
+                                            `games` AS gm ON gm.game_id = u.user_gameId
                                         WHERE
                                             u.user_id = ?;
         ");
@@ -237,6 +244,7 @@ class User extends DataBase
                     lf.*,
                     g.google_email,
                     g.google_createdWithRSO,
+                    gm.game_slug,
                     (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
 
                     -- Check if user is friend with the current user
@@ -258,6 +266,8 @@ class User extends DataBase
                     `userlookingfor` AS lf ON u.user_id = lf.user_id
                 LEFT JOIN
                     `googleuser` AS g ON u.google_userId = g.google_userId
+                LEFT JOIN
+                    `games` AS gm ON gm.game_id = u.user_gameId
                 WHERE
                     u.user_id IN ($placeholders);
             ");
@@ -419,14 +429,16 @@ class User extends DataBase
         return $users ?: false;
     }
 
+    // $game is now the game_slug value (see enums\GameSlug), resolved by the caller from
+    // $user['game_slug'] instead of the old $user['user_game'] display string.
     public function getAllUsersExceptFriendsLimit($userId, $game, $serverList, $genderConditions = [], $gameModeCondition = null)
     {
         $serverPlaceholders = implode(',', array_fill(0, count($serverList), '?'));
-        $serverColumn = ($game == "League of Legends") ? "l.lol_server" : "v.valorant_server";
-    
+        $serverColumn = ($game === GameSlug::LEAGUE_OF_LEGENDS->value) ? "l.lol_server" : "v.valorant_server";
+
         // Base WHERE clauses
         $whereClauses = [
-            "u.user_game = ?",
+            "g.game_slug = ?",
             "u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
             "$serverColumn IN ($serverPlaceholders)",
             "NOT EXISTS (SELECT 1 FROM friendrequest AS fr1 WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id)",
@@ -461,11 +473,12 @@ class User extends DataBase
     
         // Build final query
         $query = $this->bdd->prepare("
-            SELECT u.*, l.*, v.*, lf.*
+            SELECT u.*, l.*, v.*, lf.*, g.game_slug
             FROM user AS u
             LEFT JOIN leagueoflegends AS l ON u.user_id = l.user_id
             LEFT JOIN valorant AS v ON u.user_id = v.user_id
             INNER JOIN userlookingfor AS lf ON u.user_id = lf.user_id
+            LEFT JOIN games AS g ON g.game_id = u.user_gameId
             WHERE " . implode(' AND ', $whereClauses) . "
             ORDER BY RAND()
             LIMIT 5;
@@ -555,18 +568,19 @@ class User extends DataBase
         }
     }
 
-    public function createUser($googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game) 
+    public function createUser($googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game)
     {
 
         $query = $this -> bdd -> prepare("
                                             INSERT INTO `user`(
                                                 `google_userId`,
                                                 `user_username`,
-                                                `user_gender`,                                                
+                                                `user_gender`,
                                                 `user_age`,
                                                 `user_kindOfGamer`,
                                                 `user_shortBio`,
                                                 `user_game`,
+                                                `user_gameId`,
                                                 `user_requestIsLooking`
                                             )
                                             VALUES (
@@ -577,11 +591,12 @@ class User extends DataBase
                                                 ?,
                                                 ?,
                                                 ?,
+                                                (SELECT game_id FROM games WHERE game_name = ? LIMIT 1),
                                                 NOW()
                                             )
                                         ");
 
-        $createWebsiteUser = $query -> execute([$googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game]);
+        $createWebsiteUser = $query -> execute([$googleUserId, $username, $gender, $age, $kindOfGamer, $shortBio, $game, $game]);
 
 
         if($createWebsiteUser)
@@ -595,7 +610,7 @@ class User extends DataBase
 
     }
 
-    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game, $userId) 
+    public function updateUser($username, $gender, $age, $kindOfGamer, $shortBio, $game, $userId)
     {
         $sql = "UPDATE `user` SET ";
         $params = [];
@@ -625,8 +640,10 @@ class User extends DataBase
         if (!empty($game)) {
             $updates[] = "`user_game` = ?";
             $params[] = $game;
+            $updates[] = "`user_gameId` = (SELECT game_id FROM games WHERE game_name = ? LIMIT 1)";
+            $params[] = $game;
         }
-    
+
         $sql .= implode(", ", $updates) . " WHERE `user_id` = ?";
         $params[] = $userId;
     
@@ -960,13 +977,18 @@ class User extends DataBase
                                                         u.user_age,
                                                         u.user_kindOfGamer,
                                                         u.user_shortBio,
-                                                        u.user_game
+                                                        u.user_game,
+                                                        gm.game_slug
                                                         FROM
                                                             `user` as u
                                                         INNER JOIN
                                                             `googleuser` as g
                                                         ON
                                                             u.google_userId = g.google_userId
+                                                        LEFT JOIN
+                                                            `games` as gm
+                                                        ON
+                                                            gm.game_id = u.user_gameId
                                                         WHERE
                                                              g.google_userId = ?
                                                 ");

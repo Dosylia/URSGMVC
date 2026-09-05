@@ -27,7 +27,7 @@
             <?php endforeach; ?>
         </select>
 
-        <?php if($user['user_game'] == "League of Legends") :?>
+        <?php if($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value) :?>
 
             <div id="champion-picker">
                 <div class="champions-picker-column">

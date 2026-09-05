@@ -13,6 +13,7 @@ use models\BannedUsers;
 use models\PlayerFinder;
 use models\ChatMessage;
 use models\FriendRequest;
+use enums\GameSlug;
 use traits\SecurityController;
 use traits\Translatable;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -264,7 +265,7 @@ class GoogleUserController
                     $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                     $_SESSION['game'] = $user['user_game'];
 
-                    if ($user['user_game'] === 'League of Legends') {
+                    if ($user['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value) {
                         $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
                         if ($lolUser) {
                             $_SESSION['lol_id'] = $lolUser['lol_id'];
@@ -274,7 +275,7 @@ class GoogleUserController
                                 return true;
                             }
                         }
-                    } else if ($user['user_game'] === 'Valorant') {
+                    } else if ($user['game_slug'] === GameSlug::VALORANT->value) {
                         $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
                         if ($valorantUser) {
                             $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
@@ -419,14 +420,14 @@ class GoogleUserController
             $picture = "ursg-preview-small";
             require "views/layoutSwiping.phtml";;
         } elseif (
-            $this->isConnectGoogle() && 
-            $this->isConnectWebsite() && 
+            $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
             (
                 (
-                    $this->isConnectValorant() && 
-                    !$this->isConnectLeague() && 
+                    $this->isConnectValorant() &&
+                    !$this->isConnectLeague() &&
                     $finalUser['lf_valrole'] == NULL
-                    && $finalUser['user_game'] == "Valorant"
+                    && $finalUser['game_slug'] === GameSlug::VALORANT->value
                 )
             ) && 
             $this->isConnectLf()
@@ -448,7 +449,7 @@ class GoogleUserController
                 (
                     $this->isConnectLeague() && 
                     !$this->isConnectValorant() && 
-                    $finalUser['lf_lolrole'] == NULL && $finalUser['user_game'] == "League of Legends"
+                    $finalUser['lf_lolrole'] == NULL && $finalUser['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value
                 )
             ) && 
             $this->isConnectLf()

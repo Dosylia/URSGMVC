@@ -13,6 +13,7 @@ use models\Items;
 use models\GoogleUser;
 use models\Report;
 use models\RatingGames;
+use enums\GameSlug;
 use traits\SecurityController;
 use traits\Translatable;
 
@@ -337,7 +338,7 @@ class UserController
         $genderLf = $rankLf = $roleLf = "Any";
         $kindOfGamerLf = "Competition and Chill";
 
-        if ($user['user_game'] === "League of Legends") {
+        if ($user['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value) {
             $createGameAccount = $this->leagueoflegends->createLoLUser($user['user_id'], $main1, $main2, $main3, $rank, $role, $server, $statusChampion);
             $createGameAccountLf = $this->userlookingfor->createLookingForUser($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
 
@@ -360,7 +361,7 @@ class UserController
             return;
         }
 
-        if ($user['user_game'] === "Valorant") {
+        if ($user['game_slug'] === GameSlug::VALORANT->value) {
             $createGameAccount = $this->valorant->createValorantUser($user['user_id'], $main1, $main2, $main3, $rank, $role, $server, $statusChampion);
             $createGameAccountLf = $this->userlookingfor->createLookingForUserValorant($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
 
@@ -2140,7 +2141,7 @@ class UserController
             // Fetch users with applied filters
             $usersAfterMatching = $this->user->getAllUsersExceptFriendsLimit(
                 $userId,
-                $user['user_game'],
+                $user['game_slug'],
                 $serverList,
                 $genderConditions,
                 $gameModeCondition

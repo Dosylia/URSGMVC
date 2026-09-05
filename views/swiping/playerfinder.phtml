@@ -34,7 +34,7 @@
       <div class="interested-users-list">
         <?php foreach ($interestedData as $userInterest): ?>
           <?php
-            $isLoL = $userInterest['user_game'] === 'League of Legends';
+$isLoL = $userInterest['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value;
             $roleRaw = $isLoL ? $userInterest['lol_role'] : $userInterest['valorant_role'];
             $role = strtolower(str_replace(' ', '', $roleRaw));
             $rank = $isLoL ? $userInterest['lol_rank'] : $userInterest['valorant_rank'];
@@ -97,8 +97,8 @@
       </div>
 
         <?php if (
-            ($user['user_game'] === "League of Legends" && $user['lol_verified'] !== 1) ||
-            $user['user_game'] === "Valorant"
+            ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value && $user['lol_verified'] !== 1) ||
+            $user['game_slug'] === \enums\GameSlug::VALORANT->value
         ) : ?>
         <div class="form-group">
           <label for="lookingfor-account"><?= $this->_('pf_account_label') ?></label>

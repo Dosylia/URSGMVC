@@ -48,7 +48,7 @@
         <label for="game"><?= $this->_('update_profile_game_label') ?></label>
         <select id="game" name="game" required>
             <option value="<?= $user['user_game']?>" ><?= $user['user_game']?></option>
-            <?php if ($user['user_game'] !== 'League of Legends') : ?>
+            <?php if ($user['game_slug'] !== \enums\GameSlug::LEAGUE_OF_LEGENDS->value) : ?>
                 <option value="League of Legends">League of Legends</option>
             <?php else : ?>
                 <option value="Valorant">Valorant</option>

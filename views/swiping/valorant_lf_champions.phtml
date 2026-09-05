@@ -54,7 +54,7 @@ $roles = [
 
 
 <div class="user_page_main_league">
-    <?php if ($user['user_game'] !== 'League of Legends'): ?>
+    <?php if ($user['game_slug'] !== \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?>
         <div class="league_of_legends_user">
             <?php if (isset($champions[$lfUser['lf_valmain1']])): ?>
                 <div class="league_of_legends_user_column">

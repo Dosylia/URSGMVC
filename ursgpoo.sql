@@ -138,6 +138,23 @@ CREATE TABLE `game` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `games`
+--
+
+CREATE TABLE `games` (
+  `game_id` int(11) NOT NULL,
+  `game_slug` varchar(30) NOT NULL,
+  `game_name` varchar(50) NOT NULL,
+  `game_icon` varchar(200) DEFAULT NULL,
+  `game_active` tinyint(1) NOT NULL DEFAULT 1,
+  `game_sortOrder` smallint(6) NOT NULL DEFAULT 0,
+  `game_hasRiotIntegration` tinyint(1) NOT NULL DEFAULT 0,
+  `game_createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `googleuser`
 --
 
@@ -321,6 +338,7 @@ CREATE TABLE `user` (
   `user_twitch` varchar(200) DEFAULT NULL,
   `user_bluesky` varchar(200) DEFAULT NULL,
   `user_game` varchar(20) NOT NULL,
+  `user_gameId` int(11) DEFAULT NULL,
   `user_token` varchar(128) DEFAULT NULL,
   `user_deletionToken` varchar(128) DEFAULT NULL,
   `user_deletionTokenExpiry` timestamp NULL DEFAULT NULL,
@@ -508,6 +526,13 @@ ALTER TABLE `game`
   ADD PRIMARY KEY (`game_username`);
 
 --
+-- Indexes for table `games`
+--
+ALTER TABLE `games`
+  ADD PRIMARY KEY (`game_id`),
+  ADD UNIQUE KEY `uq_games_slug` (`game_slug`);
+
+--
 -- Indexes for table `googleuser`
 --
 ALTER TABLE `googleuser`
@@ -575,7 +600,8 @@ ALTER TABLE `temporary_channels`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
-  ADD KEY `google_userId` (`google_userId`);
+  ADD KEY `google_userId` (`google_userId`),
+  ADD KEY `user_gameId` (`user_gameId`);
 
 --
 -- Indexes for table `userlookingfor`
@@ -654,6 +680,12 @@ ALTER TABLE `discord`
 --
 ALTER TABLE `friendrequest`
   MODIFY `fr_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `games`
+--
+ALTER TABLE `games`
+  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `googleuser`
@@ -784,6 +816,12 @@ ALTER TABLE `friendrequest`
   ADD CONSTRAINT `fk_fr_senderId` FOREIGN KEY (`fr_senderId`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `fk_user_gameId` FOREIGN KEY (`user_gameId`) REFERENCES `games` (`game_id`);
+
+--
 -- Constraints for table `user_ratings`
 --
 ALTER TABLE `user_ratings`
@@ -804,12 +842,18 @@ VALUES
   (2, 'g654321', 'Bob Johnson', 'Bob', 'Johnson', 'bob@example.com', 1),
   (3, 'g789012', 'Charlie Lee', 'Charlie', 'Lee', 'charlie@example.com', 1);
 
--- Insert users
-INSERT INTO user (user_id, google_userId, user_username, user_gender, user_age, user_kindOfGamer, user_shortBio, user_game, user_isGold, user_isOnline, user_lastRequestTime, user_lastReward)
+-- Insert games (game_id order matches the seed_games migration: League of Legends = 1, Valorant = 2)
+INSERT INTO games (game_id, game_slug, game_name, game_sortOrder, game_hasRiotIntegration)
 VALUES
-  (1, 1, 'AliceGamer', 'Female', 25, 'Casual', 'Love cozy games and chill vibes.', 'Valorant', 1, 1, NOW(), NOW()),
-  (2, 2, 'BobThePro', 'Male', 28, 'Competitive', 'FPS enthusiast, always up for a challenge.', 'League of Legends', 0, 1, NOW(), NOW()),
-  (3, 3, 'CharlieChill', 'Non-binary', 22, 'Social', 'Here to make friends and have fun!', 'Valorant', 0, 0, NOW(), NOW());
+  (1, 'league-of-legends', 'League of Legends', 1, 1),
+  (2, 'valorant', 'Valorant', 2, 1);
+
+-- Insert users
+INSERT INTO user (user_id, google_userId, user_username, user_gender, user_age, user_kindOfGamer, user_shortBio, user_game, user_gameId, user_isGold, user_isOnline, user_lastRequestTime, user_lastReward)
+VALUES
+  (1, 1, 'AliceGamer', 'Female', 25, 'Casual', 'Love cozy games and chill vibes.', 'Valorant', 2, 1, 1, NOW(), NOW()),
+  (2, 2, 'BobThePro', 'Male', 28, 'Competitive', 'FPS enthusiast, always up for a challenge.', 'League of Legends', 1, 0, 1, NOW(), NOW()),
+  (3, 3, 'CharlieChill', 'Non-binary', 22, 'Social', 'Here to make friends and have fun!', 'Valorant', 2, 0, 0, NOW(), NOW());
 
 -- Insert playerfinder entries
 INSERT INTO playerfinder (pf_id, user_id, pf_role, pf_rank, pf_description, pf_voiceChat, pf_game)

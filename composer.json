@@ -4,6 +4,7 @@
             "config\\": "config/",
             "controllers\\": "controllers/",
             "database\\": "database/",
+            "enums\\": "enums/",
             "models\\": "models/",
             "services\\": "services/",
             "traits\\": "traits/"
