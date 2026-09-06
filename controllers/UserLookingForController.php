@@ -4,7 +4,6 @@ namespace controllers;
 
 use models\UserLookingFor;
 use models\User;
-use models\LeagueOfLegends;
 use models\FriendRequest;
 use models\GoogleUser;
 use enums\GameSlug;
@@ -21,7 +20,6 @@ class UserLookingForController
 
     private UserLookingFor $userlookingfor;
     private User $user;
-    private LeagueOfLegends $leagueoflegends;
     private RoutingService $routingService;
     private FriendRequest $friendrequest;
     private GoogleUser $googleUser;
@@ -47,7 +45,6 @@ class UserLookingForController
     {
         $this -> userlookingfor = new userLookingFor();
         $this -> user = new User();
-        $this -> leagueoflegends = new LeagueOfLegends();
         $this -> routingService = new RoutingService();
         $this -> friendrequest = new FriendRequest();
         $this -> googleUser = new GoogleUser();

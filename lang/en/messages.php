@@ -56,6 +56,8 @@ return [
     'failed_to_get_lol_account' => 'Could not retrieve League of Legends account or preferences',
     'failed_to_create_valorant_account' => 'Could not create Valorant account or preferences',
     'failed_to_get_valorant_account' => 'Could not retrieve Valorant account or preferences',
+    'failed_to_create_game_account' => 'Could not create game account or preferences',
+    'failed_to_get_game_account' => 'Could not retrieve game account or preferences',
     'unsupported_game' => 'Unsupported game',
     'couldnt_update_user' => 'Could not update user',
     'picture_not_found_in_collection' => 'Picture not found in user\'s collection',

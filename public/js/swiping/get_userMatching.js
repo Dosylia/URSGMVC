@@ -268,10 +268,10 @@ document.addEventListener('DOMContentLoaded', function () {
             ? `public/upload/${data.user_picture}`
             : 'public/images/defaultprofilepicture.jpg'
 
-        if (data.lol_sUsername && data.lol_sUsername.trim()) {
+        if (data.ug_sUsername && data.ug_sUsername.trim()) {
             // Ensure it's not empty
             hasBindedAccount = true
-            sUsername.innerText = data.lol_account
+            sUsername.innerText = data.ug_account
 
             const ratingContainer = document.getElementById('user-rating-stars')
             ratingContainer.innerHTML = ''
@@ -285,9 +285,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const baseRank = hasBindedAccount
-            ? data.lol_sRank.split(' ')[0].charAt(0).toUpperCase() +
-              data.lol_sRank.split(' ')[0].slice(1).toLowerCase()
-            : data.lol_rank || 'default'
+            ? data.ug_sRank.split(' ')[0].charAt(0).toUpperCase() +
+              data.ug_sRank.split(' ')[0].slice(1).toLowerCase()
+            : data.ug_rank || 'default'
 
         if (data.user_bonusPicture && data.user_bonusPicture !== '[]') {
             let pictures
@@ -442,64 +442,56 @@ document.addEventListener('DOMContentLoaded', function () {
             'No description available'
 
         receiverId.value = data.user_id
-        if (data.user_game === 'League of Legends' && data.lol_role) {
+        const isLeague = data.user_game === 'League of Legends'
+        if (data.ug_role) {
             lolRankP.innerText = hasBindedAccount
-                ? data.lol_sRank
-                : data.lol_rank || 'Unranked '
-            lolRoleP.innerText = data.lol_role
-            lolRoleP.innerText = data.lol_role || 'Unknown'
-            server.innerText = data.lol_server
-            if (data.lol_noChamp === 1) {
+                ? data.ug_sRank
+                : data.ug_rank || 'Unranked '
+            lolRoleP.innerText = data.ug_role || 'Unknown'
+            server.innerText = data.ug_server
+            if (data.ug_noMains === 1) {
                 championContainer.style.display = 'none'
-            } else {
-                lolMain1Pic.src = data.lol_main1
+            } else if (isLeague) {
+                lolMain1Pic.src = data.ug_main1
                     ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(
-                          sanitize(data.lol_main1)
+                          sanitize(data.ug_main1)
                       )}_0.jpg`
                     : ''
-                lolMain1Pic.alt = data.lol_main1 || ''
+                lolMain1Pic.alt = data.ug_main1 || ''
 
-                lolMain2Pic.src = data.lol_main2
+                lolMain2Pic.src = data.ug_main2
                     ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(
-                          sanitize(data.lol_main2)
+                          sanitize(data.ug_main2)
                       )}_0.jpg`
                     : ''
-                lolMain2Pic.alt = data.lol_main2 || ''
+                lolMain2Pic.alt = data.ug_main2 || ''
 
-                lolMain3Pic.src = data.lol_main3
+                lolMain3Pic.src = data.ug_main3
                     ? `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${sanitizeChampionName(
-                          sanitize(data.lol_main3)
+                          sanitize(data.ug_main3)
                       )}_0.jpg`
                     : ''
-                lolMain3Pic.alt = data.lol_main3 || ''
+                lolMain3Pic.alt = data.ug_main3 || ''
                 championContainer.style.display = 'flex'
-            }
-        } else if (data.user_game === 'Valorant' && data.valorant_role) {
-            // lolAccount.innerText = data.valorant_account || "Unknown Account";
-            lolRankP.innerText = data.valorant_rank
-            lolRoleP.innerText = data.valorant_role
-            server.innerText = data.valorant_server
-            if (data.valorant_noChamp === 1) {
-                championContainer.style.display = 'none'
             } else {
-                lolMain1Pic.src = data.valorant_main1
+                lolMain1Pic.src = data.ug_main1
                     ? `public/images/valorant_champions/${sanitize(
-                          data.valorant_main1
+                          data.ug_main1
                       )}_icon.webp`
                     : '' // Empty src if no main
-                lolMain1Pic.alt = data.valorant_main1 || ''
-                lolMain2Pic.src = data.valorant_main2
+                lolMain1Pic.alt = data.ug_main1 || ''
+                lolMain2Pic.src = data.ug_main2
                     ? `public/images/valorant_champions/${sanitize(
-                          data.valorant_main2
+                          data.ug_main2
                       )}_icon.webp`
                     : '' // Empty src if no main
-                lolMain2Pic.alt = data.valorant_main2 || ''
-                lolMain3Pic.src = data.valorant_main3
+                lolMain2Pic.alt = data.ug_main2 || ''
+                lolMain3Pic.src = data.ug_main3
                     ? `public/images/valorant_champions/${sanitize(
-                          data.valorant_main3
+                          data.ug_main3
                       )}_icon.webp`
                     : '' // Empty src if no main
-                lolMain3Pic.alt = data.valorant_main3 || ''
+                lolMain3Pic.alt = data.ug_main3 || ''
                 championContainer.style.display = 'flex'
             }
         }

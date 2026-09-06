@@ -170,7 +170,7 @@
             </span>
         <?php endif; ?>
             <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
-                <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$lolUser['lol_verified'] === 1): ?>
+                <?php if (isset($fullStars) && isset($emptyStars) && $fullStars > 0 && (int)$userGame['ug_verified'] === 1): ?>
                     <div class="user-rating-outside">
                         <p>
                             <?php for ($i = 0; $i < $fullStars; $i++): ?>
@@ -201,53 +201,53 @@
                     <div class="aboutme-match">
                     <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
                         <div class="profile">
-                            <?php if ($lolUser['lol_verified'] === 1): ?>
-                                <img id="profilepicture_lol" data-icon-id="<?= $lolUser['lol_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $lolUser['lol_sProfileIcon']?>.png" alt="You">
+                            <?php if ($userGame['ug_verified'] === 1): ?>
+                                <img id="profilepicture_lol" data-icon-id="<?= $userGame['ug_sProfileIcon']?>" src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/<?= $userGame['ug_sProfileIcon']?>.png" alt="You">
                             <?php else : ?>
                                 <img src="https://ddragon.leagueoflegends.com/cdn/15.6.1/img/profileicon/7.png" alt="You">
                             <?php endif; ?>
-                            <?php if ($lolUser['lol_verified'] === 1): ?>
-                                <p class="profile-level"><?= $lolUser['lol_sLevel']?></p>
+                            <?php if ($userGame['ug_verified'] === 1): ?>
+                                <p class="profile-level"><?= $userGame['ug_sLevel']?></p>
                             <?php endif; ?>
                         </div>
 
                         <div class="icons you">
-                            <?php if ($lolUser['lol_verified'] === 1): ?>
+                            <?php if ($userGame['ug_verified'] === 1): ?>
                                 <div class="rank-image" style="position: relative;">
-                                    <img src="public/images/ranks/<?= ucfirst(strtolower(explode(" ", $lolUser['lol_sRank'])[0])) ?>.png" alt="Rank">
+                                    <img src="public/images/ranks/<?= ucfirst(strtolower(explode(" ", $userGame['ug_sRank'])[0])) ?>.png" alt="Rank">
                                     <i class="fa-solid fa-check" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: green;"></i>
                                 </div>
                             <?php else : ?>
                                 <div class="rank-image" style="position: relative;">
-                                    <img src="public/images/ranks/<?= str_replace(' ', '', $lolUser['lol_rank']) ?>.png" alt="Rank">
+                                    <img src="public/images/ranks/<?= str_replace(' ', '', $userGame['ug_rank']) ?>.png" alt="Rank">
                                     <i class="fa-solid fa-xmark" style="position: absolute; top: -10px; right: -5px; font-size: 14px; color: red;"></i>
                                 </div>
                             <?php endif; ?>
                             
                             <!-- Role image (not affected by verification) -->
-                            <img src="public/images/roles/<?= str_replace(' ', '', $lolUser['lol_role']) ?>.png" alt="Role">
+                            <img src="public/images/roles/<?= str_replace(' ', '', $userGame['ug_role']) ?>.png" alt="Role">
                         </div>
                     </div>
 
                     <!-- Champions Row -->
-                    <?php if((int)$lolUser['lol_noChamp'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
+                    <?php if((int)$userGame['ug_noMains'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
                         <div class="aboutme-match champions-row">
-                            <div class="champions you" style="<?= (int)$lolUser['lol_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                                <?php if ((int)$lolUser['lol_verified'] === 1): ?>
+                            <div class="champions you" style="<?= (int)$userGame['ug_noMains'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                <?php if ((int)$userGame['ug_verified'] === 1): ?>
                                     <div class="lol-account">
-                                        <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>
+                                        <p id="lolUserText"><strong><?= $userGame['ug_account']?></strong><i class="fa-solid fa-copy"></i></p>
                                     </div>
                                 <?php endif; ?>
-                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main1'])) ?>.png" alt="Champion">
-                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main2'])) ?>.png" alt="Champion">
-                                <img src="public/images/champions/<?= str_replace(' ', '', trim($lolUser['lol_main3'])) ?>.png" alt="Champion">
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($userGame['ug_main1'])) ?>.png" alt="Champion">
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($userGame['ug_main2'])) ?>.png" alt="Champion">
+                                <img src="public/images/champions/<?= str_replace(' ', '', trim($userGame['ug_main3'])) ?>.png" alt="Champion">
                             </div>
                         </div>
                     <?php else : ?>
                         <div class="aboutme-match champions-row">
-                            <?php if ((int)$lolUser['lol_verified'] === 1): ?>
+                            <?php if ((int)$userGame['ug_verified'] === 1): ?>
                                 <div class="lol-account" style="margin : 10px 0 0 0;">
-                                    <p id="lolUserText"><strong><?= $lolUser['lol_account']?></strong><i class="fa-solid fa-copy"></i></p>                   
+                                    <p id="lolUserText"><strong><?= $userGame['ug_account']?></strong><i class="fa-solid fa-copy"></i></p>                   
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -261,18 +261,18 @@
                             <?php endif; ?>
                             </div>
                             <div class="icons you">
-                            <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $valorantUser['valorant_rank']) ?>.png" alt="Rank">
-                            <img src="public/images/valorant_roles/<?= str_replace(' ', '', $valorantUser['valorant_role']) ?>.webp" alt="Role">
+                            <img src="public/images/valorant_ranks/<?= str_replace(' ', '', $userGame['ug_rank']) ?>.png" alt="Rank">
+                            <img src="public/images/valorant_roles/<?= str_replace(' ', '', $userGame['ug_role']) ?>.webp" alt="Role">
                             </div>
                         </div>
 
                         <!-- Champions Row -->
-                        <?php if((int)$valorantUser['valorant_noChamp'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
+                        <?php if((int)$userGame['ug_noMains'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
                             <div class="aboutme-match champions-row">
-                                <div class="champions you" style="<?= (int)$valorantUser['valorant_noChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
-                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main1']?>_icon.webp" alt="Champion">
-                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main2']?>_icon.webp" alt="Champion">
-                                    <img src="public/images/valorant_champions/<?= $valorantUser['valorant_main3']?>_icon.webp" alt="Champion">
+                                <div class="champions you" style="<?= (int)$userGame['ug_noMains'] === 0 ? '' : 'visibility: hidden;' ?>">
+                                    <img src="public/images/valorant_champions/<?= $userGame['ug_main1']?>_icon.webp" alt="Champion">
+                                    <img src="public/images/valorant_champions/<?= $userGame['ug_main2']?>_icon.webp" alt="Champion">
+                                    <img src="public/images/valorant_champions/<?= $userGame['ug_main3']?>_icon.webp" alt="Champion">
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -340,9 +340,9 @@
                                 <div class="servers about-users-containers">
                                 <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
                                 <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
-                                    <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                    <p class="about-users-box about-users-selected"><?= strtoupper($userGame['ug_server']) ?></p>
                                 <?php else : ?>
-                                    <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
+                                    <p class="about-users-box about-users-selected"><?= strtoupper($userGame['ug_server']) ?></p>                   
                                 <?php endif; ?>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@
                             </div>
                         </div>
 
-                        <?php if((int)$lolUser['lol_noChamp'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
+                        <?php if((int)$userGame['ug_noMains'] === 0 || (int)$lfUser['lf_lolNoChamp'] === 0) : ?>
                             <div class="aboutme-match champions-row">
                                 <div class="champions mate" style="<?= (int)$lfUser['lf_lolNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
                                     <img src="public/images/champions/<?= str_replace(' ', '', trim($lfUser['lf_lolmain1'])) ?>.png" alt="Champion">
@@ -387,7 +387,7 @@
                                     ?
                             </div>
                         </div>
-                        <?php if((int)$valorantUser['valorant_noChamp'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
+                        <?php if((int)$userGame['ug_noMains'] === 0 || (int)$lfUser['lf_valNoChamp'] === 0) : ?>
                             <div class="aboutme-match champions-row">
                                 <div class="champions mate" style="<?= (int)$lfUser['lf_valNoChamp'] === 0 ? '' : 'visibility: hidden;' ?>">
                                         <img src="public/images/valorant_champions/<?= $lfUser['lf_valmain1']?>_icon.webp" alt="Champion">
@@ -466,9 +466,9 @@
                                     <div class="servers about-users-containers">
                                     <p class="about-users-title"><strong><?= $this->_('server') ?></strong></p>
                                     <?php if ($anotherUser['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value): ?> 
-                                        <p class="about-users-box about-users-selected"><?= strtoupper($lolUser['lol_server']) ?></p>
+                                        <p class="about-users-box about-users-selected"><?= strtoupper($userGame['ug_server']) ?></p>
                                     <?php else : ?>
-                                        <p class="about-users-box about-users-selected"><?= strtoupper($valorantUser['valorant_server']) ?></p>                   
+                                        <p class="about-users-box about-users-selected"><?= strtoupper($userGame['ug_server']) ?></p>                   
                                     <?php endif; ?>
                                 </div>
                             </div>

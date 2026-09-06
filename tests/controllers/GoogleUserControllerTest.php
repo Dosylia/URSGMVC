@@ -9,7 +9,6 @@ use models\User;
 use models\LeagueOfLegends;
 use models\Valorant;
 use models\UserLookingFor;
-use models\MatchingScore;
 use models\Partners;
 use models\BannedUsers;
 use models\PlayerFinder;
@@ -29,7 +28,6 @@ class GoogleUserControllerTest extends BaseControllerTestCase
             'leagueoflegends'=> $this->createMock(LeagueOfLegends::class),
             'valorant'       => $this->createMock(Valorant::class),
             'userlookingfor' => $this->createMock(UserLookingFor::class),
-            'matchingscore'  => $this->createMock(MatchingScore::class),
             'partners'       => $this->createMock(Partners::class),
             'bannedusers'    => $this->createMock(BannedUsers::class),
             'playerFinder'   => $this->createMock(PlayerFinder::class),

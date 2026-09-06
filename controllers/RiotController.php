@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use models\LeagueOfLegends;
-use models\Valorant;
+use models\UserGames;
+use models\Games;
 use models\User;
 use models\GoogleUser;
 use models\UserLookingFor;
@@ -19,6 +19,7 @@ use services\LoginDestination;
 use services\RiotOAuthClientInterface;
 use services\RiotOAuthClient;
 use services\FakeRiotOAuthClient;
+use enums\GameSlug;
 
 require 'vendor/autoload.php';
 
@@ -27,9 +28,9 @@ class RiotController
     use SecurityController;
     use Translatable;
     use MobileDeepLinkResponder;
-    private LeagueOfLegends $leagueOfLegends;
+    private UserGames $userGames;
+    private Games $games;
     private User $user;
-    private Valorant $valorant;
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
     private Items $items;
@@ -42,9 +43,9 @@ class RiotController
     public function __construct()
     {
         // Initialize models
-        $this->leagueOfLegends = new LeagueOfLegends();
+        $this->userGames = new UserGames();
+        $this->games = new Games();
         $this->user = new User();
-        $this->valorant = new Valorant();
         $this -> googleUser = new GoogleUser();
         $this -> userlookingfor = new userLookingFor();
         $this->items = new Items();
@@ -53,8 +54,8 @@ class RiotController
         $this->logInService = new LogInService(
             $masterTokenService,
             $this->user,
-            $this->leagueOfLegends,
-            $this->valorant,
+            $this->userGames,
+            $this->games,
             $this->userlookingfor
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
@@ -104,8 +105,9 @@ class RiotController
             if ($accessToken) {
                 $userData = $this->riotOAuthClient->getUserData($accessToken);
                 $user = $this->user->getUserById($_SESSION['userId']);
-                $addPuuidLeague = false;
-                $addPuuidValorant = false;
+                $gameSlug = $user['game_slug'] ?? null;
+                $gameId = $gameSlug ? $this->games->getIdBySlug($gameSlug) : null;
+                $addPuuid = false;
                 $puuid = $userData['puuid'];
 
                 // Check if puuid is not empty before attempting to bind
@@ -117,17 +119,13 @@ class RiotController
                         header('Location: /userProfile?message=This League of Legends account is already used on URSG.');
                         return;
                     }
-                    if ($user['lol_id']) {
-                        $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $_SESSION['userId']);
+                    if ($user['ug_id'] && $gameId) {
+                        $addPuuid = $this->userGames->addPuuid($puuid, $_SESSION['userId'], $gameId);
                     }
 
-                    if ($user['valorant_id']) {
-                        $addPuuidValorant = $this->valorant->addPuuid($puuid, $_SESSION['userId']);
-                    }
-
-                    // Check if either addPuuid was successful
-                    if ($addPuuidLeague || $addPuuidValorant) {
-                        if ($addPuuidLeague) {
+                    // Check if addPuuid was successful
+                    if ($addPuuid) {
+                        if ($gameSlug === GameSlug::LEAGUE_OF_LEGENDS->value) {
                             // Now make a call to get the summoner's profile data
                             $regionMap = [
                                 "Europe West" => "euw1",
@@ -145,7 +143,7 @@ class RiotController
                                 "Korea" => "kr",
                             ];
 
-                            $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+                            $selectedRegionValue = $regionMap[$user['ug_server']] ?? null;
 
                             // Fetch the summoner profile to get profileIconId
                             $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
@@ -183,20 +181,21 @@ class RiotController
                                     $rankAndTier = $flexQueueRankAndTier;
                                 }
 
-                                $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine']; 
+                                $fullAccountName = $userData['gameName'] . '#' . $userData['tagLine'];
 
                                 // $topChamps = $this->getTopPlayedChamps($puuid, $selectedRegionValue, $apiKey);
 
                                 // Save updated summoner data to the database
-                                $updateSummoner = $this->leagueOfLegends->updateSummonerData(
-                                    $userData['gameName'], 
+                                $updateSummoner = $this->userGames->updateSyncData(
+                                    $gameId,
+                                    $user['user_id'],
+                                    $userData['gameName'],
                                     'Removed',
                                     $puuid,
-                                    $summonerProfile['summonerLevel'], 
+                                    $summonerProfile['summonerLevel'],
                                     $rankAndTier,
                                     $profileIconId,
                                     $fullAccountName,
-                                    $user['user_id'],
                                 );
 
                                 if (!$updateSummoner) {
@@ -212,7 +211,7 @@ class RiotController
                             }
                         }
 
-                        // if ($addPuuidValorant) {
+                        // if ($gameSlug === GameSlug::VALORANT->value) {
                         //     // Now make a call to get the Valorant player profile data
                         //     $valorantProfile = $this->getValorantProfile($userData['puuid'], $apiKey);
             
@@ -293,7 +292,7 @@ class RiotController
                                 return;
                             }
 
-                            if ($outcome->game === 'League of Legends') {
+                            if ($outcome->game === GameSlug::LEAGUE_OF_LEGENDS->value) {
                                 header('Location: /signup?message=Create your LoL account.');
                             } else {
                                 header('Location: /signup?message=Create your Valorant account.');
@@ -346,7 +345,7 @@ class RiotController
             $friendId = $_POST['friendId'];
             $user = $this->user->getUserById($friendId);
 
-            if ($user['lol_verified']) 
+            if (($user['game_slug'] ?? null) === GameSlug::LEAGUE_OF_LEGENDS->value && $user['ug_verified'])
             {
                 require_once 'keys.php';
                 $regionMap = [
@@ -363,16 +362,16 @@ class RiotController
                     "Korea" => "kr",
                 ];
 
-                $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+                $selectedRegionValue = $regionMap[$user['ug_server']] ?? null;
 
-                $gameStatus = $this->getGameStatus($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
+                $gameStatus = $this->getGameStatus($user['ug_sPuuid'], $selectedRegionValue, $apiKey);
 
                 if ($gameStatus && isset($gameStatus['gameId'])) {
                     $playerChampionId = null;
                     $playerData = null;
 
                     foreach ($gameStatus['participants'] as $participant) {
-                        if ($participant['puuid'] === $user['lol_sPuuid']) {
+                        if ($participant['puuid'] === $user['ug_sPuuid']) {
                             $playerChampionId = $participant['championId'];
                             $playerData = $participant; // Save full data in case you want more info later
                             break;
@@ -545,23 +544,20 @@ class RiotController
             if ($accessToken) {
                 $userData = $this->riotOAuthClient->getUserData($accessToken);
                 $user = $this->user->getUserById($userId);
-                $addPuuidLeague = false;
-                $addPuuidValorant = false;
+                $gameSlug = $user['game_slug'] ?? null;
+                $gameId = $gameSlug ? $this->games->getIdBySlug($gameSlug) : null;
+                $addPuuid = false;
                 $puuid = $userData['puuid'];
 
                 // Check if puuid is not empty before attempting to bind
                 if ($puuid) {
-                    if ($user['lol_id']) {
-                        $addPuuidLeague = $this->leagueOfLegends->addPuuid($puuid, $userId);
+                    if ($user['ug_id'] && $gameId) {
+                        $addPuuid = $this->userGames->addPuuid($puuid, $userId, $gameId);
                     }
 
-                    if ($user['valorant_id']) {
-                        $addPuuidValorant = $this->valorant->addPuuid($puuid, $userId);
-                    }
-
-                    // Check if either addPuuid was successful
-                    if ($addPuuidLeague || $addPuuidValorant) {
-                        if ($addPuuidLeague) {
+                    // Check if addPuuid was successful
+                    if ($addPuuid) {
+                        if ($gameSlug === GameSlug::LEAGUE_OF_LEGENDS->value) {
                             // Now make a call to get the summoner's profile data
                             $regionMap = [
                                 "Europe West" => "euw1",
@@ -577,7 +573,7 @@ class RiotController
                                 "Korea" => "kr",
                             ];
 
-                            $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+                            $selectedRegionValue = $regionMap[$user['ug_server']] ?? null;
 
                             // Fetch the summoner profile to get profileIconId
                             $summonerProfile = $this->getSummonerProfile($puuid, $selectedRegionValue, $apiKey);
@@ -611,14 +607,15 @@ class RiotController
                                 }
 
                                 // Save updated summoner data to the database
-                                $this->leagueOfLegends->updateSummonerData(
-                                    $userData['gameName'], 
+                                $this->userGames->updateSyncData(
+                                    $gameId,
+                                    $user['user_id'],
+                                    $userData['gameName'],
                                     'Removed',
                                     $puuid,
-                                    $summonerProfile['summonerLevel'], 
+                                    $summonerProfile['summonerLevel'],
                                     $rankAndTier,
                                     $profileIconId,
-                                    $user['user_id']
                                 );
                             }
                         }
@@ -706,8 +703,12 @@ class RiotController
                 return;
             }
 
-            // Check if both have LoL accounts
-            if (!$user['lol_verified'] || !$friend['lol_verified']) {
+            // Check if both have verified LoL accounts
+            $leagueSlug = GameSlug::LEAGUE_OF_LEGENDS->value;
+            $userIsLeague = ($user['game_slug'] ?? null) === $leagueSlug && $user['ug_verified'];
+            $friendIsLeague = ($friend['game_slug'] ?? null) === $leagueSlug && $friend['ug_verified'];
+
+            if (!$userIsLeague || !$friendIsLeague) {
                 echo json_encode(['success' => false, 'message' => $this->_('messages.no_verified_lol_account')]);
                 return;
             }
@@ -727,7 +728,7 @@ class RiotController
                 "Korea" => "asia",
             ];
 
-            $selectedRegionValue = $regionMap[$user['lol_server']] ?? null;
+            $selectedRegionValue = $regionMap[$user['ug_server']] ?? null;
 
             if (!$selectedRegionValue) {
                 echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_region')]);
@@ -735,8 +736,8 @@ class RiotController
             }
 
             // Get match IDs
-            $userMatches = $this->getMatchIds($user['lol_sPuuid'], $selectedRegionValue, $apiKey);
-            $friendMatches = $this->getMatchIds($friend['lol_sPuuid'], $selectedRegionValue, $apiKey);
+            $userMatches = $this->getMatchIds($user['ug_sPuuid'], $selectedRegionValue, $apiKey);
+            $friendMatches = $this->getMatchIds($friend['ug_sPuuid'], $selectedRegionValue, $apiKey);
 
             if (!$userMatches || !$friendMatches) {
                 echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_match_history')]);
@@ -856,7 +857,7 @@ class RiotController
                 return;
             }
 
-            if ($outcome->game === 'League of Legends') {
+            if ($outcome->game === GameSlug::LEAGUE_OF_LEGENDS->value) {
                 if ($outcome->destination === LoginDestination::NEEDS_GAME_ACCOUNT) {
                     $response = array(
                         'message' => $this->_('messages.success'),

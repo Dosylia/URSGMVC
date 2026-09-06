@@ -55,6 +55,8 @@ return [
     'failed_to_get_lol_account' => 'No se pudo obtener la cuenta de League of Legends o las preferencias',
     'failed_to_create_valorant_account' => 'No se pudo crear la cuenta de Valorant o las preferencias',
     'failed_to_get_valorant_account' => 'No se pudo obtener la cuenta de Valorant o las preferencias',
+    'failed_to_create_game_account' => 'No se pudo crear la cuenta de juego o las preferencias',
+    'failed_to_get_game_account' => 'No se pudo obtener la cuenta de juego o las preferencias',
     'unsupported_game' => 'Juego no compatible',
     'couldnt_update_user' => 'No se pudo actualizar el usuario',
     'picture_not_found_in_collection' => 'Imagen no encontrada en la colección del usuario',

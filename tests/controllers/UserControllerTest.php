@@ -10,7 +10,6 @@ use models\ChatMessage;
 use models\LeagueOfLegends;
 use models\Valorant;
 use models\UserLookingFor;
-use models\MatchingScore;
 use models\Items;
 use models\GoogleUser;
 use models\Report;
@@ -27,7 +26,6 @@ class UserControllerTest extends BaseControllerTestCase
             'leagueoflegends' => $this->createMock(LeagueOfLegends::class),
             'valorant' => $this->createMock(Valorant::class),
             'userlookingfor' => $this->createMock(UserLookingFor::class),
-            'matchingscore' => $this->createMock(MatchingScore::class),
             'items' => $this->createMock(Items::class),
             'googleUser' => $this->createMock(GoogleUser::class),
             'report' => $this->createMock(Report::class),
@@ -122,13 +120,9 @@ class UserControllerTest extends BaseControllerTestCase
         $frMock = $this->createMock(FriendRequest::class);
         $frMock->method('skipUserSwipping')->willReturn([]);
 
-        $matchMock = $this->createMock(MatchingScore::class);
-        $matchMock->method('getMatchingScore')->willReturn([]);
-
         $controller = $this->createController([
             'user' => $userMock,
             'friendrequest' => $frMock,
-            'matchingscore' => $matchMock,
         ]);
 
         $_POST['userId'] = '1';

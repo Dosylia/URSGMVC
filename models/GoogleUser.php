@@ -488,34 +488,17 @@ class GoogleUser extends DataBase
                 u.user_notificationP256dh,
                 u.user_notificationAuth,
                 u.user_personalityTestResult,
-                
-                lol.lol_id,
-                lol.user_id AS lol_user_id,
-                lol.lol_noChamp,
-                lol.lol_main1,
-                lol.lol_main2,
-                lol.lol_main3,
-                lol.lol_rank,
-                lol.lol_role,
-                lol.lol_server,
-                lol.lol_account,
-                lol.lol_verificationCode,
-                lol.lol_verified,
-                lol.lol_sUsername,
-                lol.lol_sUsernameId,
-                lol.lol_sPuuid,
-                lol.lol_sLevel,
-                lol.lol_sRank,
-                lol.lol_sProfileIcon
+
+                ug.*
             FROM
                 `googleuser` as g
             LEFT JOIN
                 `user` as u ON g.google_userId = u.google_userId
             LEFT JOIN
-                `leagueoflegends` as lol ON u.user_id = lol.user_id
+                `user_games` as ug ON u.user_id = ug.user_id
             WHERE
-                g.`google_id` = ? 
-                OR lol.`lol_sPuuid` = ? 
+                g.`google_id` = ?
+                OR ug.`ug_sPuuid` = ?
         ");
 
         $query->execute([$puuid, $puuid]);
@@ -534,9 +517,9 @@ class GoogleUser extends DataBase
                                         LEFT JOIN
                                             `user` as u ON g.google_userId = u.google_userId
                                         LEFT JOIN
-                                            `leagueoflegends` as lol ON u.user_id = lol.user_id
+                                            `user_games` as ug ON u.user_id = ug.user_id
                                         WHERE
-                                            g.`google_id` = ? 
+                                            g.`google_id` = ?
         ");
     
         $query->execute([$puuid]);

@@ -472,19 +472,6 @@ abstract class BaseControllerTestCase extends TestCase
     }
 
     /**
-     * Return a fake matching score row.
-     */
-    protected function fakeMatchingScore(array $overrides = []): array
-    {
-        return array_merge([
-            'match_id' => 1,
-            'match_userMatching' => 1,
-            'match_userMatched' => 2,
-            'match_score' => 85,
-        ], $overrides);
-    }
-
-    /**
      * Return a fake block row.
      */
     protected function fakeBlock(array $overrides = []): array

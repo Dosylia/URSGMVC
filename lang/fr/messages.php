@@ -55,6 +55,8 @@ return [
     'failed_to_get_lol_account' => 'Impossible de récupérer le compte League of Legends ou les préférences',
     'failed_to_create_valorant_account' => 'Impossible de créer le compte Valorant ou les préférences',
     'failed_to_get_valorant_account' => 'Impossible de récupérer le compte Valorant ou les préférences',
+    'failed_to_create_game_account' => 'Impossible de créer le compte de jeu ou les préférences',
+    'failed_to_get_game_account' => 'Impossible de récupérer le compte de jeu ou les préférences',
     'unsupported_game' => 'Jeu non pris en charge',
     'couldnt_update_user' => 'Impossible de mettre à jour l\'utilisateur',
     'picture_not_found_in_collection' => 'Image introuvable dans la collection de l\'utilisateur',

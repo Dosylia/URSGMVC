@@ -35,10 +35,10 @@
         <?php foreach ($interestedData as $userInterest): ?>
           <?php
 $isLoL = $userInterest['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value;
-            $roleRaw = $isLoL ? $userInterest['lol_role'] : $userInterest['valorant_role'];
+            $roleRaw = $userInterest['ug_role'];
             $role = strtolower(str_replace(' ', '', $roleRaw));
-            $rank = $isLoL ? $userInterest['lol_rank'] : $userInterest['valorant_rank'];
-            $server = $isLoL ? $userInterest['lol_server'] : $userInterest['valorant_server'];
+            $rank = $userInterest['ug_rank'];
+            $server = $userInterest['ug_server'];
             $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
             $roleExt = $isLoL ? 'png' : 'webp';
           ?>
@@ -97,7 +97,7 @@ $isLoL = $userInterest['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->valu
       </div>
 
         <?php if (
-            ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value && $user['lol_verified'] !== 1) ||
+            ($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value && $user['ug_verified'] !== 1) ||
             $user['game_slug'] === \enums\GameSlug::VALORANT->value
         ) : ?>
         <div class="form-group">
@@ -209,10 +209,10 @@ $isLoL = $userInterest['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->valu
               <?php
                 $isLoL = $post['pf_game'] === 'League of Legends';
                 $gamePrefix = $isLoL ? 'lol' : 'valorant';
-                $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
+                $roleRaw = $post['ug_role'];
                 $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
-                $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
-                $server = $isLoL ? $post['lol_server'] : $post['valorant_server'];
+                $rank = $post['ug_rank']; // keep capitalization
+                $server = $post['ug_server'];
                 $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
                 $roleFolder = $isLoL ? 'roles' : 'valorant_roles';
                 $roleExt = $isLoL ? 'png' : 'webp'; // extension for role image

@@ -54,7 +54,7 @@ export async function showFriendInfo(friend) {
     let friendLeagueStatus = null
     let gamemode = ''
 
-    if (friend.lol_verified === 1) {
+    if (friend.ug_verified === 1) {
         checkIfUsersPlayedTogether(friend.user_id, userId)
         friendLeagueStatus = await getGameStatusLoL(friend.user_id)
         if (friendLeagueStatus.success) {
@@ -93,7 +93,7 @@ export async function showFriendInfo(friend) {
     container.appendChild(userInfo)
 
     // League of Legends section with copy interaction
-    if (friend.lol_verified === 1) {
+    if (friend.ug_verified === 1) {
         const lolSection = document.createElement('span')
         lolSection.className = 'friend-details-top'
 
@@ -103,12 +103,12 @@ export async function showFriendInfo(friend) {
 
         const lolUsername = document.createElement('p')
         lolUsername.className = 'friends-lol-username'
-        lolUsername.dataset.username = friend.lol_account
-        lolUsername.innerHTML = `${friend.lol_account} <i class="fa-solid fa-copy"></i>`
+        lolUsername.dataset.username = friend.ug_account
+        lolUsername.innerHTML = `${friend.ug_account} <i class="fa-solid fa-copy"></i>`
 
         // 👇 Attach the copy functionality here
         lolUsername.addEventListener('click', () => {
-            const username = friend.lol_account
+            const username = friend.ug_account
             const temp = document.createElement('textarea')
             temp.value = username
             document.body.appendChild(temp)

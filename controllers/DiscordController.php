@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use models\LeagueOfLegends;
-use models\Valorant;
+use models\UserGames;
+use models\Games;
 use models\User;
 use models\UserLookingFor;
 use models\GoogleUser;
@@ -26,9 +26,9 @@ class DiscordController
 {
     use SecurityController;
     use MobileDeepLinkResponder;
-    private LeagueOfLegends $leagueOfLegends;
+    private UserGames $userGames;
     private User $user;
-    private Valorant $valorant;
+    private Games $games;
     private GoogleUser $googleUser;
     private UserLookingFor $userlookingfor;
     private Discord $discord;
@@ -43,9 +43,9 @@ class DiscordController
 
     public function __construct()
     {
-        $this->leagueOfLegends = new LeagueOfLegends();
+        $this->userGames = new UserGames();
         $this->user = new User();
-        $this->valorant = new Valorant();
+        $this->games = new Games();
         $this -> googleUser = new GoogleUser();
         $this -> discord = new Discord();
         $this -> userlookingfor = new userLookingFor();
@@ -55,8 +55,8 @@ class DiscordController
         $this->logInService = new LogInService(
             $masterTokenService,
             $this->user,
-            $this->leagueOfLegends,
-            $this->valorant,
+            $this->userGames,
+            $this->games,
             $this->userlookingfor
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
@@ -418,21 +418,15 @@ class DiscordController
         $game = $user['user_game'];
 
         if ($game === 'League of Legends') {
-            if ($user['lol_verified'] == 1) {
-                $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-                if ($lolUser) {
-                    $account = $lolUser['lol_account'];
-                    $server = $lolUser['lol_server'];
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'No League account found for verified user']);
-                    return;
-                }
+            if ($user['ug_verified'] == 1) {
+                $account = $user['ug_account'];
+                $server = $user['ug_server'];
             } else {
                 if (!$account) {
                     echo json_encode(['success' => false, 'message' => 'No League account provided for unverified user']);
                     return;
                 } else {
-                    $server = $user['lol_server'] ?? 'Unknown';
+                    $server = $user['ug_server'] ?? 'Unknown';
                 }
             }
         } elseif ($game === 'Valorant') {
@@ -440,7 +434,7 @@ class DiscordController
                 echo json_encode(['success' => false, 'message' => 'No Valorant account provided']);
                 return;
             } else {
-                $server = $user['valorant_server'] ?? 'Unknown';
+                $server = $user['ug_server'] ?? 'Unknown';
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Unsupported game type']);
@@ -579,21 +573,15 @@ class DiscordController
         $game = $user['user_game'];
 
         if ($game === 'League of Legends') {
-            if ($user['lol_verified'] == 1) {
-                $lolUser = $this->leagueOfLegends->getLeageUserByUserId($user['user_id']);
-                if ($lolUser) {
-                    $account = $lolUser['lol_account'];
-                    $server = $lolUser['lol_server'];
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'No League account found for verified user']);
-                    return;
-                }
+            if ($user['ug_verified'] == 1) {
+                $account = $user['ug_account'];
+                $server = $user['ug_server'];
             } else {
                 if (!$account) {
                     echo json_encode(['success' => false, 'message' => 'No League account provided for unverified user']);
                     return;
                 } else {
-                    $server = $user['lol_server'] ?? 'Unknown';
+                    $server = $user['ug_server'] ?? 'Unknown';
                 }
             }
         } elseif ($game === 'Valorant') {
@@ -601,7 +589,7 @@ class DiscordController
                 echo json_encode(['success' => false, 'message' => 'No Valorant account provided']);
                 return;
             } else {
-                $server = $user['valorant_server'] ?? 'Unknown';
+                $server = $user['ug_server'] ?? 'Unknown';
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Unsupported game type']);

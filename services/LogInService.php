@@ -6,29 +6,30 @@
 namespace services;
 
 use models\User;
-use models\LeagueOfLegends;
-use models\Valorant;
+use models\UserGames;
+use models\Games;
 use models\UserLookingFor;
+use enums\GameSlug;
 
 class LogInService
 {
     private MasterTokenService $masterTokenService;
     private User $user;
-    private LeagueOfLegends $leagueOfLegends;
-    private Valorant $valorant;
+    private UserGames $userGames;
+    private Games $games;
     private UserLookingFor $userLookingFor;
 
     public function __construct(
         MasterTokenService $masterTokenService,
         User $user,
-        LeagueOfLegends $leagueOfLegends,
-        Valorant $valorant,
+        UserGames $userGames,
+        Games $games,
         UserLookingFor $userLookingFor
     ) {
         $this->masterTokenService = $masterTokenService;
         $this->user = $user;
-        $this->leagueOfLegends = $leagueOfLegends;
-        $this->valorant = $valorant;
+        $this->userGames = $userGames;
+        $this->games = $games;
         $this->userLookingFor = $userLookingFor;
     }
 
@@ -130,9 +131,8 @@ class LogInService
 
     /**
      * Curated-array counterpart of resolveOnboardingDestination() for the
-     * mobile surface: same League/Valorant + looking-for branching, but
-     * builds camelCase profile arrays instead of raw DB rows and never
-     * touches $_SESSION.
+     * mobile surface: same game/looking-for branching, but builds camelCase
+     * profile arrays instead of raw DB rows and never touches $_SESSION.
      */
     private function resolveMobileOnboardingDestination(array $googleUserData, array $userData, array $userRow, string $token): LoginOutcome
     {
@@ -143,75 +143,34 @@ class LogInService
             'masterToken' => $token,
         ];
 
-        if ($userRow['user_game'] === 'League of Legends') {
-            $game = 'League of Legends';
-            $lolUser = $this->leagueOfLegends->getLeageUserByUserId($userRow['user_id']);
+        $gameSlug = $userRow['game_slug'] ?? null;
+        $gameId = $gameSlug ? $this->games->getIdBySlug($gameSlug) : null;
+        $userGame = $gameId ? $this->userGames->getUserGameByUserIdAndGameId($userRow['user_id'], $gameId) : null;
 
-            if (!$lolUser) {
-                return new LoginOutcome($base + ['game' => $game, 'destination' => LoginDestination::NEEDS_GAME_ACCOUNT]);
-            }
-
-            $gameProfile = [
-                'lolId' => $lolUser['lol_id'],
-                'main1' => $lolUser['lol_main1'],
-                'main2' => $lolUser['lol_main2'],
-                'main3' => $lolUser['lol_main3'],
-                'rank' => $lolUser['lol_rank'],
-                'role' => $lolUser['lol_role'],
-                'server' => $lolUser['lol_server'],
-                'account' => $lolUser['lol_account'],
-                'sUsername' => $lolUser['lol_sUsername'],
-                'sLevel' => $lolUser['lol_sLevel'],
-                'sRank' => $lolUser['lol_sRank'],
-                'sProfileIcon' => $lolUser['lol_sProfileIcon'],
-                'skipSelectionLol' => $lolUser['lol_noChamp'],
-            ];
-
-            $lfUser = $this->userLookingFor->getLookingForUserByUserId($userRow['user_id']);
-
-            if (!$lfUser) {
-                return new LoginOutcome($base + ['game' => $game, 'gameProfile' => $gameProfile, 'destination' => LoginDestination::NEEDS_LOOKING_FOR]);
-            }
-
-            $lookingForData = [
-                'lfId' => $lfUser['lf_id'],
-                'lfGender' => $lfUser['lf_gender'],
-                'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-                'lfGame' => $lfUser['lf_game'],
-                'main1Lf' => $lfUser['lf_lolmain1'],
-                'main2Lf' => $lfUser['lf_lolmain2'],
-                'main3Lf' => $lfUser['lf_lolmain3'],
-                'rankLf' => $lfUser['lf_lolrank'],
-                'roleLf' => $lfUser['lf_lolrole'],
-                'skipSelectionLf' => $lfUser['lf_lolNoChamp'],
-                'filteredServerLf' => $lfUser['lf_filteredServer'],
-            ];
-
-            return new LoginOutcome($base + ['game' => $game, 'gameProfile' => $gameProfile, 'lookingForRow' => $lookingForData, 'destination' => LoginDestination::ONBOARDED]);
-        }
-
-        $game = 'Valorant';
-        $valorantUser = $this->valorant->getValorantUserByUserId($userRow['user_id']);
-
-        if (!$valorantUser) {
-            return new LoginOutcome($base + ['game' => $game, 'destination' => LoginDestination::NEEDS_GAME_ACCOUNT]);
+        if (!$userGame) {
+            return new LoginOutcome($base + ['game' => $gameSlug, 'destination' => LoginDestination::NEEDS_GAME_ACCOUNT]);
         }
 
         $gameProfile = [
-            'valorantId' => $valorantUser['valorant_id'],
-            'main1' => $valorantUser['valorant_main1'],
-            'main2' => $valorantUser['valorant_main2'],
-            'main3' => $valorantUser['valorant_main3'],
-            'rank' => $valorantUser['valorant_rank'],
-            'role' => $valorantUser['valorant_role'],
-            'server' => $valorantUser['valorant_server'],
-            'skipSelectionVal' => $valorantUser['valorant_noChamp'],
+            'userGamesId' => $userGame['ug_id'],
+            'main1' => $userGame['ug_main1'],
+            'main2' => $userGame['ug_main2'],
+            'main3' => $userGame['ug_main3'],
+            'rank' => $userGame['ug_rank'],
+            'role' => $userGame['ug_role'],
+            'server' => $userGame['ug_server'],
+            'account' => $userGame['ug_account'],
+            'sUsername' => $userGame['ug_sUsername'],
+            'sLevel' => $userGame['ug_sLevel'],
+            'sRank' => $userGame['ug_sRank'],
+            'sProfileIcon' => $userGame['ug_sProfileIcon'],
+            'skipSelection' => $userGame['ug_noMains'],
         ];
 
         $lfUser = $this->userLookingFor->getLookingForUserByUserId($userRow['user_id']);
 
         if (!$lfUser) {
-            return new LoginOutcome($base + ['game' => $game, 'gameProfile' => $gameProfile, 'destination' => LoginDestination::NEEDS_LOOKING_FOR]);
+            return new LoginOutcome($base + ['game' => $gameSlug, 'gameProfile' => $gameProfile, 'destination' => LoginDestination::NEEDS_LOOKING_FOR]);
         }
 
         $lookingForData = [
@@ -219,23 +178,16 @@ class LogInService
             'lfGender' => $lfUser['lf_gender'],
             'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
             'lfGame' => $lfUser['lf_game'],
-            'valmain1Lf' => $lfUser['lf_valmain1'],
-            'valmain2Lf' => $lfUser['lf_valmain2'],
-            'valmain3Lf' => $lfUser['lf_valmain3'],
-            'valrankLf' => $lfUser['lf_valrank'],
-            'valroleLf' => $lfUser['lf_valrole'],
-            'skipSelectionLf' => $lfUser['lf_valNoChamp'],
             'filteredServerLf' => $lfUser['lf_filteredServer'],
         ];
 
-        return new LoginOutcome($base + ['game' => $game, 'gameProfile' => $gameProfile, 'lookingForRow' => $lookingForData, 'destination' => LoginDestination::ONBOARDED]);
+        return new LoginOutcome($base + ['game' => $gameSlug, 'gameProfile' => $gameProfile, 'lookingForRow' => $lookingForData, 'destination' => LoginDestination::ONBOARDED]);
     }
 
     /**
-     * Branches on the linked user's game (League vs Valorant), writes the
-     * matching game-account/looking-for session keys, and decides which
-     * onboarding step is next: needs a game account, needs a looking-for
-     * profile, or fully onboarded.
+     * Resolves which game the linked user is on, writes the matching
+     * session key, and decides which onboarding step is next: needs a
+     * game account, needs a looking-for profile, or fully onboarded.
      */
     private function resolveOnboardingDestination(array $identityRow, array $userRow, string $token): LoginOutcome
     {
@@ -246,32 +198,30 @@ class LogInService
             'masterToken' => $token,
         ];
 
-        if ($userRow['user_game'] === 'League of Legends') {
-            $game = 'League of Legends';
-            $gameProfile = $this->leagueOfLegends->getLeageUserByUserId($userRow['user_id']);
-        } else {
-            $game = 'Valorant';
-            $gameProfile = $this->valorant->getValorantUserByUserId($userRow['user_id']);
-        }
+        $gameSlug = $userRow['game_slug'] ?? null;
+        $gameId = $gameSlug ? $this->games->getIdBySlug($gameSlug) : null;
+        $gameProfile = $gameId ? $this->userGames->getUserGameByUserIdAndGameId($userRow['user_id'], $gameId) : null;
 
         if (!$gameProfile) {
             return new LoginOutcome($base + [
-                'game' => $game,
+                'game' => $gameSlug,
                 'destination' => LoginDestination::NEEDS_GAME_ACCOUNT,
             ]);
         }
 
-        if ($game === 'League of Legends') {
-            $_SESSION['lol_id'] = $gameProfile['lol_id'];
-        } else {
-            $_SESSION['valorant_id'] = $gameProfile['valorant_id'];
-        }
+        // TODO: session key still keyed by game (lol_id/valorant_id), see
+        // UserGamesController::setGameSessionId - same transition-period shim.
+        match ($gameSlug) {
+            GameSlug::LEAGUE_OF_LEGENDS->value => $_SESSION['lol_id'] = $gameProfile['ug_id'],
+            GameSlug::VALORANT->value => $_SESSION['valorant_id'] = $gameProfile['ug_id'],
+            default => null,
+        };
 
         $lookingForRow = $this->userLookingFor->getLookingForUserByUserId($userRow['user_id']);
 
         if (!$lookingForRow) {
             return new LoginOutcome($base + [
-                'game' => $game,
+                'game' => $gameSlug,
                 'gameProfile' => $gameProfile,
                 'destination' => LoginDestination::NEEDS_LOOKING_FOR,
             ]);
@@ -280,7 +230,7 @@ class LogInService
         $_SESSION['lf_id'] = $lookingForRow['lf_id'];
 
         return new LoginOutcome($base + [
-            'game' => $game,
+            'game' => $gameSlug,
             'gameProfile' => $gameProfile,
             'lookingForRow' => $lookingForRow,
             'destination' => LoginDestination::ONBOARDED,

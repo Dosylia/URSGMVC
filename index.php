@@ -44,7 +44,6 @@ use controllers\UserLookingForController;
 use controllers\FriendRequestController;
 use controllers\ChatMessageController;
 use controllers\BlockController;
-use controllers\MatchingScoreController;
 use controllers\ItemsController;
 use controllers\RiotController;
 use controllers\GameController;
@@ -134,7 +133,6 @@ $actionMap = [
     'swipeDone' => [FriendRequestController::class, 'swipeStatus'],
     'swipeDoneWebsite' => [FriendRequestController::class, 'swipeStatusWebsite'],
     'swipeDonePhone' => [FriendRequestController::class, 'swipeStatusPhone'],
-    'algoData' => [MatchingScoreController::class, 'getAlgoData'],
     'sendMessageDataWebsite' => [ChatMessageController::class, 'sendMessageDataWebsite'],
     'sendMessageDataPhone' => [ChatMessageController::class, 'sendMessageDataPhone'],
     'getMessageDataWebsite' => [ChatMessageController::class, 'getMessageDataWebsite'],

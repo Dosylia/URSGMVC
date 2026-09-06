@@ -55,10 +55,10 @@
             $isCentral = $index >= $centerStart && $index <= $centerEnd;
             $cardOpacityClass = $isCentral ? 'pf-card-center' : 'pf-card-faded';
             $isLoL = $post['pf_game'] === 'League of Legends';
-            $roleRaw = $isLoL ? $post['lol_role'] : $post['valorant_role'];
+            $roleRaw = $post['ug_role'];
             $role = strtolower(str_replace(' ', '', $roleRaw)); // lowercased and no spaces
-            $rank = $isLoL ? $post['lol_rank'] : $post['valorant_rank']; // keep capitalization
-            $server = $isLoL ? $post['lol_server'] : $post['valorant_server'];
+            $rank = $post['ug_rank']; // keep capitalization
+            $server = $post['ug_server'];
             $rankFolder = $isLoL ? 'ranks' : 'valorant_ranks';
             $roleFolder = $isLoL ? 'roles' : 'valorant_roles';
             $roleExt = $isLoL ? 'png' : 'webp'; // extension for role image

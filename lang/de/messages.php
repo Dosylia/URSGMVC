@@ -55,6 +55,8 @@ return [
     'failed_to_get_lol_account' => 'League of Legends-Konto oder Einstellungen konnten nicht abgerufen werden',
     'failed_to_create_valorant_account' => 'Valorant-Konto oder Einstellungen konnten nicht erstellt werden',
     'failed_to_get_valorant_account' => 'Valorant-Konto oder Einstellungen konnten nicht abgerufen werden',
+    'failed_to_create_game_account' => 'Spielkonto oder Einstellungen konnten nicht erstellt werden',
+    'failed_to_get_game_account' => 'Spielkonto oder Einstellungen konnten nicht abgerufen werden',
     'unsupported_game' => 'Spiel wird nicht unterstützt',
     'couldnt_update_user' => 'Benutzer konnte nicht aktualisiert werden',
     'picture_not_found_in_collection' => 'Bild in der Sammlung des Benutzers nicht gefunden',

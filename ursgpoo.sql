@@ -194,19 +194,6 @@ CREATE TABLE `items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `matchingscore`
---
-
-CREATE TABLE `matchingscore` (
-  `match_id` int(11) NOT NULL,
-  `match_userMatching` int(11) NOT NULL,
-  `match_userMatched` int(11) NOT NULL,
-  `match_score` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `notifications_queue`
 --
 
@@ -524,14 +511,6 @@ ALTER TABLE `items`
   ADD PRIMARY KEY (`items_id`);
 
 --
--- Indexes for table `matchingscore`
---
-ALTER TABLE `matchingscore`
-  ADD PRIMARY KEY (`match_id`),
-  ADD UNIQUE KEY `unique_match` (`match_userMatching`,`match_userMatched`),
-  ADD KEY `match_userMatching` (`match_userMatching`);
-
---
 -- Indexes for table `notifications_queue`
 --
 ALTER TABLE `notifications_queue`
@@ -671,12 +650,6 @@ ALTER TABLE `googleuser`
 --
 ALTER TABLE `items`
   MODIFY `items_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `matchingscore`
---
-ALTER TABLE `matchingscore`
-  MODIFY `match_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `notifications_queue`

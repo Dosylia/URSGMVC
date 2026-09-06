@@ -51,12 +51,10 @@ class PlayerFinder extends DataBase
             SELECT 
                 pf.*, 
                 u.user_username, u.user_picture, u.user_game, u.user_id,
-                lol.lol_rank, lol.lol_role, lol.lol_server,
-                val.valorant_rank, val.valorant_role, val.valorant_server
+                ug.ug_rank, ug.ug_role, ug.ug_server
             FROM playerfinder pf
             JOIN user u ON pf.user_id = u.user_id
-            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
-            LEFT JOIN valorant val ON val.user_id = u.user_id
+            LEFT JOIN user_games ug ON ug.user_id = u.user_id AND ug.game_id = u.user_gameId
             WHERE u.user_randomChatPermission = 1
              AND pf.user_id != :userId
             AND TIMESTAMPDIFF(SECOND, u.user_lastSeen, NOW()) < 300
@@ -113,12 +111,10 @@ class PlayerFinder extends DataBase
             SELECT 
                 pf.*, 
                 u.user_username, u.user_picture, u.user_game, u.user_id,
-                lol.lol_rank, lol.lol_role, lol.lol_server,
-                val.valorant_rank, val.valorant_role, val.valorant_server
+                ug.ug_rank, ug.ug_role, ug.ug_server
             FROM playerfinder pf
             JOIN user u ON pf.user_id = u.user_id
-            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
-            LEFT JOIN valorant val ON val.user_id = u.user_id
+            LEFT JOIN user_games ug ON ug.user_id = u.user_id AND ug.game_id = u.user_gameId
             ORDER BY pf.pf_id DESC
         ");
         
@@ -134,12 +130,10 @@ class PlayerFinder extends DataBase
             SELECT 
                 pf.*, 
                 u.user_username, u.user_picture, u.user_game, u.user_id,
-                lol.lol_rank, lol.lol_role, lol.lol_server,
-                val.valorant_rank, val.valorant_role, val.valorant_server
+                ug.ug_rank, ug.ug_role, ug.ug_server
             FROM playerfinder pf
             JOIN user u ON pf.user_id = u.user_id
-            LEFT JOIN leagueoflegends lol ON lol.user_id = u.user_id
-            LEFT JOIN valorant val ON val.user_id = u.user_id
+            LEFT JOIN user_games ug ON ug.user_id = u.user_id AND ug.game_id = u.user_gameId
             ORDER BY pf.pf_id DESC
             LIMIT 10
         ");

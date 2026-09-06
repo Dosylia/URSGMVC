@@ -7,11 +7,10 @@ use enums\GameSlug;
 class User extends DataBase
 {
     private \PDO $bdd;
-    
+
     public function __construct() {
         $this->bdd = $this->getBdd();
     }
-
 
     public function getUserByUsername($username)
     {
@@ -187,8 +186,7 @@ class User extends DataBase
         $query = $this->bdd->prepare("
                                         SELECT
                                             u.*,
-                                            l.*,
-                                            v.*,
+                                            ug.*,
                                             lf.*,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
                                             g.google_email,
@@ -206,10 +204,7 @@ class User extends DataBase
                                             ) AS rating_count
                                         FROM
                                             `user` AS u
-                                        LEFT JOIN
-                                            `leagueoflegends` AS l ON u.user_id = l.user_id
-                                        LEFT JOIN
-                                            `valorant` AS v ON u.user_id = v.user_id
+                                        LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
                                         LEFT JOIN
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
                                         LEFT JOIN
@@ -219,7 +214,7 @@ class User extends DataBase
                                         WHERE
                                             u.user_id = ?;
         ");
-        
+
         $query->execute([$userId]);
         $user = $query->fetch();
         
@@ -239,8 +234,7 @@ class User extends DataBase
             $query = $this->bdd->prepare("
                 SELECT
                     u.*,
-                    l.*,
-                    v.*,
+                    ug.*,
                     lf.*,
                     g.google_email,
                     g.google_createdWithRSO,
@@ -258,10 +252,7 @@ class User extends DataBase
 
                 FROM
                     `user` AS u
-                LEFT JOIN
-                    `leagueoflegends` AS l ON u.user_id = l.user_id
-                LEFT JOIN
-                    `valorant` AS v ON u.user_id = v.user_id
+                LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
                 LEFT JOIN
                     `userlookingfor` AS lf ON u.user_id = lf.user_id
                 LEFT JOIN
@@ -288,15 +279,11 @@ class User extends DataBase
         $query = $this->bdd->prepare("
                                         SELECT
                                             u.*,
-                                            l.*,
-                                            v.*,
+                                            ug.*,
                                             lf.*
                                         FROM
                                             `user` AS u
-                                        LEFT JOIN
-                                            `leagueoflegends` AS l ON u.user_id = l.user_id
-                                        LEFT JOIN
-                                            `valorant` AS v ON u.user_id = v.user_id
+                                        LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
                                         LEFT JOIN
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id;
         ");
@@ -398,16 +385,12 @@ class User extends DataBase
     {
         $query = $this->bdd->prepare("
                                         SELECT
-                                            u.*, 
-                                            l.*, 
-                                            v.*, 
+                                            u.*,
+                                            ug.*,
                                             lf.*
                                         FROM
                                             `user` AS u
-                                        LEFT JOIN
-                                            `leagueoflegends` AS l ON u.user_id = l.user_id
-                                        LEFT JOIN
-                                            `valorant` AS v ON u.user_id = v.user_id
+                                        LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
                                         INNER JOIN
                                             `userlookingfor` AS lf ON u.user_id = lf.user_id
                                         WHERE
@@ -434,13 +417,12 @@ class User extends DataBase
     public function getAllUsersExceptFriendsLimit($userId, $game, $serverList, $genderConditions = [], $gameModeCondition = null)
     {
         $serverPlaceholders = implode(',', array_fill(0, count($serverList), '?'));
-        $serverColumn = ($game === GameSlug::LEAGUE_OF_LEGENDS->value) ? "l.lol_server" : "v.valorant_server";
 
         // Base WHERE clauses
         $whereClauses = [
             "g.game_slug = ?",
             "u.user_lastRequestTime >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
-            "$serverColumn IN ($serverPlaceholders)",
+            "ug.ug_server IN ($serverPlaceholders)",
             "NOT EXISTS (SELECT 1 FROM friendrequest AS fr1 WHERE fr1.fr_senderId = ? AND fr1.fr_receiverId = u.user_id)",
             "NOT EXISTS (SELECT 1 FROM friendrequest AS fr2 WHERE fr2.fr_receiverId = ? AND fr2.fr_senderId = u.user_id)",
             "NOT EXISTS (SELECT 1 FROM block AS b1 WHERE b1.block_senderId = ? AND b1.block_receiverId = u.user_id)",
@@ -473,10 +455,9 @@ class User extends DataBase
     
         // Build final query
         $query = $this->bdd->prepare("
-            SELECT u.*, l.*, v.*, lf.*, g.game_slug
+            SELECT u.*, ug.*, lf.*, g.game_slug
             FROM user AS u
-            LEFT JOIN leagueoflegends AS l ON u.user_id = l.user_id
-            LEFT JOIN valorant AS v ON u.user_id = v.user_id
+            LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
             INNER JOIN userlookingfor AS lf ON u.user_id = lf.user_id
             LEFT JOIN games AS g ON g.game_id = u.user_gameId
             WHERE " . implode(' AND ', $whereClauses) . "
@@ -946,11 +927,14 @@ class User extends DataBase
     {
         $query = $this -> bdd -> prepare("
                                             SELECT
-                                                *
+                                                u.*,
+                                                g.game_slug
                                             FROM
-                                                `user`
+                                                `user` AS u
+                                            LEFT JOIN
+                                                `games` AS g ON g.game_id = u.user_gameId
                                             WHERE
-                                                `google_userId` = ?
+                                                u.google_userId = ?
         ");
 
         $query -> execute([$googleUserId]);

@@ -4,10 +4,9 @@ namespace controllers;
 
 use models\GoogleUser;
 use models\User;
-use models\LeagueOfLegends;
-use models\Valorant;
+use models\UserGames;
+use models\Games;
 use models\UserLookingFor;
-use models\MatchingScore;
 use models\Partners;
 use models\BannedUsers;
 use models\PlayerFinder;
@@ -37,10 +36,9 @@ class GoogleUserController
     private GoogleUser $googleUser;
     private RoutingService $routingService;
     private User $user;
-    private LeagueOfLegends $leagueoflegends;
-    private Valorant $valorant;
+    private UserGames $userGames;
+    private Games $games;
     private UserLookingFor $userlookingfor;
-    private MatchingScore $matchingscore;
     private Partners $partners;
     private BannedUsers $bannedusers;
     private PlayerFinder $playerFinder;
@@ -62,10 +60,9 @@ class GoogleUserController
         $this -> googleUser = new GoogleUser();
         $this -> routingService = new RoutingService();
         $this -> user = new User();
-        $this -> leagueoflegends = new LeagueOfLegends();
-        $this -> valorant = new Valorant();
+        $this -> userGames = new UserGames();
+        $this -> games = new Games();
         $this -> userlookingfor = new UserLookingFor();
-        $this -> matchingscore = new MatchingScore();
         $this -> partners = new Partners();
         $this -> bannedusers = new BannedUsers();
         $this -> playerFinder = new PlayerFinder();
@@ -75,8 +72,8 @@ class GoogleUserController
         $this->logInService = new LogInService(
             $masterTokenService,
             $this->user,
-            $this->leagueoflegends,
-            $this->valorant,
+            $this->userGames,
+            $this->games,
             $this->userlookingfor
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
@@ -290,25 +287,19 @@ class GoogleUserController
                     $_SESSION['kindOfGamer'] = $user['user_kindOfGamer'];
                     $_SESSION['game'] = $user['user_game'];
 
-                    if ($user['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value) {
-                        $lolUser = $this->leagueoflegends->getLeageUserByUserId($user['user_id']);
-                        if ($lolUser) {
-                            $_SESSION['lol_id'] = $lolUser['lol_id'];
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            if ($lfUser) {
-                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                return true;
-                            }
-                        }
-                    } else if ($user['game_slug'] === GameSlug::VALORANT->value) {
-                        $valorantUser = $this->valorant->getValorantUserByUserId($user['user_id']);
-                        if ($valorantUser) {
-                            $_SESSION['valorant_id'] = $valorantUser['valorant_id'];
-                            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                            if ($lfUser) {
-                                $_SESSION['lf_id'] = $lfUser['lf_id'];
-                                return true;
-                            }
+                    $gameId = $this->games->getIdBySlug($user['game_slug'] ?? '');
+                    $userGame = $gameId ? $this->userGames->getUserGameByUserIdAndGameId($user['user_id'], $gameId) : false;
+
+                    if ($userGame) {
+                        match ($user['game_slug']) {
+                            GameSlug::LEAGUE_OF_LEGENDS->value => $_SESSION['lol_id'] = $userGame['ug_id'],
+                            GameSlug::VALORANT->value => $_SESSION['valorant_id'] = $userGame['ug_id'],
+                            default => null,
+                        };
+                        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+                        if ($lfUser) {
+                            $_SESSION['lf_id'] = $lfUser['lf_id'];
+                            return true;
                         }
                     }
                 }
