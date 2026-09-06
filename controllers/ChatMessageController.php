@@ -12,6 +12,7 @@ use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 require 'vendor/autoload.php';
 
@@ -19,6 +20,7 @@ class ChatMessageController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private ChatMessage $chatmessage;
     private User $user;
@@ -88,12 +90,22 @@ class ChatMessageController
             }
         }
 
-        $page_css = ['chat'];
-        $current_url = "https://ur-sg.com/persoChat";
-        $template = "views/swiping/swiping_persomessage";
-        $picture = "chat-preview";
-        $page_title = "URSG - Chat";
-        require "views/layoutSwiping.phtml";
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/swiping_persomessage',
+            current_url: 'https://ur-sg.com/persoChat',
+            page_title: 'URSG - Chat',
+            picture: 'chat-preview',
+            page_css: ['chat'],
+            data: [
+                'user' => $user,
+                'getFriendlist' => $getFriendlist,
+                'ownGoldEmotes' => $ownGoldEmotes,
+                'friendId' => $friendId ?? null,
+                'friendChat' => $friendChat ?? null,
+                'isFriend' => $isFriend ?? null,
+            ],
+        );
     }
 
     public function messageStream(): void

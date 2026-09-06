@@ -11,11 +11,13 @@ use models\Items;
 use traits\SecurityController;
 
 use traits\Translatable;
+use traits\PageRenderer;
 
 class FriendRequestController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -47,18 +49,27 @@ class FriendRequestController
     public function pageFriendlist(): void
     {
         $this->requireUserSessionOrRedirect($redirectUrl = '/');
-        // Get important datas
         $this->initializeLanguage();
+
         $user = $this->user->getUserByUsername($_SESSION['username']);
         $allUsers = $this->user->getAllUsers();
         $getFriendlist = $this->friendrequest->getFriendlist($_SESSION['userId']);
         $getBlocklist = $this->block->getBlocklist($_SESSION['userId']);
-        $page_css = ['friendlist'];
-        $current_url = "https://ur-sg.com/friendlistPage";
-        $template = "views/swiping/swiping_friendlist";
-        $picture = "ursg-preview-small";
-        $page_title = "URSG - Friendlist";
-        require "views/layoutSwiping.phtml";
+
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/swiping_friendlist',
+            current_url: 'https://ur-sg.com/friendlistPage',
+            page_title: 'URSG - Friendlist',
+            picture: 'ursg-preview-small',
+            page_css: ['friendlist'],
+            data: [
+                'user' => $user,
+                'allUsers' => $allUsers,
+                'getFriendlist' => $getFriendlist,
+                'getBlocklist' => $getBlocklist,
+            ],
+        );
     }
 
     public function addFriendAndChat() 

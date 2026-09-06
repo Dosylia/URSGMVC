@@ -1,14 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace models;
 
 use config\DataBase;
 
-// Skeleton for the model meant to replace LeagueOfLegends.php and Valorant.php once the
-// dual-write phase starts (see TODOs at the top of both). Every method takes a $gameId
-// (or resolves one internally) instead of being written twice, once per game.
-// Signatures below mirror the old per-game methods one for one, grouped by what they replace,
-// so nothing gets lost in the merge. Fill in the bodies against user_games/games, not the
-// legacy tables.
 class UserGames extends DataBase
 {
     private \PDO $bdd;
@@ -18,84 +15,204 @@ class UserGames extends DataBase
         $this->bdd = $this->getBdd();
     }
 
-    // Replaces LeagueOfLegends::createLoLUser / Valorant::createValorantUser.
-    public function createUserGame($userId, $gameId, $main1, $main2, $main3, $rank, $role, $server, $statusChampion)
-    {
-        // TODO: INSERT INTO user_games (user_id, game_id, ug_main1/2/3, ug_rank, ug_role,
-        // ug_server, ug_noMains). $statusChampion maps to ug_noMains like the old lol_noChamp/
-        // valorant_noChamp did, keep the same meaning.
+    public function createUserGame(
+        int $userId,
+        int $gameId,
+        ?string $main1,
+        ?string $main2,
+        ?string $main3,
+        string $rank,
+        string $role,
+        string $server,
+        int $statusChampion
+    ): string|false {
+        $query = $this->bdd->prepare("
+            INSERT INTO `user_games`(
+                `user_id`,
+                `game_id`,
+                `ug_main1`,
+                `ug_main2`,
+                `ug_main3`,
+                `ug_rank`,
+                `ug_role`,
+                `ug_server`,
+                `ug_noMains`
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $createUserGame = $query->execute([$userId, $gameId, $main1, $main2, $main3, $rank, $role, $server, $statusChampion]);
+
+        if ($createUserGame) {
+            return $this->bdd->lastInsertId();
+        } else {
+            return false;
+        }
     }
 
-    // Replaces LeagueOfLegends::updateLeagueData / Valorant::updateValorantData.
-    public function updateUserGameData($userId, $gameId, $main1, $main2, $main3, $rank, $role, $server, $statusChampion)
-    {
-        // TODO: UPDATE user_games SET ug_main1/2/3, ug_rank, ug_role, ug_server, ug_noMains
-        // WHERE user_id = ? AND game_id = ?.
+    public function updateUserGameData(
+        int $userId,
+        int $gameId,
+        ?string $main1,
+        ?string $main2,
+        ?string $main3,
+        ?string $rank,
+        ?string $role,
+        ?string $server,
+        int $statusChampion
+    ): bool {
+        $sql = "UPDATE `user_games` SET ";
+        $params = [];
+        $updates = [];
+
+        $updates[] = "`ug_main1` = ?";
+        $params[] = $main1;
+
+        $updates[] = "`ug_main2` = ?";
+        $params[] = $main2;
+
+        $updates[] = "`ug_main3` = ?";
+        $params[] = $main3;
+
+        if (!empty($rank)) {
+            $updates[] = "`ug_rank` = ?";
+            $params[] = $rank;
+        }
+        if (!empty($role)) {
+            $updates[] = "`ug_role` = ?";
+            $params[] = $role;
+        }
+        if (!empty($server)) {
+            $updates[] = "`ug_server` = ?";
+            $params[] = $server;
+        }
+
+        $updates[] = "`ug_noMains` = ?";
+        $params[] = $statusChampion;
+
+        $sql .= implode(", ", $updates) . " WHERE `user_id` = ? AND `game_id` = ?";
+        $params[] = $userId;
+        $params[] = $gameId;
+
+        $query = $this->bdd->prepare($sql);
+
+        return $query->execute($params);
     }
 
-    // Replaces LeagueOfLegends::addLoLAccount. Valorant has no equivalent today (its account
-    // binding goes through Riot OAuth, not a manual verification code) - $verificationCode
-    // should stay nullable here and just not be used on the Valorant path, same asymmetry
-    // as ug_verificationCode itself.
-    public function addAccount($gameId, $server, $account, $verificationCode, $userId)
+    // $verificationCode is nullable: only games with a manual account-verification step use it,
+    // pass null for games that link accounts through OAuth instead.
+    public function addAccount(int $gameId, string $server, string $account, ?string $verificationCode, int $userId): bool
     {
-        // TODO: UPDATE user_games SET ug_server, ug_account, ug_verificationCode
-        // WHERE user_id = ? AND game_id = ?.
+        $query = $this->bdd->prepare("
+            UPDATE `user_games`
+            SET
+                `ug_server` = ?,
+                `ug_account` = ?,
+                `ug_verificationCode` = ?
+            WHERE `user_id` = ? AND `game_id` = ?
+        ");
+
+        return $query->execute([$server, $account, $verificationCode, $userId, $gameId]);
     }
 
-    // Replaces LeagueOfLegends::updateSummonerData / Valorant::updateValorantRiot.
-    public function updateSyncData($gameId, $userId, $sUsername, $sUsernameId, $sPuuid, $sLevel, $sRank, $sProfileIcon)
-    {
-        // TODO: UPDATE user_games SET ug_sUsername, ug_sUsernameId, ug_sPuuid, ug_sLevel,
-        // ug_sRank, ug_sProfileIcon WHERE user_id = ? AND game_id = ?.
+    public function updateSyncData(
+        int $gameId,
+        int $userId,
+        ?string $sUsername,
+        ?string $sUsernameId,
+        ?string $sPuuid,
+        ?int $sLevel,
+        ?string $sRank,
+        ?string $sProfileIcon
+    ): bool {
+        $query = $this->bdd->prepare("
+            UPDATE `user_games`
+            SET
+                `ug_verified` = 1,
+                `ug_sUsername` = ?,
+                `ug_sUsernameId` = ?,
+                `ug_sPuuid` = ?,
+                `ug_sLevel` = ?,
+                `ug_sRank` = ?,
+                `ug_sProfileIcon` = ?
+            WHERE `user_id` = ? AND `game_id` = ?
+        ");
+
+        return $query->execute([$sUsername, $sUsernameId, $sPuuid, $sLevel, $sRank, $sProfileIcon, $userId, $gameId]);
     }
 
-    // Replaces LeagueOfLegends::unbindLoLAccount. Valorant has no equivalent method today
-    // (flag this to product/UX before wiring it up for Valorant - might be intentional).
-    public function unbindAccount($userId, $gameId)
+    public function unbindAccount(int $userId, int $gameId): bool
     {
-        // TODO: clear ug_account/ug_verified/ug_verificationCode/sync fields for this
-        // user_id + game_id row, same fields unbindLoLAccount used to reset on leagueoflegends.
+        $query = $this->bdd->prepare("
+            UPDATE `user_games`
+            SET
+                `ug_verified` = 0,
+                `ug_sUsername` = NULL,
+                `ug_sUsernameId` = NULL,
+                `ug_sPuuid` = NULL,
+                `ug_sLevel` = NULL,
+                `ug_sRank` = NULL,
+                `ug_sProfileIcon` = NULL,
+                `ug_account` = NULL
+            WHERE `user_id` = ? AND `game_id` = ?
+        ");
+
+        return $query->execute([$userId, $gameId]);
     }
 
-    // Replaces LeagueOfLegends::getLeageUserByUsername / Valorant::getValorantUserByUsername.
-    public function getUserGameByAccount($gameId, $account)
+    public function getUserGameByAccount(int $gameId, string $account): array|false
     {
-        // TODO: SELECT * FROM user_games WHERE game_id = ? AND ug_account = ?.
+        $query = $this->bdd->prepare("
+            SELECT * FROM `user_games` WHERE `game_id` = ? AND `ug_account` = ?
+        ");
+
+        $query->execute([$gameId, $account]);
+
+        return $query->fetch();
     }
 
-    // Replaces LeagueOfLegends::getLeageAccountByLeagueId / Valorant::getValorantAccountByValorantId.
-    public function getUserGameById($userGamesId)
+    public function getUserGameById(int $userGamesId): array|false
     {
-        // TODO: SELECT * FROM user_games WHERE user_games_id = ?.
+        $query = $this->bdd->prepare("
+            SELECT * FROM `user_games` WHERE `user_games_id` = ?
+        ");
+
+        $query->execute([$userGamesId]);
+
+        return $query->fetch();
     }
 
-    // Replaces LeagueOfLegends::getLeageUserByLolId. No direct Valorant equivalent existed
-    // (getValorantAccountByValorantId already covers the same lookup by row id there) -
-    // double check at implementation time whether this is actually a duplicate of
-    // getUserGameById above once both games go through the same table.
-    public function getUserGameByLegacyRowId($userGamesId)
+    public function getUserGameByUserIdAndGameId(int $userId, int $gameId): array|false
     {
-        // TODO: see note above, likely redundant with getUserGameById.
+        $query = $this->bdd->prepare("
+            SELECT * FROM `user_games` WHERE `user_id` = ? AND `game_id` = ?
+        ");
+
+        $query->execute([$userId, $gameId]);
+
+        return $query->fetch();
     }
 
-    // Replaces LeagueOfLegends::getLeageUserByUserId / Valorant::getValorantUserByUserId.
-    public function getUserGameByUserIdAndGameId($userId, $gameId)
+    public function addPuuid(string $puuid, int $userId, int $gameId): bool
     {
-        // TODO: SELECT * FROM user_games WHERE user_id = ? AND game_id = ?.
+        $query = $this->bdd->prepare("
+            UPDATE `user_games` SET `ug_sPuuid` = ? WHERE `user_id` = ? AND `game_id` = ?
+        ");
+
+        return $query->execute([$puuid, $userId, $gameId]);
     }
 
-    // Replaces LeagueOfLegends::addPuuid / Valorant::addPuuid (identical signature in both
-    // today, only needs $gameId added since a user can now have a puuid per game).
-    public function addPuuid($puuid, $userId, $gameId)
+    public function getUserByPuuid(string $puuid, int $gameId): array|false
     {
-        // TODO: UPDATE user_games SET ug_sPuuid = ? WHERE user_id = ? AND game_id = ?.
-    }
+        $query = $this->bdd->prepare("
+            SELECT *
+            FROM `user_games` AS ug
+            LEFT JOIN `user` AS u ON ug.user_id = u.user_id
+            WHERE ug.`ug_sPuuid` = ? AND ug.`game_id` = ?
+        ");
 
-    // Replaces LeagueOfLegends::getUserByPuuid. Valorant never had this method - check
-    // whether it's actually needed there before porting it over unchanged.
-    public function getUserByPuuid($puuid, $gameId)
-    {
-        // TODO: SELECT * FROM user_games WHERE ug_sPuuid = ? AND game_id = ?.
+        $query->execute([$puuid, $gameId]);
+
+        return $query->fetch();
     }
 }

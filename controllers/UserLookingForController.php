@@ -8,17 +8,21 @@ use models\LeagueOfLegends;
 use models\FriendRequest;
 use models\GoogleUser;
 use enums\GameSlug;
+use services\RoutingService;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class UserLookingForController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private UserLookingFor $userlookingfor;
-    private User $user; 
+    private User $user;
     private LeagueOfLegends $leagueoflegends;
+    private RoutingService $routingService;
     private FriendRequest $friendrequest;
     private GoogleUser $googleUser;
     private $userId;
@@ -44,6 +48,7 @@ class UserLookingForController
         $this -> userlookingfor = new userLookingFor();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
+        $this -> routingService = new RoutingService();
         $this -> friendrequest = new FriendRequest();
         $this -> googleUser = new GoogleUser();
     }
@@ -55,78 +60,32 @@ class UserLookingForController
 
     public function pageLookingFor()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague() && !$this->isConnectLf()) {
-            // Code block 1: User is connected via Google, Website and has League data, need looking for
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $template = "views/signup/lookingforlol";
-            $current_url = "https://ur-sg.com/lookingforuserlol";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
-            // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-                $template = "views/signup/leagueoflegendsuser";
-            $current_url = "https://ur-sg.com/leagueuser";
-                $title = "More about you";
-                $page_title = "URSG - Sign up";
-                $picture = "ursg-preview-small";
-                require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
-            // Code block 3: User is connected via Google but doesn't have a username
-            $this->initializeLanguage();
-            $current_url = "https://ur-sg.com/basicinfo";
-            $template = "views/signup/basicinfo";
-            $title = "Sign up";
-            $page_title = "URSG - Sign";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } else {
-            // Code block 4: Redirect to / if none of the above conditions are met
-            header("Location: /");
-            return;
+        $this->initializeLanguage();
+
+        $destination = $this->routingService->routeUser(['step' => 'lookingFor'], gameSlug: GameSlug::LEAGUE_OF_LEGENDS->value);
+
+        if (empty($destination)) {
+            $destination = $this->routingService->lookingForDestination(GameSlug::LEAGUE_OF_LEGENDS->value);
         }
+
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+
+        $this->dispatch($destination, ['user' => $user]);
     }
 
     public function pageLookingForValorant()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectValorant() && !$this->isConnectLf()) {
-            // Code block 1: User is connected via Google, Website and has League data, need looking for
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $template = "views/signup/lookingforvalorant";
-            $current_url = "https://ur-sg.com/lookingforuservalorant";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant()){
-            // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-                $template = "views/signup/leagueoflegendsuser";
-            $current_url = "https://ur-sg.com/leagueuser";
-                $title = "More about you";
-                $page_title = "URSG - Sign up";
-                $picture = "ursg-preview-small";
-                require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
-            // Code block 3: User is connected via Google but doesn't have a username
-            $this->initializeLanguage();
-            $current_url = "https://ur-sg.com/basicinfo";
-            $template = "views/signup/basicinfo";
-            $title = "Sign up";
-            $page_title = "URSG - Sign";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } else {
-            // Code block 4: Redirect to / if none of the above conditions are met
-            header("Location: /");
-            return;
+        $this->initializeLanguage();
+
+        $destination = $this->routingService->routeUser(['step' => 'lookingFor'], gameSlug: GameSlug::VALORANT->value);
+
+        if (empty($destination)) {
+            $destination = $this->routingService->lookingForDestination(GameSlug::VALORANT->value);
         }
+
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+
+        $this->dispatch($destination, ['user' => $user]);
     }
 
     public function pageUpdateLookingFor()
@@ -173,11 +132,30 @@ class UserLookingForController
             "Russia", "Turkey", "Japan", "Korea"
         ];
 
-        $current_url = "https://ur-sg.com/updateLookingForPage";
-        $template = "views/swiping/update_lookingFor";
-        $page_title = "URSG - Profile";
-        $picture = "ursg-preview-small";
-        require "views/layoutSwiping.phtml";
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/update_lookingFor',
+            current_url: 'https://ur-sg.com/updateLookingForPage',
+            page_title: 'URSG - Profile',
+            picture: 'ursg-preview-small',
+            data: [
+                'user' => $user,
+                'lfUser' => $lfUser,
+                'lolMain1' => $lolMain1 ?? null,
+                'lolMain2' => $lolMain2 ?? null,
+                'lolMain3' => $lolMain3 ?? null,
+                'valorantMain1' => $valorantMain1 ?? null,
+                'valorantMain2' => $valorantMain2 ?? null,
+                'valorantMain3' => $valorantMain3 ?? null,
+                'lol_ranks' => $lol_ranks,
+                'lol_roles' => $lol_roles,
+                'valorant_ranks' => $valorant_ranks,
+                'valorant_roles' => $valorant_roles,
+                'genders' => $genders,
+                'kindofgamers' => $kindofgamers,
+                'filteredServers' => $filteredServers,
+            ],
+        );
     }
 
     public function pageUpdateLookingForGame()
@@ -228,12 +206,31 @@ class UserLookingForController
             $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
             $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
 
-            $current_url = "https://ur-sg.com/updateLookingForGamePage";
-            $template = "views/swiping/update_lookingForGame";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSignup.phtml',
+                template: 'views/swiping/update_lookingForGame',
+                current_url: 'https://ur-sg.com/updateLookingForGamePage',
+                page_title: 'URSG - Profile',
+                picture: 'ursg-preview-small',
+                title: $title,
+                data: [
+                    'user' => $user,
+                    'lfUser' => $lfUser,
+                    'lolMain1' => $lolMain1 ?? null,
+                    'lolMain2' => $lolMain2 ?? null,
+                    'lolMain3' => $lolMain3 ?? null,
+                    'valorantMain1' => $valorantMain1 ?? null,
+                    'valorantMain2' => $valorantMain2 ?? null,
+                    'valorantMain3' => $valorantMain3 ?? null,
+                    'lol_ranks' => $lol_ranks,
+                    'lol_roles' => $lol_roles,
+                    'valorant_ranks' => $valorant_ranks,
+                    'valorant_roles' => $valorant_roles,
+                    'genders' => $genders,
+                    'kindofgamers' => $kindofgamers,
+                ],
+            );
+        }
         else
         {
             header("Location: /");

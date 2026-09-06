@@ -6,15 +6,20 @@ use models\Valorant;
 use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
+use enums\GameSlug;
+use services\RoutingService;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class ValorantController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private Valorant $valorant;
+    private RoutingService $routingService;
     private FriendRequest $friendrequest;
     private User $user;
     private GoogleUser $googleUser;
@@ -27,10 +32,11 @@ class ValorantController
     private $valorantServer;
     private $valorantAccount;
 
-    
+
     public function __construct()
     {
         $this -> valorant = new Valorant();
+        $this -> routingService = new RoutingService();
         $this -> user = new User();
         $this -> friendrequest = new FriendRequest();
         $this -> googleUser = new GoogleUser();
@@ -43,53 +49,17 @@ class ValorantController
 
     public function pageValorantUser()
     {
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectValorant()) {
-            // Code block 1: User is connected via Google, Website and has League data, need looking for
-            if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] != $_SESSION['userId']) {
-                    header("Location: /?message=This is not your account");
-                    return;
-                }
-            }
-            $this->initializeLanguage();
-            $valorantUser = $this->valorant->getValorantUserByUsername($_SESSION['valorant_account']);
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $current_url = "https://ur-sg.com/lookingforuservalorant";
-            $template = "views/signup/lookingforlol";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant()){
-            // Code block 2: User is connected via Google, Website but not connected to Valorant LATER ADD VALORANT CHECK
-            if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] != $_SESSION['userId']) {
-                    header("Location: /?message=This is not your account");
-                    return;
-                }
-            }
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $current_url = "https://ur-sg.com/valoranteuser";
-            $template = "views/signup/valorantuser";
-            $title = "More about you";
-            $page_title = "URSG - Sign up";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
-            // Code block 3: User is connected via Google but doesn't have a username
-            $this->initializeLanguage();
-            $current_url = "https://ur-sg.com/basicinfo";
-            $template = "views/signup/basicinfo";
-            $title = "Sign up";
-            $page_title = "URSG - Sign";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } else {
-            // Code block 4: Redirect to / if none of the above conditions are met
-            header("Location: /");
-            return;
+        $this->initializeLanguage();
+
+        $destination = $this->routingService->routeUser(['step' => 'gameSignup'], gameSlug: GameSlug::VALORANT->value);
+
+        if (empty($destination)) {
+            $destination = $this->routingService->gameSignupDestination(GameSlug::VALORANT->value);
         }
+
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+
+        $this->dispatch($destination, ['user' => $user]);
     }
 
     public function pageUpdateValorant()
@@ -118,12 +88,24 @@ class ValorantController
             $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
             $valorant_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
-            $current_url = "https://ur-sg.com/updateValorantPage";
-            $template = "views/swiping/update_valorant";
-            $page_title = "URSG - Update Valorant";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/update_valorant',
+                current_url: 'https://ur-sg.com/updateValorantPage',
+                page_title: 'URSG - Update Valorant',
+                picture: 'ursg-preview-small',
+                data: [
+                    'user' => $user,
+                    'valorantUser' => $valorantUser,
+                    'valorantMain1' => $valorantMain1,
+                    'valorantMain2' => $valorantMain2,
+                    'valorantMain3' => $valorantMain3,
+                    'valorant_ranks' => $valorant_ranks,
+                    'valorant_roles' => $valorant_roles,
+                    'valorant_servers' => $valorant_servers,
+                ],
+            );
+        }
         else
         {
             header("Location: /");
@@ -155,12 +137,22 @@ class ValorantController
                 
             $valorant_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
-            $current_url = "https://ur-sg.com/updateValorantAccount";
-            $template = "views/swiping/update_valorantAccount";
-            $page_title = "URSG - Update Valorant account";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/update_valorantAccount',
+                current_url: 'https://ur-sg.com/updateValorantAccount',
+                page_title: 'URSG - Update Valorant account',
+                picture: 'ursg-preview-small',
+                data: [
+                    'user' => $user,
+                    'valorantUser' => $valorantUser,
+                    'valorantMain1' => $valorantMain1,
+                    'valorantMain2' => $valorantMain2,
+                    'valorantMain3' => $valorantMain3,
+                    'valorant_servers' => $valorant_servers,
+                ],
+            );
+        }
         else
         {
             header("Location: /");

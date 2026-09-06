@@ -23,6 +23,8 @@ use services\LogInService;
 use services\SignUpService;
 use services\MasterTokenService;
 use services\LoginDestination;
+use services\RoutingService;
+use traits\PageRenderer;
 
 require 'vendor/autoload.php';
 
@@ -30,8 +32,10 @@ class GoogleUserController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private GoogleUser $googleUser;
+    private RoutingService $routingService;
     private User $user;
     private LeagueOfLegends $leagueoflegends;
     private Valorant $valorant;
@@ -56,6 +60,7 @@ class GoogleUserController
     public function __construct()
     {
         $this -> googleUser = new GoogleUser();
+        $this -> routingService = new RoutingService();
         $this -> user = new User();
         $this -> leagueoflegends = new LeagueOfLegends();
         $this -> valorant = new Valorant();
@@ -150,60 +155,80 @@ class GoogleUserController
             $visibleCards = 3;
             $centerStart = max(0, floor(($totalPosts - $visibleCards) / 2));
             $centerEnd = $centerStart + $visibleCards - 1;
-            $page_css = ['playerfinder', 'home'];
-            $current_url = "https://ur-sg.com/";
-            $template = "views/home";
-            $title = $this->_('join_now');
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Home";
-            require "views/layoutHome.phtml";
+            $this->renderPage(
+                layout: 'views/layoutHome.phtml',
+                template: 'views/home',
+                current_url: 'https://ur-sg.com/',
+                page_title: 'URSG - Home',
+                picture: 'ursg-preview-small',
+                title: $this->_('join_now'),
+                page_css: ['playerfinder', 'home'],
+                data: [
+                    'lol_ranks' => $lol_ranks,
+                    'lol_roles' => $lol_roles,
+                    'valorant_ranks' => $valorant_ranks,
+                    'valorant_roles' => $valorant_roles,
+                    'regionAbbreviations' => $regionAbbreviations,
+                    'availableRoles' => $availableRoles,
+                    'availableRanks' => $availableRanks,
+                    'playerFinderLasts' => $playerFinderLasts,
+                    'totalPosts' => $totalPosts,
+                    'visibleCards' => $visibleCards,
+                    'centerStart' => $centerStart,
+                    'centerEnd' => $centerEnd,
+                    'googleUser' => $googleUser ?? null,
+                    'user' => $user ?? null,
+                ],
+            );
         }
     }
 
     public function partnersPage()
     {
         $this->initializeLanguage();
-        $page_css = ['partner'];
         $partners = $this -> partners -> getPartners();
-        $current_url = "https://ur-sg.com/partners";
-        $template = "views/partners";
-        $title = "Partners";
-        $page_title = "URSG - Partners";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/partners',
+            current_url: 'https://ur-sg.com/partners',
+            page_title: 'URSG - Partners',
+            picture: 'ursg-preview-small',
+            title: 'Partners',
+            page_css: ['partner'],
+            data: ['partners' => $partners, 'user' => $user],
+        );
     }
 
 
     public function hiringPage()
     {
         $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/hiring";
-        $template = "views/hiring";
-        $title = "Apply to the team";
-        $page_title = "URSG - Apply to the team";
-        $picture = "ursg-preview-small";
-        $page_css = ['hiring'];
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/hiring',
+            current_url: 'https://ur-sg.com/hiring',
+            page_title: 'URSG - Apply to the team',
+            picture: 'ursg-preview-small',
+            title: 'Apply to the team',
+            page_css: ['hiring'],
+            data: ['user' => $user],
+        );
     }
 
 
@@ -319,12 +344,14 @@ class GoogleUserController
 
         if($googleUser['google_confirmEmail'] == 0 || $googleUser['google_confirmEmail'] == NULL)
         {
-            $current_url = "https://ur-sg.com/confirmMail";
-            $template = "views/signup/waitingEmail";
-            $title = "Confirm Mail";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Confirm Mail";
-            require "views/layoutSignup.phtml";
+            $this->renderPage(
+                layout: 'views/layoutSignup.phtml',
+                template: 'views/signup/waitingEmail',
+                current_url: 'https://ur-sg.com/confirmMail',
+                page_title: 'URSG - Confirm Mail',
+                picture: 'ursg-preview-small',
+                title: 'Confirm Mail',
+            );
         }
         else if($googleUser['google_confirmEmail'] == 1 && !$this->isConnectWebsite())
         {
@@ -381,9 +408,8 @@ class GoogleUserController
 
     public function pageSignUp()
     {
-        if (isset($_SESSION['email'])) {
-            $googleUser = $this->googleUser->getGoogleUserByEmail($_SESSION['email']);
-        }
+        $this->initializeLanguage();
+
         if (isset($_SESSION['google_userId'])) {
             $secondTierUser = $this->user->getUserDataByGoogleUserId($_SESSION['google_userId']);
             if ($secondTierUser) {
@@ -391,246 +417,126 @@ class GoogleUserController
             }
         }
 
-        $this->initializeLanguage();
+        $gameSlug = $finalUser['game_slug'] ?? null;
 
-        if (
-            $this->isConnectGoogle() && 
-            $this->isConnectWebsite() && 
-            (
-                (
-                    $this->isConnectLeague() && 
-                    !$this->isConnectValorant() && 
-                    $finalUser['lf_lolrank'] !== NULL
-                ) || 
-                (
-                    $this->isConnectValorant() && 
-                    !$this->isConnectLeague() && 
-                    $finalUser['lf_valrank'] !== NULL
-                )
-            ) && 
-            $this->isConnectLf()
-        )  {
-            // Code block 1: User is connected via Google, Website and has League data and looking for data
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $page_css = ['swiping'];
-            $current_url = "https://ur-sg.com/swiping";
-            $template = "views/swiping/swiping_main";
-            $title = "Swipe";
-            $page_title = "URSG - Swiping";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";;
-        } elseif (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            (
-                (
-                    $this->isConnectValorant() &&
-                    !$this->isConnectLeague() &&
-                    $finalUser['lf_valrole'] == NULL
-                    && $finalUser['game_slug'] === GameSlug::VALORANT->value
-                )
-            ) && 
-            $this->isConnectLf()
-        )  {
-            // Code block 2: User is connected via Google, Website and has Valorant data, need looking for
-            $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $page_css = ['swiping'];
-            $current_url = "https://ur-sg.com/lookingforuservalorant";
-            $template = "views/signup/lookingforvalorant";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif (
-            $this->isConnectGoogle() && 
-            $this->isConnectWebsite() && 
-            (
-                (
-                    $this->isConnectLeague() && 
-                    !$this->isConnectValorant() && 
-                    $finalUser['lf_lolrole'] == NULL && $finalUser['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value
-                )
-            ) && 
-            $this->isConnectLf()
-        )  {
-            // Code block 3: User is connected via Google, Website and has League data, need looking for
-            $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-            $page_css = ['swiping'];
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $current_url = "https://ur-sg.com/lookingforuserlol";
-            $template = "views/signup/lookingforlol";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            !$this->isConnectLf()
-        ) {
-            // Code block 4: User is connected via Google, Website and has League data, need looking for
-            if ($this->isConnectLeague()) {
-                $lolUser = $this->leagueoflegends->getLeageUserByLolId($_SESSION['lol_id']);
-                $current_url = "https://ur-sg.com/lookingforuserlol";
-                $template = "views/signup/lookingforlol";
-            } else {
-                $valorantUser = $this->valorant->getValorantUserByValorantId($_SESSION['valorant_id']);
-                $current_url = "https://ur-sg.com/lookingforuservalorant";
-                $template = "views/signup/lookingforvalorant";
-            }
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague() && $secondTierUser['user_game'] === "League of Legends" && !$this->isConnectLf()) { 
-            // Code block 5: User is connected via Google and username is set , but game settings not done. Redirect for LoL only
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $current_url = "https://ur-sg.com/leagueuser";
-            $template = "views/signup/leagueoflegendsuser";
-            $title = "More about you";
-            $page_title = "URSG - Sign up";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectValorant() && $secondTierUser['user_game'] === "Valorant") {
-            // Code block 6: User is connected via Google and username is set , but game settings not done. Redirect for Valorant only
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $current_url = "https://ur-sg.com/valorant";
-            $template = "views/signup/valorantuser";
-            $title = "More about you";
-            $page_title = "URSG - Sign up";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 1) {
-            // Code block 7: User is connected via Google but doesn't have a username
-            $current_url = "https://ur-sg.com/basicinfo";
-            $template = "views/signup/basicinfo";
-            $title = "Sign up";
-            $page_title = "URSG - Sign";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite() && $googleUser['google_confirmEmail'] == 0) {
-            // Code block 8: User is connected via Google but doesn't have a username
-            $current_url = "https://ur-sg.com/confirmMail";
-            $template = "views/signup/waitingEmail";
-            $title = "Confirm Mail";
-            $page_title = "URSG - Confirm Mail";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        
-        } else {
-            // Code block 9: Redirect to / if none of the above conditions are met
-            header("Location: /?message=Failed sign up process, contact an administrator");
-            return;
-        }
-    }  
+        $destination = $this->routingService->routeUser(['step' => 'swipingMain'], gameSlug: $gameSlug);
 
-    public function legalNoticePage() 
-    {
-        $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/legalNotice";
-        $template = "views/legalnotice";
-        $title = "Legal Notice";
-        $page_title = "URSG - Legal notice";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
-            $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
+        if (empty($destination)) {
+            $destination = $this->routingService->swipingMainDestination();
         }
+
+        $this->dispatch($destination, ['user' => $finalUser ?? null]);
     }
 
-    public function CSAEPage() 
+    public function legalNoticePage()
     {
         $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/CSAE";
-        $template = "views/csae";
-        $title = "Child Sexual Abuse and Exploitation (CSAE) Policy";
-        $page_title = "URSG - Child Sexual Abuse and Exploitation (CSAE) Policy";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/legalnotice',
+            current_url: 'https://ur-sg.com/legalNotice',
+            page_title: 'URSG - Legal notice',
+            picture: 'ursg-preview-small',
+            title: 'Legal Notice',
+            data: ['user' => $user],
+        );
     }
 
-    public function termsOfServicePage() 
+    public function CSAEPage()
     {
         $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/termsOfService";
-        $template = "views/termsofservice";
-        $title = "Terms of service";
-        $page_title = "URSG - Terms of service";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/csae',
+            current_url: 'https://ur-sg.com/CSAE',
+            page_title: 'URSG - Child Sexual Abuse and Exploitation (CSAE) Policy',
+            picture: 'ursg-preview-small',
+            title: 'Child Sexual Abuse and Exploitation (CSAE) Policy',
+            data: ['user' => $user],
+        );
     }
 
-    public function siteMapPage() 
+    public function termsOfServicePage()
+    {
+        $this->initializeLanguage();
+
+        $isOnboarded = $this->isConnectGoogle() &&
+            $this->isConnectWebsite() &&
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/termsofservice',
+            current_url: 'https://ur-sg.com/termsOfService',
+            page_title: 'URSG - Terms of service',
+            picture: 'ursg-preview-small',
+            title: 'Terms of service',
+            data: ['user' => $user],
+        );
+    }
+
+    public function siteMapPage()
     {
         $this->initializeLanguage();
         $xml = simplexml_load_file('sitemap.xml');
-            $current_url = "https://ur-sg.com/siteMap";
-        $template = "views/sitemap";
-        $title = "Site map";
-        $page_title = "URSG - Site map";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/sitemap',
+            current_url: 'https://ur-sg.com/siteMap',
+            page_title: 'URSG - Site map',
+            picture: 'ursg-preview-small',
+            title: 'Site map',
+            data: ['user' => $user, 'xml' => $xml],
+        );
     }
 
-    public function notFoundPage() 
+    public function notFoundPage()
     {
         $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/";
-        $template = "views/pageNotFound";
-        $title = "404 - Page not found";
-        $page_title = "URSG - 404 - Page not found";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/pageNotFound',
+            current_url: 'https://ur-sg.com/',
+            page_title: 'URSG - 404 - Page not found',
+            picture: 'ursg-preview-small',
+            title: '404 - Page not found',
+            data: ['user' => $user],
+        );
     }
 
     public function verifyGoogleToken($idToken) {
@@ -1313,21 +1219,22 @@ class GoogleUserController
     public function deleteAccountPage()
     {
         $this->initializeLanguage();
-        $current_url = "https://ur-sg.com/deleteAccount";
-        $template = "views/swiping/delete_account";
-        $page_title = "URSG - Delete account";
-        $picture = "ursg-preview-small";
-        if (
-            $this->isConnectGoogle() &&
+
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        ) {
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            require "views/layoutSwiping.phtml";
-        } else {
-            require "views/layoutSwiping_noheader.phtml";
-        }
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/swiping/delete_account',
+            current_url: 'https://ur-sg.com/deleteAccount',
+            page_title: 'URSG - Delete account',
+            picture: 'ursg-preview-small',
+            data: ['user' => $user],
+        );
     }
 
     public function deleteGoogleAccount()

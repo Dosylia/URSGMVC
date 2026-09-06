@@ -10,11 +10,13 @@ use models\ChatMessage;
 
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class PlayerFinderController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -97,14 +99,28 @@ class PlayerFinderController
                 $availableRolesCreate = $valorant_roles;
             }
             $this->initializeLanguage();
-            $page_css = ['playerfinder', 'tools/offline_modal'];
             $playerFinderAll = $this->playerFinder->getAllPlayerFinderPost();
-            $current_url = "https://ur-sg.com/playerFinder";
-            $template = "views/swiping/playerfinder";
-            $page_title = "URSG - Player Finder";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/playerfinder',
+                current_url: 'https://ur-sg.com/playerFinder',
+                page_title: 'URSG - Player Finder',
+                picture: 'ursg-preview-small',
+                page_css: ['playerfinder', 'tools/offline_modal'],
+                data: [
+                    'user' => $user,
+                    'interestedData' => $interestedData,
+                    'playerFinderPost' => $playerFinderPost,
+                    'playerFinderAll' => $playerFinderAll,
+                    'availableRoles' => $availableRoles,
+                    'availableRanks' => $availableRanks,
+                    'availableRanksCreate' => $availableRanksCreate ?? [],
+                    'availableRolesCreate' => $availableRolesCreate ?? [],
+                    'regionAbbreviations' => $regionAbbreviations,
+                ],
+            );
+        }
         else
         {
             $interestedData = [];
@@ -137,12 +153,22 @@ class PlayerFinderController
                 'Valorant' => array_merge(['Any'], $valorant_ranks)
             ];
             $this->initializeLanguage();
-            $page_css = ['playerfinder', 'tools/offline_modal'];
-            $current_url = "https://ur-sg.com/playerFinder";
-            $template = "views/swiping/playerfinder";
-            $page_title = "URSG - Player Finder";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping_noheader.phtml";
+
+            $this->renderPage(
+                layout: 'views/layoutSwiping_noheader.phtml',
+                template: 'views/swiping/playerfinder',
+                current_url: 'https://ur-sg.com/playerFinder',
+                page_title: 'URSG - Player Finder',
+                picture: 'ursg-preview-small',
+                page_css: ['playerfinder', 'tools/offline_modal'],
+                data: [
+                    'interestedData' => $interestedData,
+                    'playerFinderAll' => $playerFinderAll,
+                    'availableRoles' => $availableRoles,
+                    'availableRanks' => $availableRanks,
+                    'regionAbbreviations' => $regionAbbreviations,
+                ],
+            );
         }
     }
 

@@ -16,11 +16,13 @@ use models\RatingGames;
 use enums\GameSlug;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class UserController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private User $user;
     private FriendRequest $friendrequest;
@@ -229,12 +231,26 @@ class UserController
         });
         
         $usersOnPage = array_slice($allUsers, $offset, $usersPerPage);
-        $page_css = ['store_leaderboard'];
-        $current_url = "https://ur-sg.com/leaderboard";
-        $template = "views/swiping/leaderboard";
-        $page_title = "URSG - Leaderboard";
-        $picture = "ursg-preview-small";
-        require "views/layoutSwiping.phtml";
+
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/leaderboard',
+            current_url: 'https://ur-sg.com/leaderboard',
+            page_title: 'URSG - Leaderboard',
+            picture: 'ursg-preview-small',
+            page_css: ['store_leaderboard'],
+            data: [
+                'user' => $user,
+                'userRank' => $userRank,
+                'allUsers' => $allUsers,
+                'usersPerPage' => $usersPerPage,
+                'totalUsers' => $totalUsers,
+                'page' => $page,
+                'totalPages' => $totalPages,
+                'offset' => $offset,
+                'usersOnPage' => $usersOnPage,
+            ],
+        );
     }
 
     public function createAccountSkipPreferences()
@@ -771,33 +787,24 @@ class UserController
 
     public function personalityTestPage()
     {
-        if (
-            $this->isConnectGoogle() &&
+        $isOnboarded = $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
-            $this->isConnectLf()
-        )
-        {
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
+            $this->isConnectLf();
 
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $page_css = ['personalitytest'];
-            $current_url = "https://ur-sg.com/personalityTest";
-            $template = "views/swiping/personality_test";
-            $page_title = "URSG - What kind of League player";
-            $picture = "ursg-quiz";
-            require "views/layoutSwiping.phtml";
-        } 
-        else
-        {
-            $this->initializeLanguage();
-            $current_url = "https://ur-sg.com/personalityTest";
-            $template = "views/swiping/personality_test";
-            $page_title = "URSG - What kind of League player";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping_noheader.phtml";
-        }        
+        $this->initializeLanguage();
+
+        $user = $isOnboarded ? $this->user->getUserById($_SESSION['userId']) : null;
+
+        $this->renderPage(
+            layout: $isOnboarded ? 'views/layoutSwiping.phtml' : 'views/layoutSwiping_noheader.phtml',
+            template: 'views/swiping/personality_test',
+            current_url: 'https://ur-sg.com/personalityTest',
+            page_title: 'URSG - What kind of League player',
+            picture: $isOnboarded ? 'ursg-quiz' : 'ursg-preview-small',
+            page_css: $isOnboarded ? ['personalitytest'] : [],
+            data: ['user' => $user],
+        );
     }
 
     public function updateProfile()
@@ -1879,12 +1886,16 @@ class UserController
         $this->initializeLanguage();
         $user = $this-> user -> getUserById($_SESSION['userId']);
         $usersAll = $this-> user -> getAllUsersExceptFriends($_SESSION['userId']);
-        $page_css = ['swiping'];
-        $current_url = "https://ur-sg.com/swiping";
-        $template = "views/swiping/swiping_main";
-        $page_title = "URSG - Swiping";
-        $picture = "ursg-preview-small";
-        require "views/layoutSwiping.phtml";
+
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/swiping_main',
+            current_url: 'https://ur-sg.com/swiping',
+            page_title: 'URSG - Swiping',
+            picture: 'ursg-preview-small',
+            page_css: ['swiping'],
+            data: ['user' => $user, 'usersAll' => $usersAll],
+        );
     }
 
     public function updateNotificationPermission(): void
@@ -2305,13 +2316,35 @@ class UserController
             $maxStars = 5;
             $fullStars = intval($userRating);
             $emptyStars = $maxStars - $fullStars;
-            $page_css = ['profile'];
-            $current_url = "https://ur-sg.com/userProfile";
-            $template = "views/swiping/swiping_profile";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/swiping_profile',
+                current_url: 'https://ur-sg.com/userProfile',
+                page_title: 'URSG - Profile',
+                picture: 'ursg-preview-small',
+                page_css: ['profile'],
+                data: [
+                    'user' => $user,
+                    'userRating' => $userRating,
+                    'badges' => $badges,
+                    'personalColor' => $personalColor,
+                    'personalButtonDesign' => $personalButtonDesign,
+                    'personalAddPicture' => $personalAddPicture,
+                    'colors' => $colors ?? null,
+                    'lolUser' => $lolUser ?? null,
+                    'valorantUser' => $valorantUser ?? null,
+                    'ownedItems' => $ownedItems,
+                    'additionalBadges' => $additionalBadges,
+                    'activeBanner' => $activeBanner,
+                    'lfUser' => $lfUser,
+                    'friendRequest' => $friendRequest,
+                    'pendingCount' => $pendingCount,
+                    'maxStars' => $maxStars,
+                    'fullStars' => $fullStars,
+                    'emptyStars' => $emptyStars,
+                ],
+            );
+        }
         else
         {
             if (isset($_GET['username']))
@@ -2389,12 +2422,31 @@ class UserController
                     function($item) {
                         return $item['items_category'] === 'Banner' && $item['userItems_isUsed'] == 1;
                     });
-                    $page_css = ['tools/offline_modal', 'profile'];
-                    $current_url = "https://ur-sg.com/anotherUser";
-                    $template = "views/swiping/swiping_profile_other";
-                    $page_title = "URSG - Profile " . $username;
-                    $picture = "ursg-preview-small";
-                    require "views/layoutSwiping.phtml";
+                    $this->renderPage(
+                        layout: 'views/layoutSwiping.phtml',
+                        template: 'views/swiping/swiping_profile_other',
+                        current_url: 'https://ur-sg.com/anotherUser',
+                        page_title: 'URSG - Profile ' . $username,
+                        picture: 'ursg-preview-small',
+                        page_css: ['tools/offline_modal', 'profile'],
+                        data: [
+                            'user' => $user,
+                            'anotherUser' => $anotherUser,
+                            'userRating' => $userRating,
+                            'badges' => $badges,
+                            'personalColor' => $personalColor,
+                            'lfUser' => $lfUser,
+                            'lolUser' => $lolUser ?? null,
+                            'valorantUser' => $valorantUser ?? null,
+                            'checkIfFriend' => $checkIfFriend ?? null,
+                            'maxStars' => $maxStars,
+                            'fullStars' => $fullStars,
+                            'emptyStars' => $emptyStars,
+                            'ownedItems' => $ownedItems,
+                            'additionalBadges' => $additionalBadges,
+                            'activeBanner' => $activeBanner,
+                        ],
+                    );
                 } else {
                     header("Location: /userProfile?message=No user found");
                     return;
@@ -2445,12 +2497,28 @@ class UserController
                     } else {
                         $additionalBadges = [];
                     }
-                    $page_css = ['tools/offline_modal', 'profile'];
-                    $current_url = "https://ur-sg.com/anotherUser";
-                    $template = "views/swiping/swiping_profile_other";
-                    $page_title = "URSG - Profile " . $username;
-                    $picture = "ursg-preview-small";
-                    require "views/layoutSwiping_noheader.phtml";
+                    $this->renderPage(
+                        layout: 'views/layoutSwiping_noheader.phtml',
+                        template: 'views/swiping/swiping_profile_other',
+                        current_url: 'https://ur-sg.com/anotherUser',
+                        page_title: 'URSG - Profile ' . $username,
+                        picture: 'ursg-preview-small',
+                        page_css: ['tools/offline_modal', 'profile'],
+                        data: [
+                            'anotherUser' => $anotherUser,
+                            'lfUser' => $lfUser,
+                            'userRating' => $userRating,
+                            'badges' => $badges,
+                            'personalColor' => $personalColor,
+                            'lolUser' => $lolUser ?? null,
+                            'valorantUser' => $valorantUser ?? null,
+                            'maxStars' => $maxStars,
+                            'fullStars' => $fullStars,
+                            'emptyStars' => $emptyStars,
+                            'ownedItems' => $ownedItems,
+                            'additionalBadges' => $additionalBadges,
+                        ],
+                    );
                 } else {
                     header("Location: /?message=No user found");
                     return;
@@ -2549,26 +2617,40 @@ class UserController
 
         $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
         $genders = ["Male", "Female", "Non binary", "Trans Man", "Trans Woman"];
-        $current_url = "https://ur-sg.com/updateProfile";
-        $template = "views/swiping/update_profile";
-        $page_title = "URSG - Profile";
-        $picture = "ursg-preview-small";
-        require "views/layoutSwiping.phtml";
+
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/update_profile',
+            current_url: 'https://ur-sg.com/updateProfile',
+            page_title: 'URSG - Profile',
+            picture: 'ursg-preview-small',
+            data: [
+                'user' => $user,
+                'allUsers' => $allUsers,
+                'friendRequest' => $friendRequest,
+                'kindofgamers' => $kindofgamers,
+                'genders' => $genders,
+            ],
+        );
     }
 
     public function pageSettings()
     {
-            $this->requireUserSessionOrRedirect($redirectUrl = '/');
-            // Get important datas
-            $this->initializeLanguage();
-            $user = $this-> user -> getUserById($_SESSION['userId']);
-            $allUsers = $this-> user -> getAllUsers();
-            $page_css = ['settings'];
-            $current_url = "https://ur-sg.com/settings";
-            $template = "views/swiping/settings";
-            $page_title = "URSG - Settings";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
+        $this->requireUserSessionOrRedirect($redirectUrl = '/');
+        $this->initializeLanguage();
+
+        $user = $this-> user -> getUserById($_SESSION['userId']);
+        $allUsers = $this-> user -> getAllUsers();
+
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/settings',
+            current_url: 'https://ur-sg.com/settings',
+            page_title: 'URSG - Settings',
+            picture: 'ursg-preview-small',
+            page_css: ['settings'],
+            data: ['user' => $user, 'allUsers' => $allUsers],
+        );
     }
 
     public function chatFilterSwitch()

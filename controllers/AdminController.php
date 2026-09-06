@@ -24,12 +24,14 @@ use Google\Analytics\Data\V1beta\Dimension;
 require 'vendor/autoload.php';
 
 use traits\SecurityController;
+use traits\PageRenderer;
 use services\DiscordBotService;
 
 class AdminController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private FriendRequest $friendrequest;
     private User $user;
@@ -80,13 +82,35 @@ class AdminController
             $LoggedOnUserCount    = $eventCounts['login'] ?? 0;
             $deletedAccountCount  = $eventCounts['deleted_account'] ?? 0;
             $dailyActivityJson = json_encode($dailyActivity);
-            $page_css = ['profile'];
-            $current_url = "https://ur-sg.com/admin";
-            $template = "views/admin/admin_landing";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin";
-            require "views/layoutAdmin.phtml";
-        } 
+
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_landing',
+                current_url: 'https://ur-sg.com/admin',
+                page_title: 'URSG - Admin',
+                picture: 'ursg-preview-small',
+                page_css: ['profile'],
+                data: [
+                    'user' => $user,
+                    'usersOnline' => $usersOnline,
+                    'usersOnlineLast7Days' => $usersOnlineLast7Days,
+                    'countOnlineUsersToday' => $countOnlineUsersToday,
+                    'purchases' => $purchases,
+                    'pendingReports' => $pendingReports,
+                    'adminActions' => $adminActions,
+                    'dailyActivity' => $dailyActivity,
+                    'weeklyActivity' => $weeklyActivity,
+                    'pageViews' => $pageViews,
+                    'funnelConversions' => $funnelConversions,
+                    'returningUserCount' => $returningUserCount,
+                    'matchCreatedCount' => $matchCreatedCount,
+                    'newUserCount' => $newUserCount,
+                    'LoggedOnUserCount' => $LoggedOnUserCount,
+                    'deletedAccountCount' => $deletedAccountCount,
+                    'dailyActivityJson' => $dailyActivityJson,
+                ],
+            );
+        }
         else
         {
             header("Location: /");
@@ -334,12 +358,20 @@ class AdminController
                 $lastGameDatePlusOne = date("Y-m-d", strtotime($lastGameDate . " +1 day")); 
             }
 
-            $current_url = "https://ur-sg.com/adminGame";
-            $template = "views/admin/admin_game";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Game";
-            require "views/layoutAdmin.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_game',
+                current_url: 'https://ur-sg.com/adminGame',
+                page_title: 'URSG - Admin Game',
+                picture: 'ursg-preview-small',
+                data: [
+                    'totalPlayers' => $totalPlayers,
+                    'totalCharacters' => $totalCharacters,
+                    'lastGameDate' => $lastGameDate,
+                    'lastGameDatePlusOne' => $lastGameDatePlusOne ?? null,
+                ],
+            );
+        }
         else
         {
             header("Location: /");
@@ -352,7 +384,7 @@ class AdminController
         if (
             $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
             $this->isConnectLf() &&
             $this->isModerator()
         )
@@ -360,12 +392,15 @@ class AdminController
 
             $reports = $this->admin->getGroupedReports();
 
-            $current_url = "https://ur-sg.com/adminReports";
-            $template = "views/admin/admin_reports";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Report";
-            require "views/layoutAdmin.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_reports',
+                current_url: 'https://ur-sg.com/adminReports',
+                page_title: 'URSG - Admin Report',
+                picture: 'ursg-preview-small',
+                data: ['reports' => $reports],
+            );
+        }
         else
         {
             header("Location: /");
@@ -437,13 +472,17 @@ class AdminController
             ($this->isMarketing()|| $this->isAdmin())
         ) {
             $this->initializeLanguage();
-            $page_css = ['partner'];
             $partners = $this -> partners -> getPartners();
-            $current_url = "https://ur-sg.com/adminPartners";
-            $template = "views/admin/admin_partners";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Partners";
-            require "views/layoutAdmin.phtml";
+
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_partners',
+                current_url: 'https://ur-sg.com/adminPartners',
+                page_title: 'URSG - Admin Partners',
+                picture: 'ursg-preview-small',
+                page_css: ['partner'],
+                data: ['partners' => $partners],
+            );
         } else {
             header("Location: /");
             return;
@@ -831,12 +870,15 @@ class AdminController
             $user = $this-> user -> getUserById($_SESSION['userId']);
             $users = $this-> user -> getAllUsers();
 
-            $current_url = "https://ur-sg.com/admin_users";
-            $template = "views/admin/admin_users";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Users";
-            require "views/layoutAdmin.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_users',
+                current_url: 'https://ur-sg.com/admin_users',
+                page_title: 'URSG - Admin Users',
+                picture: 'ursg-preview-small',
+                data: ['user' => $user, 'users' => $users],
+            );
+        }
         else
         {
             header("Location: /");
@@ -1258,14 +1300,18 @@ class AdminController
     {
         if ($this->isAdmin() || $this->isModerator()) {
             $this->initializeLanguage();
-            $page_css = ['store_leaderboard'];
             $allUsers = $this->user->getAllUsers();
             $items = $this->items->getItems();
-            $current_url = "https://ur-sg.com/adminStore";
-            $template = "views/admin/admin_store";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Store";
-            require "views/layoutAdmin.phtml";
+
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_store',
+                current_url: 'https://ur-sg.com/adminStore',
+                page_title: 'URSG - Admin Store',
+                picture: 'ursg-preview-small',
+                page_css: ['store_leaderboard'],
+                data: ['allUsers' => $allUsers, 'items' => $items],
+            );
         } else {
             header("Location: /");
             return;
@@ -1276,11 +1322,14 @@ class AdminController
     {
         if ($this->isAdmin()) {
             $this->initializeLanguage();
-            $current_url = "https://ur-sg.com/adminDiscordBot";
-            $template = "views/admin/admin_discord_bot";
-            $picture = "ursg-preview-small";
-            $page_title = "URSG - Admin Discord Bot";
-            require "views/layoutAdmin.phtml";
+
+            $this->renderPage(
+                layout: 'views/layoutAdmin.phtml',
+                template: 'views/admin/admin_discord_bot',
+                current_url: 'https://ur-sg.com/adminDiscordBot',
+                page_title: 'URSG - Admin Discord Bot',
+                picture: 'ursg-preview-small',
+            );
         } else {
             header("Location: /");
             return;

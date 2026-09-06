@@ -9,11 +9,13 @@ use models\GoogleUser;
 
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class ItemsController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private Items $items;
     private User $user;
@@ -35,8 +37,8 @@ class ItemsController
     public function pageStore()
     {
         $this->requireUserSessionOrRedirect($redirectUrl = '/');
-        // Get important datas
         $this->initializeLanguage();
+
         $user = $this-> user -> getUserById($_SESSION['userId']);
         $allUsers = $this-> user -> getAllUsers();
         $items = $this-> items -> getItems();
@@ -46,12 +48,15 @@ class ItemsController
             $ownedItems = [];
         }
 
-        $page_css = ['store_leaderboard'];
-        $current_url = "https://ur-sg.com/store";
-        $template = "views/swiping/store";
-        $page_title = "URSG - Store";
-        $picture = "ursg-preview-small";
-        require "views/layoutSwiping.phtml";
+        $this->renderPage(
+            layout: 'views/layoutSwiping.phtml',
+            template: 'views/swiping/store',
+            current_url: 'https://ur-sg.com/store',
+            page_title: 'URSG - Store',
+            picture: 'ursg-preview-small',
+            page_css: ['store_leaderboard'],
+            data: ['user' => $user, 'allUsers' => $allUsers, 'items' => $items, 'ownedItems' => $ownedItems],
+        );
     }
     public function getItems()
     {

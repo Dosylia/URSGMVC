@@ -4,8 +4,7 @@ namespace database\migrations;
 
 use database\Migration;
 
-// Reference table for supported games. Replaces the free-text user.user_game /
-// lf_game / pf_game columns so the app can join on a real ID instead of matching strings.
+// Reference table for supported games, joined by game_id instead of matching a display string.
 class CreateGamesTable implements Migration
 {
     public function up(\PDO $bdd): void

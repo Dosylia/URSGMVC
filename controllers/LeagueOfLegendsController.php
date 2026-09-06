@@ -6,15 +6,20 @@ use models\LeagueOfLegends;
 use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
+use enums\GameSlug;
+use services\RoutingService;
 use traits\SecurityController;
 use traits\Translatable;
+use traits\PageRenderer;
 
 class LeagueOfLegendsController
 {
     use SecurityController;
     use Translatable;
+    use PageRenderer;
 
     private LeagueOfLegends $leagueOfLegends;
+    private RoutingService $routingService;
     private FriendRequest $friendrequest;
     private User $user;
     private GoogleUser $googleUser;
@@ -27,10 +32,11 @@ class LeagueOfLegendsController
     private $loLServer;
     private $loLAccount;
 
-    
+
     public function __construct()
     {
         $this -> leagueOfLegends = new LeagueOfLegends();
+        $this -> routingService = new RoutingService();
         $this -> user = new User();
         $this -> friendrequest = new FriendRequest();
         $this -> googleUser = new GoogleUser();
@@ -44,52 +50,16 @@ class LeagueOfLegendsController
     public function pageLeagueUser()
     {
         $this->initializeLanguage();
-        if ($this->isConnectGoogle() && $this->isConnectWebsite() && $this->isConnectLeague()) {
-            // Code block 1: User is connected via Google, Website and has League data, need looking for
-            if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] != $_SESSION['userId']) {
-                    header("Location: /?message=This is not your account");
-                    return;
-                }
-            }
-            $lolUser = $this->leagueOfLegends->getLeageUserByUsername($_SESSION['lol_account']);
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $current_url = "https://ur-sg.com/lookingforuserlol";
-            $template = "views/signup/lookingforlol";
-            $title = "What are you looking for?";
-            $page_title = "URSG - Looking for";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && $this->isConnectWebsite() && !$this->isConnectLeague()){
-            // Code block 2: User is connected via Google, Website but not connected to LoL LATER ADD VALORANT CHECK
-            if (isset($_GET['user_id'])) {
-                if ($_GET['user_id'] != $_SESSION['userId']) {
-                    header("Location: /?message=This is not your account");
-                    return;
-                }
-            }
 
-            $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $current_url = "https://ur-sg.com/leagueuser";
-            $template = "views/signup/leagueoflegendsuser";
-            $title = "More about you";
-            $page_title = "URSG - Sign up";
-            $picture = "ursg-preview-small";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } elseif ($this->isConnectGoogle() && !$this->isConnectWebsite()) {
-            // Code block 3: User is connected via Google but doesn't have a username
-            $current_url = "https://ur-sg.com/basicinfo";
-            $template = "views/signup/basicinfo";
-            $title = "Sign up";
-            $page_title = "URSG - Sign";
-            $picture = "ursg-preview-small";
-            require "views/layoutSignup.phtml";
-        } else {
-            // Code block 4: Redirect to / if none of the above conditions are met
-            header("Location: /");
-            return;
+        $destination = $this->routingService->routeUser(['step' => 'gameSignup'], gameSlug: GameSlug::LEAGUE_OF_LEGENDS->value);
+
+        if (empty($destination)) {
+            $destination = $this->routingService->gameSignupDestination(GameSlug::LEAGUE_OF_LEGENDS->value);
         }
+
+        $user = $this->user->getUserByUsername($_SESSION['username']);
+
+        $this->dispatch($destination, ['user' => $user]);
     }
 
     public function pageUpdateLeague()
@@ -117,12 +87,24 @@ class LeagueOfLegendsController
             $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill"];
             $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
-            $current_url = "https://ur-sg.com/updateLeaguePage";
-            $template = "views/swiping/update_league";
-            $page_title = "URSG - Profile";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/update_league',
+                current_url: 'https://ur-sg.com/updateLeaguePage',
+                page_title: 'URSG - Profile',
+                picture: 'ursg-preview-small',
+                data: [
+                    'user' => $user,
+                    'lolUser' => $lolUser,
+                    'lolMain1' => $lolMain1,
+                    'lolMain2' => $lolMain2,
+                    'lolMain3' => $lolMain3,
+                    'lol_ranks' => $lol_ranks,
+                    'lol_roles' => $lol_roles,
+                    'lol_servers' => $lol_servers,
+                ],
+            );
+        }
         else
         {
             header("Location: /");
@@ -143,12 +125,21 @@ class LeagueOfLegendsController
             $lolUser = $this->leagueOfLegends->getLeageUserByLolId($_SESSION['lol_id']);
             $lol_servers = ["Europe West", "North America", "Europe Nordic" => "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia",  "Turkey", "Japan", "Korea"];
 
-            $current_url = "https://ur-sg.com/updateLeagueAccount";
-            $template = "views/swiping/update_leagueAccount";
-            $page_title = "URSG - Bind league account";
-            $picture = "ursg-preview-small";
-            require "views/layoutSwiping.phtml";
-        } 
+            $this->renderPage(
+                layout: 'views/layoutSwiping.phtml',
+                template: 'views/swiping/update_leagueAccount',
+                current_url: 'https://ur-sg.com/updateLeagueAccount',
+                page_title: 'URSG - Bind league account',
+                picture: 'ursg-preview-small',
+                data: [
+                    'user' => $user,
+                    'allUsers' => $allUsers,
+                    'friendRequest' => $friendRequest,
+                    'lolUser' => $lolUser,
+                    'lol_servers' => $lol_servers,
+                ],
+            );
+        }
         else
         {
             header("Location: /");
