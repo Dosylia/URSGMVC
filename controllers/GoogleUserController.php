@@ -416,7 +416,9 @@ class GoogleUserController
             $destination = $this->routingService->swipingMainDestination();
         }
 
-        $this->dispatch($destination, ['user' => $finalUser ?? null]);
+        $googleUser = isset($_SESSION['email']) ? $this->googleUser->getGoogleUserByEmail($_SESSION['email']) : null;
+
+        $this->dispatch($destination, ['user' => $finalUser ?? null, 'googleUser' => $googleUser ?: null]);
     }
 
     public function legalNoticePage()

@@ -95,12 +95,15 @@ class UserGamesController
         $this->initializeLanguage();
 
         $destination = $this->routingService->routeUser(['step' => 'gameSignup'], gameSlug: $gameSlug);
-        $user = $this->user->getUserByUsername($_SESSION['username']);
 
         if (!empty($destination)) {
-            $this->dispatch($destination, ['user' => $user]);
+            $user = isset($_SESSION['username']) ? $this->user->getUserByUsername($_SESSION['username']) : null;
+            $googleUser = isset($_SESSION['email']) ? $this->googleUser->getGoogleUserByEmail($_SESSION['email']) : null;
+            $this->dispatch($destination, ['user' => $user, 'googleUser' => $googleUser ?: null]);
             return;
         }
+
+        $user = $this->user->getUserByUsername($_SESSION['username']);
 
         $config = $this->getGameSignupFormConfig($gameSlug);
 
