@@ -14,7 +14,7 @@ class CreateUserGamesTable implements Migration
     {
         $bdd->exec("
             CREATE TABLE IF NOT EXISTS user_games (
-                user_games_id INT AUTO_INCREMENT PRIMARY KEY,
+                ug_id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id INT NOT NULL,
                 game_id INT NOT NULL,
                 ug_rank VARCHAR(20) NOT NULL,

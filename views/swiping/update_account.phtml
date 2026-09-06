@@ -1,4 +1,4 @@
-<div class="form_container"> 
+<div class="form_container">
     <button id="closeButton" type="button" aria-label="<?= $this->_('close') ?>">X</button>
     <form class="form_signup" method="post">
 
@@ -13,16 +13,16 @@
 
             <label for="server"><?= $this->_('update_league_confirm_server') ?></label>
             <select id="server" name="server">
-                <option value="<?= $lolUser['lol_server'] ?>" ><?= $lolUser['lol_server'] ?></option>
-                <?php foreach ($lol_servers as $server_key => $server_name) : ?>
-                    <?php if ($server_name !== $lolUser['lol_server']) : ?>
+                <option value="<?= $userGame['ug_server'] ?>" ><?= $userGame['ug_server'] ?></option>
+                <?php foreach ($servers as $server_key => $server_name) : ?>
+                    <?php if ($server_name !== $userGame['ug_server']) : ?>
                         <option value="<?= $server_name ?>"><?= $server_name ?></option>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </select>
 
         <?php if($this->isConnectWebsite()) : ?>
-            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">
         <?php endif ; ?>
 
         <input name="submit" id="send-button" type="submit" value="<?= $this->_('send') ?>">

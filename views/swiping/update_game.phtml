@@ -1,0 +1,106 @@
+<div class="form_container">
+    <button id="closeButton" type="button">X</button>
+    <form class="form_signup" method="post" action="<?= $formAction ?>">
+
+        <?php if (isset($_GET['error'])) : ?>
+        <p class="errorsForm"><?= $_GET['error'] ?></p>
+        <?php endif; ?>
+
+    <div id="champion-picker">
+        <div class="champions-picker-column">
+            <img src="<?= $mainImagePath($main1) ?>" alt="<?= $main1 ?>" class="champion-picker-img picker-main1">
+            <p id="main1-name"><?= $main1 ?></p>
+        </div>
+        <div class="champions-picker-column">
+            <img src="<?= $mainImagePath($main2) ?>" alt="<?= $main2 ?>" class="champion-picker-img picker-main2">
+            <p id="main2-name"><?= $main2 ?></p>
+        </div>
+        <div class="champions-picker-column">
+            <img src="<?= $mainImagePath($main3) ?>" alt="<?= $main3 ?>" class="champion-picker-img picker-main3">
+            <p id="main3-name"><?= $main3 ?></p>
+        </div>
+        <div class="champions-picker-column">
+            <button id="skipSelection-btn">Skip</button>
+        </div>
+        <input type="hidden" id="main1" name="main1" value="<?= $userGame['ug_main1'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="main2" name="main2" value="<?= $userGame['ug_main2'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="main3" name="main3" value="<?= $userGame['ug_main3'] ?>" class="notranslate champion-picker-input">
+        <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $userGame['ug_noMains'] ?>">
+    </div>
+
+    <!-- Champion/Agent Selection Modals -->
+    <div id="modal-main1" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+            <input type="text" placeholder="Search <?= $mainLabel ?>..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+            <div id="champion-list-main1" class="champion-list"></div>
+        </div>
+    </div>
+
+    <div id="modal-main2" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+            <input type="text" placeholder="Search <?= $mainLabel ?>..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+            <div id="champion-list-main2" class="champion-list"></div>
+        </div>
+    </div>
+
+    <div id="modal-main3" class="champion-modal">
+        <div class="modal-content">
+            <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+            <input type="text" placeholder="Search <?= $mainLabel ?>..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+            <div id="champion-list-main3" class="champion-list"></div>
+        </div>
+    </div>
+
+    <script src="<?= $pickerJs ?>?<?= time(); ?>"></script>
+
+            <label for="rank_<?= $idSuffix ?>">Your rank</label>
+            <select id="rank_<?= $idSuffix ?>" name="rank">
+                <option value="<?= $userGame['ug_rank'] ?>" data-image="<?= $rankImagePath($userGame['ug_rank']) ?>"><?= $userGame['ug_rank'] ?></option>
+                <?php foreach ($ranks as $rank) : ?>
+                    <?php if ($rank !== $userGame['ug_rank']) : ?>
+                        <option value="<?= $rank ?>" data-image="<?= $rankImagePath($rank) ?>"><?= $rank ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+
+            <div id="selected-ranks-<?= $idSuffix ?>"></div>
+
+            <script src="<?= $ranksJs ?>?<?= time(); ?>"></script>
+
+            <label for="role_<?= $idSuffix ?>">Your role</label>
+            <select id="role_<?= $idSuffix ?>" name="role">
+                <option value="<?= $userGame['ug_role'] ?>" data-image="<?= $roleImagePath($userGame['ug_role']) ?>"><?= $userGame['ug_role'] ?></option>
+                <?php foreach ($roles as $role) : ?>
+                    <?php if ($role !== $userGame['ug_role']) : ?>
+                        <option value="<?= $role ?>" data-image="<?= $roleImagePath($role) ?>"><?= $role ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+
+            <div id="<?= $selectedRolesId ?>"></div>
+
+            <script src="<?= $rolesJs ?>?<?= time(); ?>"></script>
+
+            <label for="server">Select your server</label>
+            <select id="server" name="server">
+                <option value="<?= $userGame['ug_server'] ?>"><?= $servers[$userGame['ug_server']] ?? $userGame['ug_server'] ?></option>
+                <?php foreach ($servers as $server_key => $server_name) : ?>
+                    <?php if ($server_key !== $userGame['ug_server']) : ?>
+                        <option value="<?= $server_name ?>"><?= $server_name ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+
+        <?php if($this->isConnectWebsite()) : ?>
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">
+        <?php endif ; ?>
+        <input type="hidden" name="gameSlug" value="<?= $gameSlug ?>">
+
+        <input name="submit" id="send-button" type="submit" value="Send">
+    </form>
+    <img class="picture_with_form" src="<?= $bottomImage ?>" alt="<?= $bottomImageAlt ?>">
+</div>
+
+<script type="module" src="public/js/swiping/closebutton.js?<?= time(); ?>"></script>

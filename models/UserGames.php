@@ -123,7 +123,8 @@ class UserGames extends DataBase
         ?string $sPuuid,
         ?int $sLevel,
         ?string $sRank,
-        ?string $sProfileIcon
+        ?string $sProfileIcon,
+        ?string $account = null
     ): bool {
         $query = $this->bdd->prepare("
             UPDATE `user_games`
@@ -134,11 +135,12 @@ class UserGames extends DataBase
                 `ug_sPuuid` = ?,
                 `ug_sLevel` = ?,
                 `ug_sRank` = ?,
-                `ug_sProfileIcon` = ?
+                `ug_sProfileIcon` = ?,
+                `ug_account` = COALESCE(?, ug_account)
             WHERE `user_id` = ? AND `game_id` = ?
         ");
 
-        return $query->execute([$sUsername, $sUsernameId, $sPuuid, $sLevel, $sRank, $sProfileIcon, $userId, $gameId]);
+        return $query->execute([$sUsername, $sUsernameId, $sPuuid, $sLevel, $sRank, $sProfileIcon, $account, $userId, $gameId]);
     }
 
     public function unbindAccount(int $userId, int $gameId): bool
@@ -171,13 +173,13 @@ class UserGames extends DataBase
         return $query->fetch();
     }
 
-    public function getUserGameById(int $userGamesId): array|false
+    public function getUserGameById(int $ugId): array|false
     {
         $query = $this->bdd->prepare("
-            SELECT * FROM `user_games` WHERE `user_games_id` = ?
+            SELECT * FROM `user_games` WHERE `ug_id` = ?
         ");
 
-        $query->execute([$userGamesId]);
+        $query->execute([$ugId]);
 
         return $query->fetch();
     }
@@ -214,5 +216,16 @@ class UserGames extends DataBase
         $query->execute([$puuid, $gameId]);
 
         return $query->fetch();
+    }
+
+    public function getVerifiedUserGames(int $gameId): array
+    {
+        $query = $this->bdd->prepare("
+            SELECT * FROM `user_games` WHERE `game_id` = ? AND `ug_verified` = 1 AND `ug_sPuuid` IS NOT NULL
+        ");
+
+        $query->execute([$gameId]);
+
+        return $query->fetchAll();
     }
 }

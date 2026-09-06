@@ -90,18 +90,15 @@ class RoutingService
         };
     }
 
+    // Redirects rather than rendering directly: the signup form needs a lot more than this
+    // service tracks (picker images, rank/role lists, JS files - see
+    // UserGamesController::getGameSignupFormConfig), so this just points the browser at the
+    // route that builds all of that (UserGamesController::pageLeagueUser/pageValorantUser).
     public function gameSignupDestination(string $gameSlug): array
     {
         $config = $this->getGameSignupConfig($gameSlug);
 
-        return [
-            'layout' => 'views/layoutSignup.phtml',
-            'template' => $config['signupTemplate'],
-            'current_url' => $config['signupUrl'],
-            'page_title' => 'URSG - Sign up',
-            'title' => 'More about you',
-            'picture' => 'ursg-preview-small',
-        ];
+        return ['redirectTo' => $config['signupUrl']];
     }
 
     public function lookingForDestination(string $gameSlug): array
@@ -146,7 +143,7 @@ class RoutingService
     // Checks session state for the given game via isConnectLeague()/isConnectValorant()
     // (traits/SecurityController.php), which each read a hardcoded session key
     // ($_SESSION['lol_id']/['valorant_id']).
-    private function hasGameAccount(string $gameSlug): bool
+    public function hasGameAccount(string $gameSlug): bool
     {
         return match ($gameSlug) {
             GameSlug::LEAGUE_OF_LEGENDS->value => $this->isConnectLeague(),
@@ -161,14 +158,12 @@ class RoutingService
             GameSlug::LEAGUE_OF_LEGENDS->value => [
                 'lookingForTemplate' => 'views/signup/lookingforlol',
                 'lookingForUrl' => 'https://ur-sg.com/lookingforuserlol',
-                'signupTemplate' => 'views/signup/leagueoflegendsuser',
                 'signupUrl' => 'https://ur-sg.com/leagueuser',
             ],
             GameSlug::VALORANT->value => [
                 'lookingForTemplate' => 'views/signup/lookingforvalorant',
                 'lookingForUrl' => 'https://ur-sg.com/lookingforuservalorant',
-                'signupTemplate' => 'views/signup/valorantuser',
-                'signupUrl' => 'https://ur-sg.com/valoranteuser',
+                'signupUrl' => 'https://ur-sg.com/valorantuser',
             ],
             default => throw new \InvalidArgumentException("Unknown game slug: {$gameSlug}"),
         };

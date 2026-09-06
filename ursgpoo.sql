@@ -194,33 +194,6 @@ CREATE TABLE `items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `leagueoflegends`
---
-
-CREATE TABLE `leagueoflegends` (
-  `lol_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `lol_noChamp` smallint(6) NOT NULL DEFAULT 0,
-  `lol_main1` varchar(20) DEFAULT NULL,
-  `lol_main2` varchar(20) DEFAULT NULL,
-  `lol_main3` varchar(20) DEFAULT NULL,
-  `lol_rank` varchar(20) NOT NULL,
-  `lol_role` varchar(20) NOT NULL,
-  `lol_server` varchar(20) NOT NULL,
-  `lol_account` varchar(20) DEFAULT NULL,
-  `lol_verificationCode` varchar(15) DEFAULT NULL,
-  `lol_verified` tinyint(1) NOT NULL DEFAULT 0,
-  `lol_sUsername` varchar(40) DEFAULT NULL,
-  `lol_sUsernameId` varchar(200) DEFAULT NULL,
-  `lol_sPuuid` varchar(100) DEFAULT NULL,
-  `lol_sLevel` int(11) DEFAULT NULL,
-  `lol_sRank` varchar(30) DEFAULT NULL,
-  `lol_sProfileIcon` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `matchingscore`
 --
 
@@ -379,7 +352,7 @@ CREATE TABLE `user` (
 --
 
 CREATE TABLE `user_games` (
-  `user_games_id` int(11) NOT NULL,
+  `ug_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `game_id` int(11) NOT NULL,
   `ug_rank` varchar(20) NOT NULL,
@@ -474,30 +447,6 @@ CREATE TABLE `user_ratings` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `valorant`
---
-
-CREATE TABLE `valorant` (
-  `valorant_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `valorant_noChamp` smallint(6) NOT NULL DEFAULT 0,
-  `valorant_main1` varchar(20) DEFAULT NULL,
-  `valorant_main2` varchar(20) DEFAULT NULL,
-  `valorant_main3` varchar(20) DEFAULT NULL,
-  `valorant_rank` varchar(20) NOT NULL,
-  `valorant_role` varchar(20) NOT NULL,
-  `valorant_server` varchar(20) NOT NULL,
-  `valorant_account` varchar(20) DEFAULT NULL,
-  `valorant_verified` tinyint(1) NOT NULL DEFAULT 0,
-  `valorant_aUsername` varchar(40) DEFAULT NULL,
-  `valorant_aUsernameId` varchar(200) DEFAULT NULL,
-  `valorant_aPuuid` varchar(100) DEFAULT NULL,
-  `valorant_aLevel` int(11) DEFAULT NULL,
-  `valorant_aRank` varchar(30) DEFAULT NULL,
-  `valorant_aProfileIcon` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
---
 -- Indexes for dumped tables
 --
 
@@ -575,13 +524,6 @@ ALTER TABLE `items`
   ADD PRIMARY KEY (`items_id`);
 
 --
--- Indexes for table `leagueoflegends`
---
-ALTER TABLE `leagueoflegends`
-  ADD PRIMARY KEY (`lol_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `matchingscore`
 --
 ALTER TABLE `matchingscore`
@@ -637,7 +579,7 @@ ALTER TABLE `user`
 -- Indexes for table `user_games`
 --
 ALTER TABLE `user_games`
-  ADD PRIMARY KEY (`user_games_id`),
+  ADD PRIMARY KEY (`ug_id`),
   ADD UNIQUE KEY `uq_user_games_user_game` (`user_id`,`game_id`),
   ADD KEY `user_games_game_id` (`game_id`);
 
@@ -671,13 +613,6 @@ ALTER TABLE `user_ratings`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_rating` (`rater_id`,`rated_user_id`,`match_id`),
   ADD KEY `rated_user_id` (`rated_user_id`);
-
---
--- Indexes for table `valorant`
---
-ALTER TABLE `valorant`
-  ADD PRIMARY KEY (`valorant_id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -738,12 +673,6 @@ ALTER TABLE `items`
   MODIFY `items_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `leagueoflegends`
---
-ALTER TABLE `leagueoflegends`
-  MODIFY `lol_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `matchingscore`
 --
 ALTER TABLE `matchingscore`
@@ -789,7 +718,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_games`
 --
 ALTER TABLE `user_games`
-  MODIFY `user_games_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ug_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `userlookingfor`
@@ -814,12 +743,6 @@ ALTER TABLE `user_items`
 --
 ALTER TABLE `user_ratings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `valorant`
---
-ALTER TABLE `valorant`
-  MODIFY `valorant_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -939,21 +862,8 @@ VALUES
   (1, 1, 1, 1),
   (2, 2, 2, 0);
 
--- League of Legends profiles (bound to user)
-INSERT INTO leagueoflegends (lol_id, user_id, lol_noChamp, lol_main1, lol_main2, lol_main3, lol_rank, lol_role, lol_server)
-VALUES
-  (1, 1, 0, 'Lux', 'Janna', 'Sona', 'Gold', 'Support', 'Europe West'),
-  (2, 2, 0, 'Ezreal', 'Jhin', 'Caitlyn', 'Platinum', 'ADC', 'Europe West'),
-  (3, 3, 0, 'Thresh', 'Leona', 'Nautilus', 'Silver', 'Support', 'Europe West');
-
-INSERT INTO valorant (valorant_id, user_id, valorant_noChamp, valorant_main1, valorant_rank, valorant_role, valorant_server)
-VALUES
-  (1, 1, 0, 'Sage', 'Gold', 'Support', 'EU'),
-  (2, 3, 0, 'Jett', 'Silver', 'Flex', 'NA');
-
--- Same profiles mirrored into user_games (game_id 1 = League of Legends, 2 = Valorant),
--- kept in sync with the leagueoflegends/valorant rows above until those tables are dropped.
-INSERT INTO user_games (user_games_id, user_id, game_id, ug_noMains, ug_main1, ug_main2, ug_main3, ug_rank, ug_role, ug_server)
+-- Game profiles (game_id 1 = League of Legends, 2 = Valorant)
+INSERT INTO user_games (ug_id, user_id, game_id, ug_noMains, ug_main1, ug_main2, ug_main3, ug_rank, ug_role, ug_server)
 VALUES
   (1, 1, 1, 0, 'Lux', 'Janna', 'Sona', 'Gold', 'Support', 'Europe West'),
   (2, 2, 1, 0, 'Ezreal', 'Jhin', 'Caitlyn', 'Platinum', 'ADC', 'Europe West'),

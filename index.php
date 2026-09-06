@@ -39,14 +39,13 @@ session_start();
 // USE CONTROLLERS
 use controllers\UserController;
 use controllers\GoogleUserController;
-use controllers\LeagueOfLegendsController;
+use controllers\UserGamesController;
 use controllers\UserLookingForController;
 use controllers\FriendRequestController;
 use controllers\ChatMessageController;
 use controllers\BlockController;
 use controllers\MatchingScoreController;
 use controllers\ItemsController;
-use controllers\ValorantController;
 use controllers\RiotController;
 use controllers\GameController;
 use controllers\AdminController;
@@ -88,12 +87,12 @@ $actionMap = [
     'basicinfo' => [UserController::class, 'createUser'],
     'createAccountSkipPreferences' => [UserController::class, 'createAccountSkipPreferences'],
     'createUserPhone' => [UserController::class, 'createUserPhone'],
-    'leagueuser' => [LeagueOfLegendsController::class, 'pageLeagueUser'],
-    'valorantuser' => [ValorantController::class, 'pageValorantUser'],
-    'createvalorantuser' => [ValorantController::class, 'createValorantUser'],
-    'createleagueuser' => [LeagueOfLegendsController::class, 'createLeagueUser'],
-    'createValorantUserPhone' => [ValorantController::class, 'createValorantUserPhone'],
-    'createLeagueUserPhone' => [LeagueOfLegendsController::class, 'createLeagueUserPhone'],
+    'leagueuser' => [UserGamesController::class, 'pageLeagueUser'],
+    'valorantuser' => [UserGamesController::class, 'pageValorantUser'],
+    'createvalorantuser' => [UserGamesController::class, 'createGameUser'],
+    'createleagueuser' => [UserGamesController::class, 'createGameUser'],
+    'createValorantUserPhone' => [UserGamesController::class, 'createGameUserPhone'],
+    'createLeagueUserPhone' => [UserGamesController::class, 'createGameUserPhone'],
     'lookingforuserlol' => [UserLookingForController::class, 'pageLookingFor'],
     'lookingforuservalorant' => [UserLookingForController::class, 'pageLookingForValorant'],
     'createLookingFor' => [UserLookingForController::class, 'createLookingFor'],
@@ -104,15 +103,13 @@ $actionMap = [
     'anotherUser' => [UserController::class, 'pageAnotherUserProfile'],
     'updateProfilePage' => [UserController::class, 'pageUpdateProfile'],
     'updateProfile' => [UserController::class, 'UpdateProfile'],
-    'updateValorantPage' => [ValorantController::class, 'pageUpdateValorant'],
-    'updateValorant' => [ValorantController::class, 'UpdateValorant'],
-    'updateLeaguePage' => [LeagueOfLegendsController::class, 'pageUpdateLeague'],
-    'updateLeague' => [LeagueOfLegendsController::class, 'UpdateLeague'],
-    'updateLeagueAccount' => [LeagueOfLegendsController::class, 'pageUpdateLeagueAccount'],
-    // 'sendAccountToPhp' => [LeagueOfLegendsController::class, 'sendAccountToPhp'], No longer used
-    'bindAccount' => [LeagueOfLegendsController::class, 'bindAccount'],
-    'verifyLeagueAccount' => [LeagueOfLegendsController::class, 'verifyLeagueAccount'],
-    'verifyLeagueAccountPhone' => [LeagueOfLegendsController::class, 'verifyLeagueAccountPhone'],
+    'updateValorantPage' => [UserGamesController::class, 'pageUpdateValorant'],
+    'updateLeaguePage' => [UserGamesController::class, 'pageUpdateLeague'],
+    'updateGame' => [UserGamesController::class, 'updateGame'],
+    'updateLeagueAccount' => [UserGamesController::class, 'pageUpdateLeagueAccount'],
+    'bindAccount' => [UserGamesController::class, 'bindAccount'],
+    'verifyLeagueAccount' => [UserGamesController::class, 'verifyGameAccount'],
+    'verifyLeagueAccountPhone' => [UserGamesController::class, 'verifyGameAccountPhone'],
     'updateLookingForPage' => [UserLookingForController::class, 'pageUpdateLookingFor'],
     'updateLookingForGamePage' => [UserLookingForController::class, 'pageUpdateLookingForGame'],
     'settings' => [UserController::class, 'pageSettings'],
@@ -188,7 +185,7 @@ $actionMap = [
     'deleteGoogleAccount' => [GoogleUserController::class, 'deleteGoogleAccount'],
     'deleteRiotAccount' => [GoogleUserController::class, 'deleteRiotAccount'],
     'deleteAccountConfirm' => [GoogleUserController::class, 'deleteAccountConfirm'],
-    'refreshRiotData' => [LeagueOfLegendsController::class, 'refreshRiotData'],
+    'refreshRiotData' => [UserGamesController::class, 'refreshRiotData'],
     'deleteOldMessage' => [ChatMessageController::class, 'deleteOldMessage'],
     'uploadChatImage' => [ChatMessageController::class, 'uploadChatImage'],
     'uploadChatImagePhone' => [ChatMessageController::class, 'uploadChatImagePhone'],
@@ -259,7 +256,7 @@ $actionMap = [
     'markInactiveUsersOffline' => [UserController::class, 'markInactiveUsersOffline'],
     'discordClaim' => [DiscordController::class, 'discordClaim'],
     'getLeaderboardUsers' => [UserController::class, 'getLeaderboardUsers'],
-    'unbindLoLAccount' => [LeagueOfLegendsController::class, 'unbindLoLAccount'],
+    'unbindLoLAccount' => [UserGamesController::class, 'unbindGameAccount'],
     'adminDiscordBot' => [AdminController::class, 'adminDiscordBotPage'],
     'discordBotControl' => [AdminController::class, 'discordBotControl'],
     'discordBotCommand' => [AdminController::class, 'discordBotCommand'],
