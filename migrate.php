@@ -6,19 +6,27 @@ use Dotenv\Dotenv;
 
 require 'vendor/autoload.php';
 
-// Same env-file detection as index.php, kept in sync on purpose so migrations
-// always run against the same database the app itself would connect to.
-$env = getenv('APP_ENV') ?: 'local';
-switch ($env) {
-    case 'production':
-        $envFile = '.env.prod';
-        break;
-    case 'development':
-        $envFile = '.env.dev';
-        break;
-    default:
-        $envFile = '.env.local';
-        break;
+
+$env = getenv('APP_ENV');
+if ($env !== false) {
+    $envFile = match ($env) {
+        'production' => '.env.prod',
+        'development' => '.env.dev',
+        default => '.env.local',
+    };
+} else {
+    $envFile = null;
+    foreach (['.env.prod', '.env.dev', '.env.local'] as $candidate) {
+        if (file_exists(__DIR__ . '/' . $candidate)) {
+            $envFile = $candidate;
+            break;
+        }
+    }
+
+    if ($envFile === null) {
+        fwrite(STDERR, "No APP_ENV set and no .env.prod/.env.dev/.env.local file found in " . __DIR__ . ". Set APP_ENV or add one of those files.\n");
+        exit(1);
+    }
 }
 
 $dotenv = Dotenv::createImmutable(__DIR__, $envFile);
