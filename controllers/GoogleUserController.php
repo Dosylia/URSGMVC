@@ -6,7 +6,7 @@ use models\GoogleUser;
 use models\User;
 use models\UserGames;
 use models\Games;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use models\Partners;
 use models\BannedUsers;
 use models\PlayerFinder;
@@ -38,7 +38,7 @@ class GoogleUserController
     private User $user;
     private UserGames $userGames;
     private Games $games;
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
     private Partners $partners;
     private BannedUsers $bannedusers;
     private PlayerFinder $playerFinder;
@@ -62,7 +62,7 @@ class GoogleUserController
         $this -> user = new User();
         $this -> userGames = new UserGames();
         $this -> games = new Games();
-        $this -> userlookingfor = new UserLookingFor();
+        $this -> userlookingforgames = new UserLookingForGames();
         $this -> partners = new Partners();
         $this -> bannedusers = new BannedUsers();
         $this -> playerFinder = new PlayerFinder();
@@ -74,7 +74,7 @@ class GoogleUserController
             $this->user,
             $this->userGames,
             $this->games,
-            $this->userlookingfor
+            $this->userlookingforgames
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
     }
@@ -296,9 +296,9 @@ class GoogleUserController
                             GameSlug::VALORANT->value => $_SESSION['valorant_id'] = $userGame['ug_id'],
                             default => null,
                         };
-                        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
-                        if ($lfUser) {
-                            $_SESSION['lf_id'] = $lfUser['lf_id'];
+                        $lfGame = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $gameId);
+                        if ($lfGame) {
+                            $_SESSION['lf_id'] = $lfGame['lfg_id'];
                             return true;
                         }
                     }

@@ -365,29 +365,25 @@ CREATE TABLE `user_games` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `userlookingfor`
+-- Table structure for table `user_looking_for_games`
 --
 
-CREATE TABLE `userlookingfor` (
-  `lf_id` int(11) NOT NULL,
+CREATE TABLE `user_looking_for_games` (
+  `lfg_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `lf_gender` varchar(20) NOT NULL,
-  `lf_kindofgamer` varchar(50) NOT NULL,
-  `lf_game` varchar(20) NOT NULL,
-  `lf_filteredServer` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`lf_filteredServer`)),
-  `lf_lolNoChamp` smallint(6) NOT NULL DEFAULT 0,
-  `lf_lolmain1` varchar(20) DEFAULT NULL,
-  `lf_lolmain2` varchar(20) DEFAULT NULL,
-  `lf_lolmain3` varchar(20) DEFAULT NULL,
-  `lf_lolrank` varchar(20) DEFAULT NULL,
-  `lf_lolrole` varchar(20) DEFAULT NULL,
-  `lf_valNoChamp` smallint(6) NOT NULL DEFAULT 0,
-  `lf_valmain1` varchar(20) DEFAULT NULL,
-  `lf_valmain2` varchar(20) DEFAULT NULL,
-  `lf_valmain3` varchar(20) DEFAULT NULL,
-  `lf_valrank` varchar(20) DEFAULT NULL,
-  `lf_valrole` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `game_id` int(11) NOT NULL,
+  `lfg_gender` varchar(20) NOT NULL,
+  `lfg_kindofgamer` varchar(50) NOT NULL,
+  `lfg_filteredServer` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`lfg_filteredServer`)),
+  `lfg_rank` varchar(20) DEFAULT NULL,
+  `lfg_role` varchar(20) DEFAULT NULL,
+  `lfg_noMains` smallint(6) NOT NULL DEFAULT 0,
+  `lfg_main1` varchar(20) DEFAULT NULL,
+  `lfg_main2` varchar(20) DEFAULT NULL,
+  `lfg_main3` varchar(20) DEFAULT NULL,
+  `lfg_createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `lfg_updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -563,11 +559,12 @@ ALTER TABLE `user_games`
   ADD KEY `user_games_game_id` (`game_id`);
 
 --
--- Indexes for table `userlookingfor`
+-- Indexes for table `user_looking_for_games`
 --
-ALTER TABLE `userlookingfor`
-  ADD PRIMARY KEY (`lf_id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE `user_looking_for_games`
+  ADD PRIMARY KEY (`lfg_id`),
+  ADD UNIQUE KEY `uq_user_looking_for_games_user_game` (`user_id`,`game_id`),
+  ADD KEY `user_looking_for_games_game_id` (`game_id`);
 
 --
 -- Indexes for table `user_activity_log`
@@ -694,10 +691,10 @@ ALTER TABLE `user_games`
   MODIFY `ug_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `userlookingfor`
+-- AUTO_INCREMENT for table `user_looking_for_games`
 --
-ALTER TABLE `userlookingfor`
-  MODIFY `lf_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `user_looking_for_games`
+  MODIFY `lfg_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_activity_log`
@@ -767,6 +764,13 @@ ALTER TABLE `user`
 ALTER TABLE `user_games`
   ADD CONSTRAINT `fk_user_games_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_user_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`game_id`);
+
+--
+-- Constraints for table `user_looking_for_games`
+--
+ALTER TABLE `user_looking_for_games`
+  ADD CONSTRAINT `fk_user_looking_for_games_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_user_looking_for_games_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`game_id`);
 
 --
 -- Constraints for table `user_ratings`
@@ -851,8 +855,9 @@ VALUES
   (2, 2, '2025-08-15 10:05:00'),
   (3, 3, '2025-08-15 10:10:00');
 
-INSERT INTO userlookingfor (lf_id, user_id, lf_gender, lf_kindofgamer, lf_game, lf_lolNoChamp, lf_lolmain1, lf_lolmain2, lf_lolmain3, lf_lolrank, lf_lolrole)
+-- Looking-for preferences (game_id 1 = League of Legends, 2 = Valorant)
+INSERT INTO user_looking_for_games (lfg_id, user_id, game_id, lfg_gender, lfg_kindofgamer, lfg_noMains, lfg_main1, lfg_main2, lfg_main3, lfg_rank, lfg_role)
 VALUES
-  (1, 1, 'Any', 'Casual', 'League of Legends', 0, 'Jinx', 'Seraphine', 'Nami', 'Gold', 'ADC'),
-  (2, 2, 'Female', 'Competitive', 'League of Legends', 0, 'Lux', 'Morgana', 'Karma', 'Platinum', 'Support'),
-  (3, 3, 'Any', 'Social', 'League of Legends', 0, 'Ashe', 'Miss Fortune', 'Sivir', 'Silver', 'ADC');
+  (1, 1, 1, 'Any', 'Casual', 0, 'Jinx', 'Seraphine', 'Nami', 'Gold', 'ADC'),
+  (2, 2, 1, 'Female', 'Competitive', 0, 'Lux', 'Morgana', 'Karma', 'Platinum', 'Support'),
+  (3, 3, 1, 'Any', 'Social', 0, 'Ashe', 'Miss Fortune', 'Sivir', 'Silver', 'ADC');

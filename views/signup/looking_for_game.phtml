@@ -1,4 +1,4 @@
-<div class="form_container"> 
+<div class="form_container">
     <form class="form_signup" method="post" action="/createLookingFor">
 
     <?php if (isset($_GET['error'])) : ?>
@@ -9,12 +9,9 @@
             <label for="gender">Gender you are looking for</label>
             <select id="gender" name="gender" required>
                 <option value="" disabled selected>Choose a gender...</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Trans">Trans</option>
-                <option value="Non binary">Non binary</option>
-                <option value="Male and Female">Male and Female</option>
-                <option value="All">All</option>
+                <?php foreach ($genderOptions as $genderOption) : ?>
+                    <option value="<?= $genderOption ?>"><?= $genderOption ?></option>
+                <?php endforeach; ?>
             </select>
 
                 <label for="kindofgamer">What kind of gamer are you looking for?</label>
@@ -29,15 +26,15 @@
         <div class="form-step">
             <div id="champion-picker">
                 <div class="champions-picker-column">
-                    <img src="public/images/champions/Kaisa.png" alt="Kai'Sa" class="champion-picker-img picker-main1">
+                    <img src="<?= $mainImagePath($defaultMain1) ?>" alt="<?= $defaultMain1 ?>" class="champion-picker-img picker-main1">
                     <p id="main1-name">Main 1</p>
                 </div>
                 <div class="champions-picker-column">
-                    <img src="public/images/champions/Ezreal.png" alt="Ezreal" class="champion-picker-img picker-main2">
+                    <img src="<?= $mainImagePath($defaultMain2) ?>" alt="<?= $defaultMain2 ?>" class="champion-picker-img picker-main2">
                     <p id="main2-name">Main 2</p>
                 </div>
                 <div class="champions-picker-column">
-                    <img src="public/images/champions/Jhin.png" alt="Jhin" class="champion-picker-img picker-main3">
+                    <img src="<?= $mainImagePath($defaultMain3) ?>" alt="<?= $defaultMain3 ?>" class="champion-picker-img picker-main3">
                     <p id="main3-name">Main 3</p>
                 </div>
                 <div class="champions-picker-column">
@@ -74,62 +71,49 @@
                 </div>
             </div>
 
-            <script src="public/js/champions-picker.js?<?= time(); ?>"></script>
+            <script src="<?= $pickerJs ?>?<?= time(); ?>"></script>
 
-            <label for="rank_lol">Rank you are looking for</label>
-            <select id="rank_lol" name="rank_lol">
+            <label for="rank_<?= $idSuffix ?>">Rank you are looking for</label>
+            <select id="rank_<?= $idSuffix ?>" name="rank_<?= $idSuffix ?>">
             <option value="" disabled selected>Select rank...</option>
-            <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-            <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-            <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-            <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-            <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-            <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-            <option value="Emerald" data-image="public/images/ranks/Emerald.png">Emerald</option>
-            <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-            <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-            <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-            <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
-            <option value="Any" data-image="public/images/ranks/Any.png">Any</option>
+            <?php foreach ($ranks as $rank) : ?>
+                <option value="<?= $rank ?>" data-image="<?= $rankImagePath($rank) ?>"><?= $rank ?></option>
+            <?php endforeach; ?>
             </select>
 
-            <div id="selected-ranks-lol"></div>
+            <div id="selected-ranks-<?= $idSuffix ?>"></div>
 
-            <script src="public/js/ranks.js?<?= time(); ?>"></script>
+            <script src="<?= $ranksJs ?>?<?= time(); ?>"></script>
 
-            <label for="role_lol">Role you are looking for</label>
-            <select id="role_lol" name="role_lol">
+            <label for="role_<?= $idSuffix ?>">Role you are looking for</label>
+            <select id="role_<?= $idSuffix ?>" name="role_<?= $idSuffix ?>">
             <option value="" disabled selected>Select role...</option>
-            <option value="Support" data-image="public/images/roles/support.png">Support</option>
-            <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-            <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-            <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
-            <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-            <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-            <option value="Any" data-image="public/images/roles/Any.png">Any</option>
+            <?php foreach ($roles as $role) : ?>
+                <option value="<?= $role ?>" data-image="<?= $roleImagePath($role) ?>"><?= $role ?></option>
+            <?php endforeach; ?>
             </select>
 
-            <div id="selected-roles"></div>
+            <div id="selected-roles-<?= $idSuffix ?>"></div>
 
-            <script src="public/js/roles.js?<?= time(); ?>"></script>
+            <script src="<?= $rolesJs ?>?<?= time(); ?>"></script>
 
-            <input type="hidden" name="game" value="League of Legends"> 
+            <input type="hidden" name="game" value="<?= $gameDisplayName ?>">
 
             <?php if($this->isConnectWebsite()) : ?>
-                <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+                <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">
             <?php endif ; ?>
 
             <input name="submit" id="send-button" type="submit" value="Send">
         </div>
-        
+
         <!-- Navigation Buttons -->
         <div class="form-navigation">
             <button type="button" id="prevBtn">Previous</button>
             <button type="button" id="nextBtn">Next</button>
         </div>
     </form>
-    <img class="picture_with_form" src="public/images/ahri.png" alt="Ahri from League of legends">
+    <img class="picture_with_form" src="<?= $bottomImage ?>" alt="<?= $bottomImageAlt ?>">
 </div>
 
-<script type="module" src="public/js/leagueoflegendsinfo.js?<?= time(); ?>"></script>
+<script type="module" src="<?= $gameInfoJs ?>?<?= time(); ?>"></script>
 <script type="module" src="public/js/signup_navigation.js?<?= time(); ?>"></script>

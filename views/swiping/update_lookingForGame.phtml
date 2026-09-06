@@ -1,4 +1,4 @@
-<div class="form_container"> 
+<div class="form_container">
     <button id="closeButton" type="button">X</button>
     <form class="form_signup" method="post" action="/updateLookingFor">
 
@@ -9,209 +9,102 @@
 
         <label for="gender"><?= $this->_('update_lookingfor_gender_label') ?></label>
         <select id="gender" name="gender" required>
-            <option value="<?= $lfUser['lf_gender'] ?>" ><?= $lfUser['lf_gender'] ?></option>
-            <?php foreach ($genders as $value => $label) : ?>
-                <?php if ($value !== $lfUser['lf_gender']) : ?>
-                    <option value="<?= $label ?>"><?= $label ?></option>
-                <?php endif; ?>
+            <option value="" disabled selected>Choose a gender...</option>
+            <?php foreach ($genderOptions as $genderOption) : ?>
+                <option value="<?= $genderOption ?>"><?= $genderOption ?></option>
             <?php endforeach; ?>
         </select>
 
         <label for="kindofgamer"><?= $this->_('update_lookingfor_kindofgamer_label') ?></label>
         <select id="kindofgamer" name="kindofgamer" required>
-            <option value="<?= $lfUser['lf_kindofgamer'] ?>" ><?= $lfUser['lf_kindofgamer'] ?></option>
+            <option value="" disabled selected>Chose what kind you are looking for...</option>
             <?php foreach ($kindofgamers as $value => $label) : ?>
-                <?php if ($value !== $lfUser['lf_kindofgamer']) : ?>
-                    <option value="<?= $value ?>"><?= $label ?></option>
-                <?php endif; ?>
+                <option value="<?= $value ?>"><?= $label ?></option>
             <?php endforeach; ?>
         </select>
 
-        <?php if($user['game_slug'] === \enums\GameSlug::LEAGUE_OF_LEGENDS->value) :?>
-
-            <div id="champion-picker">
-                <div class="champions-picker-column">
-                    <img src="public/images/champions/<?= $lolMain1 ?>.png" alt="<?= $lolMain1 ?>" class="champion-picker-img picker-main1">
-                    <p id="main1-name"><?= $lolMain1 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <img src="public/images/champions/<?= $lolMain2 ?>.png" alt="<?= $lolMain2 ?>" class="champion-picker-img picker-main2">
-                    <p id="main2-name"><?= $lolMain2 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <img src="public/images/champions/<?= $lolMain3 ?>.png" alt="<?= $lolMain3 ?>" class="champion-picker-img picker-main3">
-                    <p id="main3-name"><?= $lolMain3 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <button id="skipSelection-btn"><?= $this->_('skip') ?></button>
-                </div>
-                <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_lolmain1'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_lolmain2'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_lolmain3'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_lolNoChamp'] ?>" data-page="create">
+        <div id="champion-picker">
+            <div class="champions-picker-column">
+                <img src="<?= $mainImagePath($main1) ?>" alt="<?= $main1 ?>" class="champion-picker-img picker-main1">
+                <p id="main1-name"><?= $main1 ?></p>
             </div>
-
-            <!-- Champion Selection Modals -->
-            <div id="modal-main1" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
-                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
-                    <div id="champion-list-main1" class="champion-list"></div>
-                </div>
+            <div class="champions-picker-column">
+                <img src="<?= $mainImagePath($main2) ?>" alt="<?= $main2 ?>" class="champion-picker-img picker-main2">
+                <p id="main2-name"><?= $main2 ?></p>
             </div>
-
-            <div id="modal-main2" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
-                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
-                    <div id="champion-list-main2" class="champion-list"></div>
-                </div>
+            <div class="champions-picker-column">
+                <img src="<?= $mainImagePath($main3) ?>" alt="<?= $main3 ?>" class="champion-picker-img picker-main3">
+                <p id="main3-name"><?= $main3 ?></p>
             </div>
-
-            <div id="modal-main3" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
-                    <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
-                    <div id="champion-list-main3" class="champion-list"></div>
-                </div>
+            <div class="champions-picker-column">
+                <button id="skipSelection-btn"><?= $this->_('skip') ?></button>
             </div>
+            <input type="hidden" id="main1" name="main1" value="<?= $lfGame['lfg_main1'] ?? '' ?>" class="notranslate champion-picker-input">
+            <input type="hidden" id="main2" name="main2" value="<?= $lfGame['lfg_main2'] ?? '' ?>" class="notranslate champion-picker-input">
+            <input type="hidden" id="main3" name="main3" value="<?= $lfGame['lfg_main3'] ?? '' ?>" class="notranslate champion-picker-input">
+            <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lfGame['lfg_noMains'] ?? 0 ?>" data-page="create">
+        </div>
 
-            <script src="public/js/champions-picker.js?<?= time(); ?>"></script>
-
-
-            <label for="rank_lol">Rank you are looking for</label>
-            <select id="rank_lol" name="rank_lol">
-                <option value="" disabled selected>Select rank...</option>
-                <option value="Unranked" data-image="public/images/ranks/Unranked.png">Unranked</option>
-                <option value="Iron" data-image="public/images/ranks/Iron.png">Iron</option>
-                <option value="Bronze" data-image="public/images/ranks/Bronze.png">Bronze</option>
-                <option value="Silver" data-image="public/images/ranks/Silver.png">Silver</option>
-                <option value="Gold" data-image="public/images/ranks/Gold.png">Gold</option>
-                <option value="Platinum" data-image="public/images/ranks/Platinum.png">Platinum</option>
-                <option value="Emerald" data-image="public/images/ranks/Emerald.png">Emerald</option>
-                <option value="Diamond" data-image="public/images/ranks/Diamond.png">Diamond</option>
-                <option value="Master" data-image="public/images/ranks/Master.png">Master</option>
-                <option value="Grand Master" data-image="public/images/ranks/Grandmaster.png">Grand Master</option>
-                <option value="Challenger" data-image="public/images/ranks/Challenger.png">Challenger</option>
-                <option value="Any">Any</option>
-            </select>
-
-            <div id="selected-ranks-lol"></div>
-
-            <script src="public/js/ranks.js?<?= time(); ?>"></script>
-
-            <label for="role_lol">Role you are looking for</label>
-            <select id="role_lol" name="role_lol">
-                <option value="" disabled selected>Select role...</option>
-                <option value="Support" data-image="public/images/roles/support.png">Support</option>
-                <option value="AD Carry" data-image="public/images/roles/adcarry.png">AD Carry</option>
-                <option value="Mid laner" data-image="public/images/roles/midlaner.png">Mid laner</option>
-                <option value="Jungler" data-image="public/images/roles/jungler.png">Jungler</option>
-                <option value="Top laner" data-image="public/images/roles/toplaner.png">Top laner</option>
-                <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-            </select>
-
-            <div id="selected-roles"></div>
-
-            <script src="public/js/roles.js?<?= time(); ?>"></script>
-
-            <input type="hidden" name="game" value="League of Legends"> 
-        <?php else : ?>
-
-            <div id="champion-picker">
-                <div class="champions-picker-column">
-                    <img src="public/images/valorant_champions/<?= $valorantMain1 ?>_icon.webp" alt="<?= $valorantMain1 ?>" class="champion-picker-img picker-main1">
-                    <p id="main1-name"><?= $valorantMain1 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <img src="public/images/valorant_champions/<?= $valorantMain2 ?>_icon.webp" alt="<?= $valorantMain2 ?>" class="champion-picker-img picker-main2">
-                    <p id="main2-name"><?= $valorantMain2 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <img src="public/images/valorant_champions/<?= $valorantMain3 ?>_icon.webp" alt="<?= $valorantMain3 ?>" class="champion-picker-img picker-main3">
-                    <p id="main3-name"><?= $valorantMain3 ?></p>
-                </div>
-                <div class="champions-picker-column">
-                    <button id="skipSelection-btn">Skip</button>
-                </div>
-                <input type="hidden" id="main1" name="main1" value="<?= $lfUser['lf_valmain1'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="main2" name="main2" value="<?= $lfUser['lf_valmain2'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="main3" name="main3" value="<?= $lfUser['lf_valmain3'] ?>" class="notranslate champion-picker-input">
-                <input type="hidden" id="skipSelection" name="skipSelection" value="<?= $lfUser['lf_valNoChamp'] ?>" data-page="create">
+        <!-- Champion Selection Modals -->
+        <div id="modal-main1" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
+                <div id="champion-list-main1" class="champion-list"></div>
             </div>
+        </div>
 
-            <script src="public/js/champions-picker-valorant.js"></script>
-
-            <!-- Champion Selection Modals -->
-            <div id="modal-main1" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main1')">✖</button>
-                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main1')">
-                    <div id="champion-list-main1" class="champion-list"></div>
-                </div>
+        <div id="modal-main2" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
+                <div id="champion-list-main2" class="champion-list"></div>
             </div>
+        </div>
 
-            <div id="modal-main2" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main2')">✖</button>
-                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main2')">
-                    <div id="champion-list-main2" class="champion-list"></div>
-                </div>
+        <div id="modal-main3" class="champion-modal">
+            <div class="modal-content">
+                <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
+                <input type="text" placeholder="Search champion..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
+                <div id="champion-list-main3" class="champion-list"></div>
             </div>
+        </div>
 
-            <div id="modal-main3" class="champion-modal">
-                <div class="modal-content">
-                    <button type="button" class="close-btn" onclick="closeModal('modal-main3')">✖</button>
-                    <input type="text" placeholder="Search agent..." class="champion-search" onkeyup="filterChampions(this, 'champion-list-main3')">
-                    <div id="champion-list-main3" class="champion-list"></div>
-                </div>
-            </div>
+        <script src="<?= $pickerJs ?>?<?= time(); ?>"></script>
 
-            <label for="rank_valorant">Rank you are looking for</label>
-            <select id="rank_valorant" name="rank_valorant">
-                <option value="" disabled selected>Select rank...</option>
-                <option value="Unranked" data-image="public/images/valorant_ranks/Unranked.png">Unranked</option>
-                <option value="Iron" data-image="public/images/valorant_ranks/Iron.png">Iron</option>
-                <option value="Bronze" data-image="public/images/valorant_ranks/Bronze.png">Bronze</option>
-                <option value="Silver" data-image="public/images/valorant_ranks/Silver.png">Silver</option>
-                <option value="Gold" data-image="public/images/valorant_ranks/Gold.png">Gold</option>
-                <option value="Platinum" data-image="public/images/valorant_ranks/Platinum.png">Platinum</option>
-                <option value="Diamond" data-image="public/images/valorant_ranks/Diamond.png">Diamond</option>
-                <option value="Ascendant" data-image="public/images/valorant_ranks/Ascendant.png">Ascendant</option>
-                <option value="Immortal" data-image="public/images/valorant_ranks/Immortal.png">Immortal</option>
-                <option value="Radiant" data-image="public/images/valorant_ranks/Radiant.png">Radiant</option>
-                <option value="Any" data-image="public/images/valorant_ranks/Any.png">Any</option>
-            </select>
+        <label for="rank_<?= $idSuffix ?>">Rank you are looking for</label>
+        <select id="rank_<?= $idSuffix ?>" name="rank_<?= $idSuffix ?>">
+            <option value="" disabled selected>Select rank...</option>
+            <?php foreach ($ranks as $rank) : ?>
+                <option value="<?= $rank ?>" data-image="<?= $rankImagePath($rank) ?>"><?= $rank ?></option>
+            <?php endforeach; ?>
+        </select>
 
-            <div id="selected-ranks-valorant"></div>
+        <div id="selected-ranks-<?= $idSuffix ?>"></div>
 
-            <script src="public/js/ranks-valorant.js?<?= time(); ?>"></script>
+        <script src="<?= $ranksJs ?>?<?= time(); ?>"></script>
 
-            <label for="role_valorant">Role you are looking for</label>
-            <select id="role_valorant" name="role_valorant">
-                <option value="" disabled selected>Select role...</option>
-                <option value="Controller" data-image="public/images/valorant_roles/Controller.webp">Controller</option>
-                <option value="Duelist" data-image="public/images/valorant_roles/Duelist.webp">Duelist</option>
-                <option value="Initiator" data-image="public/images/valorant_roles/Initiator.webp">Initiator</option>
-                <option value="Sentinel" data-image="public/images/valorant_roles/Sentinel.webp">Sentinel</option>
-                <option value="Fill" data-image="public/images/roles/fill.png">Fill</option>
-                <option value="Any" data-image="public/images/valorant_ranks/Any.png">Any</option>
-            </select>
+        <label for="role_<?= $idSuffix ?>">Role you are looking for</label>
+        <select id="role_<?= $idSuffix ?>" name="role_<?= $idSuffix ?>">
+            <option value="" disabled selected>Select role...</option>
+            <?php foreach ($roles as $role) : ?>
+                <option value="<?= $role ?>" data-image="<?= $roleImagePath($role) ?>"><?= $role ?></option>
+            <?php endforeach; ?>
+        </select>
 
-            <div id="selected-roles-valorant"></div>
+        <div id="selected-roles-<?= $idSuffix ?>"></div>
 
-            <script src="public/js/roles-valorant.js?<?= time(); ?>"></script>
+        <script src="<?= $rolesJs ?>?<?= time(); ?>"></script>
 
-            <input type="hidden" name="game" value="Valorant"> 
-        <?php endif; ?>
+        <input type="hidden" name="game" value="<?= $gameDisplayName ?>">
 
-            <?php if($this->isConnectWebsite()) : ?>
-            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">  
+        <?php if($this->isConnectWebsite()) : ?>
+            <input type="hidden" name="userId" value="<?= $_SESSION['userId'] ?>">
         <?php endif ; ?>
 
         <input name="submit" id="send-button" type="submit" value="Send">
     </form>
-    <img class="picture_with_form" src="public/images/jett.png" alt="Jett from Valorant">
+    <img class="picture_with_form" src="<?= $bottomImage ?>" alt="<?= $bottomImageAlt ?>">
 </div>
 
 

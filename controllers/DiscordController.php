@@ -5,7 +5,7 @@ namespace controllers;
 use models\UserGames;
 use models\Games;
 use models\User;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use models\GoogleUser;
 use models\ChatMessage;
 use models\Discord;
@@ -30,7 +30,7 @@ class DiscordController
     private User $user;
     private Games $games;
     private GoogleUser $googleUser;
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
     private Discord $discord;
     private Items $items;
     private BannedUsers $bannedusers;
@@ -48,7 +48,7 @@ class DiscordController
         $this->games = new Games();
         $this -> googleUser = new GoogleUser();
         $this -> discord = new Discord();
-        $this -> userlookingfor = new userLookingFor();
+        $this -> userlookingforgames = new UserLookingForGames();
         $this->items = new Items();
         $this->bannedusers = new BannedUsers();
         $masterTokenService = new MasterTokenService($this->googleUser);
@@ -57,7 +57,7 @@ class DiscordController
             $this->user,
             $this->userGames,
             $this->games,
-            $this->userlookingfor
+            $this->userlookingforgames
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
         $this->discordOAuthClient = (($_ENV['environment'] ?? null) === 'local')

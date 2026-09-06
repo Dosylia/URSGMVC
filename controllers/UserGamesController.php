@@ -9,7 +9,7 @@ use models\Games;
 use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use enums\GameSlug;
 use services\RoutingService;
 use traits\SecurityController;
@@ -32,7 +32,7 @@ class UserGamesController
     private FriendRequest $friendrequest;
     private User $user;
     private GoogleUser $googleUser;
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
     private mixed $userId;
     private mixed $gameId;
     private mixed $main1;
@@ -52,7 +52,7 @@ class UserGamesController
         $this->user = new User();
         $this->friendrequest = new FriendRequest();
         $this->googleUser = new GoogleUser();
-        $this->userlookingfor = new UserLookingFor();
+        $this->userlookingforgames = new UserLookingForGames();
     }
 
     public function getGoogleUserModel(): GoogleUser
@@ -374,7 +374,7 @@ class UserGamesController
 
         // A looking-for row already exists (rare: user_games got wiped/recreated but their
         // looking-for answers survived) - send them to finish that instead of starting over.
-        if ($this->userlookingfor->getLookingForUserByUserId($this->getUserId())) {
+        if ($this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $this->getGameId())) {
             header("location:/updateLookingForGamePage");
             return;
         }

@@ -187,7 +187,7 @@ class User extends DataBase
                                         SELECT
                                             u.*,
                                             ug.*,
-                                            lf.*,
+                                            lfg.*,
                                             (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(u.user_requestIsLooking) <= 300) AS user_isLooking,
                                             g.google_email,
                                             g.google_createdWithRSO,
@@ -205,8 +205,7 @@ class User extends DataBase
                                         FROM
                                             `user` AS u
                                         LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
-                                        LEFT JOIN
-                                            `userlookingfor` AS lf ON u.user_id = lf.user_id
+                                        LEFT JOIN `user_looking_for_games` AS lfg ON u.user_id = lfg.user_id AND lfg.game_id = u.user_gameId
                                         LEFT JOIN
                                             `googleuser` AS g ON u.google_userId = g.google_userId
                                         LEFT JOIN
@@ -235,7 +234,7 @@ class User extends DataBase
                 SELECT
                     u.*,
                     ug.*,
-                    lf.*,
+                    lfg.*,
                     g.google_email,
                     g.google_createdWithRSO,
                     gm.game_slug,
@@ -253,8 +252,7 @@ class User extends DataBase
                 FROM
                     `user` AS u
                 LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
-                LEFT JOIN
-                    `userlookingfor` AS lf ON u.user_id = lf.user_id
+                LEFT JOIN `user_looking_for_games` AS lfg ON u.user_id = lfg.user_id AND lfg.game_id = u.user_gameId
                 LEFT JOIN
                     `googleuser` AS g ON u.google_userId = g.google_userId
                 LEFT JOIN
@@ -280,12 +278,11 @@ class User extends DataBase
                                         SELECT
                                             u.*,
                                             ug.*,
-                                            lf.*
+                                            lfg.*
                                         FROM
                                             `user` AS u
                                         LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
-                                        LEFT JOIN
-                                            `userlookingfor` AS lf ON u.user_id = lf.user_id;
+                                        LEFT JOIN `user_looking_for_games` AS lfg ON u.user_id = lfg.user_id AND lfg.game_id = u.user_gameId;
         ");
         
         $query->execute();
@@ -387,12 +384,11 @@ class User extends DataBase
                                         SELECT
                                             u.*,
                                             ug.*,
-                                            lf.*
+                                            lfg.*
                                         FROM
                                             `user` AS u
                                         LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
-                                        INNER JOIN
-                                            `userlookingfor` AS lf ON u.user_id = lf.user_id
+                                        INNER JOIN `user_looking_for_games` AS lfg ON u.user_id = lfg.user_id AND lfg.game_id = u.user_gameId
                                         WHERE
                                             NOT EXISTS (
                                                 SELECT 1
@@ -455,10 +451,10 @@ class User extends DataBase
     
         // Build final query
         $query = $this->bdd->prepare("
-            SELECT u.*, ug.*, lf.*, g.game_slug
+            SELECT u.*, ug.*, lfg.*, g.game_slug
             FROM user AS u
             LEFT JOIN `user_games` AS ug ON u.user_id = ug.user_id AND ug.game_id = u.user_gameId
-            INNER JOIN userlookingfor AS lf ON u.user_id = lf.user_id
+            INNER JOIN `user_looking_for_games` AS lfg ON u.user_id = lfg.user_id AND lfg.game_id = u.user_gameId
             LEFT JOIN games AS g ON g.game_id = u.user_gameId
             WHERE " . implode(' AND ', $whereClauses) . "
             ORDER BY RAND()

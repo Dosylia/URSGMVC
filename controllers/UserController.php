@@ -6,7 +6,7 @@ use models\User;
 use models\FriendRequest;
 use models\UserGames;
 use models\Games;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use models\Items;
 use models\GoogleUser;
 use models\Report;
@@ -26,7 +26,7 @@ class UserController
     private FriendRequest $friendrequest;
     private UserGames $userGames;
     private Games $games;
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
     private Items $items;
     private GoogleUser $googleUser;
     private Report $report;
@@ -77,7 +77,7 @@ class UserController
         $this -> friendrequest = new FriendRequest();
         $this -> userGames = new UserGames();
         $this -> games = new Games();
-        $this -> userlookingfor = new UserLookingFor();
+        $this -> userlookingforgames = new UserLookingForGames();
         $this -> items = new Items();
         $this -> googleUser = new GoogleUser();
         $this -> report = new Report();
@@ -356,9 +356,7 @@ class UserController
         }
 
         $createGameAccount = $this->userGames->createUserGame($user['user_id'], $gameId, $main1, $main2, $main3, $rank, $role, $server, $statusChampion);
-        $createGameAccountLf = $user['game_slug'] === GameSlug::VALORANT->value
-            ? $this->userlookingfor->createLookingForUserValorant($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf)
-            : $this->userlookingfor->createLookingForUser($user['user_id'], $genderLf, $kindOfGamerLf, $user['user_game'], $main1Lf, $main2Lf, $main3Lf, $rankLf, $roleLf, $statusChampionLf);
+        $createGameAccountLf = $this->userlookingforgames->createLookingForGame($user['user_id'], $gameId, $genderLf, $kindOfGamerLf, $rankLf, $roleLf, $statusChampionLf, $main1Lf, $main2Lf, $main3Lf);
 
         if (!$createGameAccount || !$createGameAccountLf) {
             echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_create_game_account')]);
@@ -366,7 +364,7 @@ class UserController
         }
 
         $userGame = $this->userGames->getUserGameByUserIdAndGameId($user['user_id'], $gameId);
-        $lookingFor = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+        $lookingFor = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $gameId);
 
         if (!$userGame || !$lookingFor) {
             echo json_encode(['success' => false, 'message' => $this->_('messages.failed_to_get_game_account')]);
@@ -378,7 +376,7 @@ class UserController
             GameSlug::VALORANT->value => $_SESSION['valorant_id'] = $userGame['ug_id'],
             default => null,
         };
-        $_SESSION['lf_id'] = $lookingFor['lf_id'];
+        $_SESSION['lf_id'] = $lookingFor['lfg_id'];
         echo json_encode(['success' => true]);
         return;
     }
@@ -871,6 +869,7 @@ class UserController
                     $newGameSlug = $this->getGame() === 'Valorant' ? GameSlug::VALORANT->value : GameSlug::LEAGUE_OF_LEGENDS->value;
                     $newGameId = $this->games->getIdBySlug($newGameSlug);
                     $newUserGame = $newGameId ? $this->userGames->getUserGameByUserIdAndGameId($user['user_id'], $newGameId) : false;
+                    $newLookingForGame = $newGameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $newGameId) : false;
 
                     unset($_SESSION['lol_id']);
                     unset($_SESSION['valorant_id']);
@@ -881,9 +880,9 @@ class UserController
                         if ($newUserGame) {
                             $_SESSION['valorant_id'] = $newUserGame['ug_id'];
 
-                            if($user['lf_valrole'] !== NULL)
+                            if($newLookingForGame && $newLookingForGame['lfg_role'] !== NULL)
                             {
-                                $_SESSION['lf_id'] = $user['lf_id'];
+                                $_SESSION['lf_id'] = $newLookingForGame['lfg_id'];
                                 header("location:/userProfile?message=Updated successfully");
                                 return;
                             } else {
@@ -900,9 +899,9 @@ class UserController
                         if ($newUserGame) {
                             $_SESSION['lol_id'] = $newUserGame['ug_id'];
 
-                            if($user['lf_lolrole'] !== NULL)
+                            if($newLookingForGame && $newLookingForGame['lfg_role'] !== NULL)
                             {
-                                $_SESSION['lf_id'] = $user['lf_id'];
+                                $_SESSION['lf_id'] = $newLookingForGame['lfg_id'];
                                 header("location:/userProfile?message=Updated successfully");
                                 return;
                             } else {
@@ -1384,18 +1383,34 @@ class UserController
                     $statusChampion);
             }
 
-            $updateLookingFor = $this->userlookingfor->updateLookingForData(
-                $this->getLfGender(),
-                $this->getLfKindOfGamer(), 
-                $this->getGame(),            
-                $this->getLoLMain1Lf(), 
-                $this->getLoLMain2Lf(), 
-                $this->getLoLMain3Lf(), 
-                $this->getLoLRankLf(), 
-                $this->getLoLRoleLf(),
-                $statusChampionLf,
-                $this->getLfFilteredServer(),
-                $this->getUserId());
+            $existingLeagueLookingFor = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $leagueGameId);
+
+            if ($existingLeagueLookingFor) {
+                $updateLookingFor = $this->userlookingforgames->updateLookingForGame(
+                    $this->getUserId(),
+                    $leagueGameId,
+                    $this->getLfGender(),
+                    $this->getLfKindOfGamer(),
+                    $this->getLoLRankLf(),
+                    $this->getLoLRoleLf(),
+                    (int) $statusChampionLf,
+                    $this->getLoLMain1Lf(),
+                    $this->getLoLMain2Lf(),
+                    $this->getLoLMain3Lf(),
+                    $this->getLfFilteredServer());
+            } else {
+                $updateLookingFor = $this->userlookingforgames->createLookingForGame(
+                    $this->getUserId(),
+                    $leagueGameId,
+                    $this->getLfGender(),
+                    $this->getLfKindOfGamer(),
+                    $this->getLoLRankLf(),
+                    $this->getLoLRoleLf(),
+                    (int) $statusChampionLf,
+                    $this->getLoLMain1Lf(),
+                    $this->getLoLMain2Lf(),
+                    $this->getLoLMain3Lf());
+            }
 
                 if(($updateLeague || $createLoLUser) && $updateUser && $updateLookingFor)
                 {
@@ -1521,18 +1536,34 @@ class UserController
                         $statusChampion);
                 }
 
-            $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
-                $this->getLfGender(),
-                $this->getLfKindOfGamer(),
-                $this->getGame(),             
-                $this->getValorantMain1Lf(), 
-                $this->getValorantMain2Lf(), 
-                $this->getValorantMain3Lf(), 
-                $this->getValorantRankLf(), 
-                $this->getValorantRoleLf(),
-                $statusChampionLf,
-                $this->getLfFilteredServer(),
-                $this->getUserId());
+            $existingValorantLookingFor = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $valorantGameId);
+
+            if ($existingValorantLookingFor) {
+                $updateLookingFor = $this->userlookingforgames->updateLookingForGame(
+                    $this->getUserId(),
+                    $valorantGameId,
+                    $this->getLfGender(),
+                    $this->getLfKindOfGamer(),
+                    $this->getValorantRankLf(),
+                    $this->getValorantRoleLf(),
+                    (int) $statusChampionLf,
+                    $this->getValorantMain1Lf(),
+                    $this->getValorantMain2Lf(),
+                    $this->getValorantMain3Lf(),
+                    $this->getLfFilteredServer());
+            } else {
+                $updateLookingFor = $this->userlookingforgames->createLookingForGame(
+                    $this->getUserId(),
+                    $valorantGameId,
+                    $this->getLfGender(),
+                    $this->getLfKindOfGamer(),
+                    $this->getValorantRankLf(),
+                    $this->getValorantRoleLf(),
+                    (int) $statusChampionLf,
+                    $this->getValorantMain1Lf(),
+                    $this->getValorantMain2Lf(),
+                    $this->getValorantMain3Lf());
+            }
 
                 if(($updateValorant || $createValorantUser) && $updateUser && $updateLookingFor)
                 {
@@ -2030,7 +2061,7 @@ class UserController
 
             // Determine which field to check for filtering
             $postServer = isset($_POST['server']) ? json_decode($_POST['server'], true) : [];
-            $filteredServer = !empty($postServer) ? $postServer : json_decode($user['lf_filteredServer'], true);
+            $filteredServer = !empty($postServer) ? $postServer : json_decode($user['lfg_filteredServer'], true);
     
             // Define all servers if no filters
             $allServers = ["Europe West", "North America", "Europe Nordic & East", "Brazil", "Latin America North", "Latin America South", "Oceania", "Russia", "Turkey", "Japan", "Korea", "Unknown"];
@@ -2263,7 +2294,7 @@ class UserController
                     function($item) {
                         return $item['items_category'] === 'Banner' && $item['userItems_isUsed'] == 1;
             });
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $lfGame = $gameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $gameId) : null;
             $friendRequest = $this-> friendrequest -> getFriendRequest($_SESSION['userId']);
             $pendingCount = $this-> friendrequest -> countFriendRequest($_SESSION['userId']);
             $maxStars = 5;
@@ -2288,7 +2319,7 @@ class UserController
                     'ownedItems' => $ownedItems,
                     'additionalBadges' => $additionalBadges,
                     'activeBanner' => $activeBanner,
-                    'lfUser' => $lfUser,
+                    'lfGame' => $lfGame ?: null,
                     'friendRequest' => $friendRequest,
                     'pendingCount' => $pendingCount,
                     'maxStars' => $maxStars,
@@ -2343,9 +2374,9 @@ class UserController
                     if ($anotherUser['user_personalColor']) {
                         $personalColor = $anotherUser['user_personalColor'];
                     }
-                    $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                     $anotherGameId = $this->games->getIdBySlug($anotherUser['game_slug'] ?? '');
                     $userGame = $anotherGameId ? $this->userGames->getUserGameByUserIdAndGameId($anotherUser['user_id'], $anotherGameId) : false;
+                    $lfGame = $anotherGameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($anotherUser['user_id'], $anotherGameId) : false;
                     if ($anotherUser['user_game'] == "League of Legends" && $userGame && $userGame['ug_verified'] == 1) {
                         $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
                     }
@@ -2381,7 +2412,7 @@ class UserController
                             'userRating' => $userRating,
                             'badges' => $badges,
                             'personalColor' => $personalColor,
-                            'lfUser' => $lfUser,
+                            'lfGame' => $lfGame ?: null,
                             'userGame' => $userGame ?: null,
                             'checkIfFriend' => $checkIfFriend ?? null,
                             'maxStars' => $maxStars,
@@ -2410,7 +2441,6 @@ class UserController
                 $this->initializeLanguage();
                 $username = $_GET['username'];
                 $anotherUser = $this-> user -> getUserByUsername($username);
-                $lfUser = $this->userlookingfor->getLookingForUserByUserId($anotherUser['user_id']);
                 $userRating = 0;
                 $badges = $this->items->getBadges();
                 $personalColor = '';
@@ -2421,6 +2451,7 @@ class UserController
                     }
                     $anotherGameId = $this->games->getIdBySlug($anotherUser['game_slug'] ?? '');
                     $userGame = $anotherGameId ? $this->userGames->getUserGameByUserIdAndGameId($anotherUser['user_id'], $anotherGameId) : false;
+                    $lfGame = $anotherGameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($anotherUser['user_id'], $anotherGameId) : false;
                     if ($anotherUser['user_game'] == "League of Legends" && $userGame && $userGame['ug_verified'] == 1) {
                         $userRating = $this->rating->getAverageRatingForUser($anotherUser['user_id']);
                     }
@@ -2445,7 +2476,7 @@ class UserController
                         page_css: ['tools/offline_modal', 'profile'],
                         data: [
                             'anotherUser' => $anotherUser,
-                            'lfUser' => $lfUser,
+                            'lfGame' => $lfGame ?: null,
                             'userRating' => $userRating,
                             'badges' => $badges,
                             'personalColor' => $personalColor,

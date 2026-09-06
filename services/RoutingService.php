@@ -101,18 +101,16 @@ class RoutingService
         return ['redirectTo' => $config['signupUrl']];
     }
 
+    // Redirects rather than rendering directly, same reasoning as gameSignupDestination:
+    // the looking-for form needs a lot more than this service tracks (picker images,
+    // rank/role lists, JS files - see UserLookingForController::getGameLookingForConfig),
+    // so this just points the browser at the route that builds all of that
+    // (UserLookingForController::pageLookingFor/pageLookingForValorant).
     public function lookingForDestination(string $gameSlug): array
     {
         $config = $this->getGameSignupConfig($gameSlug);
 
-        return [
-            'layout' => 'views/layoutSignup.phtml',
-            'template' => $config['lookingForTemplate'],
-            'current_url' => $config['lookingForUrl'],
-            'page_title' => 'URSG - Looking for',
-            'title' => 'What are you looking for?',
-            'picture' => 'ursg-preview-small',
-        ];
+        return ['redirectTo' => $config['lookingForUrl']];
     }
 
     public function swipingMainDestination(): array
@@ -156,12 +154,10 @@ class RoutingService
     {
         return match ($gameSlug) {
             GameSlug::LEAGUE_OF_LEGENDS->value => [
-                'lookingForTemplate' => 'views/signup/lookingforlol',
                 'lookingForUrl' => 'https://ur-sg.com/lookingforuserlol',
                 'signupUrl' => 'https://ur-sg.com/leagueuser',
             ],
             GameSlug::VALORANT->value => [
-                'lookingForTemplate' => 'views/signup/lookingforvalorant',
                 'lookingForUrl' => 'https://ur-sg.com/lookingforuservalorant',
                 'signupUrl' => 'https://ur-sg.com/valorantuser',
             ],

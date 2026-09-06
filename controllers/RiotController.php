@@ -6,7 +6,7 @@ use models\UserGames;
 use models\Games;
 use models\User;
 use models\GoogleUser;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use models\Items;
 use models\RatingGames;
 use traits\SecurityController;
@@ -32,7 +32,7 @@ class RiotController
     private Games $games;
     private User $user;
     private GoogleUser $googleUser;
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
     private Items $items;
     private RatingGames $rating;
     private LogInService $logInService;
@@ -47,7 +47,7 @@ class RiotController
         $this->games = new Games();
         $this->user = new User();
         $this -> googleUser = new GoogleUser();
-        $this -> userlookingfor = new userLookingFor();
+        $this -> userlookingforgames = new UserLookingForGames();
         $this->items = new Items();
         $this -> rating = new RatingGames();
         $masterTokenService = new MasterTokenService($this->googleUser);
@@ -56,7 +56,7 @@ class RiotController
             $this->user,
             $this->userGames,
             $this->games,
-            $this->userlookingfor
+            $this->userlookingforgames
         );
         $this->signUpService = new SignUpService($this->googleUser, $masterTokenService);
         $this->riotOAuthClient = (($_ENV['environment'] ?? null) === 'local')

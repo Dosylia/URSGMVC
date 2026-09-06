@@ -2,7 +2,8 @@
 
 namespace controllers;
 
-use models\UserLookingFor;
+use models\UserLookingForGames;
+use models\Games;
 use models\User;
 use models\FriendRequest;
 use models\GoogleUser;
@@ -18,7 +19,8 @@ class UserLookingForController
     use Translatable;
     use PageRenderer;
 
-    private UserLookingFor $userlookingfor;
+    private UserLookingForGames $userlookingforgames;
+    private Games $games;
     private User $user;
     private RoutingService $routingService;
     private FriendRequest $friendrequest;
@@ -28,22 +30,16 @@ class UserLookingForController
     private $lfKindOfGamer;
     private $lfGame;
     private $lfFilteredServer;
-    private $loLMain1;
-    private $loLMain2;
-    private $loLMain3;
-    private $loLRank;
-    private $loLRole;
-    private $valorantMain1;
-    private $valorantMain2;
-    private $valorantMain3;
-    private $valorantRank;
-    private $valorantRole;
+    private $main1;
+    private $main2;
+    private $main3;
+    private $rank;
+    private $role;
 
-
-    
     public function __construct()
     {
-        $this -> userlookingfor = new userLookingFor();
+        $this -> userlookingforgames = new UserLookingForGames();
+        $this -> games = new Games();
         $this -> user = new User();
         $this -> routingService = new RoutingService();
         $this -> friendrequest = new FriendRequest();
@@ -57,77 +53,53 @@ class UserLookingForController
 
     public function pageLookingFor()
     {
-        $this->initializeLanguage();
-
-        $destination = $this->routingService->routeUser(['step' => 'lookingFor'], gameSlug: GameSlug::LEAGUE_OF_LEGENDS->value);
-
-        if (empty($destination)) {
-            $destination = $this->routingService->lookingForDestination(GameSlug::LEAGUE_OF_LEGENDS->value);
-        }
-
-        $user = $this->user->getUserByUsername($_SESSION['username']);
-
-        $this->dispatch($destination, ['user' => $user]);
+        $this->pageLookingForGame(GameSlug::LEAGUE_OF_LEGENDS->value);
     }
 
     public function pageLookingForValorant()
     {
+        $this->pageLookingForGame(GameSlug::VALORANT->value);
+    }
+
+    private function pageLookingForGame(string $gameSlug): void
+    {
         $this->initializeLanguage();
 
-        $destination = $this->routingService->routeUser(['step' => 'lookingFor'], gameSlug: GameSlug::VALORANT->value);
-
-        if (empty($destination)) {
-            $destination = $this->routingService->lookingForDestination(GameSlug::VALORANT->value);
-        }
-
+        $destination = $this->routingService->routeUser(['step' => 'lookingFor'], gameSlug: $gameSlug);
         $user = $this->user->getUserByUsername($_SESSION['username']);
 
-        $this->dispatch($destination, ['user' => $user]);
+        if (!empty($destination)) {
+            $this->dispatch($destination, ['user' => $user]);
+            return;
+        }
+
+        $config = $this->getGameLookingForConfig($gameSlug);
+
+        $this->renderPage(
+            layout: 'views/layoutSignup.phtml',
+            template: 'views/signup/looking_for_game',
+            current_url: $config['currentUrl'],
+            page_title: 'URSG - Looking for',
+            picture: 'ursg-preview-small',
+            title: 'What are you looking for?',
+            data: array_merge(['user' => $user], $config),
+        );
     }
 
     public function pageUpdateLookingFor()
-    {    
+    {
         $this->requireUserSessionOrRedirect($redirectUrl = '/');
-        // Get important datas
         $this->initializeLanguage();
         $user = $this-> user -> getUserByUsername($_SESSION['username']);
-        $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+        $gameSlug = $user['game_slug'] ?? GameSlug::LEAGUE_OF_LEGENDS->value;
+        $gameId = $this->games->getIdBySlug($gameSlug);
+        $lfGame = $gameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $gameId) : false;
 
-        if($user['game_slug'] === GameSlug::LEAGUE_OF_LEGENDS->value) {
-            $defaultChampions = [
-                'lf_lolmain1' => 'KaiSa',
-                'lf_lolmain2' => 'Ezreal',
-                'lf_lolmain3' => 'Jhin'
-            ];
-    
-                // Check if the values are empty, and use the fallback if needed
-                $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
-                $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
-                $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
-        } else {
-            $defaultChampions = [
-                'lf_valmain1' => 'Viper',
-                'lf_valmain2' => 'Omen',
-                'lf_valmain3' => 'Sova'
-            ];
-    
-            // Check if the values are empty, and use the fallback if needed
-            $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
-            $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
-            $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
-        }
+        $config = $this->getGameLookingForConfig($gameSlug);
 
-        $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
-        $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
-        $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
-        $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
-        $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
-        $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
-        $filteredServers = [
-            "Europe West", "North America", "Europe Nordic & East", "Brazil", 
-            "Latin America North", "Latin America South", "Oceania", 
-            "Russia", "Turkey", "Japan", "Korea"
-        ];
+        $mainDefault1 = !empty($lfGame['lfg_main1']) ? $lfGame['lfg_main1'] : $config['defaultMain1'];
+        $mainDefault2 = !empty($lfGame['lfg_main2']) ? $lfGame['lfg_main2'] : $config['defaultMain2'];
+        $mainDefault3 = !empty($lfGame['lfg_main3']) ? $lfGame['lfg_main3'] : $config['defaultMain3'];
 
         $this->renderPage(
             layout: 'views/layoutSwiping.phtml',
@@ -135,73 +107,43 @@ class UserLookingForController
             current_url: 'https://ur-sg.com/updateLookingForPage',
             page_title: 'URSG - Profile',
             picture: 'ursg-preview-small',
-            data: [
+            data: array_merge([
                 'user' => $user,
-                'lfUser' => $lfUser,
-                'lolMain1' => $lolMain1 ?? null,
-                'lolMain2' => $lolMain2 ?? null,
-                'lolMain3' => $lolMain3 ?? null,
-                'valorantMain1' => $valorantMain1 ?? null,
-                'valorantMain2' => $valorantMain2 ?? null,
-                'valorantMain3' => $valorantMain3 ?? null,
-                'lol_ranks' => $lol_ranks,
-                'lol_roles' => $lol_roles,
-                'valorant_ranks' => $valorant_ranks,
-                'valorant_roles' => $valorant_roles,
-                'genders' => $genders,
-                'kindofgamers' => $kindofgamers,
-                'filteredServers' => $filteredServers,
-            ],
+                'lfGame' => $lfGame ?: null,
+                'main1' => $mainDefault1,
+                'main2' => $mainDefault2,
+                'main3' => $mainDefault3,
+                'genders' => ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"],
+                'kindofgamers' => ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"],
+                'filteredServers' => [
+                    "Europe West", "North America", "Europe Nordic & East", "Brazil",
+                    "Latin America North", "Latin America South", "Oceania",
+                    "Russia", "Turkey", "Japan", "Korea"
+                ],
+            ], $config),
         );
     }
 
     public function pageUpdateLookingForGame()
-    {    
+    {
         if (
             $this->isConnectGoogle() &&
             $this->isConnectWebsite() &&
-            ($this->isConnectLeague() || $this->isConnectValorant()) && 
+            ($this->isConnectLeague() || $this->isConnectValorant()) &&
             !$this->isConnectLf()
         )
         {
-
-            // Get important datas
             $this->initializeLanguage();
             $user = $this-> user -> getUserByUsername($_SESSION['username']);
-            $lfUser = $this->userlookingfor->getLookingForUserByUserId($user['user_id']);
+            $gameSlug = $user['game_slug'] ?? GameSlug::LEAGUE_OF_LEGENDS->value;
+            $gameId = $this->games->getIdBySlug($gameSlug);
+            $lfGame = $gameId ? $this->userlookingforgames->getLookingForGameByUserIdAndGameId($user['user_id'], $gameId) : false;
 
-            if($user['user_game'] === "League of Legends") {
-                $defaultChampions = [
-                    'lf_lolmain1' => 'KaiSa',
-                    'lf_lolmain2' => 'Ezreal',
-                    'lf_lolmain3' => 'Jhin'
-                ];
-        
-                    // Check if the values are empty, and use the fallback if needed
-                    $lolMain1 = !empty($lfUser['lf_lolmain1']) ? $lfUser['lf_lolmain1'] : $defaultChampions['lf_lolmain1'];
-                    $lolMain2 = !empty($lfUser['lf_lolmain2']) ? $lfUser['lf_lolmain2'] : $defaultChampions['lf_lolmain2'];
-                    $lolMain3 = !empty($lfUser['lf_lolmain3']) ? $lfUser['lf_lolmain3'] : $defaultChampions['lf_lolmain3'];
-            } else {
-                $defaultChampions = [
-                    'lf_valmain1' => 'Viper',
-                    'lf_valmain2' => 'Omen',
-                    'lf_valmain3' => 'Sova'
-                ];
-        
-                // Check if the values are empty, and use the fallback if needed
-                $valorantMain1 = !empty($lfUser['lf_valmain1']) ? $lfUser['lf_valmain1'] : $defaultChampions['lf_valmain1'];
-                $valorantMain2 = !empty($lfUser['lf_valmain2']) ? $lfUser['lf_valmain2'] : $defaultChampions['lf_valmain2'];
-                $valorantMain3 = !empty($lfUser['lf_valmain3']) ? $lfUser['lf_valmain3'] : $defaultChampions['lf_valmain3'];
-            }
+            $config = $this->getGameLookingForConfig($gameSlug);
 
-
-            $title = "What are you looking for?";
-            $lol_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"];
-            $lol_roles = ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"];
-            $valorant_ranks = ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"];
-            $valorant_roles = ["Controller", "Duelist", "Initiator", "Sentinel", "Fill"];
-            $genders = ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"];
-            $kindofgamers = ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"];
+            $mainDefault1 = !empty($lfGame['lfg_main1']) ? $lfGame['lfg_main1'] : $config['defaultMain1'];
+            $mainDefault2 = !empty($lfGame['lfg_main2']) ? $lfGame['lfg_main2'] : $config['defaultMain2'];
+            $mainDefault3 = !empty($lfGame['lfg_main3']) ? $lfGame['lfg_main3'] : $config['defaultMain3'];
 
             $this->renderPage(
                 layout: 'views/layoutSignup.phtml',
@@ -209,23 +151,16 @@ class UserLookingForController
                 current_url: 'https://ur-sg.com/updateLookingForGamePage',
                 page_title: 'URSG - Profile',
                 picture: 'ursg-preview-small',
-                title: $title,
-                data: [
+                title: 'What are you looking for?',
+                data: array_merge([
                     'user' => $user,
-                    'lfUser' => $lfUser,
-                    'lolMain1' => $lolMain1 ?? null,
-                    'lolMain2' => $lolMain2 ?? null,
-                    'lolMain3' => $lolMain3 ?? null,
-                    'valorantMain1' => $valorantMain1 ?? null,
-                    'valorantMain2' => $valorantMain2 ?? null,
-                    'valorantMain3' => $valorantMain3 ?? null,
-                    'lol_ranks' => $lol_ranks,
-                    'lol_roles' => $lol_roles,
-                    'valorant_ranks' => $valorant_ranks,
-                    'valorant_roles' => $valorant_roles,
-                    'genders' => $genders,
-                    'kindofgamers' => $kindofgamers,
-                ],
+                    'lfGame' => $lfGame ?: null,
+                    'main1' => $mainDefault1,
+                    'main2' => $mainDefault2,
+                    'main3' => $mainDefault3,
+                    'genders' => ["Male", "Female", "Non binary", "Male and Female", "All", "Trans"],
+                    'kindofgamers' => ["Chill" => "Chill / Normal games", "Competition" => "Competition / Ranked", "Competition and Chill" => "Competition/Ranked and chill"],
+                ], $config),
             );
         }
         else
@@ -237,704 +172,433 @@ class UserLookingForController
 
     public function createLookingFor()
     {
-        if (isset($_POST['submit'])) 
-        {
-            if (isset($_POST['game']) && $_POST['game'] == "League of Legends") {
+        if (!isset($_POST['submit'])) {
+            return;
+        }
 
-                $userId = $this->validateInput($_POST["userId"]);
-                $this->setUserId($userId);
+        $gameSlug = ($_POST['game'] ?? '') === 'Valorant' ? GameSlug::VALORANT->value : GameSlug::LEAGUE_OF_LEGENDS->value;
+        $idSuffix = $gameSlug === GameSlug::VALORANT->value ? 'valorant' : 'lol';
+        $gameId = $this->games->getIdBySlug($gameSlug);
 
-                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
-                    header("location:/userProfile?message=Token not valid");
-                    return;
-                }
+        $userId = $this->validateInput($_POST["userId"]);
+        $this->setUserId($userId);
 
-                $lfGender = $this->validateInput($_POST["gender"]);
-                $this->setLfGender($lfGender);
-                $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
-                $this->setLfKindOfGamer($lfKindOfGamer);
-                $lfGame = $this->validateInput($_POST["game"]);
-                $this->setLfGame($lfGame);
-                $loLMain1 = $this->validateInput($_POST["main1"]);
-                $this->setLoLMain1($loLMain1);
-                $loLMain2 = $this->validateInput($_POST["main2"]);
-                $this->setLoLMain2($loLMain2);
-                $loLMain3 = $this->validateInput($_POST["main3"]);
-                $this->setLoLMain3($loLMain3);
-                $loLRank = $this->validateInput($_POST["rank_lol"]);
-                $this->setLoLRank($loLRank);
-                $loLRole = $this->validateInput($_POST["role_lol"]);
-                $this->setLoLRole($loLRole);
-                $statusChampion = 0;
+        if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+            header("location:/userProfile?message=Token not valid");
+            return;
+        }
 
-                $user = $this->user->getUserById($_SESSION['userId']);
+        $lfGender = $this->validateInput($_POST["gender"]);
+        $this->setLfGender($lfGender);
+        $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
+        $this->setLfKindOfGamer($lfKindOfGamer);
+        $main1 = $this->validateInput($_POST["main1"]);
+        $this->setMain1($main1);
+        $main2 = $this->validateInput($_POST["main2"]);
+        $this->setMain2($main2);
+        $main3 = $this->validateInput($_POST["main3"]);
+        $this->setMain3($main3);
+        $rank = $this->validateInput($_POST["rank_{$idSuffix}"]);
+        $this->setRank($rank);
+        $role = $this->validateInput($_POST["role_{$idSuffix}"]);
+        $this->setRole($role);
+        $statusChampion = 0;
 
-                // if ($user['user_id'] != $this->getUserId())
-                // {
-                //     header("location:/userProfile?message=Could not update");
-                //     return;
-                // }
+        if (isset($_POST["skipSelection"])) {
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
+        }
 
-                if (isset($_POST["skipSelection"])) {
-                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
-                }
-
-                if ($statusChampion == "1") {
-                    if (empty($loLRank) || empty($loLRole))
-                    {
-                        header("location:/signup?message=Inputs cannot be empty");
-                        return;
-                    }
-                } else {
-                    if (($loLMain1 === $loLMain2 || $loLMain1 === $loLMain3 || $loLMain2 === $loLMain3)) {
-                        header("location:/signup?message=Each champion must be unique");
-                        return;
-                    }
-                    if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
-                    {
-                        header("location:/signup?message=Inputs cannot be empty");
-                        return;
-                    }
-                }
-                
-                $testLeagueAccount = $this->user->getUserById($this->getUserId());
-    
-                if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
-                    $updateLookingFor = $this->userlookingfor->updateLookingForData(
-                        $this->getLfGender(),
-                        $this->getLfKindOfGamer(),     
-                        $this->getLfGame(),        
-                        $this->getLoLMain1(), 
-                        $this->getLoLMain2(), 
-                        $this->getLoLMain3(), 
-                        $this->getLoLRank(), 
-                        $this->getLoLRole(),
-                        $statusChampion,
-                        $this->getUserId());
-    
-    
-                    if ($updateLookingFor)
-                    {
-                        if (!isset($_SESSION['lf_id'])) 
-                        {
-                                $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-                                $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
-                        }
-                        header("location:/userProfile?message=Updated successfully");
-                        return;  
-                    }
-                    else
-                    {
-                        header("location:/userProfile?message=Could not update");
-                        return;  
-                    }
-                }
-
-    
-                $createLookingFor = $this->userlookingfor->createLookingForUser(
-                    $this->getUserId(), 
-                    $this->getLfGender(),
-                    $this->getLfKindOfGamer(),
-                    $this->getLfGame(),               
-                    $this->getLoLMain1(), 
-                    $this->getLoLMain2(), 
-                    $this->getLoLMain3(), 
-                    $this->getLoLRank(), 
-                    $this->getLoLRole(),
-                    $statusChampion);
-
-                    if ($createLookingFor)
-                    {
-        
-                        $lolLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-        
-                        if (session_status() == PHP_SESSION_NONE) 
-                        {
-                            $lifetime = 7 * 24 * 60 * 60;
-                            session_set_cookie_params($lifetime);
-                            session_start();
-                        }
-                        
-                            $_SESSION['lf_id'] = $lolLookingFor['lf_id'];
-        
-                        header("location:/swiping?createdUser=true");
-                        return;
-                    }
-
-            } else {
-
-                $userId = $this->validateInput($_POST["userId"]);
-
-                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
-                    header("location:/userProfile?message=Token not valid");
-                    return;
-                }
-
-                $this->setUserId($userId);
-                $lfGender = $this->validateInput($_POST["gender"]);
-                $this->setLfGender($lfGender);
-                $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
-                $this->setLfKindOfGamer($lfKindOfGamer);
-                $lfGame = $this->validateInput($_POST["game"]);
-                $this->setLfGame($lfGame);
-                $valorantMain1 = $this->validateInput($_POST["main1"]);
-                $this->setValorantMain1($valorantMain1);
-                $valorantMain2 = $this->validateInput($_POST["main2"]);
-                $this->setValorantMain2($valorantMain2);
-                $valorantMain3 = $this->validateInput($_POST["main3"]);
-                $this->setValorantMain3($valorantMain3);
-                $valorantRank = $this->validateInput($_POST["rank_valorant"]);
-                $this->setValorantRank($valorantRank);
-                $valotantRole = $this->validateInput($_POST["role_valorant"]);
-                $this->setValorantRole($valotantRole);
-
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                // if ($user['user_id'] != $this->getUserId())
-                // {
-                //     header("location:/userProfile?message=Could not update");
-                //     return;
-                // }
-
-                $statusChampion = 0;
-                if (isset($_POST["skipSelection"])) {
-                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
-                }
-
-                if ($statusChampion == "1") {
-                    if (empty($valorantRank) || empty($valotantRole))
-                    {
-                        header("location:/signup?message=Inputs cannot be empty");
-                        return;
-                    }
-                } else {
-
-                    if ($valorantMain1 === $valorantMain2 || $valorantMain1 === $valorantMain2 || $valorantMain2 === $valorantMain3) {
-                        header("location:/userProfile?message=Each agents must be unique");
-                        return;
-                    }
-
-                    if ((empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valotantRole)) || $statusChampion == "1")
-                    {
-                        header("location:/signup?message=Inputs cannot be empty");
-                        return;
-                    }
-                }
-
-
-                
-                $testValorantAccount = $this->user->getUserById($this->getUserId());
-    
-                if ($testValorantAccount && $testValorantAccount['lf_id'] !== null) {
-                    $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
-                        $this->getLfGender(),
-                        $this->getLfKindOfGamer(),
-                        $this->getLfGame(),               
-                        $this->getValorantMain1(), 
-                        $this->getValorantMain2(), 
-                        $this->getValorantMain3(), 
-                        $this->getValorantRank(), 
-                        $this->getValorantRole(),
-                        $statusChampion,
-                        $this->getUserId());
-
-
-                    if ($updateLookingFor)
-                    {
-                        if (!isset($_SESSION['lf_id'])) 
-                        {
-                                $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-                                $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
-                        }
-                        header("location:/userProfile?message=Updated successfully");
-                        return;  
-                    }
-                    else
-                    {
-                        header("location:/userProfile?message=Could not update");
-                        return;  
-                    }
-                }
-    
-                $createLookingFor = $this->userlookingfor->createLookingForUserValorant(
-                    $this->getUserId(), 
-                    $this->getLfGender(),
-                    $this->getLfKindOfGamer(),
-                    $this->getLfGame(),               
-                    $this->getValorantMain1(), 
-                    $this->getValorantMain2(), 
-                    $this->getValorantMain3(), 
-                    $this->getValorantRank(), 
-                    $this->getValorantRole(),
-                    $statusChampion);
-
-                    if ($createLookingFor)
-                    {
-        
-                        $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-        
-                        if (session_status() == PHP_SESSION_NONE) 
-                        {
-                            $lifetime = 7 * 24 * 60 * 60;
-                            session_set_cookie_params($lifetime);
-                            session_start();
-                        }
-                        
-                            $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
-        
-                        header("location:/swiping?createdUser=true");
-                        return;
-                    } else {
-                        header("location:/signup?message=Could not create looking for user");
-                        return;
-                    }
-
+        if ($statusChampion == "1") {
+            if (empty($rank) || empty($role))
+            {
+                header("location:/signup?message=Inputs cannot be empty");
+                return;
+            }
+        } else {
+            if (($main1 === $main2 || $main1 === $main3 || $main2 === $main3)) {
+                header("location:/signup?message=Each pick must be unique");
+                return;
+            }
+            if (empty($main1) || empty($main2) || empty($main3) || empty($rank) || empty($role))
+            {
+                header("location:/signup?message=Inputs cannot be empty");
+                return;
             }
         }
 
+        $existingLookingForGame = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $gameId);
+
+        if ($existingLookingForGame) {
+            $updateLookingFor = $this->userlookingforgames->updateLookingForGame(
+                $this->getUserId(),
+                $gameId,
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),
+                $this->getRank(),
+                $this->getRole(),
+                (int) $statusChampion,
+                $this->getMain1(),
+                $this->getMain2(),
+                $this->getMain3());
+
+            if ($updateLookingFor)
+            {
+                if (!isset($_SESSION['lf_id']))
+                {
+                    $_SESSION['lf_id'] = $existingLookingForGame['lfg_id'];
+                }
+                header("location:/userProfile?message=Updated successfully");
+                return;
+            }
+            else
+            {
+                header("location:/userProfile?message=Could not update");
+                return;
+            }
+        }
+
+        $createLookingForId = $this->userlookingforgames->createLookingForGame(
+            $this->getUserId(),
+            $gameId,
+            $this->getLfGender(),
+            $this->getLfKindOfGamer(),
+            $this->getRank(),
+            $this->getRole(),
+            (int) $statusChampion,
+            $this->getMain1(),
+            $this->getMain2(),
+            $this->getMain3());
+
+        if ($createLookingForId)
+        {
+            if (session_status() == PHP_SESSION_NONE)
+            {
+                $lifetime = 7 * 24 * 60 * 60;
+                session_set_cookie_params($lifetime);
+                session_start();
+            }
+
+            $_SESSION['lf_id'] = $createLookingForId;
+
+            header("location:/swiping?createdUser=true");
+            return;
+        } else {
+            header("location:/signup?message=Could not create looking for user");
+            return;
+        }
     }
 
+    // TODO: mobile app is not currently maintained and will be rebuilt - kept working against
+    // the unified model so the route doesn't fatal, but not a priority to polish further.
     public function createLookingForUserPhone()
     {
-        if (isset($_POST['lookingforData'])) 
-        {
-            $data = json_decode($_POST['lookingforData']);
-
-            if (isset($data->game) && $data->game == "League of Legends") {
-            $userId = $this->validateInput($data->userId);
-            $this->setUserId($userId);
-
-            $token = $this->getBearerTokenOrJsonError();
-            if (!$token) {
-                return;
-            }
-
-            // Validate Token for User
-            if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
-                return;
-            }
-
-            $lfGender = $this->validateInput($data->gender);
-            $this->setLfGender($lfGender);
-            $lfKindOfGamer = $this->validateInput($data->kindOfGamer);
-            $this->setLfKindOfGamer($lfKindOfGamer);
-            $lfGame = $this->validateInput($data->game);
-            $this->setLfGame($lfGame);
-            $loLMain1 = $this->validateInput($data->main1);
-            $this->setLoLMain1($loLMain1);
-            $loLMain2 = $this->validateInput($data->main2);
-            $this->setLoLMain2($loLMain2);
-            $loLMain3 = $this->validateInput($data->main3);
-            $this->setLoLMain3($loLMain3);
-            $loLRank = $this->validateInput($data->rank);
-            $this->setLoLRank($loLRank);
-            $loLRole = $this->validateInput($data->role);
-            $this->setLoLRole($loLRole);
-            $statusChampion = $this->validateInput($data->skipSelection);
-
-            if ($statusChampion == 1) {
-                if (empty($loLRank) || empty($loLRole))
-                {
-                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
-                    return;  
-                }
-            } else {
-                if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
-                {
-                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
-                    return;  
-                }
-            }
-      
-            $testLeagueAccount = $this->user->getUserById($this->getUserId());
-
-            if ($testLeagueAccount && $testLeagueAccount['lf_id'] !== null) {
-                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
-                return;  
-            }
-
-            $createLookingFor = $this->userlookingfor->createLookingForUser(
-                $this->getUserId(), 
-                $this->getLfGender(),
-                $this->getLfKindOfGamer(),
-                $this->getLfGame(),               
-                $this->getLoLMain1(), 
-                $this->getLoLMain2(), 
-                $this->getLoLMain3(), 
-                $this->getLoLRank(), 
-                $this->getLoLRole(),
-                $statusChampion);
-
-                if ($createLookingFor)
-                {
-    
-                    $lolLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-    
-                    $lookingforUserData = array(
-                        'lfId' => $lolLookingFor['lf_id'],
-                        'lfGender' => $lolLookingFor['lf_gender'],
-                        'lfKingOfGamer' => $lolLookingFor['lf_kindofgamer'],
-                        'lfGame' => $lolLookingFor['lf_game'],
-                        'main1Lf' => $lolLookingFor['lf_lolmain1'],
-                        'main2Lf' => $lolLookingFor['lf_lolmain2'],
-                        'main3Lf' => $lolLookingFor['lf_lolmain3'],
-                        'rankLf' => $lolLookingFor['lf_lolrank'],
-                        'roleLf' => $lolLookingFor['lf_lolrole']
-                    );
-    
-                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
-                    return;
-                }
-
-            } else {
-
-            $userId = $this->validateInput($data->userId);
-
-            $token = $this->getBearerTokenOrJsonError();
-            if (!$token) {
-                return;
-            }
-
-            // Validate Token for User
-            if (!$this->validateToken($token, $userId)) {
-                echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
-                return;
-            }
-            
-            $this->setUserId($userId);
-            $lfGender = $this->validateInput($data->gender);
-            $this->setLfGender($lfGender);
-            $lfKindOfGamer = $this->validateInput($data->kindOfGamer);
-            $this->setLfKindOfGamer($lfKindOfGamer);
-            $lfGame = $this->validateInput($data->game);
-            $this->setLfGame($lfGame);
-            $valorantMain1 = $this->validateInput($data->main1);
-            $this->setValorantMain1($valorantMain1);
-            $valorantMain2 = $this->validateInput($data->main2);
-            $this->setValorantMain2($valorantMain2);
-            $valorantMain3 = $this->validateInput($data->main3);
-            $this->setValorantMain3($valorantMain3);
-            $valorantRank = $this->validateInput($data->rank);
-            $this->setValorantRank($valorantRank);
-            $valorantRole = $this->validateInput($data->role);
-            $this->setValorantRole($valorantRole);
-            $statusChampion = $this->validateInput($data->skipSelection);
-
-            if ($statusChampion == 1) {
-                if (empty($valorantRank) || empty($valorantRole))
-                {
-                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
-                    return;  
-                }
-            } else {
-                if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
-                {
-                    echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
-                    return;  
-                }
-            }
-
-            
-            $testValorantAccount = $this->user->getUserById($this->getUserId());
-
-            if ($testValorantAccount && $testValorantAccount['lf_id'] !== null) {
-                echo json_encode(['message' => $this->_('messages.user_already_exist')]);
-                return;  
-            }
-
-            $createLookingFor = $this->userlookingfor->createLookingForUserValorant(
-                $this->getUserId(), 
-                $this->getLfGender(),
-                $this->getLfKindOfGamer(),
-                $this->getLfGame(),               
-                $this->getValorantMain1(), 
-                $this->getValorantMain2(), 
-                $this->getValorantMain1(), 
-                $this->getValorantRank(), 
-                $this->getValorantRole(),
-                $statusChampion);
-
-                if ($createLookingFor)
-                {
-    
-                    $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-    
-                    $lookingforUserData = array(
-                        'lfId' => $valorantLookingFor['lf_id'],
-                        'lfGender' => $valorantLookingFor['lf_gender'],
-                        'lfKingOfGamer' => $valorantLookingFor['lf_kindofgamer'],
-                        'lfGame' => $valorantLookingFor['lf_game'],
-                        'valmain1Lf' => $valorantLookingFor['lf_valmain1'],
-                        'valmain2Lf' => $valorantLookingFor['lf_valmain2'],
-                        'valmain3Lf' => $valorantLookingFor['lf_valmain3'],
-                        'valrankLf' => $valorantLookingFor['lf_valrank'],
-                        'valroleLf' => $valorantLookingFor['lf_valrole']
-                    );
-    
-                    echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
-                    return;
-                }
-
-
-            }
-
+        if (!isset($_POST['lookingforData'])) {
+            echo json_encode(['message' => $this->_('messages.error')]);
+            return;
         }
-        echo json_encode(['message' => $this->_('messages.error')]);
-        return;  
 
+        $data = json_decode($_POST['lookingforData']);
+
+        $gameSlug = ($data->game ?? '') === 'Valorant' ? GameSlug::VALORANT->value : GameSlug::LEAGUE_OF_LEGENDS->value;
+        $gameId = $this->games->getIdBySlug($gameSlug);
+
+        $userId = $this->validateInput($data->userId);
+        $this->setUserId($userId);
+
+        $token = $this->getBearerTokenOrJsonError();
+        if (!$token) {
+            return;
+        }
+
+        if (!$this->validateToken($token, $userId)) {
+            echo json_encode(['success' => false, 'message' => $this->_('messages.invalid_token')]);
+            return;
+        }
+
+        $lfGender = $this->validateInput($data->gender);
+        $this->setLfGender($lfGender);
+        $lfKindOfGamer = $this->validateInput($data->kindOfGamer);
+        $this->setLfKindOfGamer($lfKindOfGamer);
+        $main1 = $this->validateInput($data->main1);
+        $this->setMain1($main1);
+        $main2 = $this->validateInput($data->main2);
+        $this->setMain2($main2);
+        $main3 = $this->validateInput($data->main3);
+        $this->setMain3($main3);
+        $rank = $this->validateInput($data->rank);
+        $this->setRank($rank);
+        $role = $this->validateInput($data->role);
+        $this->setRole($role);
+        $statusChampion = $this->validateInput($data->skipSelection);
+
+        if ($statusChampion == 1) {
+            if (empty($rank) || empty($role))
+            {
+                echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                return;
+            }
+        } else {
+            if (empty($main1) || empty($main2) || empty($main3) || empty($rank) || empty($role))
+            {
+                echo json_encode(['message' => $this->_('messages.fill_all_fields')]);
+                return;
+            }
+        }
+
+        if ($this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $gameId)) {
+            echo json_encode(['message' => $this->_('messages.user_already_exist')]);
+            return;
+        }
+
+        $createLookingForId = $this->userlookingforgames->createLookingForGame(
+            $this->getUserId(),
+            $gameId,
+            $this->getLfGender(),
+            $this->getLfKindOfGamer(),
+            $this->getRank(),
+            $this->getRole(),
+            (int) $statusChampion,
+            $this->getMain1(),
+            $this->getMain2(),
+            $this->getMain3());
+
+        if ($createLookingForId)
+        {
+            $lfGameRow = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $gameId);
+
+            $lookingforUserData = array(
+                'lfId' => $lfGameRow['lfg_id'],
+                'lfGender' => $lfGameRow['lfg_gender'],
+                'lfKingOfGamer' => $lfGameRow['lfg_kindofgamer'],
+                'lfGame' => $data->game,
+                'main1Lf' => $lfGameRow['lfg_main1'],
+                'main2Lf' => $lfGameRow['lfg_main2'],
+                'main3Lf' => $lfGameRow['lfg_main3'],
+                'rankLf' => $lfGameRow['lfg_rank'],
+                'roleLf' => $lfGameRow['lfg_role']
+            );
+
+            echo json_encode(['sessionId' => session_id(), 'user' => $lookingforUserData, 'message' => $this->_('messages.success')]);
+            return;
+        }
+
+        echo json_encode(['message' => $this->_('messages.error')]);
+        return;
     }
 
     public function updateLookingFor()
     {
-        if (isset($_POST['submit'])) 
-        {
-            if (isset($_POST['game']) && $_POST['game'] == "League of Legends") {
-                $userId = $this->validateInput($_POST["userId"]);
-
-                if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
-                    header("location:/userProfile?message=Token not valid");
-                    return;
-                }
-
-                $this->setUserId($userId);
-                $lfGender = $this->validateInput($_POST["gender"]);
-                $this->setLfGender($lfGender);
-                $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
-                $this->setLfKindOfGamer($lfKindOfGamer);
-                $lfGame = $this->validateInput($_POST["game"]);
-                $this->setLfGame($lfGame);
-                $loLMain1 = $this->validateInput($_POST["main1"]);
-                $this->setLoLMain1($loLMain1);
-                $loLMain2 = $this->validateInput($_POST["main2"]);
-                $this->setLoLMain2($loLMain2);
-                $loLMain3 = $this->validateInput($_POST["main3"]);
-                $this->setLoLMain3($loLMain3);
-                $loLRank = $this->validateInput($_POST["rank_lol"]);
-                $this->setLoLRank($loLRank);
-                $loLRole = $this->validateInput($_POST["role_lol"]);
-                $this->setLoLRole($loLRole);
-                $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
-
-                $validRegions = [
-                    "Europe West", "North America", "Europe Nordic & East", "Brazil", 
-                    "Latin America North", "Latin America South", "Oceania", 
-                    "Russia", "Turkey", "Japan", "Korea"
-                ];
-
-                if (!empty($filteredServer)) {
-                    foreach ($filteredServer as $server) {
-                        if (!in_array($server, $validRegions)) {
-                            header("Location: /userProfile?message=Filtered region not valid");
-                            return;
-                        }
-                    }
-
-                } 
-
-                $filteredServerJson = json_encode($filteredServer);
-                $this->setLfFilteredServer($filteredServerJson);
-
-                $user = $this->user->getUserById($_SESSION['userId']);
-
-                if ($user['user_id'] != $this->getUserId())
-                {
-                    header("location:/userProfile?message=Could not update");
-                    return;
-                }
-
-                $statusChampion = 0;
-                if (isset($_POST["skipSelection"])) {
-                    $statusChampion = $this->validateInput($_POST["skipSelection"]);
-                }
-
-                $user = $this->user->getUserById($this->getUserId());
-
-                if ($statusChampion == "1") {
-                    if (empty($loLRank) || empty($loLRole))
-                    {
-                        if ($user['lf_lolrole']) {
-                            header("location:/signup?message=Inputs cannot be empty");
-                            return;
-                        } else {
-                            header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                            return;
-                        }
-                    }
-                } else {
-                    if (empty($loLMain1) || empty($loLMain2) || empty($loLMain3) || empty($loLRank) || empty($loLRole))
-                    {
-                        if ($user['lf_lolrole']) {
-                            header("location:/signup?message=Inputs cannot be empty");
-                            return;
-                        } else {
-                            header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                            return;
-                        }
-                    }
-                }
-
-                $updateLookingFor = $this->userlookingfor->updateLookingForData(
-                    $this->getLfGender(),
-                    $this->getLfKindOfGamer(),     
-                    $this->getLfGame(),        
-                    $this->getLoLMain1(), 
-                    $this->getLoLMain2(), 
-                    $this->getLoLMain3(), 
-                    $this->getLoLRank(), 
-                    $this->getLoLRole(),
-                    $statusChampion,
-                    $this->getLfFilteredServer(),
-                    $this->getUserId());
-
-
-                if ($updateLookingFor)
-                {
-                    if (!isset($_SESSION['lf_id'])) 
-                    {
-                            $leagueLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-                            $_SESSION['lf_id'] = $leagueLookingFor['lf_id'];
-                    }
-                    header("location:/userProfile?message=Updated successfully");
-                    return;  
-                }
-                else
-                {
-                    header("location:/userProfile?message=Could not update");
-                    return;  
-                }
-
-                } else {
-
-                    $userId = $this->validateInput($_POST["userId"]);
-
-                    if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
-                        header("location:/userProfile?message=Token not valid");
-                        return;
-                    }
-                    
-                    $this->setUserId($userId);
-                    $lfGender = $this->validateInput($_POST["gender"]);
-                    $this->setLfGender($lfGender);
-                    $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
-                    $this->setLfKindOfGamer($lfKindOfGamer);
-                    $lfGame = $this->validateInput($_POST["game"]);
-                    $this->setLfGame($lfGame);
-                    $valorantMain1 = $this->validateInput($_POST["main1"]);
-                    $this->setValorantMain1($valorantMain1);
-                    $valorantMain2 = $this->validateInput($_POST["main2"]);
-                    $this->setValorantMain2($valorantMain2);
-                    $valorantMain3 = $this->validateInput($_POST["main3"]);
-                    $this->setValorantMain3($valorantMain3);
-                    $valorantRank = $this->validateInput($_POST["rank_valorant"]);
-                    $this->setValorantRank($valorantRank);
-                    $valorantRole = $this->validateInput($_POST["role_valorant"]);
-                    $this->setValorantRole($valorantRole);
-                    $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
-                    $filteredServerJson = json_encode($filteredServer);
-                    $this->setLfFilteredServer($filteredServerJson);
-
-                    $user = $this->user->getUserById($_SESSION['userId']);
-
-                    if ($user['user_id'] != $this->getUserId())
-                    {
-                        header("location:/userProfile?message=Could not update");
-                        return;
-                    }
-                    $statusChampion = 0;
-                    if (isset($_POST["skipSelection"])) {
-                        $statusChampion = $this->validateInput($_POST["skipSelection"]);
-                    }
-
-                    if ($statusChampion == "1") {
-                        if (empty($valorantRank) || empty($valorantRole))
-                        {
-                            if ($user['lf_valrole']) {
-                                header("location:/signup?message=Inputs cannot be empty");
-                                return;
-                            } else {
-                                header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                                return;
-                            }
-                        }
-                    } else {
-                        if (empty($valorantMain1) || empty($valorantMain2) || empty($valorantMain3) || empty($valorantRank) || empty($valorantRole))
-                        {
-                            if ($user['lf_valrole']) {
-                                header("location:/signup?message=Inputs cannot be empty");
-                                return;
-                            } else {
-                                header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
-                                return;
-                            }
-                        }
-                    }
-
-                    $updateLookingFor = $this->userlookingfor->updateLookingForDataValorant(
-                        $this->getLfGender(),
-                        $this->getLfKindOfGamer(),
-                        $this->getLfGame(),               
-                        $this->getValorantMain1(), 
-                        $this->getValorantMain2(), 
-                        $this->getValorantMain3(), 
-                        $this->getValorantRank(), 
-                        $this->getValorantRole(),
-                        $statusChampion,
-                        $this->getLfFilteredServer(),
-                        $this->getUserId());
-
-
-                    if ($updateLookingFor)
-                    {
-                        if (!isset($_SESSION['lf_id'])) 
-                        {
-                                $valorantLookingFor = $this->userlookingfor->getLookingForUserByUserId($this->getUserId());
-                                $_SESSION['lf_id'] = $valorantLookingFor['lf_id'];
-                        }
-                        header("location:/userProfile?message=Updated successfully");
-                        return;  
-                    }
-                    else
-                    {
-                        header("location:/userProfile?message=Could not update");
-                        return;  
-                    }
-                    
-                }
-
-
+        if (!isset($_POST['submit'])) {
+            return;
         }
 
+        $gameSlug = ($_POST['game'] ?? '') === 'Valorant' ? GameSlug::VALORANT->value : GameSlug::LEAGUE_OF_LEGENDS->value;
+        $idSuffix = $gameSlug === GameSlug::VALORANT->value ? 'valorant' : 'lol';
+        $gameId = $this->games->getIdBySlug($gameSlug);
+
+        $userId = $this->validateInput($_POST["userId"]);
+
+        if (!$this->validateTokenWebsite($_SESSION['masterTokenWebsite'], $userId)) {
+            header("location:/userProfile?message=Token not valid");
+            return;
+        }
+
+        $this->setUserId($userId);
+        $lfGender = $this->validateInput($_POST["gender"]);
+        $this->setLfGender($lfGender);
+        $lfKindOfGamer = $this->validateInput($_POST["kindofgamer"]);
+        $this->setLfKindOfGamer($lfKindOfGamer);
+        $main1 = $this->validateInput($_POST["main1"]);
+        $this->setMain1($main1);
+        $main2 = $this->validateInput($_POST["main2"]);
+        $this->setMain2($main2);
+        $main3 = $this->validateInput($_POST["main3"]);
+        $this->setMain3($main3);
+        $rank = $this->validateInput($_POST["rank_{$idSuffix}"]);
+        $this->setRank($rank);
+        $role = $this->validateInput($_POST["role_{$idSuffix}"]);
+        $this->setRole($role);
+        $filteredServer = $this->validateInputJSON($_POST["filteredServers"]);
+
+        $validRegions = [
+            "Europe West", "North America", "Europe Nordic & East", "Brazil",
+            "Latin America North", "Latin America South", "Oceania",
+            "Russia", "Turkey", "Japan", "Korea"
+        ];
+
+        if (!empty($filteredServer)) {
+            foreach ($filteredServer as $server) {
+                if (!in_array($server, $validRegions)) {
+                    header("Location: /userProfile?message=Filtered region not valid");
+                    return;
+                }
+            }
+        }
+
+        $filteredServerJson = json_encode($filteredServer);
+        $this->setLfFilteredServer($filteredServerJson);
+
+        $user = $this->user->getUserById($_SESSION['userId']);
+
+        if ($user['user_id'] != $this->getUserId())
+        {
+            header("location:/userProfile?message=Could not update");
+            return;
+        }
+
+        $statusChampion = 0;
+        if (isset($_POST["skipSelection"])) {
+            $statusChampion = $this->validateInput($_POST["skipSelection"]);
+        }
+
+        $existingLookingForGame = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $gameId);
+
+        if ($statusChampion == "1") {
+            if (empty($rank) || empty($role))
+            {
+                if ($existingLookingForGame && $existingLookingForGame['lfg_role']) {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    return;
+                } else {
+                    header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                    return;
+                }
+            }
+        } else {
+            if (empty($main1) || empty($main2) || empty($main3) || empty($rank) || empty($role))
+            {
+                if ($existingLookingForGame && $existingLookingForGame['lfg_role']) {
+                    header("location:/signup?message=Inputs cannot be empty");
+                    return;
+                } else {
+                    header("location:/updateLookingForGamePage?message=Inputs cannot be empty");
+                    return;
+                }
+            }
+        }
+
+        if ($existingLookingForGame) {
+            $updateLookingFor = $this->userlookingforgames->updateLookingForGame(
+                $this->getUserId(),
+                $gameId,
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),
+                $this->getRank(),
+                $this->getRole(),
+                (int) $statusChampion,
+                $this->getMain1(),
+                $this->getMain2(),
+                $this->getMain3(),
+                $this->getLfFilteredServer());
+        } else {
+            $updateLookingFor = $this->userlookingforgames->createLookingForGame(
+                $this->getUserId(),
+                $gameId,
+                $this->getLfGender(),
+                $this->getLfKindOfGamer(),
+                $this->getRank(),
+                $this->getRole(),
+                (int) $statusChampion,
+                $this->getMain1(),
+                $this->getMain2(),
+                $this->getMain3());
+        }
+
+        if ($updateLookingFor)
+        {
+            if (!isset($_SESSION['lf_id']))
+            {
+                $lfGame = $this->userlookingforgames->getLookingForGameByUserIdAndGameId($this->getUserId(), $gameId);
+                $_SESSION['lf_id'] = $lfGame['lfg_id'];
+            }
+            header("location:/userProfile?message=Updated successfully");
+            return;
+        }
+        else
+        {
+            header("location:/userProfile?message=Could not update");
+            return;
+        }
     }
 
-    public function validateInput($input) 
+    // Config shared by the signup-flow ("looking for" onboarding step) and the profile-update
+    // pages: everything that legitimately differs between games (asset paths, form field id
+    // suffix, rank/role option lists, gender options) lives here instead of duplicated templates.
+    private function getGameLookingForConfig(string $gameSlug): array
+    {
+        return match ($gameSlug) {
+            GameSlug::LEAGUE_OF_LEGENDS->value => [
+                'idSuffix' => 'lol',
+                'currentUrl' => 'https://ur-sg.com/lookingforuserlol',
+                'gameDisplayName' => 'League of Legends',
+                'genderOptions' => ['Male', 'Female', 'Trans', 'Non binary', 'Male and Female', 'All'],
+                'ranks' => ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grand Master", "Challenger", "Any"],
+                'roles' => ["Support", "AD Carry", "Mid laner", "Jungler", "Top laner", "Fill", "Any"],
+                'defaultMain1' => 'KaiSa',
+                'defaultMain2' => 'Ezreal',
+                'defaultMain3' => 'Jhin',
+                'mainImagePath' => fn(string $name) => "public/images/champions/{$name}.png",
+                'rankImagePath' => fn(string $rank) => "public/images/ranks/{$rank}.png",
+                'roleImagePath' => fn(string $role) => "public/images/roles/" . strtolower(str_replace(' ', '', $role)) . ".png",
+                'pickerJs' => 'public/js/champions-picker.js',
+                'ranksJs' => 'public/js/ranks.js',
+                'rolesJs' => 'public/js/roles.js',
+                'gameInfoJs' => 'public/js/leagueoflegendsinfo.js',
+                'bottomImage' => 'public/images/ahri.png',
+                'bottomImageAlt' => 'Ahri from League of legends',
+            ],
+            GameSlug::VALORANT->value => [
+                'idSuffix' => 'valorant',
+                'currentUrl' => 'https://ur-sg.com/lookingforuservalorant',
+                'gameDisplayName' => 'Valorant',
+                'genderOptions' => ['Male', 'Female', 'Non Binary', 'Male and Female', 'All'],
+                'ranks' => ["Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant", "Any"],
+                'roles' => ["Controller", "Duelist", "Initiator", "Sentinel", "Fill", "Any"],
+                'defaultMain1' => 'Viper',
+                'defaultMain2' => 'Omen',
+                'defaultMain3' => 'Sova',
+                'mainImagePath' => fn(string $name) => "public/images/valorant_champions/{$name}_icon.webp",
+                'rankImagePath' => fn(string $rank) => "public/images/valorant_ranks/{$rank}.png",
+                'roleImagePath' => fn(string $role) => "public/images/valorant_roles/{$role}.webp",
+                'pickerJs' => 'public/js/champions-picker-valorant.js',
+                'ranksJs' => 'public/js/ranks-valorant.js',
+                'rolesJs' => 'public/js/roles-valorant.js',
+                'gameInfoJs' => 'public/js/valorantinfo.js',
+                'bottomImage' => 'public/images/jett.png',
+                'bottomImageAlt' => 'Jett from Valorant',
+            ],
+            default => throw new \InvalidArgumentException("Unknown game slug: {$gameSlug}"),
+        };
+    }
+
+    public function validateInput($input)
     {
         $input = trim($input);
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
         return $input;
     }
 
-    public function validateInputJSON($input) 
+    public function validateInputJSON($input)
     {
         $input = trim($input);
-    
+
         // Try decoding if it looks like JSON
         if (is_string($input) && (strpos($input, '[') === 0 || strpos($input, '{') === 0)) {
             $decodedInput = json_decode($input, true);
-    
+
             if (json_last_error() === JSON_ERROR_NONE) {
                 return $decodedInput;
             }
         }
-    
+
         // If it's a raw string, attempt to decode HTML entities and retry JSON
         $decodedEntities = html_entity_decode($input, ENT_QUOTES, 'UTF-8');
         $tryJsonAgain = json_decode($decodedEntities, true);
-    
+
         if (json_last_error() === JSON_ERROR_NONE) {
             return $tryJsonAgain;
         }
-    
+
         return [];
     }
 
@@ -968,16 +632,6 @@ class UserLookingForController
         $this->lfKindOfGamer = $lfKindOfGamer;
     }
 
-    public function getLfGame()
-    {
-        return $this->lfGame;
-    }
-
-    public function setLfGame($lfGame)
-    {
-        $this->lfGame = $lfGame;
-    }
-
     public function getLfFilteredServer()
     {
         return $this->lfFilteredServer;
@@ -988,106 +642,53 @@ class UserLookingForController
         $this->lfFilteredServer = $lfFilteredServer;
     }
 
-
-    public function getLoLMain1()
+    public function getMain1()
     {
-        return $this->loLMain1;
+        return $this->main1;
     }
 
-    public function setLoLMain1($loLMain1)
+    public function setMain1($main1)
     {
-        $this->loLMain1 = $loLMain1;
+        $this->main1 = $main1;
     }
 
-    public function getLoLMain2()
+    public function getMain2()
     {
-        return $this->loLMain2;
+        return $this->main2;
     }
 
-    public function setLoLMain2($loLMain2)
+    public function setMain2($main2)
     {
-        $this->loLMain2 = $loLMain2;
+        $this->main2 = $main2;
     }
 
-    public function getLoLMain3()
+    public function getMain3()
     {
-        return $this->loLMain3;
+        return $this->main3;
     }
 
-    public function setLoLMain3($loLMain3)
+    public function setMain3($main3)
     {
-        $this->loLMain3 = $loLMain3;
+        $this->main3 = $main3;
     }
 
-    public function getLoLRank()
+    public function getRank()
     {
-        return $this->loLRank;
+        return $this->rank;
     }
 
-    public function setLoLRank($loLRank)
+    public function setRank($rank)
     {
-        $this->loLRank = $loLRank;
+        $this->rank = $rank;
     }
 
-
-    public function getLoLRole()
+    public function getRole()
     {
-        return $this->loLRole;
+        return $this->role;
     }
 
-    public function setLoLRole($loLRole)
+    public function setRole($role)
     {
-        $this->loLRole = $loLRole;
-    }
-
-    public function getValorantMain1()
-    {
-        return $this->valorantMain1;
-    }
-
-    public function setValorantMain1($valorantMain1)
-    {
-        $this->valorantMain1 = $valorantMain1;
-    }
-
-    public function getValorantMain2()
-    {
-        return $this->valorantMain2;
-    }
-
-    public function setValorantMain2($valorantMain2)
-    {
-        $this->valorantMain2 = $valorantMain2;
-    }
-
-    public function getValorantMain3()
-    {
-        return $this->valorantMain3;
-    }
-
-    public function setValorantMain3($valorantMain3)
-    {
-        $this->valorantMain3 = $valorantMain3;
-    }
-
-    public function getValorantRank()
-    {
-        return $this->valorantRank;
-    }
-
-    public function setValorantRank($valorantRank)
-    {
-        $this->valorantRank = $valorantRank;
-    }
-
-
-    public function getValorantRole()
-    {
-        return $this->valorantRole;
-    }
-
-    public function setValorantRole($valorantRole)
-    {
-        $this->valorantRole = $valorantRole;
+        $this->role = $role;
     }
 }

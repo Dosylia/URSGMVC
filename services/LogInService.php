@@ -8,7 +8,7 @@ namespace services;
 use models\User;
 use models\UserGames;
 use models\Games;
-use models\UserLookingFor;
+use models\UserLookingForGames;
 use enums\GameSlug;
 
 class LogInService
@@ -17,20 +17,20 @@ class LogInService
     private User $user;
     private UserGames $userGames;
     private Games $games;
-    private UserLookingFor $userLookingFor;
+    private UserLookingForGames $userLookingForGames;
 
     public function __construct(
         MasterTokenService $masterTokenService,
         User $user,
         UserGames $userGames,
         Games $games,
-        UserLookingFor $userLookingFor
+        UserLookingForGames $userLookingForGames
     ) {
         $this->masterTokenService = $masterTokenService;
         $this->user = $user;
         $this->userGames = $userGames;
         $this->games = $games;
-        $this->userLookingFor = $userLookingFor;
+        $this->userLookingForGames = $userLookingForGames;
     }
 
     /**
@@ -167,18 +167,18 @@ class LogInService
             'skipSelection' => $userGame['ug_noMains'],
         ];
 
-        $lfUser = $this->userLookingFor->getLookingForUserByUserId($userRow['user_id']);
+        $lfGame = $this->userLookingForGames->getLookingForGameByUserIdAndGameId($userRow['user_id'], $gameId);
 
-        if (!$lfUser) {
+        if (!$lfGame) {
             return new LoginOutcome($base + ['game' => $gameSlug, 'gameProfile' => $gameProfile, 'destination' => LoginDestination::NEEDS_LOOKING_FOR]);
         }
 
         $lookingForData = [
-            'lfId' => $lfUser['lf_id'],
-            'lfGender' => $lfUser['lf_gender'],
-            'lfKingOfGamer' => $lfUser['lf_kindofgamer'],
-            'lfGame' => $lfUser['lf_game'],
-            'filteredServerLf' => $lfUser['lf_filteredServer'],
+            'lfId' => $lfGame['lfg_id'],
+            'lfGender' => $lfGame['lfg_gender'],
+            'lfKingOfGamer' => $lfGame['lfg_kindofgamer'],
+            'lfGame' => $gameSlug,
+            'filteredServerLf' => $lfGame['lfg_filteredServer'],
         ];
 
         return new LoginOutcome($base + ['game' => $gameSlug, 'gameProfile' => $gameProfile, 'lookingForRow' => $lookingForData, 'destination' => LoginDestination::ONBOARDED]);
@@ -217,7 +217,7 @@ class LogInService
             default => null,
         };
 
-        $lookingForRow = $this->userLookingFor->getLookingForUserByUserId($userRow['user_id']);
+        $lookingForRow = $this->userLookingForGames->getLookingForGameByUserIdAndGameId($userRow['user_id'], $gameId);
 
         if (!$lookingForRow) {
             return new LoginOutcome($base + [
@@ -227,7 +227,7 @@ class LogInService
             ]);
         }
 
-        $_SESSION['lf_id'] = $lookingForRow['lf_id'];
+        $_SESSION['lf_id'] = $lookingForRow['lfg_id'];
 
         return new LoginOutcome($base + [
             'game' => $gameSlug,
